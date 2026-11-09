@@ -92,6 +92,37 @@ test("picker cards show the record and an odds pill that fills with the odds", a
   }
 });
 
+test("close games are toss-ups, not upsets, and the path sentence counts them that way", async () => {
+  // make a few remaining games coin flips
+  const close = JSON.parse(JSON.stringify(data));
+  const pending = close.games.filter((g) => !g.completed);
+  [0.52, 0.48, 0.55, 0.46].forEach((p, k) => { pending[k * 3].pHome = p; });
+  close.exact = solve(close);
+  let sawToss = false;
+  for (const t of close.teams) {
+    const { els } = render(close, "#" + t.abbr.toLowerCase());
+    await settle();
+    const html = els.team.innerHTML;
+    const path = html.split("How the standings end")[0];
+    if (!/Most likely path/.test(path)) continue;
+    const upsetTags = (path.match(/class="tag ups">Upset · /g) || []).length;
+    const tossDog = [...path.matchAll(/class="tag toss"[^>]*>Toss-up · (\d+)%/g)].filter((m) => +m[1] < 50).length;
+    if (/class="tag toss"/.test(path)) sawToss = true;
+    const sentence = text(html).match(/It needs [^.]*\./)[0];
+    if (upsetTags === 0 && tossDog === 0) assert.match(sentence, /no upsets: every favorite wins/, t.abbr);
+    else if (upsetTags === 0) assert.match(sentence, /no real upsets, but .*toss-up/, t.abbr);
+    else assert.match(sentence, new RegExp(`needs (one|${upsetTags}) upsets?`), `${t.abbr}: ${sentence}`);
+    if (tossDog > 0) assert.match(sentence, /toss-up/, `${t.abbr}: ${sentence}`);
+  }
+  assert.ok(sawToss, "toss-up tags appear");
+});
+
+test("intro reads 'Results through <date> with N games left'", async () => {
+  const { els } = render(data, "#utah");
+  await settle();
+  assert.match(els.lede.textContent, /^Results through [A-Z][a-z]+ \d+ with 16 games left\. Pick a team/);
+});
+
 test("headline matches the exact odds", async () => {
   const i = data.teams.findIndex((t) => t.abbr === "TTU");
   const { els } = render(data, "#ttu");

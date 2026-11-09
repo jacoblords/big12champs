@@ -126,6 +126,7 @@ details.minor .week + .week { margin-top: 10px; }
 .tag { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tag.fav { background: var(--surface); color: var(--muted); }
 .tag.ups { background: var(--warn-soft); color: var(--warn); }
+.tag.toss { background: var(--sunk); color: var(--ink); }
 .tag.lock { background: var(--accent-soft); color: var(--accent); }
 
 .ends { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
@@ -364,11 +365,16 @@ function renderLocks() {
   el.innerHTML = n ? `<span><b>${n} result${n > 1 ? "s" : ""} set by you.</b> All odds below assume ${n > 1 ? "they happen" : "it happens"}, and are simulated (${N_MAIN.toLocaleString("en-US")} runs, typically within half a point) rather than exact.</span><button id="clearLocks">Clear what-ifs</button>` : "";
 }
 
+// A game ESPN has within 45-55% is a toss-up: the underdog winning it isn't really an upset.
+const TOSS_UP = 0.05;
+const isTossUp = (p) => Math.abs(p - 0.5) <= TOSS_UP;
 function gameRow(g, i, winnerHome, mark) {
   const hw = winnerHome;
   const pW = hw ? g.pHome : 1 - g.pHome;
   const locked = locks[i] !== undefined;
-  const tag = locked ? `<span class="tag lock">Your pick</span>` : pW < 0.5 ? `<span class="tag ups">Upset · ${pct(pW, 0)}</span>` : `<span class="tag fav">${pct(pW, 0)}</span>`;
+  const tag = locked ? `<span class="tag lock">Your pick</span>`
+    : isTossUp(pW) ? `<span class="tag toss" title="ESPN has this game within 45-55%">Toss-up · ${pct(pW, 0)}</span>`
+    : pW < 0.5 ? `<span class="tag ups">Upset · ${pct(pW, 0)}</span>` : `<span class="tag fav">${pct(pW, 0)}</span>`;
   return `<div class="game${mark ? " mine" : ""}">
     <div class="side away ${hw ? "l" : "w"}">${logo(g.a)}<span>${esc(T[g.a].short)}</span>${hw ? "" : `<span class="wb" title="Wins in this path">W</span>`}</div>
     <span class="at">at</span>
@@ -438,7 +444,14 @@ function renderTeam() {
       : `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + 15000).toLocaleString("en-US")} simulated finishes${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. A very unlikely path may still exist; simulation can't prove it doesn't.</p></header></div>`;
   } else {
     const m = A.path.mask;
-    const upsets = P.filter((g, k) => locks[k] === undefined && (((m >>> k) & 1) ? g.pHome : 1 - g.pHome) < 0.5).length;
+    const pathOdds = P.map((g, k) => (locks[k] !== undefined ? null : ((m >>> k) & 1) ? g.pHome : 1 - g.pHome));
+    const upsets = pathOdds.filter((p) => p !== null && p < 0.5 - TOSS_UP).length;
+    const tossUps = pathOdds.filter((p) => p !== null && p < 0.5 && isTossUp(p)).length; // toss-ups going to the slight underdog
+    const plural = (n, word) => `${n === 1 ? "one" : n} ${word}${n === 1 ? "" : "s"}`;
+    const needs = upsets === 0 && tossUps === 0 ? "It needs no upsets: every favorite wins."
+      : upsets === 0 ? `It needs no real upsets, but ${plural(tossUps, "toss-up")} ${tossUps === 1 ? "has" : "have"} to go to the slight underdog.`
+      : tossUps === 0 ? `It needs ${plural(upsets, "upset")}.`
+      : `It needs ${plural(upsets, "upset")}, plus ${plural(tossUps, "toss-up")} going to the slight underdog.`;
     const weeks = [...new Set(P.map((g) => g.week))];
     const isKey = (g, k) => A.imp.hits < 30 || g.h === i || g.a === i || locks[k] !== undefined || matters(A.imp.games[k]);
     const weekBlocks = (key) => weeks.map((w) => {
@@ -453,7 +466,7 @@ function renderTeam() {
       <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
-      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. It needs ${upsets === 0 ? "no upsets: every favorite wins" : upsets + " upset" + (upsets > 1 ? "s" : "")}. Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
+      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
       <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
       ${body}
       ${explainHTML(i, A.ex)}
@@ -546,7 +559,7 @@ window.addEventListener("hashchange", () => {
   const lastDone = DATA.games.filter((g) => g.completed && g.conf).map((g) => g.date).sort().pop();
   $("eyebrow").textContent = `Big 12 football · ${DATA.season} season`;
   const through = new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" });
-  $("lede").textContent = `Results through ${through}, ${P.length} games left. Pick a team to see its likeliest way into the title game and who to root for.`;
+  $("lede").textContent = `Results through ${through} with ${P.length} ${P.length === 1 ? "game" : "games"} left. Pick a team to see its likeliest way into the title game and who to root for.`;
   $("methodText").textContent = EX
     ? `With ${P.length} games left there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official Big 12 tiebreakers, so the odds here are exact for those inputs.`
     : `Each of the ${P.length} remaining games is played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, and every simulated finish is sorted by the official Big 12 tiebreakers. Simulated odds are typically within half a point of exact.`;
