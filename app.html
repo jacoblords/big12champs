@@ -210,6 +210,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
           <li><b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step a, using the two-team steps once only two remain, to find #2.</li>
           <li><b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step b. Losing to everyone does not knock a team out.</li>
           <li><b>Title game:</b> not counted in conference records or in the 12-game win total.</li>
+          <li><b>Only two teams get ranked:</b> the tiebreakers pick the two title-game teams and stop there. In the standings on this page, "T3" means teams still tied at that spot.</li>
         </ul>
       </div>
       <div class="panel">
@@ -367,14 +368,13 @@ function explainHTML(i, ex) {
   // Within a group tied on record, the seeds the tiebreakers picked go first, in seed order.
   // The tiebreakers only decide the two title-game spots, so the others stay tied ("T3").
   const rows = [];
-  let place = 1, sharedPlace = false;
+  let place = 1;
   for (const g of ex.groups) {
     const seeded = [s1, s2].filter((s) => g.includes(s));
     const rest = g.filter((t) => t !== s1 && t !== s2);
     for (const t of seeded) rows.push({ t, label: t === s1 ? "#1" : "#2" });
     const restPlace = place + seeded.length;
     for (const t of rest) rows.push({ t, label: (rest.length > 1 ? "T" : "") + restPlace });
-    if (rest.length > 1) sharedPlace = true;
     place += g.length;
   }
   const shown = rows.filter((r, k) => k < 7 || r.t === i);
@@ -390,7 +390,6 @@ function explainHTML(i, ex) {
     why.push(`<b>${lbl}</b> (${esc(tied)}) at ${record(st, tr.tied[0])}: <b>${esc(T[tr.winner].abbr)}</b> wins on step ${tr.step}, ${STEP_NAME[tr.step]}. <span class="muted">${esc(tr.detail || "")}</span>`);
   }
   if (top.length === 2 && ex.trace.length && ex.trace[0].tied.length === 2) why.push("Both teams tied for first make the title game; the tiebreak only sets who is #1.");
-  if (sharedPlace && shown.some((r) => r.label.startsWith("T"))) why.push(`<span class="muted">T marks teams still tied. The tiebreakers only pick the two title-game teams, so they don't rank the rest.</span>`);
   return `<div class="ends"><h3>How the standings end</h3><div class="stand">${stand}</div><ul class="why">${why.map((w) => `<li>${w}</li>`).join("")}</ul></div>`;
 }
 
