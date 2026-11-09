@@ -49,6 +49,26 @@ test("loads data.json, renders every team in exact mode", async () => {
   }
 });
 
+test("standings list: seeds sort to the top of their tied group, the rest show as tied", async () => {
+  let sawTie = false;
+  for (const t of data.teams) {
+    const { els } = render(data, "#" + t.abbr.toLowerCase());
+    await settle();
+    const rows = [...els.team.innerHTML.matchAll(/<span class="seed">([^<]*)<\/span><span[^>]*>[^<]*<\/span><span>(\d+-\d+)<\/span>/g)]
+      .map((m) => ({ label: m[1], rec: m[2] }));
+    if (!rows.length) continue; // eliminated: no path
+    assert.equal(rows[0].label, "#1", `${t.abbr}: first row is the #1 seed`);
+    rows.forEach((r, k) => {
+      const prev = rows[k - 1];
+      if (prev && prev.rec === r.rec && r.label.startsWith("#")) {
+        assert.ok(prev.label.startsWith("#"), `${t.abbr}: ${r.label} listed below unseeded ${prev.label} at ${r.rec}`);
+      }
+      if (r.label.startsWith("T")) sawTie = true;
+    });
+  }
+  assert.ok(sawTie, "fixture should include a path with teams left tied");
+});
+
 test("with no team in the link, it opens on the conference leader", async () => {
   // fixture after week 11 by favorites: Utah is 7-0
   const { els } = render(data, "");
