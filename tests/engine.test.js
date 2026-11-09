@@ -1,0 +1,177 @@
+// Tiebreaker engine tests: real seasons end to end, plus one hand-built standings table per
+// rule and corner case in the Big 12 policy. Run: node --test tests/
+"use strict";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const B = require("../engine.js");
+
+const fixture = (name) => require(`./fixtures/${name}`);
+const abbr = (ctx, i) => ctx.teams[i].abbr;
+const noCoin = () => { throw new Error("coin toss should not be reached"); };
+
+// Standings built directly: records, head-to-head results, and the step d-f inputs.
+// Teams are 0..n-1, named by letter. Records are set explicitly, so a team can have
+// games against teams outside the test (which is how real ties look).
+function standingsTable(n, { records, beat = [], sos = {}, total = {}, fpi = {} }) {
+  const H2H = new Int8Array(n * n);
+  for (const [w, l] of beat) { H2H[w * n + l] = 1; H2H[l * n + w] = -1; }
+  const CW = new Int16Array(n), CL = new Int16Array(n);
+  records.forEach(([w, l], t) => { CW[t] = w; CL[t] = l; });
+  const sosW = new Int32Array(n), sosG = new Int32Array(n);
+  for (let t = 0; t < n; t++) { const [w, g] = sos[t] || [40, 81]; sosW[t] = w; sosG[t] = g; }
+  const tot = new Int16Array(n);
+  for (let t = 0; t < n; t++) tot[t] = total[t] ?? 8;
+  const f = Array.from({ length: n }, (_, t) => fpi[t] ?? 0);
+  return { N: n, H2H, CW, CL, total: tot, sosW, sosG, fpi: f };
+}
+const L = "ABCDEFGHIJKLMNOP".split("");
+function seeds(st, rng = noCoin) {
+  const trace = [];
+  const s = B.titleGame(st, rng, trace, L);
+  return { seeds: s.map((i) => L[i]), steps: trace.map((t) => `${t.tied.map((i) => L[i]).join("")}>${L[t.winner]}:${t.step}`) };
+}
+
+test("2024 final standings: ASU #1, Iowa State #2 out of a four-way tie at 7-2", () => {
+  const ctx = B.build(fixture("final-2024.json"));
+  assert.equal(ctx.pending.length, 0);
+  const ex = B.explain(ctx, 0);
+  assert.deepEqual(ex.seeds.map((i) => abbr(ctx, i)), ["ASU", "ISU"]);
+  // ASU seeded on common opponents; the other three restart and Iowa State wins on strength of schedule
+  assert.deepEqual(ex.trace.map((t) => [t.tied.length, abbr(ctx, t.winner), t.step]), [[4, "ASU", "b"], [3, "ISU", "d"]]);
+});
+
+test("2025 final standings: Texas Tech #1, BYU #2 (tied at 8-1, Texas Tech won head-to-head)", () => {
+  const ctx = B.build(fixture("final-2025.json"));
+  const ex = B.explain(ctx, 0);
+  assert.deepEqual(ex.seeds.map((i) => abbr(ctx, i)), ["TTU", "BYU"]);
+  assert.equal(ex.trace[0].step, "a");
+});
+
+test("title game is not counted: no team has more than 9 conference games", () => {
+  for (const f of ["final-2024.json", "final-2025.json", "season-2026-11-09.json"]) {
+    const ctx = B.build(fixture(f));
+    const st = B.standings(ctx, new Uint8Array(ctx.pending.length));
+    for (let t = 0; t < ctx.N; t++) assert.ok(st.CW[t] + st.CL[t] <= 9, `${f} ${abbr(ctx, t)}`);
+  }
+});
+
+test("clear #1 and clear #2: no tiebreaker", () => {
+  const r = seeds(standingsTable(4, { records: [[8, 1], [7, 2], [6, 3], [5, 4]] }));
+  assert.deepEqual(r, { seeds: ["A", "B"], steps: [] });
+});
+
+test("two tied for first who played: both go, head-to-head winner is #1", () => {
+  const r = seeds(standingsTable(3, { records: [[7, 2], [7, 2], [6, 3]], beat: [[1, 0]] }));
+  assert.deepEqual(r.seeds, ["B", "A"]);
+  assert.deepEqual(r.steps, ["AB>B:a"]);
+});
+
+test("two tied for first who did not play: both go, two-team steps set #1", () => {
+  // common opponent C: A beat it, B lost to it
+  const r = seeds(standingsTable(3, { records: [[7, 2], [7, 2], [6, 3]], beat: [[0, 2], [2, 1]] }));
+  assert.deepEqual(r.seeds, ["A", "B"]);
+  assert.deepEqual(r.steps, ["AB>A:b"]);
+});
+
+test("clear #1, two tied for second who did not play: common opponents decide #2", () => {
+  const r = seeds(standingsTable(5, { records: [[8, 1], [7, 2], [7, 2], [5, 4], [4, 5]], beat: [[1, 3], [3, 2], [1, 4], [2, 4]] }));
+  // common opponents of B and C: D and E. B 2-0, C 1-1.
+  assert.deepEqual(r.seeds, ["A", "B"]);
+  assert.deepEqual(r.steps, ["BC>B:b"]);
+});
+
+test("three-way tie, all played: best record among them is #1, the other two revert to two-team rules", () => {
+  // A 2-0 vs the group; B beat C
+  const r = seeds(standingsTable(3, { records: [[7, 2], [7, 2], [7, 2]], beat: [[0, 1], [0, 2], [1, 2]] }));
+  assert.deepEqual(r.seeds, ["A", "B"]);
+  assert.deepEqual(r.steps, ["ABC>A:a", "BC>B:a"]);
+});
+
+test("three-way tie, not all played: a team that beat every other tied team is seeded", () => {
+  // C beat A and B; A and B never played
+  const r = seeds(standingsTable(3, { records: [[7, 2], [7, 2], [7, 2]], beat: [[2, 0], [2, 1]], fpi: { 0: 1 } }));
+  assert.deepEqual(r.seeds, ["C", "A"]);
+  assert.equal(r.steps[0], "ABC>C:a");
+});
+
+test("three-way tie, not all played, nobody swept: losing to everyone does not eliminate a team", () => {
+  // A beat B; C did not play A or B. Nobody beat all others -> step b. C has the best
+  // record vs common opponents D,E and gets #1 even though A has a head-to-head win.
+  const r = seeds(standingsTable(5, {
+    records: [[7, 2], [7, 2], [7, 2], [5, 4], [5, 4]],
+    beat: [[0, 1], [0, 3], [4, 0], [1, 3], [4, 1], [2, 3], [2, 4]],
+  }));
+  assert.equal(r.seeds[0], "C");
+  assert.equal(r.steps[0], "ABC>C:b");
+});
+
+test("after a team is seeded, the rest restart at step a", () => {
+  // Four-way tie, nobody swept. A seeded on common opponents (b). B, C, D then restart:
+  // all three played each other and B went 2-0, so B is #2 on step a.
+  const st = standingsTable(6, {
+    records: [[7, 2], [7, 2], [7, 2], [7, 2], [4, 5], [4, 5]],
+    beat: [[1, 2], [1, 3], [2, 3], [0, 4], [0, 5], [4, 1], [5, 1], [2, 4], [5, 2], [3, 4], [5, 3]],
+  });
+  const r = seeds(st);
+  assert.deepEqual(r.seeds, ["A", "B"]);
+  assert.deepEqual(r.steps, ["ABCD>A:b", "BCD>B:a"]);
+});
+
+test("standings walk: tied group counts collectively, before its own tiebreak", () => {
+  // B and C tie for second, never played, and share no common opponent. Neither played A,
+  // so the walk skips A. Next are D and E, tied at 6-3: B went 1-0 against that group
+  // (beat D), C went 0-1 (lost to E). B wins at step c.
+  const r = seeds(standingsTable(5, {
+    records: [[9, 0], [7, 2], [7, 2], [6, 3], [6, 3]],
+    beat: [[1, 3], [4, 2]],
+  }));
+  assert.deepEqual(r.seeds, ["A", "B"]);
+  assert.deepEqual(r.steps, ["BC>B:c"]);
+});
+
+test("strength of schedule, then total wins, then rating, then coin toss", () => {
+  const base = { records: [[9, 0], [7, 2], [7, 2]] };
+  assert.deepEqual(seeds(standingsTable(3, { ...base, sos: { 1: [40, 81], 2: [42, 81] } })).steps, ["BC>C:d"]);
+  assert.deepEqual(seeds(standingsTable(3, { ...base, total: { 1: 10, 2: 9 } })).steps, ["BC>B:e"]);
+  assert.deepEqual(seeds(standingsTable(3, { ...base, fpi: { 1: 3.1, 2: 7.4 } })).steps, ["BC>C:f"]);
+  const coin = seeds(standingsTable(3, base), () => 0.99);
+  assert.deepEqual(coin.steps, ["BC>C:g"]);
+});
+
+test("total wins counts at most one FCS win", () => {
+  // Give UCF a second FCS win (it beat Bethune-Cookman); only one may count.
+  const data = JSON.parse(JSON.stringify(fixture("season-2026-11-09.json")));
+  const UCF = "2116";
+  const count = (d) => {
+    const ctx = B.build(d);
+    const allHome = new Uint8Array(ctx.pending.length).fill(1);
+    return B.standings(ctx, allHome).total[ctx.idx[UCF]];
+  };
+  const before = count(data);
+  const fcsWin = data.games.find((g) => g.completed && g.winner === UCF && !(g.home === UCF ? g.awayFBS : g.homeFBS));
+  assert.ok(fcsWin, "fixture has an FCS win for UCF");
+  data.games.push({ ...fcsWin, id: "test-fcs-2", week: 0, date: "2026-08-20T00:00Z" });
+  assert.equal(count(data), before, "second FCS win is not counted");
+  data.games.push({ ...fcsWin, id: "test-fbs", week: 0, date: "2026-08-21T00:00Z", awayFBS: true, homeFBS: true });
+  assert.equal(count(data), before + 1, "an FBS win is counted");
+});
+
+test("canceled games are ignored", () => {
+  const data = JSON.parse(JSON.stringify(fixture("final-2024.json")));
+  const g = data.games.find((x) => x.conf && x.completed);
+  const before = B.standings(B.build(data), new Uint8Array(0));
+  Object.assign(g, { winner: null, canceled: true });
+  const ctx = B.build(data);
+  const after = B.standings(ctx, new Uint8Array(0));
+  const h = ctx.idx[g.home], a = ctx.idx[g.away];
+  assert.equal(after.CW[h] + after.CL[h], before.CW[h] + before.CL[h] - 1);
+  assert.equal(after.CW[a] + after.CL[a], before.CW[a] + before.CL[a] - 1);
+});
+
+test("simulation is reproducible and every simulated finish seeds two different teams", () => {
+  const ctx = B.build(fixture("season-2026-11-09.json"));
+  const a = B.simulate(ctx, 2000, null, 5), b = B.simulate(ctx, 2000, null, 5);
+  assert.deepEqual(Array.from(a.appear), Array.from(b.appear));
+  for (let s = 0; s < a.nSims; s++) assert.notEqual(a.s1[s], a.s2[s]);
+  assert.equal(a.appear.reduce((x, y) => x + y, 0), 2 * a.nSims);
+});

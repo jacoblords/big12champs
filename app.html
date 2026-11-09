@@ -1,0 +1,564 @@
+<title>Big 12 Title Paths</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: press-box sheet. Team picker strip on top, selected team's path + rooting guide side by side, race table and rulebook below. */
+:root {
+  --bg: #f3f4f7;
+  --surface: #ffffff;
+  --sunk: #e9ebf0;
+  --ink: #141820;
+  --muted: #5d6576;
+  --line: #d9dde5;
+  --accent: #1c48c9;
+  --accent-soft: #e3e9fb;
+  --win: #11795a;
+  --win-soft: #dcf1e9;
+  --loss: #b8322a;
+  --loss-soft: #f8e1df;
+  --warn: #9a6a12;
+  --warn-soft: #f6ecd6;
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
+    --accent: #85a6ff; --accent-soft: #1d2846; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
+    --warn: #e2b553; --warn-soft: #362a12; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
+  --accent: #85a6ff; --accent-soft: #1d2846; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
+  --warn: #e2b553; --warn-soft: #362a12; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.7rem; text-transform: uppercase; }
+h3 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.eyebrow { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.85rem; color: var(--muted); }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* header */
+.top { padding-block: 28px 18px; display: grid; gap: 8px; }
+.top h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); text-transform: uppercase; }
+.top p { margin: 0; max-width: 70ch; color: var(--muted); }
+.top .caveat { font-size: 0.85rem; }
+
+/* picker */
+.picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; padding-block: 8px 20px; }
+.pick { display: grid; justify-items: center; gap: 2px; padding: 10px 6px 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; transition: border-color .15s, transform .15s; }
+.pick:hover { border-color: var(--muted); }
+.pick[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--team, var(--accent)); }
+.pick img { width: 34px; height: 34px; object-fit: contain; }
+.pick .ab { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; }
+.pick .pc { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pick.out { opacity: 0.55; }
+
+.locks { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 16px; background: var(--warn-soft); color: var(--ink); border-radius: 10px; }
+.locks button { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; cursor: pointer; }
+
+/* team hero */
+.hero { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; padding-block: 18px; border-top: 3px solid var(--ink); }
+.hero img { width: 72px; height: 72px; object-fit: contain; }
+.hero h2 { font-size: clamp(2rem, 5vw, 3rem); }
+.hero .rec { color: var(--muted); }
+.big { text-align: right; }
+.big .pct { font-family: var(--display); font-weight: 700; font-size: clamp(2.8rem, 8vw, 4.4rem); line-height: 0.9; font-variant-numeric: tabular-nums; }
+.big .lbl { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 18px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; background: var(--sunk); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.chip.good { background: var(--win-soft); color: var(--win); font-weight: 600; }
+.chip.bad { background: var(--loss-soft); color: var(--loss); font-weight: 600; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.panel > header { display: grid; gap: 4px; }
+.panel > header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+/* path */
+.week { display: grid; gap: 6px; }
+.week h3 { font-size: 0.85rem; color: var(--muted); }
+.game { display: grid; grid-template-columns: 1fr auto 1fr auto; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(--sunk); font-size: 0.92rem; }
+.game .side { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.game .side.home { justify-content: flex-end; }
+.game img { width: 20px; height: 20px; object-fit: contain; flex: none; }
+.game .w { font-weight: 600; }
+.game .l { color: var(--muted); }
+.game .l img { opacity: 0.6; }
+details.minor { display: grid; gap: 10px; }
+details.minor > summary { cursor: pointer; padding: 8px 10px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 0.88rem; }
+details.minor > summary:hover { color: var(--ink); border-color: var(--muted); }
+details.minor[open] > summary { margin-bottom: 8px; }
+details.minor .note { margin: 0 0 8px; }
+details.minor .week + .week { margin-top: 10px; }
+.wb { flex: none; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 4px; background: var(--win); color: var(--surface); font-family: var(--display); font-weight: 700; font-size: 0.8rem; line-height: 1; }
+.game .at { color: var(--muted); font-size: 0.8rem; }
+.game.mine { box-shadow: inset 3px 0 0 var(--accent); }
+.tag { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tag.fav { background: var(--surface); color: var(--muted); }
+.tag.ups { background: var(--warn-soft); color: var(--warn); }
+.tag.lock { background: var(--accent-soft); color: var(--accent); }
+
+.ends { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+.stand { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 2px 10px; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.stand .seed { font-family: var(--display); font-weight: 700; color: var(--accent); }
+.stand .me { font-weight: 600; }
+.why { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 0.9rem; }
+.why b { font-weight: 600; }
+
+/* rooting guide */
+.rg { display: grid; gap: 4px; }
+.rg-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 132px; gap: 10px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--line); }
+.rg-row.flat { opacity: 0.5; }
+.rg-row .m { display: grid; gap: 2px; min-width: 0; }
+.rg-row .m .t { font-weight: 600; font-size: 0.92rem; }
+.rg-row .m .s { font-size: 0.78rem; color: var(--muted); }
+.root { display: grid; gap: 3px; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.root .who { font-weight: 600; }
+.bar { position: relative; height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
+.bar i { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; }
+.seg { display: grid; grid-template-columns: 1fr 34px 1fr; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; font-size: 0.78rem; }
+.seg button { border: 0; background: transparent; padding: 5px 2px; cursor: pointer; font-weight: 600; font-family: var(--display); letter-spacing: 0.04em; font-size: 0.85rem; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button.auto[aria-pressed="true"] { background: var(--sunk); color: var(--ink); }
+
+/* race */
+section.block { padding-block: 34px 8px; display: grid; gap: 14px; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 0.92rem; }
+th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; color: var(--muted); text-align: right; padding: 6px 10px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:nth-child(2), td:nth-child(2) { text-align: left; }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: var(--sunk); }
+td .tm { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+td img { width: 22px; height: 22px; object-fit: contain; }
+.pbar { display: inline-block; width: 90px; height: 8px; background: var(--sunk); border-radius: 4px; vertical-align: middle; margin-left: 8px; overflow: hidden; }
+.pbar i { display: block; height: 100%; background: var(--accent); }
+
+/* rules */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.rules ol { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; }
+.rules ol li::marker { font-family: var(--display); font-weight: 700; color: var(--accent); }
+.rules p, .rules ul { margin: 0; }
+.rules ul { padding-left: 1.1em; display: grid; gap: 6px; }
+.note { font-size: 0.88rem; color: var(--muted); max-width: 75ch; }
+footer { padding-block: 30px 40px; font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+footer code { font-size: 0.8rem; word-break: break-all; }
+
+@media (max-width: 900px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) {
+  .hero { grid-template-columns: auto 1fr; }
+  .big { grid-column: 1 / -1; text-align: left; }
+  .rg-row { grid-template-columns: minmax(0, 1fr) 120px; }
+  .rg-row .root { grid-column: 1 / -1; grid-row: 2; }
+  .game { grid-template-columns: 1fr auto 1fr; }
+  .game .tag { grid-column: 1 / -1; justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow" id="eyebrow">Big 12 football</div>
+    <h1>Big 12 Title Paths</h1>
+    <p id="lede"></p>
+    <p id="caveat" class="caveat"></p>
+  </header>
+  <nav class="picker" id="picker" aria-label="Choose a team"></nav>
+  <div class="locks" id="locks" hidden></div>
+  <main id="team"></main>
+
+  <section class="block" id="race">
+    <h2>The race</h2>
+    <p class="note">Every team's odds of reaching the title game, from the same calculation. Pick a row to see that team's path.</p>
+    <div class="scroll"><table id="raceTable"></table></div>
+  </section>
+
+  <section class="block" id="rules">
+    <h2>Tiebreaker rules</h2>
+    <p class="note">The goal is to seed the two teams with the best conference winning percentage. There are no divisions and not everyone plays everyone, so ties are settled by the steps below. The procedure is the same for two teams and for three or more; what differs is how head-to-head works and what happens after a team is seeded.</p>
+    <div class="rules">
+      <div class="panel">
+        <h3>The seven steps</h3>
+        <ol type="a">
+          <li><b>Head-to-head.</b> Two teams: the winner of their game. Three or more: winning percentage in games among the tied teams.</li>
+          <li><b>Common opponents.</b> Winning percentage against conference opponents that every tied team played.</li>
+          <li><b>Walk the standings.</b> Record against the highest-placed common opponent, then the next, and so on. A group of tied teams in the standings counts as one opponent, using records before that group's own tiebreak.</li>
+          <li><b>Strength of conference schedule.</b> Combined conference winning percentage of each team's conference opponents.</li>
+          <li><b>Total wins</b> in the 12-game regular season. Only one win over an FCS team counts, and games exempt from the NCAA's game limit are left out.</li>
+          <li><b>SportSource Analytics Team Rating Score</b> after the last regular-season weekend.</li>
+          <li><b>Coin toss.</b></li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h3>Corner cases</h3>
+        <ul>
+          <li><b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.</li>
+          <li><b>Clear #1, tie for second:</b> the tied teams run the steps and the winner is the #2 seed.</li>
+          <li><b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step a, using the two-team steps once only two remain, to find #2.</li>
+          <li><b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step b. Losing to everyone does not knock a team out.</li>
+          <li><b>Title game:</b> not counted in conference records or in the 12-game win total.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>How this site reads the gray areas</h3>
+        <ul>
+          <li>A step settles the tie only when one team is alone at the top. Teams are never dropped for trailing at a step.</li>
+          <li>Step b leaves the tied teams themselves out of the common-opponent set.</li>
+          <li>Step c uses a standings group once every tied team has played at least one member of it, and compares win percentage against the group as a whole. Groups that some tied team never played are skipped.</li>
+          <li>Step f uses ESPN's current FPI because the SportSource rating is not public. This step almost never decides anything.</li>
+          <li>Run against final results, the engine reproduces 2024 (ASU #1; Iowa State #2 out of a four-way tie at 7-2, via strength of schedule) and 2025 (Texas Tech, then BYU).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>/*__ENGINE__*/</script>
+<script>
+"use strict";
+// Embedded for the self-contained build; null on the hosted site, which loads data.json.
+const EMBEDDED = /*__DATA__*/null;
+function app(DATA) {
+const ctx = B12.build(DATA);
+const T = ctx.teams;
+const P = ctx.pending;
+const N_MAIN = 40000, N_EXPLORE = 30000;
+let locks = new Array(P.length).fill(undefined);
+let main = null, cache = new Map(), sel = null;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const safeColor = (c) => (/^#[0-9a-fA-F]{3,8}$/.test(c || "") ? c : "#666666");
+const logo = (i, cls) => /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(T[i].logo || "") ? `<img src="${T[i].logo}" alt="" ${cls ? `class="${cls}"` : ""}>` : "";
+function pct(p, digits) {
+  if (p == null) return "–";
+  if (p <= 0) return "0%";
+  if (p >= 1) return "100%";
+  if (p < 0.001) return "&lt;0.1%";
+  if (p > 0.999) return ">99.9%";
+  return (p * 100).toFixed(digits == null ? (p < 0.1 || p > 0.9 ? 1 : 0) : digits) + "%";
+}
+// A game "matters" when the two results put the team's odds at least 0.3 apart in log-odds
+// (about 1.5 points for a 93% team, a 35% relative change for a long shot).
+const logit = (p) => { p = Math.min(Math.max(p, 1e-12), 1 - 1e-12); return Math.log(p / (1 - p)); };
+const matters = (c) => c.pH != null && c.pA != null && Math.abs(logit(c.pH) - logit(c.pA)) >= 0.3;
+const openState = {};
+document.addEventListener("toggle", (e) => { if (e.target.id) openState[e.target.id] = e.target.open; }, true);
+function oneIn(p) {
+  const n = 1 / p;
+  if (n < 10) return "1 in " + n.toFixed(1);
+  return "1 in " + Math.round(n).toLocaleString("en-US");
+}
+const record = (st, i) => `${st.CW[i]}-${st.CL[i]}`;
+const curW = ctx.fixedConfW, curL = ctx.fixedConfL;
+const overall = (() => {
+  const w = new Array(T.length).fill(0), l = new Array(T.length).fill(0);
+  for (const g of DATA.games) if (g.completed && g.winner) {
+    const h = ctx.idx[g.home], a = ctx.idx[g.away];
+    if (h !== undefined) (g.winner === g.home ? w : l)[h]++;
+    if (a !== undefined) (g.winner === g.away ? w : l)[a]++;
+  }
+  return T.map((_, i) => `${w[i]}-${l[i]}`);
+})();
+const remaining = T.map((_, i) => P.filter((g) => g.h === i || g.a === i).length);
+
+// Exact odds: exact.js enumerates every possible finish when the data is built. They apply
+// whenever no what-ifs are set; what-ifs fall back to simulation.
+const EX = (() => {
+  const e = DATA.exact;
+  if (!e || e.skipped || !e.teams || !e.gameIds || e.gameIds.length !== P.length) return null;
+  if (e.gameIds.some((id, k) => id !== P[k].id) || e.teams.some((t, k) => t.id !== T[k].id)) return null;
+  return e;
+})();
+const exactMode = () => EX !== null && locks.every((l) => l === undefined);
+function odds(i) {
+  return exactMode() ? { p: EX.teams[i].p, first: EX.teams[i].first } : { p: main.appear[i] / main.nSims, first: main.first[i] / main.nSims };
+}
+
+function lockKey() { return locks.map((l) => (l === undefined ? "." : l)).join(""); }
+
+function runMain() {
+  main = exactMode() ? null : B12.simulate(ctx, N_MAIN, locks, 1);
+  cache = new Map();
+}
+
+function teamAnalysis(i) {
+  const key = i + ":" + lockKey();
+  if (cache.has(key)) return cache.get(key);
+  if (exactMode()) {
+    const e = EX.teams[i];
+    const path = e.best ? { mask: e.best.mask >>> 0, prob: e.best.prob } : null;
+    const res = {
+      exact: true, p: e.p, first: e.first, pWinOut: e.pWinOut, clinched: e.clinched, eliminated: e.eliminated,
+      winOutGuaranteed: e.winOutGuaranteed, hasOwnGames: remaining[i] > 0,
+      imp: { p: e.p, hits: Infinity, games: e.games }, path, ex: path ? B12.explain(ctx, path.mask) : null,
+    };
+    cache.set(key, res);
+    return res;
+  }
+  const mi = B12.impact(ctx, main, i);
+  let imp = mi, explore = null, approx = false;
+  if (mi.hits < 1500) {
+    explore = B12.simulate(ctx, N_EXPLORE, locks, 2, { uniform: true });
+    const ei = B12.impact(ctx, explore, i);
+    if (ei.hits > mi.hits) { imp = ei; approx = true; }
+  }
+  const fw = B12.simulate(ctx, 15000, locks, 3, { forceTeam: i });
+  const pWinOut = fw.appear[i] / fw.nSims;
+  let fwu = null;
+  if (mi.hits < 1500) fwu = B12.simulate(ctx, N_EXPLORE, locks, 4, { uniform: true, forceTeam: i });
+  const path = B12.bestPath(ctx, [main, explore, fw, fwu], i, locks);
+  const ex = path ? B12.explain(ctx, path.mask) : null;
+  const pMain = mi.p;
+  const p = mi.hits >= 50 ? pMain : imp.p;
+  const res = { p, approx: mi.hits < 50 && approx, first: main.first[i] / main.nSims, pWinOut, hasOwnGames: remaining[i] > 0, imp, path, ex };
+  cache.set(key, res);
+  return res;
+}
+
+function renderPicker() {
+  const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
+  $("picker").innerHTML = order.map((i) => {
+    const p = odds(i).p;
+    return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
+      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="pc">${pct(p)}</span></button>`;
+  }).join("");
+}
+
+function renderLocks() {
+  const n = locks.filter((l) => l !== undefined).length;
+  const el = $("locks");
+  el.hidden = n === 0;
+  el.innerHTML = n ? `<span><b>${n} result${n > 1 ? "s" : ""} set by you.</b> All odds below assume ${n > 1 ? "they happen" : "it happens"}, and are simulated (${N_MAIN.toLocaleString("en-US")} runs, typically within half a point) rather than exact.</span><button id="clearLocks">Clear what-ifs</button>` : "";
+}
+
+function gameRow(g, i, winnerHome, mark) {
+  const hw = winnerHome;
+  const pW = hw ? g.pHome : 1 - g.pHome;
+  const locked = locks[i] !== undefined;
+  const tag = locked ? `<span class="tag lock">Your pick</span>` : pW < 0.5 ? `<span class="tag ups">Upset · ${pct(pW, 0)}</span>` : `<span class="tag fav">${pct(pW, 0)}</span>`;
+  return `<div class="game${mark ? " mine" : ""}">
+    <div class="side away ${hw ? "l" : "w"}">${logo(g.a)}<span>${esc(T[g.a].short)}</span>${hw ? "" : `<span class="wb" title="Wins in this path">W</span>`}</div>
+    <span class="at">at</span>
+    <div class="side home ${hw ? "w" : "l"}">${hw ? `<span class="wb" title="Wins in this path">W</span>` : ""}<span>${esc(T[g.h].short)}</span>${logo(g.h)}</div>
+    ${tag}</div>`;
+}
+
+const STEP_NAME = { a: "head-to-head", b: "record vs. common opponents", c: "walking the standings", d: "strength of conference schedule", e: "total wins", f: "team rating (FPI stand-in)", g: "coin toss" };
+
+function explainHTML(i, ex) {
+  const st = ex.st, [s1, s2] = ex.seeds;
+  const rows = [];
+  let rank = 1;
+  for (const g of ex.groups) {
+    for (const t of g) {
+      if (rows.length < 7 || t === i) rows.push({ t, rank });
+    }
+    rank += g.length;
+    if (rows.length >= 7 && rows.some((r) => r.t === i)) break;
+  }
+  const stand = rows.map(({ t, rank }) => `<span class="seed">${t === s1 ? "#1" : t === s2 ? "#2" : rank}</span><span class="${t === i ? "me" : ""}">${esc(T[t].name)}</span><span>${record(st, t)}</span>`).join("");
+  const top = ex.groups[0];
+  const why = [];
+  if (!ex.trace.length) {
+    why.push(top.length === 1 && ex.groups[1].length === 1 ? "No ties at the top. The standings decide it." : "No tiebreaker needed.");
+  }
+  for (const tr of ex.trace) {
+    const tied = tr.tied.map((t) => T[t].abbr).join(", ");
+    const lbl = tr.tied.length === 2 ? "Two-way tie" : `${tr.tied.length}-way tie`;
+    why.push(`<b>${lbl}</b> (${esc(tied)}) at ${record(st, tr.tied[0])}: <b>${esc(T[tr.winner].abbr)}</b> wins on step ${tr.step}, ${STEP_NAME[tr.step]}. <span class="muted">${esc(tr.detail || "")}</span>`);
+  }
+  if (top.length === 2 && ex.trace.length && ex.trace[0].tied.length === 2) why.push("Both teams tied for first make the title game; the tiebreak only sets who is #1.");
+  return `<div class="ends"><h3>How the standings end</h3><div class="stand">${stand}</div><ul class="why">${why.map((w) => `<li>${w}</li>`).join("")}</ul></div>`;
+}
+
+function renderTeam() {
+  const i = sel, t = T[i];
+  const A = teamAnalysis(i);
+  const pIn = A.p;
+  const facts = [];
+  if (A.exact) {
+    // every claim here is proven over all possible finishes
+    if (A.clinched) facts.push(`<span class="chip good">Clinched a title-game spot</span>`);
+    else if (A.eliminated) facts.push(`<span class="chip bad">Eliminated</span>`);
+    else if (A.hasOwnGames && A.winOutGuaranteed) facts.push(`<span class="chip good">Win out and they're in</span>`);
+    else if (A.hasOwnGames && A.pWinOut != null) facts.push(`<span class="chip ${A.pWinOut > 0.5 ? "warn" : "bad"}">Even winning out: ${A.pWinOut > 0 && A.pWinOut < 0.001 ? oneIn(A.pWinOut) : pct(A.pWinOut)}</span>`);
+    if (pIn > 0 && pIn < 0.001) facts.push(`<span class="chip">Exact odds: ${oneIn(pIn)}</span>`);
+  } else {
+    // simulated: say so instead of claiming certainty
+    if (pIn >= 1) facts.push(`<span class="chip good">In the title game in every simulation</span>`);
+    else if (A.hasOwnGames && A.pWinOut >= 1) facts.push(`<span class="chip good">Win out: in every simulation</span>`);
+    else if (A.hasOwnGames && A.path) facts.push(`<span class="chip ${A.pWinOut > 0.5 ? "warn" : "bad"}">Even winning out: ${A.pWinOut === 0 ? "&lt;0.1%" : pct(A.pWinOut)}</span>`);
+    if (!A.path) facts.push(`<span class="chip bad">No path found in simulations</span>`);
+  }
+  facts.push(`<span class="chip">#1 seed: ${pct(A.first)}</span>`);
+  facts.push(`<span class="chip">${remaining[i]} game${remaining[i] === 1 ? "" : "s"} left</span>`);
+  if (A.approx) facts.push(`<span class="chip warn">Long shot: odds estimated with weighted sampling</span>`);
+
+  let pathHTML;
+  if (!A.path) {
+    pathHTML = A.exact
+      ? `<div class="panel"><header><h3>Eliminated</h3><p>None of the ${(2 ** P.length).toLocaleString("en-US")} possible combinations of the remaining results puts ${esc(t.short)} in the title game.</p></header></div>`
+      : `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + 15000).toLocaleString("en-US")} simulated finishes${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. A very unlikely path may still exist; simulation can't prove it doesn't.</p></header></div>`;
+  } else {
+    const m = A.path.mask;
+    const upsets = P.filter((g, k) => locks[k] === undefined && (((m >>> k) & 1) ? g.pHome : 1 - g.pHome) < 0.5).length;
+    const weeks = [...new Set(P.map((g) => g.week))];
+    const isKey = (g, k) => A.imp.hits < 30 || g.h === i || g.a === i || locks[k] !== undefined || matters(A.imp.games[k]);
+    const weekBlocks = (key) => weeks.map((w) => {
+      const rows = P.map((g, k) => [g, k]).filter(([g, k]) => g.week === w && isKey(g, k) === key)
+        .sort(([a], [b]) => (b.h === i || b.a === i) - (a.h === i || a.a === i))
+        .map(([g, k]) => gameRow(g, k, ((m >>> k) & 1) === 1, g.h === i || g.a === i)).join("");
+      return rows ? `<div class="week"><h3>Week ${w}</h3>${rows}</div>` : "";
+    }).join("");
+    const nMinor = P.filter((g, k) => !isKey(g, k)).length;
+    const body = weekBlocks(true) + (nMinor ? `<details class="minor" id="path-minor"${openState["path-minor"] ? " open" : ""}>
+      <summary>${nMinor} other game${nMinor > 1 ? "s" : ""} barely matter to ${esc(t.short)}</summary>
+      <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
+    pathHTML = `<div class="panel">
+      <header><h3>Most likely path</h3>
+      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. It needs ${upsets === 0 ? "no upsets: every favorite wins" : upsets + " upset" + (upsets > 1 ? "s" : "")}. Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
+      <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
+      ${body}
+      ${explainHTML(i, A.ex)}
+    </div>`;
+  }
+
+  // rooting guide
+  const rows = P.map((g, k) => ({ g, k, c: A.imp.games[k] }))
+    .map((r) => ({ ...r, swing: r.c.pH == null || r.c.pA == null ? 0 : Math.abs(r.c.pH - r.c.pA) }))
+    .sort((a, b) => (locks[a.k] !== undefined) - (locks[b.k] !== undefined) || b.swing - a.swing);
+  const rgRow = ({ g, k, c, swing }) => {
+    const own = g.h === i || g.a === i;
+    const locked = locks[k] !== undefined;
+    let root = "";
+    if (locked) root = `<span class="muted">Set by you: ${esc(T[locks[k] ? g.h : g.a].short)} wins</span>`;
+    else if (c.pH == null || c.pA == null) root = `<span class="muted">Not enough data</span>`;
+    else if (swing < 0.005 && !matters(c)) root = `<span class="muted">Doesn't matter</span>`;
+    else {
+      const homeBetter = c.pH > c.pA;
+      const who = homeBetter ? g.h : g.a;
+      const hi = Math.max(c.pH, c.pA), lo = Math.min(c.pH, c.pA);
+      // only claimed when proven over every finish
+      const must = A.exact && (homeBetter ? c.needH : c.needA) ? ` <span class="tag ups" title="No finish gets them in without this result">Must</span>` : "";
+      root = `<span><span class="who">${own ? "Win: " : "Root for "}${esc(T[who].short)}</span>${must}</span>
+        <span class="muted">${pct(hi)} if so · ${pct(lo)} if not</span>
+        <span class="bar"><i style="left:${lo * 100}%;width:${Math.max((hi - lo) * 100, 1)}%"></i></span>`;
+    }
+    const L = locks[k];
+    return `<div class="rg-row${!locked && swing < 0.005 && !matters(c) ? " flat" : ""}">
+      <div class="m"><span class="t">${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}${own ? " ·  their game" : ""}</span><span class="s">Week ${g.week} · ESPN: ${esc(T[g.h].abbr)} ${pct(g.pHome, 0)}</span></div>
+      <div class="root">${root}</div>
+      <div class="seg" role="group" aria-label="What if: ${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}">
+        <button data-k="${k}" data-v="0" aria-pressed="${L === 0}" title="${esc(T[g.a].short)} wins">${esc(T[g.a].abbr)}</button>
+        <button class="auto" data-k="${k}" data-v="" aria-pressed="${L === undefined}" title="Use ESPN odds">–</button>
+        <button data-k="${k}" data-v="1" aria-pressed="${L === 1}" title="${esc(T[g.h].short)} wins">${esc(T[g.h].abbr)}</button>
+      </div></div>`;
+  };
+  const keyRow = (r) => A.imp.hits < 30 || r.g.h === i || r.g.a === i || locks[r.k] !== undefined || matters(r.c);
+  const minorRows = rows.filter((r) => !keyRow(r));
+  const rg = rows.filter(keyRow).map(rgRow).join("") + (minorRows.length ? `<details class="minor" id="rg-minor"${openState["rg-minor"] ? " open" : ""}>
+    <summary>${minorRows.length} game${minorRows.length > 1 ? "s" : ""} that barely matter</summary>${minorRows.map(rgRow).join("")}</details>` : "");
+
+  $("team").innerHTML = `
+    <div class="hero" style="--team:${safeColor(t.color)}">
+      ${logo(i)}
+      <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} Big 12 · ${overall[i]} overall</div></div>
+      <div class="big"><div class="pct">${pIn === 0 && A.path ? "&lt;0.1%" : pct(pIn)}</div><div class="lbl">to reach the title game</div></div>
+    </div>
+    <div class="facts">${facts.join("")}</div>
+    <div class="cols">
+      ${pathHTML}
+      <div class="panel">
+        <header><h3>Who to root for</h3><p>The games that move ${esc(t.short)}'s odds, biggest first. Use the buttons to lock in a result and see what changes.</p></header>
+        <div class="rg">${rg}</div>
+      </div>
+    </div>`;
+}
+
+function renderRace() {
+  const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
+  $("raceTable").innerHTML = `<thead><tr><th>#</th><th>Team</th><th>Big 12</th><th>Overall</th><th>Left</th><th>#1 seed</th><th>Title game</th></tr></thead><tbody>` +
+    order.map((i, r) => {
+      const { p, first } = odds(i);
+      return `<tr data-t="${i}"><td>${r + 1}</td><td><span class="tm">${logo(i)}${esc(T[i].name)}</span></td><td>${curW[i]}-${curL[i]}</td><td>${overall[i]}</td><td>${remaining[i]}</td><td>${pct(first)}</td><td>${pct(p)}<span class="pbar"><i style="width:${p * 100}%"></i></span></td></tr>`;
+    }).join("") + "</tbody>";
+}
+
+function renderAll() {
+  renderPicker(); renderLocks(); renderTeam(); renderRace();
+}
+
+function select(i, push) {
+  sel = i;
+  if (push) { try { history.replaceState(null, "", "#" + T[i].abbr.toLowerCase()); } catch (e) { location.hash = T[i].abbr.toLowerCase(); } }
+  renderPicker(); renderTeam();
+}
+
+document.addEventListener("click", (e) => {
+  const pick = e.target.closest("[data-t]");
+  if (pick) { select(+pick.dataset.t, true); if (pick.tagName === "TR") $("team").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  const seg = e.target.closest(".seg button");
+  if (seg) {
+    const k = +seg.dataset.k, v = seg.dataset.v;
+    locks[k] = v === "" ? undefined : +v;
+    runMain(); renderAll();
+    return;
+  }
+  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); }
+});
+window.addEventListener("hashchange", () => {
+  const h = location.hash.slice(1).toLowerCase();
+  const i = T.findIndex((t) => t.abbr.toLowerCase() === h);
+  if (i >= 0 && i !== sel) select(i, false);
+});
+
+// boot
+(function () {
+  const fetched = new Date(DATA.fetchedAt);
+  const lastDone = DATA.games.filter((g) => g.completed && g.conf).map((g) => g.date).sort().pop();
+  $("eyebrow").textContent = `Big 12 football · ${DATA.season} season`;
+  const through = new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  $("lede").textContent = EX
+    ? `Results through ${through}. ${P.length} games left, so there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official Big 12 tiebreakers, so the odds here are exact for those inputs. Pick a team to see the likeliest way in and who to root for.`
+    : `Results through ${through}. ${P.length} games left, each played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, with every finish sorted by the official Big 12 tiebreakers. Pick a team to see the likeliest way in and who to root for.`;
+  $("caveat").textContent = "These odds are only as good as ESPN's game predictions, which update about once a day. They treat each game as independent; with this little season left, that moves them by about a point at most.";
+  const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  const meta = DATA.meta || {};
+  $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${meta.nextResultCheck ? ` The next result can't land before ${when(meta.nextResultCheck)} (kickoff + 3 hours); until then only ESPN's odds can move.` : ""} Times are in your time zone.</div>
+  <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=4&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
+  <div>Tiebreakers: <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf" target="_blank" rel="noopener">Big 12 Football Tiebreaking Procedures (official PDF)</a>. Not affiliated with the Big 12 or ESPN.</div>`;
+  runMain();
+  const h = location.hash.slice(1).toLowerCase();
+  let i = T.findIndex((t) => t.abbr.toLowerCase() === h);
+  if (i < 0) {
+    // open on the most contested team: closest to a coin flip
+    i = T.map((_, k) => k).sort((a, b) => Math.abs(odds(a).p - 0.5) - Math.abs(odds(b).p - 0.5))[0];
+  }
+  sel = i;
+  renderAll();
+})();
+}
+
+if (EMBEDDED) app(EMBEDDED);
+else fetch("data.json", { cache: "no-cache" })
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(app)
+  .catch((e) => { document.getElementById("lede").textContent = `Couldn't load the standings data (${e.message}). Reload the page to try again.`; });
+</script>
