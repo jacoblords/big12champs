@@ -25,8 +25,10 @@ results it needs, who to root for, and how the official tiebreakers settle the s
 
 ## Data and caching
 
-Visitors never call ESPN. A GitHub Action runs every 30 minutes, starts from the
-`data.json` currently published on Pages, and calls ESPN only for what can have changed:
+Visitors never call ESPN. A GitHub Action runs every 15 minutes Thursday through Sunday
+(UTC) and every 30 minutes Monday to Wednesday, at minutes offset from the hour. It starts
+from the `data.json` currently published on Pages and calls ESPN only for what can have
+changed. A game that isn't final yet is simply asked about again on the next run:
 
 | Data | When it is fetched | Calls |
 |---|---|---|
@@ -36,7 +38,10 @@ Visitors never call ESPN. A GitHub Action runs every 30 minutes, starts from the
 | Predictions | when ESPN's FPI run changes, or a game has none yet | 1 per unplayed game |
 | Teams, logos, calendar | once | ~34 |
 
-A cold start is about 75 calls. Most scheduled runs make none and deploy nothing.
+A cold start is about 75 calls. Most scheduled runs make none and deploy nothing. On a
+game day it's about one scoreboard call per run while games are finishing, and at most
+four Pages deploys an hour, well under GitHub's soft limit of 10. Public repos have
+unlimited Actions minutes.
 Requests run at most 4 at a time and back off on 429/5xx. ESPN's API is undocumented and
 public; it publishes no rate limits and sends `Cache-Control: max-age=1`, so caching is ours.
 
