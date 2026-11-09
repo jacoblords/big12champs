@@ -99,6 +99,16 @@ def load_prev(src):
         return None
 
 
+def fetch_logo(tid, dark=False):
+    """80px team logo as a data URI. dark=True is ESPN's version made for dark backgrounds."""
+    folder = "500-dark" if dark else "500"
+    try:
+        png = get(f"https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/{folder}/{tid}.png&w=80&h=80", raw=True)
+        return "data:image/png;base64," + base64.b64encode(png).decode()
+    except Exception:
+        return None
+
+
 def fetch_teams(season):
     st = get(f"{STANDINGS}?group={BIG12_GROUP}&season={season}")
     entries = (st.get("standings") or st["children"][0]["standings"])["entries"]
@@ -106,16 +116,10 @@ def fetch_teams(season):
     def one(e):
         tid = e["team"]["id"]
         t = get(f"{SITE}/teams/{tid}")["team"]
-        logo = None
-        try:
-            png = get(f"https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/{tid}.png&w=80&h=80", raw=True)
-            logo = "data:image/png;base64," + base64.b64encode(png).decode()
-        except Exception:
-            pass
         return {"id": tid, "abbr": t["abbreviation"], "name": t["displayName"],
                 "short": t.get("shortDisplayName") or t["location"],
                 "color": hexcolor(t.get("color"), "666666"), "alt": hexcolor(t.get("alternateColor"), "999999"),
-                "logo": logo}
+                "logo": fetch_logo(tid), "logoDark": fetch_logo(tid, dark=True)}
     return pmap(one, entries)
 
 
@@ -207,6 +211,13 @@ def main():
             sys.exit("--offline needs a usable --prev data file")
     elif not teams:
         teams = fetch_teams(args.season); changed.append("teams")
+    else:
+        # one-time backfill for data published before dark-mode logos existed
+        missing = [t for t in teams if "logoDark" not in t]
+        if missing:
+            for t, uri in zip(missing, pmap(lambda t: fetch_logo(t["id"], dark=True), missing)):
+                t["logoDark"] = uri
+            changed.append(f"dark logos for {len(missing)} teams")
     if not calendar and not args.offline:
         calendar = fetch_calendar(args.season); changed.append("calendar")
 

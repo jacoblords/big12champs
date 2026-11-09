@@ -97,7 +97,8 @@
 "color": "#be0000",
 "alt": "#ffffff",
 "logo": null,
-"fpi": 18.676
+"fpi": 18.676,
+"logoDark": null
 },
 {
 "id": "2641",
@@ -107,7 +108,8 @@
 "color": "#da291c",
 "alt": "#000000",
 "logo": null,
-"fpi": 15.494
+"fpi": 15.494,
+"logoDark": null
 },
 {
 "id": "252",
@@ -117,7 +119,8 @@
 "color": "#0047ba",
 "alt": "#002e5d",
 "logo": null,
-"fpi": 14.762
+"fpi": 14.762,
+"logoDark": null
 },
 {
 "id": "248",
@@ -127,7 +130,8 @@
 "color": "#c8102e",
 "alt": "#ffffff",
 "logo": null,
-"fpi": 13.846
+"fpi": 13.846,
+"logoDark": null
 },
 {
 "id": "12",
@@ -137,7 +141,8 @@
 "color": "#cc0033",
 "alt": "#003366",
 "logo": null,
-"fpi": 12.634
+"fpi": 12.634,
+"logoDark": null
 },
 {
 "id": "239",
@@ -147,7 +152,8 @@
 "color": "#154734",
 "alt": "#ffb81c",
 "logo": null,
-"fpi": 11.384
+"fpi": 11.384,
+"logoDark": null
 },
 {
 "id": "197",
@@ -157,7 +163,8 @@
 "color": "#fe5c00",
 "alt": "#000000",
 "logo": null,
-"fpi": 13.876
+"fpi": 13.876,
+"logoDark": null
 },
 {
 "id": "9",
@@ -167,7 +174,8 @@
 "color": "#ffc627",
 "alt": "#8c1d40",
 "logo": null,
-"fpi": 1.522
+"fpi": 1.522,
+"logoDark": null
 },
 {
 "id": "2116",
@@ -177,7 +185,8 @@
 "color": "#000000",
 "alt": "#b4a169",
 "logo": null,
-"fpi": 3.656
+"fpi": 3.656,
+"logoDark": null
 },
 {
 "id": "277",
@@ -187,7 +196,8 @@
 "color": "#eaaa00",
 "alt": "#002855",
 "logo": null,
-"fpi": 2.695
+"fpi": 2.695,
+"logoDark": null
 },
 {
 "id": "2132",
@@ -197,7 +207,8 @@
 "color": "#000000",
 "alt": "#e00122",
 "logo": null,
-"fpi": 4.462
+"fpi": 4.462,
+"logoDark": null
 },
 {
 "id": "66",
@@ -207,7 +218,8 @@
 "color": "#ae192d",
 "alt": "#ffc72a",
 "logo": null,
-"fpi": 2.581
+"fpi": 2.581,
+"logoDark": null
 },
 {
 "id": "2628",
@@ -217,7 +229,8 @@
 "color": "#4d1979",
 "alt": "#ffffff",
 "logo": null,
-"fpi": 7.623
+"fpi": 7.623,
+"logoDark": null
 },
 {
 "id": "2306",
@@ -227,7 +240,8 @@
 "color": "#330a57",
 "alt": "#e2e3e4",
 "logo": null,
-"fpi": 1.462
+"fpi": 1.462,
+"logoDark": null
 },
 {
 "id": "38",
@@ -237,7 +251,8 @@
 "color": "#cfb87c",
 "alt": "#000000",
 "logo": null,
-"fpi": -1.752
+"fpi": -1.752,
+"logoDark": null
 },
 {
 "id": "2305",
@@ -247,7 +262,8 @@
 "color": "#0051ba",
 "alt": "#e8000d",
 "logo": null,
-"fpi": 4.149
+"fpi": 4.149,
+"logoDark": null
 }
 ],
 "fpi": {

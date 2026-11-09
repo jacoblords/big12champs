@@ -147,6 +147,27 @@ test("what-if banner is hidden until a what-if is set, and the CSS honors hidden
   assert.equal(els.locks.innerHTML, "");
 });
 
+test("dark-background logos are included and swapped by theme", async () => {
+  const withLogos = JSON.parse(JSON.stringify(data));
+  const png = "data:image/png;base64,iVBORw0KGgo=";
+  withLogos.teams.forEach((t) => { t.logo = png; t.logoDark = png; });
+  withLogos.teams[1].logoDark = null; // a team without a dark version falls back to the regular logo
+  const { els } = render(withLogos, "#utah");
+  await settle();
+  assert.match(els.picker.innerHTML, /<img class="logo-light" src="data:image\/png;base64,[^"]+" alt=""><img class="logo-dark"/);
+  const css = fs.readFileSync(path.join(root, "app.html"), "utf8");
+  assert.match(css, /\.logo-dark \{ display: none; \}/);
+  assert.match(css, /prefers-color-scheme: dark[\s\S]*?\.logo-light \{ display: none; \}/);
+  const second = withLogos.teams[1].abbr;
+  const card = els.picker.innerHTML.split('<button').find((b) => b.includes(`>${second}<`));
+  assert.doesNotMatch(card, /logo-dark/, "no dark logo: plain image only");
+  // a non-PNG value is never rendered
+  withLogos.teams[0].logoDark = 'javascript:alert(1)';
+  const r2 = render(withLogos, "#utah");
+  await settle();
+  assert.doesNotMatch(r2.els.picker.innerHTML, /javascript:/);
+});
+
 test("ESPN-supplied text is escaped", async () => {
   const evil = JSON.parse(JSON.stringify(data));
   evil.teams[0].name = '<img src=x onerror="alert(1)">';
