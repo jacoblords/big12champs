@@ -82,7 +82,8 @@ button { font: inherit; color: inherit; }
 .chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
 
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+/* align-content: start keeps contents at the top when a panel is stretched to match a taller sibling */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; align-content: start; min-width: 0; }
 .panel > header { display: grid; gap: 4px; }
 .panel > header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
