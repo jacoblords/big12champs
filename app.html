@@ -40,6 +40,14 @@
    (Claude's artifact viewer adds this reset itself; the standalone site needs its own.) */
 [hidden] { display: none !important; }
 img { max-width: 100%; }
+/* dark-background team logos: swap with the theme (system setting or explicit data-theme) */
+.logo-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-light { display: none; }
+  :root:not([data-theme="light"]) .logo-dark { display: inline; }
+}
+:root[data-theme="dark"] .logo-light { display: none; }
+:root[data-theme="dark"] .logo-dark { display: inline; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
 .wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
@@ -255,7 +263,14 @@ let main = null, cache = new Map(), sel = null;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const safeColor = (c) => (/^#[0-9a-fA-F]{3,8}$/.test(c || "") ? c : "#666666");
-const logo = (i, cls) => /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(T[i].logo || "") ? `<img src="${T[i].logo}" alt="" ${cls ? `class="${cls}"` : ""}>` : "";
+// Team logos: ESPN's regular logo, plus its dark-background version shown in dark mode (CSS swaps them).
+const isPng = (u) => /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(u || "");
+const logo = (i) => {
+  const t = T[i];
+  if (!isPng(t.logo)) return "";
+  if (!isPng(t.logoDark)) return `<img src="${t.logo}" alt="">`;
+  return `<img class="logo-light" src="${t.logo}" alt=""><img class="logo-dark" src="${t.logoDark}" alt="">`;
+};
 function pct(p, digits) {
   if (p == null) return "–";
   if (p <= 0) return "0%";

@@ -48,6 +48,8 @@ class FakeESPN:
                                "predictives": [{"name": "fpi", "value": t["fpi"]}]} for t in FIXTURE["teams"]]}
         if "/predictor" in url:
             return {"homeTeam": {"statistics": [{"name": "gameProjection", "value": 61.0}]}}
+        if "/combiner/" in url and raw:
+            return b"\x89PNG fake"
         raise AssertionError(f"unexpected ESPN call {url}")
 
 
@@ -140,6 +142,22 @@ class FetchTests(unittest.TestCase):
         self.assertTrue(site)
         self.assertIn('<link rel="icon" href="favicon.svg"', site)
         self.assertEqual(written["meta"]["checkedAt"], FIXTURE["meta"]["checkedAt"])
+
+
+    def test_dark_logos_backfilled_once_for_older_data(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        for t in prev["teams"][:3]:
+            del t["logoDark"]  # published before dark logos existed
+        fake = FakeESPN()
+        written, _ = self.run_fetch(prev, now, fake)
+        self.assertEqual(len(fake.urls), 3)
+        self.assertTrue(all("/500-dark/" in u for u in fake.urls))
+        self.assertTrue(all(t["logoDark"].startswith("data:image/png;base64,") for t in written["teams"][:3]))
+        # next run: nothing left to backfill
+        fake2 = FakeESPN()
+        self.run_fetch(written, now, fake2)
+        self.assertEqual(fake2.urls, [])
 
 
 class ScoreboardParsing(unittest.TestCase):
