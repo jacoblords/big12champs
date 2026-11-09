@@ -3,6 +3,11 @@
 Pick a Big 12 team and see its likeliest path to the conference championship game: which
 results it needs, who to root for, and how the official tiebreakers settle the standings.
 
+Live at **https://titlepaths.com** (GitHub Pages with a custom domain; the old
+`jacoblords.github.io/big12champs` address redirects there). DNS is four A records for the
+bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
+`jacoblords.github.io`.
+
 - **Odds:** [`exact.js`](exact.js) enumerates every possible finish of the remaining games
   (2^24 = 16.8 million with three weeks left, about 40 seconds), weights each by ESPN's
   Matchup Predictor win probabilities, and sorts each by the Big 12's tiebreaking procedures
