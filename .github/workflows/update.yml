@@ -1,0 +1,53 @@
+name: Update data and deploy
+
+# Runs every 30 minutes, but fetch_data.py only calls ESPN when something can have
+# changed (a game passed kickoff + 3h, the daily schedule check, the 6-hourly FPI check).
+# Most runs make zero ESPN calls and deploy nothing.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.fetch.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: fetch
+        run: >
+          python fetch_data.py
+          --prev "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data.json"
+          --site site --artifact ''
+          ${{ github.event_name != 'schedule' && '--force-build' || '' }}
+          --github-output
+      - if: steps.fetch.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
