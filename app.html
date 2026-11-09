@@ -242,7 +242,8 @@ let main = null, cache = new Map(), sel = null;
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const logo = (i, cls) => T[i].logo ? `<img src="${T[i].logo}" alt="" ${cls ? `class="${cls}"` : ""}>` : "";
+const safeColor = (c) => (/^#[0-9a-fA-F]{3,8}$/.test(c || "") ? c : "#666666");
+const logo = (i, cls) => /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(T[i].logo || "") ? `<img src="${T[i].logo}" alt="" ${cls ? `class="${cls}"` : ""}>` : "";
 function pct(p, digits) {
   if (p == null) return "–";
   if (p <= 0) return "0%";
@@ -309,7 +310,7 @@ function renderPicker() {
   const order = T.map((_, i) => i).sort((a, b) => main.appear[b] - main.appear[a] || curW[b] - curW[a]);
   $("picker").innerHTML = order.map((i) => {
     const p = main.appear[i] / main.nSims;
-    return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${T[i].color}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${T[i].abbr}">
+    return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
       ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="pc">${pct(p)}</span></button>`;
   }).join("");
 }
@@ -437,7 +438,7 @@ function renderTeam() {
     <summary>${minorRows.length} game${minorRows.length > 1 ? "s" : ""} that barely matter</summary>${minorRows.map(rgRow).join("")}</details>` : "");
 
   $("team").innerHTML = `
-    <div class="hero" style="--team:${t.color}">
+    <div class="hero" style="--team:${safeColor(t.color)}">
       ${logo(i)}
       <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} Big 12 · ${overall[i]} overall</div></div>
       <div class="big"><div class="pct">${pIn === 0 && A.path ? "&lt;0.1%" : pct(pIn)}</div><div class="lbl">to reach the title game</div></div>

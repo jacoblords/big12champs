@@ -15,7 +15,7 @@ Usage:
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
-import argparse, base64, datetime as dt, json, os, sys, time, urllib.error, urllib.request
+import argparse, base64, datetime as dt, json, os, re, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -75,6 +75,17 @@ def pmap(fn, items, workers=4):
         return list(ex.map(fn, items))
 
 
+def hexcolor(v, default):
+    """ESPN team colors are bare hex; anything else is replaced so it can't break out of a style attribute."""
+    v = (v or "").strip().lstrip("#")
+    return "#" + (v if re.fullmatch(r"[0-9a-fA-F]{3,8}", v) else default)
+
+
+def script_safe(payload):
+    """JSON embedded in <script> can't contain a literal '</script>' or '<!--'."""
+    return payload.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+
 def load_prev(src):
     if not src:
         return None
@@ -103,7 +114,7 @@ def fetch_teams(season):
             pass
         return {"id": tid, "abbr": t["abbreviation"], "name": t["displayName"],
                 "short": t.get("shortDisplayName") or t["location"],
-                "color": "#" + (t.get("color") or "666666"), "alt": "#" + (t.get("alternateColor") or "999999"),
+                "color": hexcolor(t.get("color"), "666666"), "alt": hexcolor(t.get("alternateColor"), "999999"),
                 "logo": logo}
     return pmap(one, entries)
 
@@ -271,7 +282,7 @@ def main():
                                              "</head><body>\n" + tpl + "\n</body></html>\n")
             print(f"wrote {site}/index.html + data.json")
         if args.artifact:
-            Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", payload))
+            Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", script_safe(payload)))
             print(f"wrote {args.artifact}")
     if args.github_output and os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
