@@ -86,6 +86,14 @@ test("without exact data the page still works on simulation", async () => {
   assert.match(text(els.team.innerHTML), /to reach the title game/);
 });
 
+test("skipped exact odds: simulation, and the footer says why", async () => {
+  const skipped = { ...data, exact: { ...data.exact, teams: undefined, skipped: "would take about 900s, over the 180s budget" } };
+  const { els } = render(skipped, "#utah");
+  await settle();
+  assert.match(els.lede.textContent, /played out/);
+  assert.match(text(els.foot.innerHTML), /Exact odds were skipped for this data: would take about 900s/);
+});
+
 test("ESPN-supplied text is escaped", async () => {
   const evil = JSON.parse(JSON.stringify(data));
   evil.teams[0].name = '<img src=x onerror="alert(1)">';

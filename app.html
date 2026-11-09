@@ -543,6 +543,7 @@ window.addEventListener("hashchange", () => {
   const meta = DATA.meta || {};
   $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${meta.nextResultCheck ? ` The next result can't land before ${when(meta.nextResultCheck)} (kickoff + 3 hours); until then only ESPN's odds can move.` : ""} Times are in your time zone.</div>
   <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=4&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
+  ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
   <div>Tiebreakers: <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf" target="_blank" rel="noopener">Big 12 Football Tiebreaking Procedures (official PDF)</a>. Not affiliated with the Big 12 or ESPN.</div>`;
   runMain();
   const h = location.hash.slice(1).toLowerCase();

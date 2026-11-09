@@ -8,8 +8,14 @@ results it needs, who to root for, and how the official tiebreakers settle the s
   Matchup Predictor win probabilities, and sorts each by the Big 12's tiebreaking procedures
   ([official PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf)).
   The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
-  in" and "must" are only shown when proven over every finish. With more than 26 games
-  left (early season) it falls back to a 40,000-run simulation, as do the page's what-ifs.
+  in" and "must" are only shown when proven over every finish.
+- **Time budget:** each extra unplayed game doubles the work, so `exact.js` times a sample
+  of finishes first and skips if the whole run would take more than 80% of
+  `EXACT_BUDGET_SECONDS` (180 in the workflow); a run that still overruns stops at the
+  budget. Skipped runs fall back to a 40,000-run simulation and the page footer says why.
+  In practice that means about 25 or fewer games left (the last three weeks) get exact
+  odds and the rest of the season gets simulation, with no change needed between seasons.
+  The page's what-ifs always use simulation.
 - **Limits:** the odds are only as good as ESPN's predictions, and games are treated as
   independent. Adding correlated team strength moved the 2026-11-09 odds by about a point at
   most.
