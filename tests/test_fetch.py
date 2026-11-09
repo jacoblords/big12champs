@@ -67,7 +67,10 @@ class FetchTests(unittest.TestCase):
                     mock.patch.object(sys, "argv", argv), mock.patch("builtins.print"):
                 F.main()
             written = json.loads(out.read_text()) if out.exists() else None
-            site = (Path(tmp) / "site" / "index.html").exists()
+            index = Path(tmp) / "site" / "index.html"
+            site = index.read_text() if index.exists() else None
+            if site is not None:
+                self.assertTrue((Path(tmp) / "site" / "favicon.svg").exists(), "favicon shipped with the site")
         return written, site
 
     def fresh_prev(self, now):
@@ -135,6 +138,7 @@ class FetchTests(unittest.TestCase):
         written, site = self.run_fetch(copy.deepcopy(FIXTURE), now, fake, "--offline", "--force-build")
         self.assertEqual(fake.urls, [])
         self.assertTrue(site)
+        self.assertIn('<link rel="icon" href="favicon.svg"', site)
         self.assertEqual(written["meta"]["checkedAt"], FIXTURE["meta"]["checkedAt"])
 
 
