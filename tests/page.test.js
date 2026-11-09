@@ -45,7 +45,8 @@ test("loads data.json, renders every team in exact mode", async () => {
     assert.match(team, new RegExp(t.name));
     assert.match(team, /to reach the title game/);
     assert.doesNotMatch(team, /simulation/i, `${t.abbr} should not mention simulation in exact mode`);
-    assert.match(els.lede.textContent, /possible finishes/);
+    assert.match(els.methodText.textContent, /possible finishes/);
+    assert.match(els.lede.textContent, /^Results through .*games left\. Pick a team/);
   }
 });
 
@@ -109,7 +110,7 @@ test("without exact data the page still works on simulation", async () => {
   const noExact = { ...data, exact: undefined };
   const { els } = render(noExact, "#utah");
   await settle();
-  assert.match(els.lede.textContent, /played out/);
+  assert.match(els.methodText.textContent, /played out/);
   assert.match(text(els.team.innerHTML), /to reach the title game/);
 });
 
@@ -117,7 +118,7 @@ test("skipped exact odds: simulation, and the footer says why", async () => {
   const skipped = { ...data, exact: { ...data.exact, teams: undefined, skipped: "would take about 900s, over the 180s budget" } };
   const { els } = render(skipped, "#utah");
   await settle();
-  assert.match(els.lede.textContent, /played out/);
+  assert.match(els.methodText.textContent, /played out/);
   assert.match(text(els.foot.innerHTML), /Exact odds were skipped for this data: would take about 900s/);
 });
 
