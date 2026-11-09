@@ -122,6 +122,16 @@ test("skipped exact odds: simulation, and the footer says why", async () => {
   assert.match(text(els.foot.innerHTML), /Exact odds were skipped for this data: would take about 900s/);
 });
 
+test("what-if banner is hidden until a what-if is set, and the CSS honors hidden", async () => {
+  const css = fs.readFileSync(path.join(root, "app.html"), "utf8");
+  // .locks sets display: flex, which beats the browser's own [hidden] rule without this
+  assert.match(css, /\[hidden\]\s*\{\s*display:\s*none\s*!important/);
+  const { els } = render(data, "#utah");
+  await settle();
+  assert.equal(els.locks.hidden, true);
+  assert.equal(els.locks.innerHTML, "");
+});
+
 test("ESPN-supplied text is escaped", async () => {
   const evil = JSON.parse(JSON.stringify(data));
   evil.teams[0].name = '<img src=x onerror="alert(1)">';
