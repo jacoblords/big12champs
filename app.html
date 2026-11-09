@@ -548,8 +548,9 @@ window.addEventListener("hashchange", () => {
   const h = location.hash.slice(1).toLowerCase();
   let i = T.findIndex((t) => t.abbr.toLowerCase() === h);
   if (i < 0) {
-    // open on the most contested team: closest to a coin flip
-    i = T.map((_, k) => k).sort((a, b) => Math.abs(odds(a).p - 0.5) - Math.abs(odds(b).p - 0.5))[0];
+    // open on the conference leader: best conference win percentage, ties broken by title-game odds
+    const pctOf = (k) => (curW[k] + curL[k] ? curW[k] / (curW[k] + curL[k]) : 0);
+    i = T.map((_, k) => k).sort((a, b) => pctOf(b) - pctOf(a) || odds(b).p - odds(a).p)[0];
   }
   sel = i;
   renderAll();
