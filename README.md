@@ -37,7 +37,7 @@ public; it publishes no rate limits and sends `Cache-Control: max-age=1`, so cac
 ## Tests and CI
 
 ```bash
-node --test tests/                          # engine rules, exact solver, page rendering
+node --test tests/*.test.js                 # engine rules, exact solver, page rendering
 python3 -m unittest discover -s tests       # fetcher caching rules against a fake ESPN
 ```
 
