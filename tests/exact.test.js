@@ -76,6 +76,27 @@ test("cache key changes with inputs and only with inputs", () => {
   assert.notEqual(inputsKey(moved), inputsKey(data));
 });
 
+test("over the time budget by estimate: skipped before doing the work", () => {
+  const r = solve(data, { budgetSec: 0.001 });
+  assert.match(r.skipped, /would take about \d+s, over the 0\.001s budget/);
+  assert.equal(r.teams, undefined);
+  assert.ok(r.estimateSec >= 0);
+});
+
+test("a run that goes past its hard limit stops instead of running on", () => {
+  // full 2026 fixture: 24 games. Estimate passes (huge budget), hard limit is immediate.
+  const full = JSON.parse(JSON.stringify(require("./fixtures/season-2026-11-09.json")));
+  const t0 = Date.now();
+  const r = solve(full, { budgetSec: 1e6, deadlineSec: 0 });
+  assert.match(r.skipped, /stopped after \d+s, over the 0s limit/);
+  assert.ok(Date.now() - t0 < 5000, "stopped early");
+});
+
+test("within budget: finishes and records how long it took", () => {
+  assert.equal(typeof ex.elapsedSec, "number");
+  assert.equal(ex.budgetSec, 180);
+});
+
 test("too many unplayed games: skipped with a reason, page falls back to simulation", () => {
   const big = JSON.parse(JSON.stringify(data));
   const pending = big.games.filter((g) => !g.completed);

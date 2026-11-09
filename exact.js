@@ -6,14 +6,21 @@
 //
 //   node exact.js data.json      # adds/refreshes data.exact in place (skips if inputs unchanged)
 //
-// Feasible up to about 26 unplayed games (a minute or two); beyond that it records why it
-// skipped and the page falls back to simulation.
+// Time budget (EXACT_BUDGET_SECONDS, default 180): it times finishes 8k-32k (after warm-up),
+// estimates the whole run, and skips if that estimate is over 80% of the budget. If a run
+// still goes past the budget it stops. Either way it records why, and the page falls back to
+// simulation. Each extra unplayed game doubles the work: 24 games take about 40s, so late
+// season fits and early season (40+ games left) never does.
 "use strict";
 const fs = require("fs");
 const crypto = require("crypto");
 const B = require("./engine.js");
 
-const MAX_GAMES = 26;
+const MAX_GAMES = 30; // masks are 32-bit; far past any realistic budget anyway
+const DEFAULT_BUDGET_SEC = 180;
+const ESTIMATE_SHARE = 0.8; // leave room for a slower runner than the estimate saw
+// Timing window for the estimate: after the JIT has warmed up (first 8k finishes).
+const WARMUP = 1 << 13, CALIBRATION = 1 << 15;
 
 function inputsKey(data) {
   const parts = data.games.map((g) => [g.id, g.completed ? 1 : 0, g.winner || "", g.completed ? "" : g.pHome].join(":"));
@@ -21,10 +28,14 @@ function inputsKey(data) {
   return crypto.createHash("sha256").update(parts.join("|") + "#" + fpi.join(",")).digest("hex").slice(0, 16);
 }
 
-function solve(data) {
+// opts.budgetSec: time allowed. opts.deadlineSec: hard stop (defaults to the budget).
+function solve(data, opts = {}) {
+  const budget = opts.budgetSec ?? DEFAULT_BUDGET_SEC;
+  const deadline = opts.deadlineSec ?? budget;
+  const clock = opts.clock || (() => performance.now());
   const ctx = B.build(data);
   const P = ctx.pending, n = P.length, N = ctx.N;
-  const base = { key: inputsKey(data), gameIds: P.map((g) => g.id), games: n };
+  const base = { key: inputsKey(data), gameIds: P.map((g) => g.id), games: n, budgetSec: budget };
   if (n > MAX_GAMES) return { ...base, skipped: `${n} unplayed games is too many to enumerate` };
 
   const own = new Uint32Array(N), ownWin = new Uint32Array(N);
@@ -43,7 +54,20 @@ function solve(data) {
   // probability of each finish, built incrementally: lp = prod over games
   const pH = P.map((g) => g.pHome);
   const total = 2 ** n;
+  const t0 = clock();
+  const elapsed = () => (clock() - t0) / 1000;
+  let tWarm = 0;
   for (let m = 0; m < total; m++) {
+    if (m === WARMUP) tWarm = clock();
+    if (m === CALIBRATION) {
+      const est = ((clock() - tWarm) / 1000 / (CALIBRATION - WARMUP)) * total;
+      if (est > budget * ESTIMATE_SHARE) {
+        return { ...base, estimateSec: Math.round(est), skipped: `${total.toLocaleString("en-US")} finishes would take about ${Math.round(est)}s, over the ${budget}s budget` };
+      }
+    }
+    if ((m & 0xffff) === 0 && m > 0 && elapsed() > deadline) {
+      return { ...base, skipped: `stopped after ${Math.round(elapsed())}s, over the ${deadline}s limit (${(m / total * 100).toFixed(0)}% done)` };
+    }
     let lp = 1;
     for (let i = 0; i < n; i++) {
       const o = (m >>> i) & 1;
@@ -102,10 +126,10 @@ function solve(data) {
       };
     }),
   }));
-  return { ...base, finishes: total, coinTossShare: coinP, teams };
+  return { ...base, finishes: total, elapsedSec: Math.round(elapsed()), coinTossShare: coinP, teams };
 }
 
-module.exports = { solve, inputsKey, MAX_GAMES };
+module.exports = { solve, inputsKey, MAX_GAMES, DEFAULT_BUDGET_SEC };
 
 if (require.main === module) {
   const file = process.argv[2];
@@ -114,7 +138,8 @@ if (require.main === module) {
   const key = inputsKey(data);
   if (data.exact && data.exact.key === key) { console.log(`exact odds already current (${key})`); process.exit(0); }
   const t0 = Date.now();
-  data.exact = solve(data);
+  const budgetSec = Number(process.env.EXACT_BUDGET_SECONDS) || DEFAULT_BUDGET_SEC;
+  data.exact = solve(data, { budgetSec });
   data.exact.computedAt = new Date().toISOString().slice(0, 16) + "Z";
   fs.writeFileSync(file, JSON.stringify(data, null, 1));
   console.log(data.exact.skipped ? `exact odds skipped: ${data.exact.skipped}` :
