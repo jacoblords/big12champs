@@ -56,7 +56,6 @@ button { font: inherit; color: inherit; }
 .top { padding-block: 28px 18px; display: grid; gap: 8px; }
 .top h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); text-transform: uppercase; }
 .top p { margin: 0; max-width: 70ch; color: var(--muted); }
-.top .caveat { font-size: 0.85rem; }
 
 /* picker */
 .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; padding-block: 8px 20px; }
@@ -141,6 +140,7 @@ details.minor .week + .week { margin-top: 10px; }
 
 /* race */
 section.block { padding-block: 34px 8px; display: grid; gap: 14px; }
+section.block > p { margin: 0; } /* the grid gap spaces them; default margins doubled it */
 .scroll { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 0.92rem; }
 th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; color: var(--muted); text-align: right; padding: 6px 10px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
@@ -180,7 +180,6 @@ footer code { font-size: 0.8rem; word-break: break-all; }
     <div class="eyebrow" id="eyebrow">Big 12 football</div>
     <h1>Big 12 Title Paths</h1>
     <p id="lede"></p>
-    <p id="caveat" class="caveat"></p>
   </header>
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
   <div class="locks" id="locks" hidden></div>
@@ -190,6 +189,12 @@ footer code { font-size: 0.8rem; word-break: break-all; }
     <h2>The race</h2>
     <p class="note">Every team's odds of reaching the title game, from the same calculation. Pick a row to see that team's path.</p>
     <div class="scroll"><table id="raceTable"></table></div>
+  </section>
+
+  <section class="block" id="method">
+    <h2>How the odds work</h2>
+    <p class="note" id="methodText"></p>
+    <p class="note" id="caveat"></p>
   </section>
 
   <section class="block" id="rules">
@@ -546,10 +551,13 @@ window.addEventListener("hashchange", () => {
   const lastDone = DATA.games.filter((g) => g.completed && g.conf).map((g) => g.date).sort().pop();
   $("eyebrow").textContent = `Big 12 football · ${DATA.season} season`;
   const through = new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" });
-  $("lede").textContent = EX
-    ? `Results through ${through}. ${P.length} games left, so there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official Big 12 tiebreakers, so the odds here are exact for those inputs. Pick a team to see the likeliest way in and who to root for.`
-    : `Results through ${through}. ${P.length} games left, each played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, with every finish sorted by the official Big 12 tiebreakers. Pick a team to see the likeliest way in and who to root for.`;
-  $("caveat").textContent = "These odds are only as good as ESPN's game predictions, which update about once a day. They treat each game as independent; with this little season left, that moves them by about a point at most.";
+  $("lede").textContent = `Results through ${through}, ${P.length} games left. Pick a team to see its likeliest way into the title game and who to root for.`;
+  $("methodText").textContent = EX
+    ? `With ${P.length} games left there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official Big 12 tiebreakers, so the odds here are exact for those inputs.`
+    : `Each of the ${P.length} remaining games is played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, and every simulated finish is sorted by the official Big 12 tiebreakers. Simulated odds are typically within half a point of exact.`;
+  $("caveat").textContent = EX
+    ? "These odds are only as good as ESPN's game predictions, which update about once a day. They treat each game as independent; with this little season left, that moves them by about a point at most."
+    : "These odds are only as good as ESPN's game predictions, which update about once a day. They also treat each game as independent, which can make them a bit too confident with much of the season left.";
   const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   const meta = DATA.meta || {};
   $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${meta.nextResultCheck ? ` The next result can't land before ${when(meta.nextResultCheck)} (kickoff + 3 hours); until then only ESPN's odds can move.` : ""} Times are in your time zone.</div>

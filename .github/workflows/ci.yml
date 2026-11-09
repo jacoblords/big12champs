@@ -28,6 +28,10 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Build the site offline from the fixture, exact odds included
+        env:
+          # CI checks that exact odds are correct, not how fast this runner is; the
+          # production budget lives in update.yml.
+          EXACT_BUDGET_SECONDS: "900"
         run: >
           python fetch_data.py --offline --force-build
           --prev tests/fixtures/season-2026-11-09.json
