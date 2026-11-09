@@ -123,6 +123,25 @@ test("intro reads 'Results through <date> with N games left'", async () => {
   assert.match(els.lede.textContent, /^Results through [A-Z][a-z]+ \d+ with 16 games left\. Pick a team/);
 });
 
+test("tiebreaks render as a sentence and a table, winner first, no bullets", async () => {
+  let checked = 0;
+  for (const t of data.teams) {
+    const { els } = render(data, "#" + t.abbr.toLowerCase());
+    await settle();
+    const ends = els.team.innerHTML.split("How the standings end")[1];
+    if (!ends) continue;
+    assert.doesNotMatch(ends, /<ul class="why"/);
+    for (const block of ends.split('<div class="tb">').slice(1)) {
+      assert.match(text(block), /tied at \d+-\d+\. \S.* gets the #[12] seed .*Step [a-g]/);
+      const cells = [...block.matchAll(/<span class="([^"]*)" role="cell">([^<]*)<\/span>/g)];
+      if (!cells.length) continue;
+      assert.match(cells[0][1], /win/, `${t.abbr}: winner is the first row`);
+      checked++;
+    }
+  }
+  assert.ok(checked > 0, "fixture paths include a tiebreak with a table");
+});
+
 test("headline matches the exact odds", async () => {
   const i = data.teams.findIndex((t) => t.abbr === "TTU");
   const { els } = render(data, "#ttu");

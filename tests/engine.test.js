@@ -40,6 +40,19 @@ test("2024 final standings: ASU #1, Iowa State #2 out of a four-way tie at 7-2",
   assert.deepEqual(ex.trace.map((t) => [t.tied.length, abbr(ctx, t.winner), t.step]), [[4, "ASU", "b"], [3, "ISU", "d"]]);
 });
 
+test("tiebreak traces carry each tied team's deciding number", () => {
+  const ctx = B.build(fixture("final-2024.json"));
+  const ex = B.explain(ctx, 0);
+  const [first, second] = ex.trace;
+  const row = (tr, abbr) => tr.rows.find((r) => abbr === ctx.teams[r.t].abbr);
+  // step b: records vs the four common opponents
+  assert.equal(row(first, "ASU").text, "4-0");
+  assert.equal(first.against.length, 4);
+  // step d: opponents' conference win %, formatted like .452
+  assert.match(row(second, "ISU").text, /^\.\d{3}$/);
+  assert.ok(row(second, "ISU").key > row(second, "BYU").key);
+});
+
 test("2025 final standings: Texas Tech #1, BYU #2 (tied at 8-1, Texas Tech won head-to-head)", () => {
   const ctx = B.build(fixture("final-2025.json"));
   const ex = B.explain(ctx, 0);

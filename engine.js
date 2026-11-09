@@ -118,7 +118,10 @@
       if (!ok) continue;
       const best = uniqueBestFrac(T, vals);
       if (best >= 0) {
-        if (log) log.detail = "vs " + G.map((g) => names[g]).join("/") + ": " + T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ");
+        if (log) {
+          log.detail = "vs " + G.map((g) => names[g]).join("/") + ": " + T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ");
+          log.vals = vals; log.against = G.slice();
+        }
         return best;
       }
     }
@@ -130,7 +133,18 @@
     if (T.length === 1) return T[0];
     const Tset = new Set(T);
     const multi = T.length > 2;
-    const note = (step, winner, detail) => { if (trace) trace.push({ tied: T.slice(), step, winner, detail: typeof detail === "function" ? detail() : detail }); return winner; };
+    // trace entries: tied teams, deciding step, winner, a text detail, and (when there are
+    // numbers to compare) rows of {t, text, key} plus the opponents they were measured against
+    const note = (step, winner, detail, extra) => {
+      if (trace) {
+        const x = typeof extra === "function" ? extra() : extra || {};
+        trace.push({ tied: T.slice(), step, winner, detail: typeof detail === "function" ? detail() : detail, rows: x.rows || null, against: x.against || null });
+      }
+      return winner;
+    };
+    const recRows = (v) => T.map((t) => ({ t, text: v[t][0] + "-" + (v[t][1] - v[t][0]), key: v[t][1] ? v[t][0] / v[t][1] : 0 }));
+    const pctRows = (v) => T.map((t) => ({ t, text: (v[t][0] / v[t][1]).toFixed(3).replace(/^0/, ""), key: v[t][0] / v[t][1] }));
+    const numRows = (arr, digits) => T.map((t) => ({ t, text: arr[t].toFixed(digits), key: arr[t] }));
     let w, vals, detail;
 
     // a. head-to-head
@@ -143,7 +157,7 @@
       if (allPlayed) {
         vals = {}; for (const t of T) vals[t] = recVs(st, t, T);
         w = uniqueBestFrac(T, vals);
-        if (w >= 0) return note("a", w, () => T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ") + " among tied teams");
+        if (w >= 0) return note("a", w, () => T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ") + " among tied teams", () => ({ rows: recRows(vals) }));
       } else {
         for (const x of T) {
           if (T.every((y) => y === x || st.H2H[x * st.N + y] > 0)) return note("a", x, () => names[x] + " beat every other tied team");
@@ -156,22 +170,22 @@
     if (common.length) {
       vals = {}; for (const t of T) vals[t] = recVs(st, t, common);
       w = uniqueBestFrac(T, vals);
-      if (w >= 0) return note("b", w, () => T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ") + " vs " + common.map((o) => names[o]).join(", "));
+      if (w >= 0) return note("b", w, () => T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ") + " vs " + common.map((o) => names[o]).join(", "), () => ({ rows: recRows(vals), against: common }));
     }
     // c. standings walk
     const log = trace ? {} : null;
     w = walk(st, T, Tset, log, names);
-    if (w >= 0) return note("c", w, log && log.detail);
+    if (w >= 0) return note("c", w, log && log.detail, () => ({ rows: recRows(log.vals), against: log.against }));
     // d. strength of conference schedule
     vals = {}; for (const t of T) vals[t] = [st.sosW[t], st.sosG[t]];
     w = uniqueBestFrac(T, vals);
-    if (w >= 0) return note("d", w, () => T.map((t) => names[t] + " " + (vals[t][0] / vals[t][1]).toFixed(3)).join(", "));
+    if (w >= 0) return note("d", w, () => T.map((t) => names[t] + " " + (vals[t][0] / vals[t][1]).toFixed(3)).join(", "), () => ({ rows: pctRows(vals) }));
     // e. total wins
     w = uniqueBestNum(T, st.total);
-    if (w >= 0) return note("e", w, () => T.map((t) => names[t] + " " + st.total[t]).join(", "));
+    if (w >= 0) return note("e", w, () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
     // f. rating (FPI stand-in)
     w = uniqueBestNum(T, st.fpi);
-    if (w >= 0) return note("f", w, () => T.map((t) => names[t] + " " + st.fpi[t].toFixed(1)).join(", "));
+    if (w >= 0) return note("f", w, () => T.map((t) => names[t] + " " + st.fpi[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.fpi, 1) }));
     // g. coin toss
     w = T[Math.floor(rng() * T.length)];
     return note("g", w, () => "random draw");
