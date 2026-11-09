@@ -14,6 +14,7 @@
   --line: #d9dde5;
   --accent: #1c48c9;
   --accent-soft: #e3e9fb;
+  --bar: #c4d3f8; /* odds fill on picker cards: clearly darker than the track (--sunk) */
   --win: #11795a;
   --win-soft: #dcf1e9;
   --loss: #b8322a;
@@ -26,13 +27,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
-    --accent: #85a6ff; --accent-soft: #1d2846; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
+    --accent: #85a6ff; --accent-soft: #1d2846; --bar: #2b3f78; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
     --warn: #e2b553; --warn-soft: #362a12; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
-  --accent: #85a6ff; --accent-soft: #1d2846; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
+  --accent: #85a6ff; --accent-soft: #1d2846; --bar: #2b3f78; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
   --warn: #e2b553; --warn-soft: #362a12; color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -64,8 +65,12 @@ button { font: inherit; color: inherit; }
 .pick[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--team, var(--accent)); }
 .pick img { width: 34px; height: 34px; object-fit: contain; }
 .pick .ab { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; }
-.pick .rec { font-size: 0.82rem; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
-.pick .pc { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pick .rec { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* odds pill that fills in proportion to the odds */
+.pick .odds { position: relative; width: 100%; max-width: 74px; height: 20px; margin-top: 4px; border-radius: 999px; background: var(--sunk); overflow: hidden; display: grid; place-items: center; }
+.pick .odds i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bar); }
+.pick .odds b { position: relative; font-size: 0.75rem; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pick .odds.hot b { color: var(--accent); }
 .pick.out { opacity: 0.55; }
 
 .locks { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 16px; background: var(--warn-soft); color: var(--ink); border-radius: 10px; }
@@ -330,8 +335,9 @@ function renderPicker() {
   const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
   $("picker").innerHTML = order.map((i) => {
     const p = odds(i).p;
+    const fill = p > 0 ? Math.max(p * 100, 3) : 0; // keep a sliver visible for long shots
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
-      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="pc">${pct(p)}</span></button>`;
+      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${pct(p)}</b></span></button>`;
   }).join("");
 }
 

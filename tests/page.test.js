@@ -77,12 +77,19 @@ test("with no team in the link, it opens on the conference leader", async () => 
   assert.match(text(els.team.innerHTML), /Utah Utes 7-0 Big 12/);
 });
 
-test("picker cards show each team's conference record next to its odds", async () => {
+test("picker cards show the record and an odds pill that fills with the odds", async () => {
   const { els } = render(data, "#utah");
   await settle();
-  const cards = [...els.picker.innerHTML.matchAll(/<span class="ab">([^<]+)<\/span><span class="rec">(\d+-\d+)<\/span><span class="pc">([^<]+)<\/span>/g)];
+  const cards = [...els.picker.innerHTML.matchAll(/<span class="ab">([^<]+)<\/span><span class="rec">(\d+-\d+)<\/span><span class="odds( hot)?"><i style="width:([\d.]+)%"><\/i><b>([^<]+)<\/b><\/span>/g)]
+    .map((m) => ({ abbr: m[1], rec: m[2], hot: !!m[3], fill: parseFloat(m[4]), label: m[5] }));
   assert.equal(cards.length, data.teams.length);
-  assert.ok(cards.some((c) => c[1] === "UTAH" && c[2] === "7-0"));
+  const utah = cards.find((c) => c.abbr === "UTAH");
+  assert.equal(utah.rec, "7-0");
+  assert.ok(utah.hot && utah.fill > 50, "a favorite's pill is highlighted and mostly filled");
+  for (const c of cards) {
+    if (c.label === "0%") assert.equal(c.fill, 0, `${c.abbr}: eliminated team has an empty pill`);
+    else assert.ok(c.fill >= 3, `${c.abbr}: any chance at all leaves a visible sliver`);
+  }
 });
 
 test("headline matches the exact odds", async () => {
