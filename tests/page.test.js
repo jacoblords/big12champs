@@ -69,6 +69,13 @@ test("standings list: seeds sort to the top of their tied group, the rest show a
   assert.ok(sawTie, "fixture should include a path with teams left tied");
 });
 
+test("with no team in the link, it opens on the conference leader", async () => {
+  // fixture after week 11 by favorites: Utah is 7-0
+  const { els } = render(data, "");
+  await settle();
+  assert.match(text(els.team.innerHTML), /Utah Utes 7-0 Big 12/);
+});
+
 test("headline matches the exact odds", async () => {
   const i = data.teams.findIndex((t) => t.abbr === "TTU");
   const { els } = render(data, "#ttu");
