@@ -80,7 +80,7 @@ test("with no team in the link, it opens on the conference leader", async () => 
 test("picker cards show each team's conference record next to its odds", async () => {
   const { els } = render(data, "#utah");
   await settle();
-  const cards = [...els.picker.innerHTML.matchAll(/<span class="ab">([^<]+)<\/span><span class="pc"><span class="rec">(\d+-\d+)<\/span> · ([^<]+)<\/span>/g)];
+  const cards = [...els.picker.innerHTML.matchAll(/<span class="ab">([^<]+)<\/span><span class="rec">(\d+-\d+)<\/span><span class="pc">([^<]+)<\/span>/g)];
   assert.equal(cards.length, data.teams.length);
   assert.ok(cards.some((c) => c[1] === "UTAH" && c[2] === "7-0"));
 });
