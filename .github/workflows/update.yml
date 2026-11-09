@@ -2,7 +2,8 @@ name: Update data and deploy
 
 # Runs every 30 minutes, but fetch_data.py only calls ESPN when something can have
 # changed (a game passed kickoff + 3h, the daily schedule check, the 6-hourly FPI check).
-# Most runs make zero ESPN calls and deploy nothing.
+# Most runs make zero ESPN calls and deploy nothing. When data changes, exact.js
+# re-enumerates every finish (about a minute) before the deploy.
 on:
   schedule:
     - cron: "*/30 * * * *"
@@ -22,6 +23,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     outputs:
       changed: ${{ steps.fetch.outputs.changed }}
     steps:
@@ -29,6 +31,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4  # exact.js
+        with:
+          node-version: "22"
       - id: fetch
         run: >
           python fetch_data.py

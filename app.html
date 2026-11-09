@@ -52,6 +52,7 @@ button { font: inherit; color: inherit; }
 .top { padding-block: 28px 18px; display: grid; gap: 8px; }
 .top h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); text-transform: uppercase; }
 .top p { margin: 0; max-width: 70ch; color: var(--muted); }
+.top .caveat { font-size: 0.85rem; }
 
 /* picker */
 .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; padding-block: 8px 20px; }
@@ -174,6 +175,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
     <div class="eyebrow" id="eyebrow">Big 12 football</div>
     <h1>Big 12 Title Paths</h1>
     <p id="lede"></p>
+    <p id="caveat" class="caveat"></p>
   </header>
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
   <div class="locks" id="locks" hidden></div>
@@ -181,7 +183,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
   <section class="block" id="race">
     <h2>The race</h2>
-    <p class="note">Every team's odds of reaching the title game, from the same simulations. Pick a row to see that team's path.</p>
+    <p class="note">Every team's odds of reaching the title game, from the same calculation. Pick a row to see that team's path.</p>
     <div class="scroll"><table id="raceTable"></table></div>
   </section>
 
@@ -254,7 +256,7 @@ function pct(p, digits) {
 }
 // A game "matters" when the two results put the team's odds at least 0.3 apart in log-odds
 // (about 1.5 points for a 93% team, a 35% relative change for a long shot).
-const logit = (p) => { p = Math.min(Math.max(p, 1e-6), 1 - 1e-6); return Math.log(p / (1 - p)); };
+const logit = (p) => { p = Math.min(Math.max(p, 1e-12), 1 - 1e-12); return Math.log(p / (1 - p)); };
 const matters = (c) => c.pH != null && c.pA != null && Math.abs(logit(c.pH) - logit(c.pA)) >= 0.3;
 const openState = {};
 document.addEventListener("toggle", (e) => { if (e.target.id) openState[e.target.id] = e.target.open; }, true);
@@ -276,16 +278,40 @@ const overall = (() => {
 })();
 const remaining = T.map((_, i) => P.filter((g) => g.h === i || g.a === i).length);
 
+// Exact odds: exact.js enumerates every possible finish when the data is built. They apply
+// whenever no what-ifs are set; what-ifs fall back to simulation.
+const EX = (() => {
+  const e = DATA.exact;
+  if (!e || e.skipped || !e.teams || !e.gameIds || e.gameIds.length !== P.length) return null;
+  if (e.gameIds.some((id, k) => id !== P[k].id) || e.teams.some((t, k) => t.id !== T[k].id)) return null;
+  return e;
+})();
+const exactMode = () => EX !== null && locks.every((l) => l === undefined);
+function odds(i) {
+  return exactMode() ? { p: EX.teams[i].p, first: EX.teams[i].first } : { p: main.appear[i] / main.nSims, first: main.first[i] / main.nSims };
+}
+
 function lockKey() { return locks.map((l) => (l === undefined ? "." : l)).join(""); }
 
 function runMain() {
-  main = B12.simulate(ctx, N_MAIN, locks, 1);
+  main = exactMode() ? null : B12.simulate(ctx, N_MAIN, locks, 1);
   cache = new Map();
 }
 
 function teamAnalysis(i) {
   const key = i + ":" + lockKey();
   if (cache.has(key)) return cache.get(key);
+  if (exactMode()) {
+    const e = EX.teams[i];
+    const path = e.best ? { mask: e.best.mask >>> 0, prob: e.best.prob } : null;
+    const res = {
+      exact: true, p: e.p, first: e.first, pWinOut: e.pWinOut, clinched: e.clinched, eliminated: e.eliminated,
+      winOutGuaranteed: e.winOutGuaranteed, hasOwnGames: remaining[i] > 0,
+      imp: { p: e.p, hits: Infinity, games: e.games }, path, ex: path ? B12.explain(ctx, path.mask) : null,
+    };
+    cache.set(key, res);
+    return res;
+  }
   const mi = B12.impact(ctx, main, i);
   let imp = mi, explore = null, approx = false;
   if (mi.hits < 1500) {
@@ -307,9 +333,9 @@ function teamAnalysis(i) {
 }
 
 function renderPicker() {
-  const order = T.map((_, i) => i).sort((a, b) => main.appear[b] - main.appear[a] || curW[b] - curW[a]);
+  const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
   $("picker").innerHTML = order.map((i) => {
-    const p = main.appear[i] / main.nSims;
+    const p = odds(i).p;
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
       ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="pc">${pct(p)}</span></button>`;
   }).join("");
@@ -319,7 +345,7 @@ function renderLocks() {
   const n = locks.filter((l) => l !== undefined).length;
   const el = $("locks");
   el.hidden = n === 0;
-  el.innerHTML = n ? `<span><b>${n} result${n > 1 ? "s" : ""} set by you.</b> All odds below assume ${n > 1 ? "they happen" : "it happens"}.</span><button id="clearLocks">Clear what-ifs</button>` : "";
+  el.innerHTML = n ? `<span><b>${n} result${n > 1 ? "s" : ""} set by you.</b> All odds below assume ${n > 1 ? "they happen" : "it happens"}, and are simulated (${N_MAIN.toLocaleString("en-US")} runs, typically within half a point) rather than exact.</span><button id="clearLocks">Clear what-ifs</button>` : "";
 }
 
 function gameRow(g, i, winnerHome, mark) {
@@ -367,17 +393,29 @@ function renderTeam() {
   const A = teamAnalysis(i);
   const pIn = A.p;
   const facts = [];
-  if (pIn >= 1 && A.pWinOut >= 1) facts.push(`<span class="chip good">In the title game in every simulation</span>`);
-  else if (A.hasOwnGames && A.pWinOut >= 1) facts.push(`<span class="chip good">Win out and they're in</span>`);
-  else if (A.hasOwnGames && A.path) facts.push(`<span class="chip ${A.pWinOut > 0.5 ? "warn" : "bad"}">Even winning out: ${A.pWinOut === 0 ? "&lt;0.1%" : pct(A.pWinOut)}</span>`);
-  if (!A.path) facts.push(`<span class="chip bad">No path found</span>`);
+  if (A.exact) {
+    // every claim here is proven over all possible finishes
+    if (A.clinched) facts.push(`<span class="chip good">Clinched a title-game spot</span>`);
+    else if (A.eliminated) facts.push(`<span class="chip bad">Eliminated</span>`);
+    else if (A.hasOwnGames && A.winOutGuaranteed) facts.push(`<span class="chip good">Win out and they're in</span>`);
+    else if (A.hasOwnGames && A.pWinOut != null) facts.push(`<span class="chip ${A.pWinOut > 0.5 ? "warn" : "bad"}">Even winning out: ${A.pWinOut > 0 && A.pWinOut < 0.001 ? oneIn(A.pWinOut) : pct(A.pWinOut)}</span>`);
+    if (pIn > 0 && pIn < 0.001) facts.push(`<span class="chip">Exact odds: ${oneIn(pIn)}</span>`);
+  } else {
+    // simulated: say so instead of claiming certainty
+    if (pIn >= 1) facts.push(`<span class="chip good">In the title game in every simulation</span>`);
+    else if (A.hasOwnGames && A.pWinOut >= 1) facts.push(`<span class="chip good">Win out: in every simulation</span>`);
+    else if (A.hasOwnGames && A.path) facts.push(`<span class="chip ${A.pWinOut > 0.5 ? "warn" : "bad"}">Even winning out: ${A.pWinOut === 0 ? "&lt;0.1%" : pct(A.pWinOut)}</span>`);
+    if (!A.path) facts.push(`<span class="chip bad">No path found in simulations</span>`);
+  }
   facts.push(`<span class="chip">#1 seed: ${pct(A.first)}</span>`);
   facts.push(`<span class="chip">${remaining[i]} game${remaining[i] === 1 ? "" : "s"} left</span>`);
   if (A.approx) facts.push(`<span class="chip warn">Long shot: odds estimated with weighted sampling</span>`);
 
   let pathHTML;
   if (!A.path) {
-    pathHTML = `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + 15000).toLocaleString("en-US")} simulated finishes, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. They are almost certainly out${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}.</p></header></div>`;
+    pathHTML = A.exact
+      ? `<div class="panel"><header><h3>Eliminated</h3><p>None of the ${(2 ** P.length).toLocaleString("en-US")} possible combinations of the remaining results puts ${esc(t.short)} in the title game.</p></header></div>`
+      : `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + 15000).toLocaleString("en-US")} simulated finishes${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. A very unlikely path may still exist; simulation can't prove it doesn't.</p></header></div>`;
   } else {
     const m = A.path.mask;
     const upsets = P.filter((g, k) => locks[k] === undefined && (((m >>> k) & 1) ? g.pHome : 1 - g.pHome) < 0.5).length;
@@ -395,7 +433,7 @@ function renderTeam() {
       <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
-      <p>The single likeliest set of results that puts ${esc(t.short)} in the title game. It needs ${upsets === 0 ? "no upsets: every favorite wins" : upsets + " upset" + (upsets > 1 ? "s" : "")}. Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
+      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. It needs ${upsets === 0 ? "no upsets: every favorite wins" : upsets + " upset" + (upsets > 1 ? "s" : "")}. Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
       <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
       ${body}
       ${explainHTML(i, A.ex)}
@@ -412,18 +450,19 @@ function renderTeam() {
     let root = "";
     if (locked) root = `<span class="muted">Set by you: ${esc(T[locks[k] ? g.h : g.a].short)} wins</span>`;
     else if (c.pH == null || c.pA == null) root = `<span class="muted">Not enough data</span>`;
-    else if (swing < 0.005) root = `<span class="muted">Doesn't matter</span>`;
+    else if (swing < 0.005 && !matters(c)) root = `<span class="muted">Doesn't matter</span>`;
     else {
       const homeBetter = c.pH > c.pA;
       const who = homeBetter ? g.h : g.a;
       const hi = Math.max(c.pH, c.pA), lo = Math.min(c.pH, c.pA);
-      const must = lo === 0 && (homeBetter ? c.cA : c.cH) >= 200 ? ` <span class="tag ups">Must</span>` : "";
+      // only claimed when proven over every finish
+      const must = A.exact && (homeBetter ? c.needH : c.needA) ? ` <span class="tag ups" title="No finish gets them in without this result">Must</span>` : "";
       root = `<span><span class="who">${own ? "Win: " : "Root for "}${esc(T[who].short)}</span>${must}</span>
         <span class="muted">${pct(hi)} if so · ${pct(lo)} if not</span>
         <span class="bar"><i style="left:${lo * 100}%;width:${Math.max((hi - lo) * 100, 1)}%"></i></span>`;
     }
     const L = locks[k];
-    return `<div class="rg-row${!locked && swing < 0.005 ? " flat" : ""}">
+    return `<div class="rg-row${!locked && swing < 0.005 && !matters(c) ? " flat" : ""}">
       <div class="m"><span class="t">${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}${own ? " ·  their game" : ""}</span><span class="s">Week ${g.week} · ESPN: ${esc(T[g.h].abbr)} ${pct(g.pHome, 0)}</span></div>
       <div class="root">${root}</div>
       <div class="seg" role="group" aria-label="What if: ${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}">
@@ -454,11 +493,11 @@ function renderTeam() {
 }
 
 function renderRace() {
-  const order = T.map((_, i) => i).sort((a, b) => main.appear[b] - main.appear[a] || curW[b] - curW[a]);
+  const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
   $("raceTable").innerHTML = `<thead><tr><th>#</th><th>Team</th><th>Big 12</th><th>Overall</th><th>Left</th><th>#1 seed</th><th>Title game</th></tr></thead><tbody>` +
     order.map((i, r) => {
-      const p = main.appear[i] / main.nSims;
-      return `<tr data-t="${i}"><td>${r + 1}</td><td><span class="tm">${logo(i)}${esc(T[i].name)}</span></td><td>${curW[i]}-${curL[i]}</td><td>${overall[i]}</td><td>${remaining[i]}</td><td>${pct(main.first[i] / main.nSims)}</td><td>${pct(p)}<span class="pbar"><i style="width:${p * 100}%"></i></span></td></tr>`;
+      const { p, first } = odds(i);
+      return `<tr data-t="${i}"><td>${r + 1}</td><td><span class="tm">${logo(i)}${esc(T[i].name)}</span></td><td>${curW[i]}-${curL[i]}</td><td>${overall[i]}</td><td>${remaining[i]}</td><td>${pct(first)}</td><td>${pct(p)}<span class="pbar"><i style="width:${p * 100}%"></i></span></td></tr>`;
     }).join("") + "</tbody>";
 }
 
@@ -495,7 +534,11 @@ window.addEventListener("hashchange", () => {
   const fetched = new Date(DATA.fetchedAt);
   const lastDone = DATA.games.filter((g) => g.completed && g.conf).map((g) => g.date).sort().pop();
   $("eyebrow").textContent = `Big 12 football · ${DATA.season} season`;
-  $("lede").textContent = `Results through ${new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" })}. ${P.length} conference games left, each played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, with every finish sorted by the official Big 12 tiebreakers. Pick a team to see the likeliest way in and who to root for.`;
+  const through = new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  $("lede").textContent = EX
+    ? `Results through ${through}. ${P.length} games left, so there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official Big 12 tiebreakers, so the odds here are exact for those inputs. Pick a team to see the likeliest way in and who to root for.`
+    : `Results through ${through}. ${P.length} games left, each played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, with every finish sorted by the official Big 12 tiebreakers. Pick a team to see the likeliest way in and who to root for.`;
+  $("caveat").textContent = "These odds are only as good as ESPN's game predictions, which update about once a day. They treat each game as independent; with this little season left, that moves them by about a point at most.";
   const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   const meta = DATA.meta || {};
   $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${meta.nextResultCheck ? ` The next result can't land before ${when(meta.nextResultCheck)} (kickoff + 3 hours); until then only ESPN's odds can move.` : ""} Times are in your time zone.</div>
@@ -506,7 +549,7 @@ window.addEventListener("hashchange", () => {
   let i = T.findIndex((t) => t.abbr.toLowerCase() === h);
   if (i < 0) {
     // open on the most contested team: closest to a coin flip
-    i = T.map((_, k) => k).sort((a, b) => Math.abs(main.appear[a] / main.nSims - 0.5) - Math.abs(main.appear[b] / main.nSims - 0.5))[0];
+    i = T.map((_, k) => k).sort((a, b) => Math.abs(odds(a).p - 0.5) - Math.abs(odds(b).p - 0.5))[0];
   }
   sel = i;
   renderAll();

@@ -11,11 +11,11 @@ previously published data.json, and only calls ESPN for things that can have cha
   teams/logos  fetched once
 
 Usage:
-  python3 fetch_data.py [--season 2026] [--prev PATH_OR_URL] [--site DIR] [--artifact FILE]
+  python3 fetch_data.py [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
-import argparse, base64, datetime as dt, json, os, re, sys, time, urllib.error, urllib.request
+import argparse, base64, datetime as dt, json, os, re, subprocess, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -23,7 +23,7 @@ SITE = "https://site.api.espn.com/apis/site/v2/sports/football/college-football"
 CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-football"
 STANDINGS = "https://site.web.api.espn.com/apis/v2/sports/football/college-football/standings"
 BIG12_GROUP = 4
-SCHEMA = 2
+SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h
 SCHEDULE_TTL = dt.timedelta(hours=24)
 FPI_TTL = dt.timedelta(hours=6)
@@ -142,6 +142,9 @@ def fetch_week(season, week):
             "home": h["team"]["id"], "away": a["team"]["id"],
             "homeName": h["team"].get("abbreviation"), "awayName": a["team"].get("abbreviation"),
             "neutral": bool(c.get("neutralSite")),
+            # ESPN's own flag: two Big 12 teams can meet in a non-conference game
+            # (e.g. Arizona at Kansas State in 2024, scheduled before Arizona joined).
+            "confFlag": c.get("conferenceCompetition"),
             "completed": done or canceled, "canceled": canceled, "postponed": stype.get("name") == "STATUS_POSTPONED",
             "winner": winner, "homeScore": sc(h), "awayScore": sc(a),
         })
@@ -178,15 +181,18 @@ def fetch_prediction(gid):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--season", type=int, default=int(os.environ.get("SEASON", "2026")))
-    ap.add_argument("--prev", default=str(HERE / "data.json"))
+    ap.add_argument("--prev", default=None, help="previous data (default: --data-out)")
+    ap.add_argument("--data-out", default=str(HERE / "data.json"), help="where to keep the full data file")
     ap.add_argument("--site", default=None, help="write index.html + data.json here (fetch mode)")
     ap.add_argument("--artifact", default=str(HERE / "big12-path.html"), help="write a self-contained page here ('' to skip)")
     ap.add_argument("--force-build", action="store_true", help="rebuild pages even if data is unchanged")
     ap.add_argument("--github-output", action="store_true")
+    ap.add_argument("--offline", action="store_true", help="no ESPN calls: rebuild from --prev only (tests, CI)")
+    ap.add_argument("--no-exact", action="store_true", help="skip the exact enumeration")
     args = ap.parse_args()
     now = now_utc()
 
-    prev = load_prev(args.prev)
+    prev = load_prev(args.prev or args.data_out)
     if not prev or prev.get("schema") != SCHEMA or prev.get("season") != args.season:
         prev = None
     meta = dict(prev["meta"]) if prev else {}
@@ -196,14 +202,19 @@ def main():
     calendar = prev.get("calendar") if prev else None
     changed = []
 
-    if not teams:
+    if args.offline:
+        if not prev:
+            sys.exit("--offline needs a usable --prev data file")
+    elif not teams:
         teams = fetch_teams(args.season); changed.append("teams")
-    if not calendar:
+    if not calendar and not args.offline:
         calendar = fetch_calendar(args.season); changed.append("calendar")
 
     # Which weeks need a scoreboard call?
     weeks = set()
-    if not games:
+    if args.offline:
+        pass
+    elif not games:
         weeks = {c["week"] for c in calendar}
     else:
         for g in games.values():
@@ -231,7 +242,7 @@ def main():
     # FPI: tiebreaker f stand-in, FBS membership, and the clock for ESPN's prediction model.
     fpi_stale = False
     fpi_at = parse(meta.get("fpiCheckedAt"))
-    if not fpi or not fpi_at or now - fpi_at >= FPI_TTL:
+    if not args.offline and (not fpi or not fpi_at or now - fpi_at >= FPI_TTL):
         fpi, run = fetch_fpi(args.season)
         meta["fpiCheckedAt"] = iso(now)
         if run != meta.get("fpiRun"):
@@ -240,7 +251,7 @@ def main():
             changed.append(f"FPI run {run}")
 
     pending = [g for g in games.values() if not g["completed"]]
-    need = [g["id"] for g in pending if fpi_stale or g.get("pHome") is None]
+    need = [] if args.offline else [g["id"] for g in pending if fpi_stale or g.get("pHome") is None]
     if need:
         print(f"predictions for {len(need)} games")
         for gid, p in pmap(fetch_prediction, need):
@@ -249,15 +260,18 @@ def main():
             games[gid]["pHome"] = p if p is not None else games[gid].get("pHome")
             games[gid]["predAt"] = iso(now)
 
+    team_ids = {t["id"] for t in teams}
     for t in teams:
         t["fpi"] = fpi.get(t["id"])
     for g in games.values():
-        g["conf"] = g["home"] in {t["id"] for t in teams} and g["away"] in {t["id"] for t in teams}
+        both_b12 = g["home"] in team_ids and g["away"] in team_ids
+        g["conf"] = both_b12 and (g.get("confFlag") if g.get("confFlag") is not None else True)
         g["homeFBS"] = g["home"] in fpi
         g["awayFBS"] = g["away"] in fpi
 
     due = [parse(g["date"]) + RESULT_DELAY for g in games.values() if not g["completed"]]
-    meta["checkedAt"] = iso(now)
+    if not args.offline:
+        meta["checkedAt"] = iso(now)
     meta["nextResultCheck"] = iso(min(due)) if due else None
     if changed:
         meta["updatedAt"] = iso(now)
@@ -265,14 +279,28 @@ def main():
 
     data = {"schema": SCHEMA, "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
+    if prev and prev.get("exact"):
+        data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
     print(f"{calls} ESPN calls; {len(changed)} changes" + (f": {', '.join(changed[:8])}{' …' if len(changed) > 8 else ''}" if changed else ""))
 
     # A check that found nothing new still has to be saved, or the next run repeats it.
-    checks_moved = prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt"))
+    checks_moved = not args.offline and (
+        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt")))
     build = bool(changed) or checks_moved or args.force_build
     if build:
+        out = Path(args.data_out)
+        out.write_text(json.dumps(data, indent=1))
+        if args.no_exact:
+            data.pop("exact", None)
+        else:
+            # Exact odds by enumerating every finish (Node; ~40s for 24 games, skipped above 26).
+            try:
+                subprocess.run(["node", str(HERE / "exact.js"), str(out)], check=True)
+                data = json.loads(out.read_text())
+            except (OSError, subprocess.CalledProcessError) as e:
+                print(f"exact odds unavailable ({e}); the page will use simulation")
+                data.pop("exact", None)
         payload = json.dumps(data, separators=(",", ":"))
-        (HERE / "data.json").write_text(json.dumps(data, indent=1))
         tpl = (HERE / "app.html").read_text().replace("/*__ENGINE__*/", (HERE / "engine.js").read_text())
         if args.site:
             site = Path(args.site); site.mkdir(parents=True, exist_ok=True)

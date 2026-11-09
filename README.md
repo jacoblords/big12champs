@@ -3,9 +3,16 @@
 Pick a Big 12 team and see its likeliest path to the conference championship game: which
 results it needs, who to root for, and how the official tiebreakers settle the standings.
 
-- **Odds:** each remaining game is simulated 40,000 times using ESPN's Matchup Predictor win
-  probabilities, and every simulated finish is sorted by the Big 12's tiebreaking procedures
+- **Odds:** [`exact.js`](exact.js) enumerates every possible finish of the remaining games
+  (2^24 = 16.8 million with three weeks left, about 40 seconds), weights each by ESPN's
+  Matchup Predictor win probabilities, and sorts each by the Big 12's tiebreaking procedures
   ([official PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf)).
+  The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
+  in" and "must" are only shown when proven over every finish. With more than 26 games
+  left (early season) it falls back to a 40,000-run simulation, as do the page's what-ifs.
+- **Limits:** the odds are only as good as ESPN's predictions, and games are treated as
+  independent. Adding correlated team strength moved the 2026-11-09 odds by about a point at
+  most.
 - **Engine:** [`engine.js`](engine.js). Run against final results it reproduces 2024
   (ASU, then Iowa State out of a four-way tie via strength of schedule) and 2025.
 - **Page:** [`app.html`](app.html), a template; `fetch_data.py` inlines the engine.
@@ -26,6 +33,25 @@ Visitors never call ESPN. A GitHub Action runs every 30 minutes, starts from the
 A cold start is about 75 calls. Most scheduled runs make none and deploy nothing.
 Requests run at most 4 at a time and back off on 429/5xx. ESPN's API is undocumented and
 public; it publishes no rate limits and sends `Cache-Control: max-age=1`, so caching is ours.
+
+## Tests and CI
+
+```bash
+node --test tests/                          # engine rules, exact solver, page rendering
+python3 -m unittest discover -s tests       # fetcher caching rules against a fake ESPN
+```
+
+- `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
+  hand-built standings table for each rule and corner case (sweep rule, restart after a
+  seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
+- `tests/exact.test.js`: odds sum correctly, splits are consistent, the best path is the
+  true maximum by brute force, and results agree with an independent simulation.
+- `tests/page.test.js`: renders every team from `app.html` against a stub DOM, including
+  what-ifs, the simulation fallback and escaping of ESPN-supplied text.
+- `tests/test_fetch.py`: which ESPN calls happen when, using a fake ESPN.
+
+`.github/workflows/ci.yml` runs all of this on every pull request, then builds the site
+offline from the fixture and checks it.
 
 ## Local use
 
