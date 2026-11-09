@@ -305,8 +305,10 @@ def main():
         if args.site:
             site = Path(args.site); site.mkdir(parents=True, exist_ok=True)
             (site / "data.json").write_text(payload)
+            (site / "favicon.svg").write_text((HERE / "favicon.svg").read_text())
             (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
                                              "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
+                                             "<link rel=\"icon\" href=\"favicon.svg\" type=\"image/svg+xml\">"
                                              "</head><body>\n" + tpl + "\n</body></html>\n")
             print(f"wrote {site}/index.html + data.json")
         if args.artifact:
