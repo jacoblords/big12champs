@@ -77,6 +77,14 @@ test("with no team in the link, it opens on the conference leader", async () => 
   assert.match(text(els.team.innerHTML), /Utah Utes 7-0 Big 12/);
 });
 
+test("picker cards show each team's conference record next to its odds", async () => {
+  const { els } = render(data, "#utah");
+  await settle();
+  const cards = [...els.picker.innerHTML.matchAll(/<span class="ab">([^<]+)<\/span><span class="pc"><span class="rec">(\d+-\d+)<\/span> · ([^<]+)<\/span>/g)];
+  assert.equal(cards.length, data.teams.length);
+  assert.ok(cards.some((c) => c[1] === "UTAH" && c[2] === "7-0"));
+});
+
 test("headline matches the exact odds", async () => {
   const i = data.teams.findIndex((t) => t.abbr === "TTU");
   const { els } = render(data, "#ttu");

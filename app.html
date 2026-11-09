@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
-/* Layout: press-box sheet. Team picker strip on top, selected team's path + rooting guide side by side, race table and rulebook below. */
+/* Layout: press-box sheet. Team picker strip on top, selected team's path + rooting guide side by side, method and rulebook below. */
 :root {
   --bg: #f3f4f7;
   --surface: #ffffff;
@@ -64,7 +64,8 @@ button { font: inherit; color: inherit; }
 .pick[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--team, var(--accent)); }
 .pick img { width: 34px; height: 34px; object-fit: contain; }
 .pick .ab { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; }
-.pick .pc { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pick .pc { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pick .pc .rec { color: var(--ink); font-weight: 500; }
 .pick.out { opacity: 0.55; }
 
 .locks { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 16px; background: var(--warn-soft); color: var(--ink); border-radius: 10px; }
@@ -138,20 +139,9 @@ details.minor .week + .week { margin-top: 10px; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .seg button.auto[aria-pressed="true"] { background: var(--sunk); color: var(--ink); }
 
-/* race */
+/* sections */
 section.block { padding-block: 34px 8px; display: grid; gap: 14px; }
 section.block > p { margin: 0; } /* the grid gap spaces them; default margins doubled it */
-.scroll { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 0.92rem; }
-th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; color: var(--muted); text-align: right; padding: 6px 10px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
-td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
-th:nth-child(2), td:nth-child(2) { text-align: left; }
-tbody tr { cursor: pointer; }
-tbody tr:hover td { background: var(--sunk); }
-td .tm { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
-td img { width: 22px; height: 22px; object-fit: contain; }
-.pbar { display: inline-block; width: 90px; height: 8px; background: var(--sunk); border-radius: 4px; vertical-align: middle; margin-left: 8px; overflow: hidden; }
-.pbar i { display: block; height: 100%; background: var(--accent); }
 
 /* rules */
 .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
@@ -184,12 +174,6 @@ footer code { font-size: 0.8rem; word-break: break-all; }
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
   <div class="locks" id="locks" hidden></div>
   <main id="team"></main>
-
-  <section class="block" id="race">
-    <h2>The race</h2>
-    <p class="note">Every team's odds of reaching the title game, from the same calculation. Pick a row to see that team's path.</p>
-    <div class="scroll"><table id="raceTable"></table></div>
-  </section>
 
   <section class="block" id="method">
     <h2>How the odds work</h2>
@@ -347,7 +331,7 @@ function renderPicker() {
   $("picker").innerHTML = order.map((i) => {
     const p = odds(i).p;
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
-      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="pc">${pct(p)}</span></button>`;
+      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="pc"><span class="rec">${curW[i]}-${curL[i]}</span> · ${pct(p)}</span></button>`;
   }).join("");
 }
 
@@ -508,17 +492,8 @@ function renderTeam() {
     </div>`;
 }
 
-function renderRace() {
-  const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
-  $("raceTable").innerHTML = `<thead><tr><th>#</th><th>Team</th><th>Big 12</th><th>Overall</th><th>Left</th><th>#1 seed</th><th>Title game</th></tr></thead><tbody>` +
-    order.map((i, r) => {
-      const { p, first } = odds(i);
-      return `<tr data-t="${i}"><td>${r + 1}</td><td><span class="tm">${logo(i)}${esc(T[i].name)}</span></td><td>${curW[i]}-${curL[i]}</td><td>${overall[i]}</td><td>${remaining[i]}</td><td>${pct(first)}</td><td>${pct(p)}<span class="pbar"><i style="width:${p * 100}%"></i></span></td></tr>`;
-    }).join("") + "</tbody>";
-}
-
 function renderAll() {
-  renderPicker(); renderLocks(); renderTeam(); renderRace();
+  renderPicker(); renderLocks(); renderTeam();
 }
 
 function select(i, push) {
@@ -529,7 +504,7 @@ function select(i, push) {
 
 document.addEventListener("click", (e) => {
   const pick = e.target.closest("[data-t]");
-  if (pick) { select(+pick.dataset.t, true); if (pick.tagName === "TR") $("team").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if (pick) { select(+pick.dataset.t, true); return; }
   const seg = e.target.closest(".seg button");
   if (seg) {
     const k = +seg.dataset.k, v = seg.dataset.v;
