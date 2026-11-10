@@ -53,6 +53,9 @@ class FakeESPN:
         raise AssertionError(f"unexpected ESPN call {url}")
 
 
+PNG = "data:image/png;base64,iVBORw0KGgo="
+
+
 def first_kickoff():
     return min(F.parse(g["date"]) for g in FIXTURE["games"] if not g["completed"])
 
@@ -82,6 +85,7 @@ class FetchTests(unittest.TestCase):
 
     def fresh_prev(self, now):
         prev = copy.deepcopy(FIXTURE)
+        prev["leagues"] = [{**l, "logo": PNG, "logoDark": PNG} for l in F.LEAGUES.values()]
         prev["meta"]["scheduleCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
         prev["meta"]["fpiCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
         return prev
@@ -193,6 +197,27 @@ class FetchTests(unittest.TestCase):
         self.run_fetch(prev, now, fake, "--league", "sec", league_path="sec")
         self.assertEqual(len(fake.urls), 1)
         self.assertIn("groups=8&", fake.urls[0])
+
+
+    def test_league_logos_fetched_once_and_the_big_12_carries_its_sponsor(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        del prev["leagues"]  # published before league logos existed
+        fake = FakeESPN()
+        written, _ = self.run_fetch(prev, now, fake)
+        conf = [u for u in fake.urls if "/ncaa_conf/" in u]
+        self.assertEqual(len(conf), 2 * len(F.LEAGUES), "light and dark logo per league")
+        self.assertEqual(len(fake.urls), len(conf))
+        for l in written["leagues"]:
+            self.assertTrue(l["logo"].startswith("data:image/png;base64,"), l["id"])
+            self.assertTrue(l["logoDark"].startswith("data:image/png;base64,"), l["id"])
+        big12 = written["leagues"][0]
+        self.assertEqual(big12["sponsor"]["name"], "Monster Energy")
+        self.assertTrue(big12["sponsor"]["logo"].startswith("data:image/png;base64,iVBORw0KGgo"), "the claw, a real PNG")
+        self.assertNotIn("sponsor", written["leagues"][1])
+        fake2 = FakeESPN()
+        self.run_fetch(written, now, fake2)
+        self.assertEqual(fake2.urls, [], "kept from the previous data")
 
 
 class ScoreboardParsing(unittest.TestCase):

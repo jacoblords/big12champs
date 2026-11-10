@@ -2,7 +2,9 @@
 
 Pick a Big 12 or SEC team and see its likeliest path to the conference championship game:
 which results it needs, who to root for, and how the official tiebreakers settle the standings.
-The Big 12 page is the site root and the SEC's is `/sec/`; the header links them.
+The Big 12 page is the site root and the SEC's is `/sec/`; the header links them with each
+conference's ESPN logo, and Monster Energy's claw in front of the Big 12 (its title sponsor
+since July 2026; [`monster-claw.png`](monster-claw.png) is cropped from the public-domain logo on Wikimedia Commons).
 
 Live at **https://titlepaths.com** (GitHub Pages with a custom domain; the old
 `jacoblords.github.io/big12champs` address redirects there). DNS is four A records for the

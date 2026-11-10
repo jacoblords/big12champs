@@ -65,12 +65,14 @@ button { font: inherit; color: inherit; }
 .top { padding-block: 28px 18px; display: grid; gap: 8px; }
 .top h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); text-transform: uppercase; }
 .top p { margin: 0; max-width: 70ch; color: var(--muted); }
-/* season, then one link per league; the current league is underlined */
-.leagues { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
-.leagues .season { padding-right: 16px; border-right: 1px solid var(--line); }
-.leagues a { color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; }
-.leagues a:hover { color: var(--ink); }
-.leagues a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+/* season, then one tab per league with its logo; the current league is filled in */
+.leagues { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 4px; }
+.leagues .season { padding-right: 8px; }
+.leagues a { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); text-decoration: none; font-family: var(--display); font-weight: 700; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1; transition: border-color .15s, color .15s; }
+.leagues a:hover { color: var(--ink); border-color: var(--muted); }
+.leagues a[aria-current="page"] { color: var(--ink); background: var(--surface); border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+.leagues a img { height: 28px; width: auto; max-width: 44px; object-fit: contain; }
+.leagues a img.sponsor { height: 24px; margin-right: -2px; }
 
 /* picker */
 .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; padding-block: 8px 20px; }
@@ -219,7 +221,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
 <div class="wrap">
   <header class="top">
-    <nav class="eyebrow leagues" id="leagues" aria-label="Season and league"></nav>
+    <nav class="leagues" id="leagues" aria-label="Season and league"></nav>
     <h1 id="title">Title Paths</h1>
     <p id="lede"></p>
   </header>
@@ -408,8 +410,12 @@ function renderHeader() {
   // links are relative, so they work on any host: up from this league's folder, then down
   const up = "../".repeat((LG.path.match(/\//g) || []).length);
   const href = (l) => (l.id === LEAGUE_ID ? "./" : up + l.path || "./");
-  $("leagues").innerHTML = `<span class="season">${esc(DATA.season)} season</span>` +
-    LEAGUES.map((l) => `<a href="${href(l)}"${l.id === LEAGUE_ID ? ' aria-current="page"' : ""}>${esc(l.name)}</a>`).join("");
+  // the league logo is decorative (the name follows); a sponsor's is read out ("Monster Energy Big 12")
+  const leagueLogo = (l) => !isPng(l.logo) ? "" : !isPng(l.logoDark) ? `<img src="${l.logo}" alt="">`
+    : `<img class="logo-light" src="${l.logo}" alt=""><img class="logo-dark" src="${l.logoDark}" alt="">`;
+  const sponsor = (l) => (l.sponsor && isPng(l.sponsor.logo) ? `<img class="sponsor" src="${l.sponsor.logo}" alt="${esc(l.sponsor.name)}" title="${esc(l.sponsor.name)} ${esc(l.name)}">` : "");
+  $("leagues").innerHTML = `<span class="season eyebrow">${esc(DATA.season)} season</span>` +
+    LEAGUES.map((l) => `<a href="${href(l)}"${l.id === LEAGUE_ID ? ' aria-current="page"' : ""}>${sponsor(l)}${leagueLogo(l)}<span>${esc(l.name)}</span></a>`).join("");
   $("title").textContent = `${LG.name} Title Paths`;
   document.title = `${LG.name} Title Paths`;
 }

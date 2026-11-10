@@ -340,7 +340,11 @@ test("ESPN-supplied text is escaped", async () => {
 });
 
 // ---- leagues: header nav and the SEC page ----
-const LEAGUES = [{ id: "big12", name: "Big 12", path: "", group: 4 }, { id: "sec", name: "SEC", path: "sec/", group: 8 }];
+const PNG = "data:image/png;base64,iVBORw0KGgo=";
+const LEAGUES = [
+  { id: "big12", name: "Big 12", path: "", group: 4, logo: PNG, logoDark: PNG, sponsor: { name: "Monster Energy", logo: PNG } },
+  { id: "sec", name: "SEC", path: "sec/", group: 8, logo: PNG, logoDark: PNG },
+];
 // 2025 SEC with its final week of conference games left to play: a small exact enumeration
 function secFinalWeek() {
   const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "final-sec-2025.json"), "utf8"));
@@ -355,8 +359,15 @@ test("header: the season first, then every league, the current one marked", asyn
   await settle();
   const nav = els.leagues.innerHTML;
   assert.match(text(nav), /^\s*2026 season Big 12 SEC\s*$/);
-  assert.match(nav, /<a href="\.\/" aria-current="page">Big 12<\/a>/);
-  assert.match(nav, /<a href="sec\/">SEC<\/a>/);
+  const link = (re) => nav.match(re)[0];
+  const big12 = link(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/);
+  const sec = link(/<a href="sec\/"[^>]*>[\s\S]*?<\/a>/);
+  assert.match(text(big12), /Big 12/);
+  assert.match(text(sec), /SEC/);
+  // each league's logo (light and dark), and Monster's claw in front of the Big 12 only
+  for (const a of [big12, sec]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
+  assert.match(big12, /<img class="sponsor" src="data:image\/png;base64,[^"]+" alt="Monster Energy"[^>]*>.*Big 12/s);
+  assert.doesNotMatch(sec, /sponsor/);
   assert.equal(els.title.textContent, "Big 12 Title Paths");
 });
 
@@ -364,8 +375,8 @@ test("SEC page: links back up a level, SEC wording, numbered SEC steps, SEC sour
   const sec = secFinalWeek();
   const { els } = render(sec, "#ala");
   await settle();
-  assert.match(els.leagues.innerHTML, /<a href="\.\.\/">Big 12<\/a>/);
-  assert.match(els.leagues.innerHTML, /<a href="\.\/" aria-current="page">SEC<\/a>/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/"[^>]*>[\s\S]*?<\/a>/)[0]), /Big 12/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/)[0]), /SEC/);
   assert.equal(els.title.textContent, "SEC Title Paths");
   assert.match(text(els.team.innerHTML), /Alabama Crimson Tide \d+-\d+ SEC/);
   assert.match(els.methodText.textContent, /official SEC tiebreakers/);

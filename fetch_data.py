@@ -24,8 +24,10 @@ CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-foot
 STANDINGS = "https://site.web.api.espn.com/apis/v2/sports/football/college-football/standings"
 # Each league's page lives at <site>/<path>. group: ESPN's conference id. The page's nav lists
 # these in this order; the tiebreak rules live in engine.js under the same ids.
+# sponsor: a logo shown in front of the league's name (in the repo, inlined like the ESPN logos).
 LEAGUES = {
-    "big12": {"id": "big12", "name": "Big 12", "path": "", "group": 4},
+    "big12": {"id": "big12", "name": "Big 12", "path": "", "group": 4,
+              "sponsor": {"name": "Monster Energy", "file": "monster-claw.png"}},
     "sec": {"id": "sec", "name": "SEC", "path": "sec/", "group": 8},
 }
 SCHEMA = 3  # 3: games carry ESPN's conference flag
@@ -104,14 +106,36 @@ def load_prev(src):
         return None
 
 
-def fetch_logo(tid, dark=False):
-    """80px team logo as a data URI. dark=True is ESPN's version made for dark backgrounds."""
+def png_uri(png):
+    return "data:image/png;base64," + base64.b64encode(png).decode()
+
+
+def fetch_logo(tid, dark=False, kind="ncaa"):
+    """80px logo as a data URI: a team's, or a conference's with kind="ncaa_conf" (tid = its
+    ESPN group). dark=True is ESPN's version made for dark backgrounds."""
     folder = "500-dark" if dark else "500"
     try:
-        png = get(f"https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/{folder}/{tid}.png&w=80&h=80", raw=True)
-        return "data:image/png;base64," + base64.b64encode(png).decode()
+        png = get(f"https://a.espncdn.com/combiner/i?img=/i/teamlogos/{kind}/{folder}/{tid}.png&w=80&h=80", raw=True)
+        return png_uri(png)
     except Exception:
         return None
+
+
+def league_entries(prev_leagues, offline):
+    """Every league for the page's nav: names, paths, logos. ESPN's conference logos are fetched
+    once and then kept from the previous data; sponsor logos come from the repo."""
+    old = {l["id"]: l for l in prev_leagues or []}
+    out, fetched = [], 0
+    for lg in LEAGUES.values():
+        e = {k: v for k, v in lg.items() if k != "sponsor"}
+        for key, dark in (("logo", False), ("logoDark", True)):
+            e[key] = old.get(lg["id"], {}).get(key)
+            if not e[key] and not offline:
+                e[key] = fetch_logo(lg["group"], dark=dark, kind="ncaa_conf"); fetched += 1
+        if "sponsor" in lg:
+            e["sponsor"] = {"name": lg["sponsor"]["name"], "logo": png_uri((HERE / lg["sponsor"]["file"]).read_bytes())}
+        out.append(e)
+    return out, fetched
 
 
 def fetch_teams(league, season):
@@ -217,6 +241,9 @@ def main():
     fpi = prev.get("fpi", {}) if prev else {}
     calendar = prev.get("calendar") if prev else None
     changed = []
+    leagues, fetched = league_entries(prev.get("leagues") if prev else None, args.offline)
+    if fetched and prev:
+        changed.append(f"{fetched} league logos")
 
     if args.offline:
         if not prev:
@@ -300,7 +327,7 @@ def main():
         meta["updatedAt"] = iso(now)
     meta["espnCalls"] = calls
 
-    data = {"schema": SCHEMA, "league": league["id"], "leagues": list(LEAGUES.values()), "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
+    data = {"schema": SCHEMA, "league": league["id"], "leagues": leagues, "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
     if prev and prev.get("exact"):
         data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
