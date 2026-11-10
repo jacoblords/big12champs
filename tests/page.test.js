@@ -231,7 +231,7 @@ test("one click sets the selected team to win out, and again undoes it", async (
   const box = els.team.innerHTML.split('class="rg-picks"')[1];
   assert.ok(box, "picks box appears");
   assert.equal((box.match(/Set by you: Texas Tech wins/g) || []).length, remaining);
-  assert.match(els.team.innerHTML, /id="winOut"[^>]*aria-pressed="true"/);
+  assert.match(els.team.innerHTML, /id="winOut"[^>]*aria-pressed="true"[^>]*>&#10003; Texas Tech wins out<\/button>/);
   clickWinOut();
   assert.doesNotMatch(els.team.innerHTML, /rg-picks/);
   assert.equal(els.locks.hidden, true);

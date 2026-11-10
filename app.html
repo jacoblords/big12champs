@@ -484,7 +484,7 @@ function winsOutLocked(team) {
 function winOutButton(team) {
   if (!ownGames(team).length) return "";
   const on = winsOutLocked(team);
-  return `<button id="winOut" class="wo-btn" type="button" data-team="${team}" aria-pressed="${on}">${on ? "&#10003; " + esc(T[team].short) + " wins out (undo)" : "What if " + esc(T[team].short) + " wins out?"}</button>`;
+  return `<button id="winOut" class="wo-btn" type="button" data-team="${team}" aria-pressed="${on}"${on ? ' title="Click to clear these picks"' : ""}>${on ? "&#10003; " + esc(T[team].short) + " wins out" : "What if " + esc(T[team].short) + " wins out?"}</button>`;
 }
 
 function renderTeam() {
