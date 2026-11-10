@@ -353,12 +353,13 @@ test("ESPN-supplied text is escaped", async () => {
   assert.doesNotMatch(els.team.innerHTML + els.picker.innerHTML, /<img src=x|"><script>/);
 });
 
-// ---- leagues: header nav, the SEC and ACC pages ----
+// ---- leagues: header nav, the SEC, ACC and Big Ten pages ----
 const PNG = "data:image/png;base64,iVBORw0KGgo=";
 const LEAGUES = [
   { id: "big12", name: "Big 12", path: "", group: 4, logo: PNG, logoDark: PNG, sponsor: { name: "Monster Energy", logo: PNG } },
   { id: "sec", name: "SEC", path: "sec/", group: 8, logo: PNG, logoDark: PNG },
   { id: "acc", name: "ACC", path: "acc/", group: 1, logo: PNG, logoDark: PNG },
+  { id: "big10", name: "Big Ten", path: "big10/", group: 5, logo: PNG, logoDark: PNG },
 ];
 // 2025 SEC with its final week of conference games left to play: a small exact enumeration
 function secFinalWeek() {
@@ -373,17 +374,19 @@ test("header: a quiet league switch and the season above, the league's logo lead
   const { els } = render({ ...data, leagues: LEAGUES }, "");
   await settle();
   const nav = els.leagues.innerHTML;
-  assert.match(text(nav), /^\s*Big 12 SEC ACC\s*$/);
+  assert.match(text(nav), /^\s*Big 12 SEC ACC Big Ten\s*$/);
   assert.equal(els.season.textContent, "2026 season");
   const link = (re) => nav.match(re)[0];
   const big12 = link(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/);
   const sec = link(/<a href="sec\/"[^>]*>[\s\S]*?<\/a>/);
   const acc = link(/<a href="acc\/"[^>]*>[\s\S]*?<\/a>/);
+  const big10 = link(/<a href="big10\/"[^>]*>[\s\S]*?<\/a>/);
   assert.match(text(big12), /Big 12/);
   assert.match(text(sec), /SEC/);
   assert.match(text(acc), /ACC/);
+  assert.match(text(big10), /Big Ten/);
   // each league's logo (light and dark) in the switch; no sponsor there
-  for (const a of [big12, sec, acc]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
+  for (const a of [big12, sec, acc, big10]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
   assert.doesNotMatch(nav, /sponsor/);
   // the title: Monster's claw, then the Big 12 logo, then the name
   const lockup = els.lockup.innerHTML;
@@ -485,4 +488,51 @@ test("ACC tiebreaks: numbered steps, and teams tied on different schedules are n
   const say = text(els.team.innerHTML);
   assert.match(say, /Miami \(7-2\) and Clemson \(6-2\) count as tied: two losses each, over nine and eight conference games\. Miami gets the #1 seed by beating Clemson\./);
   assert.match(say, /Both teams tied for first make the title game/);
+});
+
+// The 2026 Big Ten snapshot with weeks 11 and 12 decided by ESPN's favorites: the last nine
+// conference games left (the full snapshot has 27, too many for exact odds).
+function big10LateSeason() {
+  const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "big10-season-2026-11-10.json"), "utf8"));
+  for (const g of d.games) if (!g.completed && g.week <= 12) Object.assign(g, { completed: true, winner: g.pHome >= 0.5 ? g.home : g.away });
+  d.leagues = LEAGUES;
+  d.exact = solve(d);
+  return d;
+}
+
+test("Big Ten page: its own name, six numbered steps, the rating stand-in, the Big Ten's policy", async () => {
+  const b10 = big10LateSeason();
+  assert.equal(b10.exact.games, 9);
+  const { els } = render(b10, "#osu");
+  await settle();
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/"[^>]*>[\s\S]*?<\/a>/)[0]), /Big 12/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/acc\/"[^>]*>[\s\S]*?<\/a>/)[0]), /ACC/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/)[0]), /Big Ten/);
+  assert.equal(els.title.textContent, "Big Ten Title Paths");
+  assert.doesNotMatch(els.lockup.innerHTML, /sponsor/);
+  assert.match(text(els.team.innerHTML), /Ohio State Buckeyes \d+-\d+ Big Ten/);
+  assert.match(els.methodText.textContent, /official Big Ten tiebreakers/);
+  const rules = text(els.rules.innerHTML);
+  assert.match(rules, /The six steps/);
+  assert.match(rules, /Opponents' winning percentage/);
+  assert.match(rules, /SportSource Analytics Team Rating Score/);
+  assert.match(rules, /go on to the next step, not back to step 1/);
+  assert.match(rules, /seeded by the two-team steps/);
+  assert.doesNotMatch(rules, /Total wins/);
+  assert.match(els.foot.innerHTML, /2024_Big_Ten_Football_Tiebreaker/);
+  assert.match(els.foot.innerHTML, /groups=5/);
+  assert.doesNotMatch(els.foot.innerHTML + rules, /Big 12|SEC|ACC/);
+});
+
+test("Big Ten tiebreaks show the league's step numbers", async () => {
+  const b10 = big10LateSeason();
+  let sawNumber = false;
+  for (const t of b10.teams) {
+    const { els } = render(b10, "#" + t.abbr.toLowerCase());
+    await settle();
+    const html = els.team.innerHTML;
+    assert.doesNotMatch(html, /Step [a-g7-9]</, t.abbr);
+    if (/Step [1-6]</.test(html)) sawNumber = true;
+  }
+  assert.ok(sawNumber, "some path shows a numbered step");
 });

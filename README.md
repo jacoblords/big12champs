@@ -1,8 +1,8 @@
 # Title Paths
 
-Pick a Big 12, SEC or ACC team and see its likeliest path to the conference championship game:
+Pick a Big 12, SEC, ACC or Big Ten team and see its likeliest path to the conference championship game:
 which results it needs, who to root for, and how the official tiebreakers settle the standings.
-The Big 12 page is the site root, the SEC's is `/sec/` and the ACC's `/acc/`; the header links them with each
+The Big 12 page is the site root, the SEC's is `/sec/`, the ACC's `/acc/` and the Big Ten's `/big10/`; the header links them with each
 conference's ESPN logo, and Monster Energy's claw in front of the Big 12 (its title sponsor
 since July 2026; [`monster-claw.png`](monster-claw.png) is cropped from the public-domain logo on Wikimedia Commons).
 
@@ -16,7 +16,8 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   Matchup Predictor win probabilities, and sorts each by the league's tiebreaking procedures
   ([Big 12 PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf),
   [SEC](https://www.secsports.com/news/2024/08/sec-announces-football-tie-breaking-process),
-  [ACC PDF](https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf)).
+  [ACC PDF](https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf),
+  [Big Ten PDF, archived](https://web.archive.org/web/20240826184525/https://assets.contentstack.io/v3/assets/bltca750cef518bc6e4/blt2bf0c27b5714240c/66cc95d319b683cdf2088edf/2024_Big_Ten_Football_Tiebreaker_-_FINAL[10][72].pdf)).
   The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
   in" and "must" are only shown when proven over every finish.
 - **Paths:** a team's path is the likeliest set of results that *guarantees* it a title-game
@@ -57,6 +58,15 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   the same wins or the same losses as the leaders on a different schedule length counts as
   tied, and ties are worked "downward" (the `redefine` switch, following the ACC's own
   examples as given to On3). It reproduces the 2024 and 2025 title games under the old rules.
+- **The Big Ten** (18 teams, nine conference games each) uses its 2024 procedure, the latest
+  it has published: the SEC's steps with SportSource's private Team Rating Score (FPI stands
+  in), the two teams who get in seeded with the two-team steps, but nobody dropped for losing
+  to all the other tied teams and tied opponents in the walk counted together. One rule is its
+  own (`cutContinues`): when a step drops some teams from a tie of three or more and three or
+  more are still level, they go on to the next step instead of starting over. It reproduces the
+  2024 and 2025 title games and all seventeen scenarios the conference published for them.
+  With 27 conference games left (Nov. 10, 2026) it is past the exact-odds budget and the page
+  simulates; exact odds return once two weeks remain.
 - **Adding a league:** see [docs/adding-a-league.md](docs/adding-a-league.md): the rules
   research, the tests to write first, and the places a league is wired in.
   `tools/final_fixture.py <league> <season>` builds a finished-season test fixture.
@@ -102,6 +112,11 @@ python3 -m unittest discover -s tests       # fetcher caching rules against a fa
 - `tests/acc-scenarios.test.js`: the ACC's own 2025 final-week scenarios (every combination,
   including those that hinge on the SportSource ranking) and press scenarios from November
   2024 and 2025, replayed over every finish, with two SI paths that miss a step pinned.
+- `tests/big10.test.js`: the Big Ten's 2024 and 2025 title games, and each place its
+  procedure differs from another league's (its document has no worked examples).
+- `tests/big10-scenarios.test.js`: the Big Ten's own scenarios before the last two weeks of 2024
+  (ten) and the last week of 2025 (seven), over every finish; two 2024 scenarios pin the
+  finishes where step 4 is an exact tie, which the sheet didn't consider.
 - `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
   hand-built standings table for each rule and corner case (sweep rule, restart after a
   seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
@@ -120,9 +135,10 @@ offline from each league's season snapshot and checks it.
 python3 fetch_data.py --site site               # Big 12; incremental, reuses ./data.json
 python3 fetch_data.py --league sec --site site  # SEC; reuses ./data-sec.json, writes site/sec/
 python3 fetch_data.py --league acc --site site  # ACC; reuses ./data-acc.json, writes site/acc/
+python3 fetch_data.py --league big10 --site site  # Big Ten; ./data-big10.json, site/big10/
 python3 -m http.server -d site                  # then open http://localhost:8000
 ```
 
 `fetch_data.py` also writes `<league>-path.html`, a single self-contained page with the data
 embedded. Set `SEASON` (or `--season`) for another year. The deploy workflow runs one step per
-league; each writes its page every run, so a deploy for one league's change carries all three.
+league; each writes its page every run, so a deploy for one league's change carries all four.

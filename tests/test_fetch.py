@@ -182,7 +182,8 @@ class FetchTests(unittest.TestCase):
         self.assertIn("<title>SEC Title Paths</title>", site)
         self.assertEqual(written["league"], "sec")
         self.assertEqual([(l["id"], l["name"], l["path"]) for l in self.site_data["leagues"]],
-                         [("big12", "Big 12", ""), ("sec", "SEC", "sec/"), ("acc", "ACC", "acc/")])
+                         [("big12", "Big 12", ""), ("sec", "SEC", "sec/"), ("acc", "ACC", "acc/"),
+                          ("big10", "Big Ten", "big10/")])
 
     def test_acc_page_lives_under_acc(self):
         now = first_kickoff()
@@ -205,6 +206,21 @@ class FetchTests(unittest.TestCase):
         self.run_fetch(prev, now, fake, "--league", "acc", league_path="acc")
         self.assertEqual(len(fake.urls), 1)
         self.assertIn("groups=1&", fake.urls[0])
+
+    def test_big_ten_page_lives_under_big10_and_calls_use_group_5(self):
+        now = first_kickoff()
+        prev = copy.deepcopy(FIXTURE)
+        prev["league"] = "big10"
+        written, site = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build", "--league", "big10", league_path="big10")
+        self.assertIn("<title>Big Ten Title Paths</title>", site)
+        self.assertEqual(written["league"], "big10")
+        now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
+        prev = self.fresh_prev(now)
+        prev["league"] = "big10"
+        fake = FakeESPN()
+        self.run_fetch(prev, now, fake, "--league", "big10", league_path="big10")
+        self.assertEqual(len(fake.urls), 1)
+        self.assertIn("groups=5&", fake.urls[0])
 
     def test_sec_calls_use_the_sec_group(self):
         now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
