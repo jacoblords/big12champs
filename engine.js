@@ -1,5 +1,5 @@
 // Conference championship-game tiebreaker engine + Monte Carlo simulator.
-// Implements the official Big 12, SEC and ACC football tiebreaking procedures (no-division
+// Implements the official Big 12, SEC, ACC and Big Ten football tiebreaking procedures (no-division
 // formats, 2024-). All share one set of steps; a league picks which it uses, in order.
 (function (root) {
   "use strict";
@@ -11,7 +11,7 @@
     c: "Record vs. next-highest common opponent (standings walk)",
     d: "Strength of conference schedule",
     e: "Total wins (12-game season, max 1 FCS win)",
-    f: "Rating (Big 12, ACC: SportSource rating, FPI as stand-in; SEC: capped relative scoring margin)",
+    f: "Rating (Big 12, ACC, Big Ten: SportSource rating, FPI as stand-in; SEC: capped relative scoring margin)",
     g: "Coin toss",
   };
 
@@ -33,11 +33,15 @@
   // of wins or of losses as them (ACC policy 1). Every restart redefines the tie from the teams
   // still in contention, and a two-team tie's winner is only in once nobody is tied with it:
   // "starting with the highest win percentage, working downward" (2.a). See titleGameRedefine.
+  // cutContinues (Big Ten): when a step drops some teams from a tie of three or more and three or
+  // more are still level, they go on to the next step ("If three or more teams remain tied after
+  // any step, move to next step in tiebreaker with remaining tied teams"). Elsewhere they start
+  // over at step a. Two left level still start over with the two-team steps.
   // before: the rules for earlier seasons, when a league changed its procedure.
   // Labels are the leagues' own: the Big 12 letters its steps; the SEC letters them too (A-F) but
   // numbers its procedures, so the page uses numbers to keep the two apart. The ACC numbers its
   // three-team steps 1-3 (and its two-team steps i-iii).
-  const NONE = { reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, redefine: false };
+  const NONE = { reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, redefine: false, cutContinues: false };
   // ACC 2024-2025 (policy of Aug. 2024, reworded Sept. 2025 without changing a step): the SEC's
   // steps with SportSource's Team Rating Score, and the first team out of the tiebreaker is #1.
   // Its standings walk orders tied opponents "with ties broken"; the SEC's head-to-head split
@@ -47,6 +51,11 @@
     big12: { ...NONE, steps: ["a", "b", "c", "d", "e", "f", "g"], label: { a: "a", b: "b", c: "c", d: "d", e: "e", f: "f", g: "g" }, rating: "fpi" },
     sec: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true, h2hLoserOut: true, walkSplitsTies: true, rating: "margin" },
     acc: { ...NONE, steps: ["a", "f", "g"], label: { a: "1", f: "2", g: "3" }, h2hLoserOut: true, redefine: true, rating: "fpi", before: { season: 2026, rules: ACC_2025 } },
+    // Big Ten (2024 procedure, unchanged through 2026): the SEC's steps with SportSource's Team
+    // Rating Score; a team that lost to every other tied team stays in; tied opponents in the
+    // walk count together ("their order of finish"); the two teams who get in are seeded by the
+    // two-team steps (the conference's 2024 scenarios 6, 8 and 9).
+    big10: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true, cutContinues: true, rating: "fpi" },
   };
   function rulesFor(league, season) {
     const r = RULES[league || "big12"];
@@ -230,7 +239,8 @@
   // info (optional) gets .pool: the teams still in the tiebreaker when the seed was picked. Teams
   // eliminated along the way stay out: the next seed comes from the rest of that pool (2025
   // published scenario: TTU drops out of a four-way tie, ASU is #1, then BYU beats Utah for #2).
-  function pickOne(st, T, rng, trace, names, info) {
+  // from (cutContinues only): the step to resume at; earlier steps are skipped.
+  function pickOne(st, T, rng, trace, names, info, from) {
     if (info) info.pool = T;
     if (T.length === 1) return T[0];
     const Tset = new Set(T);
@@ -258,15 +268,19 @@
         const cut = T.filter((t) => !top.includes(t));
         if (trace) push({ step, cut, detail: txt(detail) }, extra);
         if (info && info.stopOnCut) { info.cut = cut; return CUT; } // the caller redefines the tie
-        return pickOne(st, top, rng, trace, names, info); // the rest start over at step a
+        // Big Ten: three or more still level go on to the next step; otherwise start over at a
+        const next = st.rules.cutContinues && top.length > 2 ? String.fromCharCode(step.charCodeAt(0) + 1) : undefined;
+        return pickOne(st, top, rng, trace, names, info, next); // the rest start over at step a
       }
       return -1;
     };
     let w, vals;
-    const uses = (step) => st.rules.steps.includes(step);
+    const uses = (step) => st.rules.steps.includes(step) && (!from || step >= from);
 
     // a. head-to-head
-    if (!multi) {
+    if (from && from > "a") {
+      // resuming after a cut (cutContinues): head-to-head was already applied
+    } else if (!multi) {
       const r = st.H2H[T[0] * st.N + T[1]];
       if (r !== 0) { w = r > 0 ? T[0] : T[1]; push({ step: "a", winner: w, detail: trace && names[w] + " beat " + names[w === T[0] ? T[1] : T[0]] }); return w; }
     } else {
@@ -322,8 +336,10 @@
       if (w !== -1) return w;
     }
     // f. rating: FPI (Big 12 stand-in) or capped relative scoring margin (SEC)
-    w = decide("f", topNum(T, st.rating), () => T.map((t) => names[t] + " " + st.rating[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.rating, 1) }));
-    if (w !== -1) return w;
+    if (uses("f")) {
+      w = decide("f", topNum(T, st.rating), () => T.map((t) => names[t] + " " + st.rating[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.rating, 1) }));
+      if (w !== -1) return w;
+    }
     // g. coin toss
     w = T[Math.floor(rng() * T.length)];
     push({ step: "g", winner: w, detail: "random draw" });
