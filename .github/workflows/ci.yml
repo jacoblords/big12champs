@@ -39,17 +39,26 @@ jobs:
             --data-out "$RUNNER_TEMP/data-sec.json" --site site --artifact ''
           python fetch_data.py --league acc --offline --force-build --prev tests/fixtures/acc-season-2026-11-09.json \
             --data-out "$RUNNER_TEMP/data-acc.json" --site site --artifact ''
+          # The Big Ten snapshot has 27 conference games left (134 million finishes): over the
+          # production budget, so it builds the way production does, with simulated odds.
+          EXACT_BUDGET_SECONDS=180 python fetch_data.py --league big10 --offline --force-build \
+            --prev tests/fixtures/big10-season-2026-11-10.json --data-out "$RUNNER_TEMP/data-big10.json" --site site --artifact ''
 
       - name: Built pages parse and carry exact odds
         run: |
           node -e '
             const fs = require("fs"), vm = require("vm");
-            for (const dir of ["site", "site/sec", "site/acc"]) {
+            for (const dir of ["site", "site/sec", "site/acc", "site/big10"]) {
               const html = fs.readFileSync(dir + "/index.html", "utf8");
               const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
               if (scripts.length !== 2) throw new Error(dir + ": expected 2 scripts, found " + scripts.length);
               scripts.forEach((s) => new vm.Script(s));
               const d = JSON.parse(fs.readFileSync(dir + "/data.json", "utf8"));
+              if (dir === "site/big10") {
+                if (!d.exact || !/over the 180s budget/.test(d.exact.skipped || "")) throw new Error(dir + ": expected simulated odds, got " + JSON.stringify(d.exact));
+                console.log("ok:", dir, "simulated:", d.exact.skipped);
+                continue;
+              }
               if (!d.exact || d.exact.skipped || d.exact.teams.length !== d.teams.length) throw new Error(dir + ": exact odds missing");
               const total = d.exact.teams.reduce((s, t) => s + t.p, 0);
               if (Math.abs(total - 2) > 1e-9) throw new Error(dir + ": title-game odds sum to " + total);

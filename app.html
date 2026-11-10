@@ -74,6 +74,8 @@ button { font: inherit; color: inherit; }
 .leagues a img { height: 18px; width: auto; max-width: 30px; object-fit: contain; }
 .leagues a:not([aria-current="page"]) img { filter: grayscale(1); opacity: 0.55; }
 .leagues a:hover img { filter: none; opacity: 1; }
+/* four leagues on one line down to a 320px phone */
+@media (max-width: 380px) { .leagues { column-gap: 12px; } .leagues a { gap: 5px; letter-spacing: 0.04em; } }
 /* the league's logo (and title sponsor's) leads the headline */
 .titlerow { display: flex; align-items: center; gap: 16px; }
 .lockup { display: flex; flex: none; align-items: center; gap: 10px; padding-right: 16px; border-right: 3px solid var(--ink); align-self: stretch; }
@@ -461,6 +463,27 @@ const LEAGUE_TEXT = {
     ],
     policy: { url: "https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf", title: "ACC Football Tiebreaker Policy, as amended July 1, 2026 (official PDF)" },
   },
+  big10: {
+    steps: {
+      a: "<b>Head-to-head.</b> Two teams: the winner of their game. Three or more: winning percentage in games among the tied teams, when they all played each other.",
+      c: "<b>Walk the standings.</b> Record against the highest-placed common opponent, then the next, in order of finish. A group of tied teams in the standings counts as one opponent.",
+      d: "<b>Opponents' winning percentage.</b> The combined conference winning percentage of all of a team's conference opponents.",
+      g: "<b>Random draw</b> by the commissioner.",
+    },
+    stepOn: { d: "on opponents' winning percentage", g: "by random draw" },
+    col: {},
+    h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. Otherwise go to step ${s("b")}. Losing to everyone does not knock a team out.`,
+    threeWay: `<b>Three or more tie for first:</b> run the steps until one team stands alone at the top of a step. That team is in, and everyone still in contention starts over at step ${s("a")} for the second spot. If a step leaves two teams level at the top, both are in. If it leaves three or more level, the rest are out and those three or more go on to the next step, not back to step ${s("a")}. The two teams who get in are then seeded by the two-team steps, so the first team in is not always #1.`,
+    titleGame: "<b>Title game:</b> not counted in conference records. Every team plays nine conference games.",
+    gray: [
+      `Step ${s("f")} uses ESPN's current FPI because the SportSource rating is not public. It only decides a tie that is exact on every step before it.`,
+      `Step ${s("c")}: the procedure walks common opponents "based on their order of finish" without saying how opponents tied in the standings are ordered. The site counts such a group together, against the members every tied team played.`,
+      "The procedure is the Big Ten's 2024 document. The conference has published no newer football version, and its 2026 title-game page refers to the same tiebreakers.",
+      "No step looks at non-conference games, so they are left out of the odds, the paths and the rooting guide.",
+      `Run against final results, the engine reproduces both Big Ten title games: 2024 (Oregon 9-0; Penn State over Indiana at 8-1 on opponents' winning percentage, .407 to .346) and 2025 (Ohio State and Indiana both 9-0; Ohio State #1 on opponents' winning percentage, .395 to .358). It agrees with all seventeen scenarios the conference published before the last two weeks of 2024 and the last week of 2025, except where the conference's sheet missed that two teams could finish exactly level on step ${s("d")}.`,
+    ],
+    policy: { url: "https://web.archive.org/web/20240826184525/https://assets.contentstack.io/v3/assets/bltca750cef518bc6e4/blt2bf0c27b5714240c/66cc95d319b683cdf2088edf/2024_Big_Ten_Football_Tiebreaker_-_FINAL[10][72].pdf", title: "2024 Big Ten Football Championship Game Tiebreaker (official PDF, archived copy)" },
+  },
 };
 const TEXT = LEAGUE_TEXT[LEAGUE_ID];
 const COUNT_WORD = ["", "one", "two", "three", "four", "five", "six", "seven", "eight"];
@@ -570,8 +593,11 @@ function tiebreakHTML(tr, ex) {
   const cut = tr.cut || [];
   const kept = tr.tied.filter((t) => !cut.includes(t));
   // tr.spot: this decision only picks a title-game team; the two are seeded afterwards
+  // Big Ten: three or more left level go on to the next step instead of starting over
+  const nextStep = RULES.steps[RULES.steps.indexOf(tr.step) + 1];
+  const goOn = RULES.cutContinues && kept.length > 2 && nextStep ? `go on to step ${stepName(nextStep)}` : "start over";
   const outcome = cut.length
-    ? `${names(cut)} ${cut.length === 1 ? "drops" : "drop"} out ${how}, and ${names(kept)} start over.`
+    ? `${names(cut)} ${cut.length === 1 ? "drops" : "drop"} out ${how}, and ${names(kept)} ${goOn}.`
     : ladderWin(tr, ex) ? `<b>${name(tr.winner)}</b> wins this tie ${how}, and moves on.`
     : `<b>${name(tr.winner)}</b> gets ${tr.spot ? "a title-game spot" : seed} ${how}.`;
   // ACC 2026: tied teams can have different records (same wins or same losses, different schedules)

@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
-      changed: ${{ steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true' }}
+      changed: ${{ steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true' || steps.big10.outputs.changed == 'true' }}
     env:
       # exact.js skips (and the page uses simulation) when enumerating would take longer
       EXACT_BUDGET_SECONDS: "180"
@@ -51,7 +51,9 @@ jobs:
         run: python fetch_data.py --league sec --prev "$PUBLISHED/sec/data.json" --site site --artifact '' $FORCE --github-output
       - id: acc
         run: python fetch_data.py --league acc --prev "$PUBLISHED/acc/data.json" --site site --artifact '' $FORCE --github-output
-      - if: steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true'
+      - id: big10
+        run: python fetch_data.py --league big10 --prev "$PUBLISHED/big10/data.json" --site site --artifact '' $FORCE --github-output
+      - if: steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true' || steps.big10.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site

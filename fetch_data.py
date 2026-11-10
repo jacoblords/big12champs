@@ -30,6 +30,7 @@ LEAGUES = {
               "sponsor": {"name": "Monster Energy", "file": "monster-claw.png"}},
     "sec": {"id": "sec", "name": "SEC", "path": "sec/", "group": 8},
     "acc": {"id": "acc", "name": "ACC", "path": "acc/", "group": 1},
+    "big10": {"id": "big10", "name": "Big Ten", "path": "big10/", "group": 5},
 }
 SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h

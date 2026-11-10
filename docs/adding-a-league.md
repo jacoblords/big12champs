@@ -1,6 +1,6 @@
 # Adding a league
 
-How the SEC and the ACC were added, written down so the next league goes faster. The order
+How the SEC, the ACC and the Big Ten were added, written down so the next league goes faster. The order
 matters: **rules first, then tests, then code.** Tiebreak procedures are long, and summaries of
 them are often wrong. The SEC was first built from press summaries and got three rules wrong;
 the official document caught all three. The ACC rewrote its procedure for 2026, so the seasons
@@ -33,7 +33,15 @@ A league touches these places, and nothing else:
   A file can change under the same URL: the ACC's `2023/5/17/ACC_FOOTBALL_TIEBREAKER_POLICY.pdf`
   held one version in 2023, another from Aug. 2024 and a third from Sept. 2025. Compare Wayback
   snapshots of the PDF itself, and `pdfinfo` creation dates.
-- Sidearm-hosted conference sites (theacc.com) serve their documents from
+- **Hosts die.** The Big Ten's 2024 PDF lived on a Contentstack asset URL, then a bigten.org
+  `api/media/file/` URL; both stopped working when the conference moved to Sidearm in 2026.
+  List every copy with a CDX prefix search (`url=<host>/<path prefix>&matchType=prefix`, grep for
+  "tiebreak"); a matching `digest` across hosts and years proves it's the same file, which is how
+  "unchanged through 2025" was established. Link the Wayback copy from the page when the
+  original is gone.
+- A file called "Tiebreakers" may be for other sports: the Big Ten's `2026_Tiebreakers.pdf` is
+  its Olympic-sports procedure. Check the title before reading further.
+- Sidearm-hosted conference sites (theacc.com, bigten.org since 2026) serve their documents from
   `s3.amazonaws.com/sidearm.sites/<site>/documents/...`; a search for the document title often
   finds that URL directly.
 - **If the procedure changed, find the old one too.** The real title games and published
@@ -70,6 +78,13 @@ Go through these questions; they are where the Big 12 and the SEC differ:
 | A tie of 3+ for first: are the two who get in re-seeded with the two-team steps? | `reseedTop2` | no | yes | no | no |
 | Do teams play different numbers of conference games, with "tied" redefined for it? | `redefine` | no | no | no | yes |
 | Did the procedure change between seasons? | `before` | no | no | | 2024-25 rules kept |
+| After a cut, do three or more still level go on to the next step (not back to a)? | `cutContinues` | no | no | no | n/a |
+
+The Big Ten (2024 procedure, still in force in 2026) answers: steps a-d, f, g numbered 1-6;
+no non-conference games; `h2hLoserOut` no; `walkSplitsTies` no ("order of finish", nothing
+about ties); `rating` FPI for the private SportSource score; `reseedTop2` yes (its own 2024
+scenarios seed Oregon over Ohio State after Ohio State got in first); `redefine` no (everyone
+plays nine); `cutContinues` yes, its one new rule.
 
 `redefine` replaces the title-game driver (`titleGameRedefine` in `engine.js`): the tie is
 defined from the best winning percentage plus teams on the other schedule length with the same
@@ -78,11 +93,13 @@ every restart defines the tie again. Where a rating step decides almost everythi
 2026 rules), say so plainly on the page: FPI is a stand-in, and those finishes can go the other
 way.
 
-Also check these. Both leagues so far agree with the engine on them:
+Also check these. Every league so far agrees with the engine on them, with the one exception
+noted:
 
 - A team alone at the top of a step is in, and the rest start over.
 - If several teams are level at the top and some are below, the ones below are out and the
-  rest start over.
+  rest start over (the Big Ten: only when two are left; three or more go on to the next step,
+  `cutContinues`).
 - A team that beat every other tied team is in.
 - Common opponents leave the tied teams themselves out.
 - In the walk, only opponents every tied team played are counted.
@@ -187,6 +204,29 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
   a server you didn't start.
 - **CSS:** `app.html` is one stylesheet. New class names can collide with existing ones. The
   header's `.bar` once took on the rooting guide's 6px progress bar.
+
+## What the Big Ten taught
+
+- **Read the restart rule word by word.** Every league so far said "the remaining teams revert
+  to the beginning" once a team is seeded. The Big Ten also says what happens after a step drops
+  *some* teams: "If three or more teams remain tied after any step, move to next step". That is
+  `cutContinues`. No published scenario exercises it, so its test is a hand-built table.
+- **A conference's own scenarios can still miss exact ties.** The Big Ten's 2024 sheet says
+  "seeded on opponents' winning percentage" for finishes where two teams end at exactly the same
+  x/81; then the rating decides. 104 of the finishes the sheet covers are like that, pinned in
+  `big10-scenarios.test.js`. Compare step-d values as fractions (the engine does), never as
+  rounded decimals.
+- **Scenario sheets describe finishes, not games.** "Ohio State finishes 7-2 (losses to ORE and
+  MICH)" pins Ohio State's remaining games; "Penn State finishes 7-2 (losses to OSU and either
+  MINN/MD)" means exactly one of two games, an XOR. Translate each into results on the pending
+  games and leave everything else free.
+- **18 teams, nine games each: exact odds wait for the last two weeks.** On 2026-11-10, 27
+  conference games were left: 134 million finishes, estimated at 442 s against the 180 s budget,
+  so the page simulated. With 18 left it takes under a second. CI builds the 27-game snapshot
+  under the production budget and checks that it falls back to simulation.
+- **Four leagues in the header** need a tighter gap below 380 px to stay on one line at 320 px.
+- The conference's site is its own best source for scenarios: it published them for the last two
+  weeks of 2024 (a PDF) and the last week of 2025 (an article), each with the deciding steps.
 
 ## What the ACC taught
 
