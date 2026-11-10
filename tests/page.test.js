@@ -438,11 +438,18 @@ test("SEC tiebreaks show the league's step numbers, and say who got in before wh
   assert.ok(sawSpot, "some path picks the two teams before seeding them");
 });
 
-// The 2026 ACC snapshot with week 11 decided by ESPN's favorites: 14 games left. Five teams play
-// eight conference games and twelve play nine, so ties across schedule lengths show up.
+// The 2026 ACC snapshot with week 11 decided: 14 games left. Five teams play eight conference games
+// and twelve play nine. Favorites win except Duke at Miami and Georgia Tech at Clemson, which puts a
+// tie across schedule lengths on a likeliest path (Duke 6-3 and Clemson 5-3, on SMU's).
 function accLateSeason() {
   const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "acc-season-2026-11-09.json"), "utf8"));
-  for (const g of d.games) if (!g.completed && g.week === 11) Object.assign(g, { completed: true, winner: g.pHome >= 0.5 ? g.home : g.away });
+  const ab = Object.fromEntries(d.teams.map((t) => [t.id, t.abbr]));
+  const upset = new Set(["DUKE@MIA", "GT@CLEM"]);
+  for (const g of d.games) {
+    if (g.completed || g.week !== 11) continue;
+    const homeWins = (g.pHome >= 0.5) !== upset.has(`${ab[g.away]}@${ab[g.home]}`);
+    Object.assign(g, { completed: true, winner: homeWins ? g.home : g.away });
+  }
   d.leagues = LEAGUES;
   d.exact = solve(d);
   return d;
@@ -482,12 +489,13 @@ test("ACC tiebreaks: numbered steps, and teams tied on different schedules are n
     if (/Step [1-3]</.test(html)) sawNumber = true;
   }
   assert.ok(sawNumber, "some path shows a numbered step");
-  // Clemson's likeliest path: Miami 7-2 over nine games and Clemson 6-2 over eight are tied on losses
-  const { els } = render(acc, "#clem");
+  // SMU's likeliest path: Duke 6-3 over nine games and Clemson 5-3 over eight are tied on losses
+  const { els } = render(acc, "#smu");
   await settle();
   const say = text(els.team.innerHTML);
-  assert.match(say, /Miami \(7-2\) and Clemson \(6-2\) count as tied: two losses each, over nine and eight conference games\. Miami gets the #1 seed by beating Clemson\./);
-  assert.match(say, /Both teams tied for first make the title game/);
+  assert.match(say, /Duke \(6-3\) and Clemson \(5-3\) count as tied: three losses each, over nine and eight conference games\. Clemson wins this tie by beating Duke, and moves on\./);
+  // working downward: Clemson then meets the 5-4 teams it's tied with on wins
+  assert.match(say, /Four teams tied \(SMU 5-4, Clemson 5-3, Pitt 5-4, Virginia Tech 5-4\)\. SMU gets the #2 seed/);
 });
 
 // The 2026 Big Ten snapshot with weeks 11 and 12 decided by ESPN's favorites: the last nine

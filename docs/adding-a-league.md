@@ -204,6 +204,16 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
   a server you didn't start.
 - **CSS:** `app.html` is one stylesheet. New class names can collide with existing ones. The
   header's `.bar` once took on the rooting guide's 6px progress bar.
+- **Audit with fresh eyes.** Before calling a league done, have someone who didn't build it read
+  the official text clause by clause against the engine, without seeing your conclusions. For
+  each reading they disagree with, they should construct a standings table that comes out
+  differently, and measure how often it happens in the live snapshot. The November 2026 audit of
+  the ACC found the policy's "working downward" applied only to two-team ties, a 3-point swing in
+  live odds. All 25 ACC tests passed either way, because no test had a mixed-record tie of three.
+  A second search for press scenarios also found claims the new rule then satisfied.
+- **Sampled checks for the live season:** `sampleSeason(file, n)` in `tests/helpers.js` draws
+  random finishes when too many games are left to try them all. Use it for in-season press
+  claims (`tests/acc-scenarios.test.js` has two).
 
 ## What the Big Ten taught
 

@@ -225,3 +225,27 @@ test("ACC has no total-wins step, so non-conference games are not enumerated", (
     assert.ok(ctx.pending.length > 0 && ctx.pending.every((g) => g.conf));
   }
 });
+
+// ---- Policy 2.a, "working downward" (independent audit, Nov. 2026) ----
+// "In the event of a tie involving teams which played an alternate number of Conference games, all
+// ties will be broken starting with the highest win percentage, working downward." Strickland's
+// examples do the same: the team with the best percentage is compared first, and "the winner of the
+// head-to-head would move on to be compared to the next team".
+
+test("2.a: a mixed tie of three is broken from the top percentage down, not as one block", () => {
+  // A 9-0 is in. B and C 7-2 (9 games) and D 6-2 (8 games, tied with them on losses). They all
+  // played: B beat C, C beat D, D beat B, a 1-1 cycle that a single three-team tie would hand to the
+  // ranking (C). Working downward, B and C (.778) go first: B beat C. Then B meets D (.750): D beat
+  // B, and D takes the spot.
+  const r = acc({ records: [[9, 0], [7, 2], [7, 2], [6, 2], [4, 5]], beat: [[1, 2], [2, 3], [3, 1]], rating: [0, 1, 3, 2, 0] });
+  assert.deepEqual(r, { seeds: ["A", "D"], steps: ["BC>B:a", "BD>D:a"] });
+});
+
+test("2.a: with both spots open, the top two are compared for the first spot; the loser can still be passed", () => {
+  // No 9-0 team. B 8-1 (9 games) and D 7-1 (8 games) are tied; C 7-2 (9 games) is tied with D (same
+  // wins) but not with B. B beat D, so B takes the first spot. The tie for the second is redefined:
+  // D (.875) and C, and C beat D. Strickland walked through the other branch (D winning: then B
+  // faces C and wins on percentage); this is the same process with B winning.
+  const r = acc({ records: [[4, 5], [8, 1], [7, 2], [7, 1], [4, 5]], beat: [[1, 3], [2, 3]] });
+  assert.deepEqual(r, { seeds: ["B", "C"], steps: ["BD>B:a", "CD>C:a"] });
+});

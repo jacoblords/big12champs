@@ -14,6 +14,9 @@
 //   2024, after week 13: FanSided, Nov. 23, 2024: SMU is in; "Miami wins next week, and they're in
 //     ... If they lose to Syracuse next weekend, Clemson takes the last spot."
 //     https://fansided.com/acc-championship-game-scenarios-smu-miami-clemson
+//     The Island Packet (via Yahoo), Nov. 20, 2024, quoting an ACC spokesman to The State on the
+//       three-way 7-1 tie: SMU and Miami advance on common opponents.
+//       https://sports.yahoo.com/articles/updated-acc-championship-game-scenarios-113000298.html
 //   2025, after week 12: Sports Illustrated, Nov. 19, 2025, "ACC Championship Game Scenarios
 //     Entering Week 13". Georgia Tech, Virginia, Pitt and SMU hold. Miami's path and Pitt's second
 //     one don't, everywhere (below).
@@ -26,7 +29,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const B = require("../engine.js");
-const { replayFinal } = require("./helpers.js");
+const { replayFinal, sampleSeason } = require("./helpers.js");
 
 const pairOf = (f) => [...f.pair].sort().join(" vs ");
 function checkIn(finishes, covers, team, label) {
@@ -48,6 +51,15 @@ test("2024 after week 12 (CBS, ACC): SMU in with one more win; Miami's and Clems
   for (const f of finishes) {
     if (f.beat("WAKE", "MIA") && f.beat("SMU", "UVA")) assert.ok(!f.pair.has("MIA"), "Miami eliminated");
     if (f.pair.has("CLEM")) assert.ok(f.lost("MIA") || (f.lost("SMU", 13) && f.lost("SMU", 14)), "Clemson needs help");
+  }
+  // An ACC spokesman, to The State (via the Island Packet, Nov. 20, 2024): in a three-way tie at
+  // 7-1, "SMU and Miami are both 2-0 against Florida State and Louisville, while Clemson is 1-1",
+  // so Clemson would lose it and "SMU and Miami would advance".
+  checkIn(finishes, (f) => f.wonOut("MIA") && f.losses("SMU") === 1, "SMU", "spokesman: three-way 7-1");
+  checkIn(finishes, (f) => f.wonOut("MIA") && f.losses("SMU") === 1, "MIA", "spokesman: three-way 7-1");
+  for (const f of finishes.filter((f) => f.wonOut("MIA") && f.losses("SMU") === 1)) {
+    const cut = stepsOf(ctx, f).find((t) => t.tied.length === 3);
+    assert.equal(cut.step, "b", "decided on common opponents");
   }
 });
 
@@ -166,4 +178,27 @@ test("2025 after week 13 (ACC): every combination in the conference's own list",
     for (const f of finishes) if (f.pair.has(team)) assert.ok(any.some((c) => c(f)), `${team} in by an unlisted path: ${pairOf(f)}`);
   }
   for (const f of finishes) assert.ok(!f.coin);
+});
+
+// ---- 2026, in season, under the new policy (sampled: 22 games left is too many to try them all) ----
+// Sources, after week 10 (standings Miami 6-0, Wake Forest 5-1, Louisville 5-2, SMU 5-2, Duke 4-2,
+// Clemson 4-2; Clemson plays eight conference games, the others nine):
+//   A to Z Sports (via Yardbarker), Nov. 10, 2026: "if Clemson, Wake, and Miami all end up with
+//     two ACC losses, Miami still gets the nod by having beaten them both."
+//     https://www.yardbarker.com/college_football/articles/miami_hurricanes_could_snap_a_9_year_drought_on_saturday_and_it_will_be_their_last_chance_ever_to_claim_a_program_first/s1_17313_44542732
+//   The Clemson Insider, Nov. 9, 2026, "Clemson's path to the ACC Championship Game": Clemson must
+//     beat Duke, needs Duke to beat Wake Forest, and needs "Louisville to lose just one game".
+//     https://www.theclemsoninsider.com/2026/11/09/clemsons-path-to-the-acc-championship-game/
+test("2026 after week 10 (A to Z, Clemson Insider): Miami's head-to-head wins, and Clemson's path", () => {
+  const { finishes, ctx } = sampleSeason("acc-season-2026-11-09.json", 20000);
+  assert.equal(ctx.rules, B.RULES.acc);
+  const allTwo = (f) => ["MIA", "WAKE", "CLEM"].every((t) => f.losses(t) === 2);
+  checkIn(finishes, allTwo, "MIA", "A to Z: Miami, Wake and Clemson all with two losses");
+  const clemIn = finishes.filter((f) => f.pair.has("CLEM"));
+  assert.ok(clemIn.length > 0, "Clemson has a path");
+  for (const f of clemIn) {
+    assert.ok(f.beat("CLEM", "DUKE"), "Clemson Insider: Clemson must beat Duke");
+    assert.ok(f.beat("DUKE", "WAKE"), "Clemson Insider: Clemson needs Duke to beat Wake Forest");
+    assert.ok(f.lost("LOU"), "Clemson Insider: Clemson needs a Louisville loss");
+  }
 });
