@@ -686,7 +686,8 @@ function renderTeam() {
     const oddsText = shownProb >= 0.1 ? pct(shownProb, 0) : oneIn(shownProb);
     const oddsLabel = shown.length === 1 ? (nPicks ? "Odds of the other result" : "Odds of this result")
       : `Odds of ${nPicks ? "the other" : "these"} ${shown.length} results`;
-    // how often these shown results are enough, with the games not shown at ESPN's odds
+    // how often these shown results are enough, with the games not shown at ESPN's odds; shown
+    // only to qualify a path that isn't guaranteed (long shots, or data without guaranteed paths)
     const sure = pd.reliability >= 0.9995;
     const enough = sure ? "Always in" : `${pd.reliability < 0.005 ? "Under 1%" : pct(pd.reliability, 0)} of the time`;
     const stat = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
@@ -694,7 +695,7 @@ function renderTeam() {
     const stats = `<dl class="path-stats">
       ${stat("Needs", nothing ? (nPicks ? "Just your picks" : "Nothing more") : needs)}
       ${shown.length ? stat(oddsLabel, oddsText) : ""}
-      ${shown.length ? stat(shown.length === 1 ? "If it happens" : "If they happen", enough) : ""}
+      ${shown.length && !A.need && !sure ? stat(shown.length === 1 ? "If it happens" : "If they happen", enough) : ""}
     </dl>${shown.length && !sure ? `<p class="path-note">The rest comes down to games not shown.</p>` : ""}${A.need && A.need.checks && shown.length ? `<p class="path-note">Checked against ${A.need.checks.toLocaleString("en-US")} simulated finishes with these results, not every possible one.</p>` : ""}`;
     const minorHead = A.need
       ? `<summary>${nMinor} other game${nMinor > 1 ? "s" : ""} ${nMinor > 1 ? "don't" : "doesn't"} matter${shown.length + nPicks === 1 ? " if this happens" : shown.length + nPicks ? " if these happen" : ""}</summary>
