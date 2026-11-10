@@ -33,6 +33,9 @@ function render(data, hash) {
 }
 const text = (html) => html.replace(/<img[^>]*>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
 const settle = () => new Promise((r) => setTimeout(r, 20));
+// path-row odds cells: number, mark slot (! / !! / check), and the screen-reader note
+const oddsCells = (html) => [...html.matchAll(/<span class="po( ups)?( set)?"><span class="n">([^<]+)<\/span><span class="x" aria-hidden="true">([^<]*)<\/span>(?:<span class="vh">, ([^<]+)<\/span>)?<\/span>/g)]
+  .map((m) => ({ ups: !!m[1], set: !!m[2], n: m[3], pct: parseInt(m[3], 10), x: m[4], sr: m[5] || "" }));
 
 const data = reducedSeason();
 data.exact = solve(data);
@@ -105,9 +108,10 @@ test("close games are toss-ups, not upsets, and the path sentence counts them th
     const html = els.team.innerHTML;
     const path = html.split("How the standings end")[0];
     if (!/Most likely path/.test(path)) continue;
-    const upsetTags = (path.match(/class="po ups" title="Upset: /g) || []).length;
-    const tossDog = [...path.matchAll(/class="po" title="Toss-up: [^"]*?(\d+)%"/g)].filter((m) => +m[1] < 50).length;
-    if (/title="Toss-up: /.test(path)) sawToss = true;
+    const cells = oddsCells(path);
+    const upsetTags = cells.filter((c) => c.ups).length;
+    const tossDog = cells.filter((c) => c.sr === "toss-up" && c.pct < 50).length;
+    if (cells.some((c) => c.sr === "toss-up")) sawToss = true;
     const sentence = text(html).match(/It needs [^.]*\./)[0];
     if (upsetTags === 0 && tossDog === 0) assert.match(sentence, /no upsets: every favorite wins/, t.abbr);
     else if (upsetTags === 0) assert.match(sentence, /no real upsets, but .*toss-up/, t.abbr);
@@ -117,25 +121,64 @@ test("close games are toss-ups, not upsets, and the path sentence counts them th
   assert.ok(sawToss, "toss-up tags appear");
 });
 
-test("path rows: one odds column; only upsets colored; picks are a check; explanations on hover", async () => {
+test("path rows: odds in one column, ! for upsets, !! for big upsets, a check beside your pick's odds", async () => {
+  let sawUpset = false;
+  for (const t of data.teams) {
+    const { els } = render(data, "#" + t.abbr.toLowerCase());
+    await settle();
+    const path = els.team.innerHTML.split("How the standings end")[0];
+    if (!/Most likely path/.test(path)) continue;
+    assert.match(path, /The percentage is ESPN's odds of that result\./);
+    const cells = oddsCells(path);
+    assert.equal(cells.length, (path.match(/class="game/g) || []).length, `${t.abbr}: one odds cell per row`);
+    assert.doesNotMatch(path, /<span class="po[^>]*title=/, "no hover text");
+    for (const c of cells) {
+      assert.match(c.n, /^(\d+%|<0\.1%|&lt;0\.1%)$/);
+      if (c.pct < 25) assert.equal(c.x, "!!", `${t.abbr}: ${c.n} is a big upset`);
+      else if (c.pct < 45) assert.equal(c.x, "!", `${t.abbr}: ${c.n} is an upset`);
+      else assert.equal(c.x, "", `${t.abbr}: ${c.n} gets no mark`);
+      assert.equal(c.ups, c.pct < 45);
+      if (c.ups) sawUpset = true;
+    }
+  }
+  assert.ok(sawUpset, "fixture paths include upsets");
+  // a locked result keeps its odds and puts a check in the mark slot
   const { els, handlers } = render(data, "#ttu");
   await settle();
-  const path = () => els.team.innerHTML.split("How the standings end")[0];
-  const cells = () => [...path().matchAll(/<span class="po( ups| pick)?" title="([^"]+)"[^>]*>([^<]+)<\/span>/g)].map((m) => ({ cls: (m[1] || "").trim(), title: m[2], text: m[3] }));
-  const games = (path().match(/class="game/g) || []).length;
-  assert.equal(cells().length, games, "every game row has exactly one odds cell");
-  for (const c of cells()) {
-    if (c.cls === "ups") assert.match(c.title, /^Upset: ESPN gives .* only \d+%$/);
-    else if (c.cls === "") assert.match(c.title, /^(Toss-up: )?ESPN gives .* \d+%$/);
-    assert.match(c.text, /^\d+%$/);
-  }
-  assert.doesNotMatch(path(), /The percentage is ESPN's odds/, "no always-on key text");
-  assert.doesNotMatch(path(), /class="tag /, "no pill tags in path rows");
-  // lock a result: that row shows a check instead of a percentage
   handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "0", v: "1" } } : null) } });
-  const picks = cells().filter((c) => c.cls === "pick");
-  assert.equal(picks.length, 1);
-  assert.match(picks[0].title, /^You set this: .* wins$/);
+  const set = oddsCells(els.team.innerHTML.split("How the standings end")[0]).filter((c) => c.set);
+  assert.equal(set.length, 1);
+  assert.match(set[0].n, /^\d+%$/);
+  assert.equal(set[0].x, "&#10003;");
+  assert.doesNotMatch(els.team.innerHTML, /class="po[^"]*\bpick\b/, "not the picker card class");
+});
+
+test("path odds cover the results shown, not every remaining game", async () => {
+  const { els, handlers } = render(data, "#ttu");
+  await settle();
+  const head = () => text(els.team.innerHTML.split("Most likely path")[1].split("Week")[0]);
+  const keyRows = () => (els.team.innerHTML.split("How the standings end")[0].split('<details class="minor"')[0].match(/class="game/g) || []).length;
+  assert.doesNotMatch(els.team.innerHTML, /full slate/);
+  const m = head().match(/Odds of these (\d+) results: (\d+%|1 in [\d,.]+)\./);
+  assert.ok(m, head());
+  assert.equal(+m[1], keyRows(), "counts the rows shown above the folded games");
+  // with a pick on a shown game, that game is left out of the odds
+  const locked = els.team.innerHTML.match(/data-k="(\d+)" data-v="1"/)[1];
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: locked, v: "1" } } : null) } });
+  assert.match(head(), /Odds of the other \d+ results?: /);
+});
+
+test("every path says how often its shown results are enough", async () => {
+  let paths = 0;
+  for (const t of data.teams) {
+    const { els } = render(data, "#" + t.abbr.toLowerCase());
+    await settle();
+    const head = text((els.team.innerHTML.split("Most likely path")[1] || "").split("Week")[0]);
+    if (!head) continue;
+    paths++;
+    assert.match(head, new RegExp(`If (they|it) happens?, ${t.short.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} (is in no matter how the other games go|gets in (\\d+%|under 1%) of the time; the rest comes down to games not shown)\\.`), `${t.abbr}: ${head}`);
+  }
+  assert.ok(paths > 5);
 });
 
 test("intro reads 'Results through <date> with N games left'", async () => {
