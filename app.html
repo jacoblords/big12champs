@@ -65,14 +65,19 @@ button { font: inherit; color: inherit; }
 .top { padding-block: 28px 18px; display: grid; gap: 8px; }
 .top h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); text-transform: uppercase; }
 .top p { margin: 0; max-width: 70ch; color: var(--muted); }
-/* season, then one tab per league with its logo; the current league is filled in */
-.leagues { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 4px; }
-.leagues .season { padding-right: 8px; }
-.leagues a { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); text-decoration: none; font-family: var(--display); font-weight: 700; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1; transition: border-color .15s, color .15s; }
-.leagues a:hover { color: var(--ink); border-color: var(--muted); }
-.leagues a[aria-current="page"] { color: var(--ink); background: var(--surface); border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
-.leagues a img { height: 28px; width: auto; max-width: 44px; object-fit: contain; }
-.leagues a img.sponsor { height: 24px; margin-right: -2px; }
+/* a quiet strip: league switch on the left, season on the right */
+.topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 18px; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+.leagues { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.leagues a { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.leagues a:hover { color: var(--ink); }
+.leagues a[aria-current="page"] { color: var(--ink); }
+.leagues a img { height: 18px; width: auto; max-width: 30px; object-fit: contain; }
+.leagues a:not([aria-current="page"]) img { filter: grayscale(1); opacity: 0.55; }
+.leagues a:hover img { filter: none; opacity: 1; }
+/* the league's logo (and title sponsor's) leads the headline */
+.titlerow { display: flex; align-items: center; gap: 16px; }
+.lockup { display: flex; flex: none; align-items: center; gap: 10px; padding-right: 16px; border-right: 3px solid var(--ink); align-self: stretch; }
+.lockup img { height: clamp(36px, 7vw, 56px); width: auto; object-fit: contain; }
 
 /* picker */
 .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; padding-block: 8px 20px; }
@@ -221,8 +226,8 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
 <div class="wrap">
   <header class="top">
-    <nav class="leagues" id="leagues" aria-label="Season and league"></nav>
-    <h1 id="title">Title Paths</h1>
+    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><span class="eyebrow" id="season"></span></div>
+    <div class="titlerow"><div class="lockup" id="lockup" hidden></div><h1 id="title">Title Paths</h1></div>
     <p id="lede"></p>
   </header>
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
@@ -410,12 +415,15 @@ function renderHeader() {
   // links are relative, so they work on any host: up from this league's folder, then down
   const up = "../".repeat((LG.path.match(/\//g) || []).length);
   const href = (l) => (l.id === LEAGUE_ID ? "./" : up + l.path || "./");
-  // the league logo is decorative (the name follows); a sponsor's is read out ("Monster Energy Big 12")
+  // league logos are decorative (the name follows); a sponsor's is read out ("Monster Energy Big 12 Title Paths")
   const leagueLogo = (l) => !isPng(l.logo) ? "" : !isPng(l.logoDark) ? `<img src="${l.logo}" alt="">`
     : `<img class="logo-light" src="${l.logo}" alt=""><img class="logo-dark" src="${l.logoDark}" alt="">`;
   const sponsor = (l) => (l.sponsor && isPng(l.sponsor.logo) ? `<img class="sponsor" src="${l.sponsor.logo}" alt="${esc(l.sponsor.name)}" title="${esc(l.sponsor.name)} ${esc(l.name)}">` : "");
-  $("leagues").innerHTML = `<span class="season eyebrow">${esc(DATA.season)} season</span>` +
-    LEAGUES.map((l) => `<a href="${href(l)}"${l.id === LEAGUE_ID ? ' aria-current="page"' : ""}>${sponsor(l)}${leagueLogo(l)}<span>${esc(l.name)}</span></a>`).join("");
+  $("leagues").innerHTML = LEAGUES.map((l) => `<a href="${href(l)}"${l.id === LEAGUE_ID ? ' aria-current="page"' : ""}>${leagueLogo(l)}<span>${esc(l.name)}</span></a>`).join("");
+  $("season").textContent = `${DATA.season} season`;
+  const lockup = sponsor(LG) + leagueLogo(LG);
+  $("lockup").innerHTML = lockup;
+  $("lockup").hidden = !lockup;
   $("title").textContent = `${LG.name} Title Paths`;
   document.title = `${LG.name} Title Paths`;
 }
