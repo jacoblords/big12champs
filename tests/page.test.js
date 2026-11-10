@@ -121,7 +121,7 @@ test("path rows: one odds column; only upsets colored; picks are a check; explan
   const { els, handlers } = render(data, "#ttu");
   await settle();
   const path = () => els.team.innerHTML.split("How the standings end")[0];
-  const cells = () => [...path().matchAll(/<span class="po( ups| pick)?" title="([^"]+)"[^>]*>([^<]+)<\/span>/g)].map((m) => ({ cls: (m[1] || "").trim(), title: m[2], text: m[3] }));
+  const cells = () => [...path().matchAll(/<span class="po( ups| set)?" title="([^"]+)"[^>]*>([^<]+)<\/span>/g)].map((m) => ({ cls: (m[1] || "").trim(), title: m[2], text: m[3] }));
   const games = (path().match(/class="game/g) || []).length;
   assert.equal(cells().length, games, "every game row has exactly one odds cell");
   for (const c of cells()) {
@@ -133,9 +133,11 @@ test("path rows: one odds column; only upsets colored; picks are a check; explan
   assert.doesNotMatch(path(), /class="tag /, "no pill tags in path rows");
   // lock a result: that row shows a check instead of a percentage
   handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "0", v: "1" } } : null) } });
-  const picks = cells().filter((c) => c.cls === "pick");
+  const picks = cells().filter((c) => c.cls === "set");
   assert.equal(picks.length, 1);
   assert.match(picks[0].title, /^You set this: .* wins$/);
+  // the class must not collide with the team-picker card (.pick has a box, border and padding)
+  assert.doesNotMatch(path(), /class="po[^"]*\bpick\b/);
 });
 
 test("intro reads 'Results through <date> with N games left'", async () => {

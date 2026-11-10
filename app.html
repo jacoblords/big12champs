@@ -126,7 +126,7 @@ details.minor .week + .week { margin-top: 10px; }
 /* odds column: same width on every row; only upsets are colored */
 .game .po { text-align: right; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; cursor: help; }
 .game .po.ups { color: var(--warn); font-weight: 600; }
-.game .po.pick { font-size: 0.95rem; color: var(--ink); }
+.game .po.set { font-size: 0.95rem; color: var(--ink); } /* not .pick: that is the team-picker card */
 .tag { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tag.ups { background: var(--warn-soft); color: var(--warn); }
 
@@ -399,7 +399,7 @@ function gameRow(g, i, winnerHome, mark) {
   const winner = esc(T[hw ? g.h : g.a].short);
   const odds = pct(pW, 0);
   const cell = locked
-    ? `<span class="po pick" title="You set this: ${winner} wins" aria-label="You set this: ${winner} wins">&#10003;</span>`
+    ? `<span class="po set" title="You set this: ${winner} wins" aria-label="You set this: ${winner} wins">&#10003;</span>`
     : isTossUp(pW)
       ? `<span class="po" title="Toss-up: ESPN gives ${winner} ${odds}" aria-label="Toss-up: ESPN gives ${winner} ${odds}">${odds}</span>`
       : pW < 0.5
