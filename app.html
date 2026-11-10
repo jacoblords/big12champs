@@ -488,6 +488,36 @@ function winOutButton(team) {
   return `<button id="winOut" class="wo-btn" type="button" data-team="${team}" aria-pressed="${on}"${on ? ' title="Click to clear these picks"' : ""}>${on ? "&#10003; " + esc(T[team].short) + " wins out" : "What if " + esc(T[team].short) + " wins out?"}</button>`;
 }
 
+// Which games a team's path shows, and how often those shown results are enough.
+// Shown: the team's own games, your picks, games that move its odds overall, and any other game
+// this particular path depends on (flipping it knocks the team out, e.g. by tipping a
+// strength-of-schedule tiebreak). Reliability: with the shown results fixed, the share of finishes
+// of the remaining games (at ESPN's odds) that still put the team in. Cached with the analysis.
+function pathDetails(i, A) {
+  if (A.pathDetails) return A.pathDetails;
+  const m = A.path.mask >>> 0;
+  const base = (g, k) => A.imp.hits < 30 || g.h === i || g.a === i || locks[k] !== undefined || matters(A.imp.games[k]);
+  const dependsOn = new Set();
+  P.forEach((g, k) => { if (!base(g, k) && !B12.qualifies(ctx, (m ^ (1 << k)) >>> 0, i)) dependsOn.add(k); });
+  const isKey = (g, k) => base(g, k) || dependsOn.has(k);
+  const free = P.map((g, k) => k).filter((k) => !isKey(P[k], k));
+  const out = Uint8Array.from(P, (g, k) => (m >>> k) & 1);
+  let inW = 0, totW = 0;
+  const score = (w) => { const s = B12.titleGame(B12.standings(ctx, out), () => 0.5); totW += w; if (s[0] === i || s[1] === i) inW += w; };
+  if (free.length <= 16) {
+    for (let f = 0; f < 2 ** free.length; f++) {
+      let w = 1;
+      free.forEach((k, b) => { const o = (f >>> b) & 1; out[k] = o; w *= o ? P[k].pHome : 1 - P[k].pHome; });
+      score(w);
+    }
+  } else {
+    let seed = 99;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    for (let n = 0; n < 20000; n++) { free.forEach((k) => { out[k] = rnd() < P[k].pHome ? 1 : 0; }); score(1); }
+  }
+  return (A.pathDetails = { isKey, dependsOn, reliability: totW ? inW / totW : 0 });
+}
+
 function renderTeam() {
   const i = sel, t = T[i];
   const A = teamAnalysis(i);
@@ -527,7 +557,8 @@ function renderTeam() {
       : tossUps === 0 ? `It needs ${plural(upsets, "upset")}.`
       : `It needs ${plural(upsets, "upset")}, plus ${plural(tossUps, "toss-up")} going to the slight underdog.`;
     const weeks = [...new Set(P.map((g) => g.week))];
-    const isKey = (g, k) => A.imp.hits < 30 || g.h === i || g.a === i || locks[k] !== undefined || matters(A.imp.games[k]);
+    const pd = pathDetails(i, A);
+    const isKey = pd.isKey;
     const weekBlocks = (key) => weeks.map((w) => {
       const rows = P.map((g, k) => [g, k]).filter(([g, k]) => g.week === w && isKey(g, k) === key)
         .sort(([a], [b]) => (b.h === i || b.a === i) - (a.h === i || a.a === i))
@@ -544,12 +575,17 @@ function renderTeam() {
     const oddsLine = !shown.length ? ""
       : shown.length === 1 ? `Odds of ${nPicks ? "the other result" : "this result"}: ${oddsText}.`
       : `Odds of ${nPicks ? "the other" : "these"} ${shown.length} results: ${oddsText}.`;
+    // how often these shown results are enough, with the games not shown at ESPN's odds
+    const sure = pd.reliability >= 0.9995;
+    const reliableLine = sure
+      ? `If ${shown.length === 1 ? "it happens" : "they happen"}, ${esc(t.short)} is in no matter how the other games go.`
+      : `If ${shown.length === 1 ? "it happens" : "they happen"}, ${esc(t.short)} gets in ${pd.reliability < 0.005 ? "under 1%" : pct(pd.reliability, 0)} of the time; the rest comes down to games not shown.`;
     const body = weekBlocks(true) + (nMinor ? `<details class="minor" id="path-minor"${openState["path-minor"] ? " open" : ""}>
       <summary>${nMinor} other game${nMinor > 1 ? "s" : ""} barely matter to ${esc(t.short)}</summary>
       <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
-      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} ${oddsLine}</p>
+      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} ${oddsLine} ${reliableLine}</p>
       <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
       ${body}
       ${explainHTML(i, A.ex)}

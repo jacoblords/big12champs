@@ -168,6 +168,19 @@ test("path odds cover the results shown, not every remaining game", async () => 
   assert.match(head(), /Odds of the other \d+ results?: /);
 });
 
+test("every path says how often its shown results are enough", async () => {
+  let paths = 0;
+  for (const t of data.teams) {
+    const { els } = render(data, "#" + t.abbr.toLowerCase());
+    await settle();
+    const head = text((els.team.innerHTML.split("Most likely path")[1] || "").split("Week")[0]);
+    if (!head) continue;
+    paths++;
+    assert.match(head, new RegExp(`If (they|it) happens?, ${t.short.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} (is in no matter how the other games go|gets in (\\d+%|under 1%) of the time; the rest comes down to games not shown)\\.`), `${t.abbr}: ${head}`);
+  }
+  assert.ok(paths > 5);
+});
+
 test("intro reads 'Results through <date> with N games left'", async () => {
   const { els } = render(data, "#utah");
   await settle();
