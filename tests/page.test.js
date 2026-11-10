@@ -168,7 +168,7 @@ test("path odds cover the results shown, not every remaining game", async () => 
   assert.match(els.team.innerHTML, /<dt>Odds of the other( \d+)? results?<\/dt>/);
 });
 
-test("every path says how often its shown results are enough", async () => {
+test("a guaranteed path doesn't repeat that it's enough; a path that isn't says how often", async () => {
   let paths = 0;
   for (const t of data.teams) {
     const { els } = render(data, "#" + t.abbr.toLowerCase());
@@ -176,12 +176,26 @@ test("every path says how often its shown results are enough", async () => {
     const html = els.team.innerHTML;
     if (!/Most likely path/.test(html)) continue;
     paths++;
-    const m = html.match(/<dt>If (?:they happen|it happens)<\/dt><dd>(Always in|(?:\d+%|Under 1%) of the time)<\/dd><\/div>/);
-    assert.ok(m, `${t.abbr}: reliability stat`);
-    // the note appears only when the shown results aren't always enough
-    assert.equal(/The rest comes down to games not shown\./.test(html), m[1] !== "Always in", t.abbr);
+    assert.match(html, /guarantees .* a title-game spot/, t.abbr);
+    assert.doesNotMatch(html, /<dt>If (?:they happen|it happens)<\/dt>/, `${t.abbr}: no reliability stat`);
+    assert.doesNotMatch(html, /The rest comes down to games not shown\./, t.abbr);
   }
   assert.ok(paths > 5);
+  // data without guaranteed paths (built before them): the likeliest finish, qualified when needed
+  const old = JSON.parse(JSON.stringify(data));
+  for (const t of old.exact.teams) delete t.need;
+  let qualified = 0;
+  for (const t of old.teams) {
+    const { els } = render(old, "#" + t.abbr.toLowerCase());
+    await settle();
+    const html = els.team.innerHTML;
+    if (!/Most likely path/.test(html)) continue;
+    assert.doesNotMatch(html, /guarantees/, t.abbr);
+    const m = html.match(/<dt>If (?:they happen|it happens)<\/dt><dd>((?:\d+%|Under 1%) of the time)<\/dd><\/div>/);
+    assert.equal(!!m, /The rest comes down to games not shown\./.test(html), t.abbr);
+    if (m) qualified++;
+  }
+  assert.ok(qualified > 0, "some old-style path isn't always enough");
 });
 
 test("intro reads 'Results through <date> with N games left'", async () => {

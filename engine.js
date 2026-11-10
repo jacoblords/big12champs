@@ -540,7 +540,113 @@
     return { st, seeds, trace, groups: confGroups(st) };
   }
 
-  const api = { STEP, RULES, rulesFor, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups };
+  // The likeliest set of results that guarantees a team a title-game spot, from simulations: the
+  // stand-in for exact.js's guaranteedPath when there's no full enumeration (what-ifs set, or too
+  // many games left). "Guarantees" becomes "rules out every simulated finish where the team
+  // misses": each such finish must disagree with the set on at least one game. Among those sets
+  // the likeliest is found by branch and bound (a weighted hitting set). The answer is then
+  // re-checked by simulating with its results forced; new failures join the list and it searches
+  // again. Returns null when it can't settle on a set that passes, which happens for long shots,
+  // whose rare winning finishes the simulations barely reach.
+  //
+  // simsList: simulate() results (any mix of weighted, uniform or forced runs; only which
+  // finishes miss matters, not how often). locks: the visitor's picks, which stay as set.
+  function guaranteedPathSim(ctx, team, simsList, locks, opts) {
+    opts = opts || {};
+    const verifyN = opts.verifyN || 20000, maxRounds = opts.maxRounds || 4, maxNodes = opts.maxNodes || 20000;
+    const P = ctx.pending, n = P.length;
+    const locked = (k) => locks && (locks[k] === 0 || locks[k] === 1);
+    // cost of a result = -log of its odds; picks can't be chosen
+    const cost = new Float64Array(2 * n);
+    P.forEach((g, k) => {
+      cost[2 * k + 1] = locked(k) ? Infinity : -Math.log(g.pHome);
+      cost[2 * k] = locked(k) ? Infinity : -Math.log(1 - g.pHome);
+    });
+    const ins = new Set(), fails = new Set();
+    for (const S of simsList) {
+      if (!S) continue;
+      for (let s = 0; s < S.nSims; s++) (S.s1[s] === team || S.s2[s] === team ? ins : fails).add(S.masks[s]);
+    }
+    if (!ins.size) return null;
+    const free = P.map((g, k) => k).filter((k) => !locked(k));
+    const costOf = (fix, vals) => { let c = 0; for (const k of free) if ((fix >>> k) & 1) c += cost[2 * k + ((vals >>> k) & 1)]; return c; };
+
+    // First answer: the likeliest simulated finish that puts the team in (it disagrees with every
+    // failure somewhere), with results dropped greedily, least likely first, while it still does.
+    function start(F) {
+      let m = -1, mc = Infinity;
+      const all = free.reduce((a, k) => (a | (1 << k)) >>> 0, 0);
+      for (const x of ins) { const c = costOf(all, x); if (c < mc) { mc = c; m = x; } }
+      if (!isFinite(mc)) return null;
+      let fix = all;
+      const order = free.slice().sort((a, b) => cost[2 * b + ((m >>> b) & 1)] - cost[2 * a + ((m >>> a) & 1)]);
+      for (const k of order) {
+        const f2 = (fix & ~(1 << k)) >>> 0;
+        let ok = true;
+        for (let i = 0; i < F.length; i++) if (((F[i] ^ m) & f2) === 0) { ok = false; break; }
+        if (ok) fix = f2;
+      }
+      return { fix, vals: (m & fix) >>> 0, cost: costOf(fix, m) };
+    }
+
+    function search(F, inc) {
+      let best = inc.cost, bestFix = inc.fix, bestVals = inc.vals, nodes = 0;
+      function bb(fix, vals, ban1, ban0, c) {
+        if (++nodes > maxNodes || c >= best) return;
+        // Each failure the set still contains needs one more result that rules it out; the
+        // cheapest such result for the hardest one bounds what's left to pay.
+        let lb = 0, pick = -1;
+        for (let i = 0; i < F.length; i++) {
+          const f = F[i];
+          if (((f ^ vals) & fix) !== 0) continue;
+          let minc = Infinity;
+          for (const k of free) {
+            if ((fix >>> k) & 1) continue;
+            const v = 1 - ((f >>> k) & 1);
+            if (((v ? ban1 : ban0) >>> k) & 1) continue;
+            if (cost[2 * k + v] < minc) minc = cost[2 * k + v];
+          }
+          if (minc === Infinity) return; // this failure can't be ruled out in this branch
+          if (minc > lb || pick < 0) { lb = Math.max(lb, minc); pick = f; }
+        }
+        if (pick < 0) { best = c; bestFix = fix; bestVals = vals; return; }
+        if (c + lb >= best) return;
+        const opts = [];
+        for (const k of free) {
+          if ((fix >>> k) & 1) continue;
+          const v = 1 - ((pick >>> k) & 1);
+          if (!(((v ? ban1 : ban0) >>> k) & 1)) opts.push([k, v, cost[2 * k + v]]);
+        }
+        opts.sort((a, b) => a[2] - b[2]);
+        for (const [k, v, ck] of opts) {
+          bb((fix | (1 << k)) >>> 0, (vals | (v << k)) >>> 0, ban1, ban0, c + ck);
+          // later branches may not use this result: those sets were covered here
+          if (v) ban1 = (ban1 | (1 << k)) >>> 0; else ban0 = (ban0 | (1 << k)) >>> 0;
+        }
+      }
+      bb(0, 0, 0, 0, 0);
+      return { fix: bestFix, vals: bestVals, cost: best };
+    }
+
+    for (let round = 0; round < maxRounds; round++) {
+      const F = Uint32Array.from(fails);
+      const inc = start(F);
+      if (!inc) return null;
+      const r = search(F, inc);
+      const forced = P.map((g, k) => (locked(k) ? locks[k] : (r.fix >>> k) & 1 ? (r.vals >>> k) & 1 : undefined));
+      const v = simulate(ctx, verifyN, forced, 7001 + round);
+      let added = 0;
+      for (let s = 0; s < v.nSims; s++) {
+        if (v.s1[s] === team || v.s2[s] === team) ins.add(v.masks[s]);
+        else if (!fails.has(v.masks[s])) { fails.add(v.masks[s]); added++; }
+      }
+      if (v.appear[team] === v.nSims) return { games: r.fix, homeWins: r.vals, prob: Math.exp(-r.cost), checks: verifyN };
+      if (!added) return null; // only coin-toss misses left: no set guarantees it
+    }
+    return null;
+  }
+
+  const api = { STEP, RULES, rulesFor, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups, guaranteedPathSim };
   root.B12 = api;
   if (typeof module !== "undefined") module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

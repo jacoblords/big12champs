@@ -262,7 +262,7 @@ const LG = LEAGUES.find((l) => l.id === LEAGUE_ID);
 const stepName = (s) => RULES.label[s];
 const N_MAIN = 40000, N_EXPLORE = 30000;
 let locks = new Array(P.length).fill(undefined);
-let main = null, cache = new Map(), sel = null;
+let main = null, uniform = null, cache = new Map(), sel = null;
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -324,7 +324,30 @@ function lockKey() { return locks.map((l) => (l === undefined ? "." : l)).join("
 
 function runMain() {
   main = exactMode() ? null : B12.simulate(ctx, N_MAIN, locks, 1);
+  // every result a coin flip: reaches the rare finishes the main run misses (shared by all teams)
+  uniform = exactMode() ? null : B12.simulate(ctx, N_EXPLORE, locks, 2, { uniform: true });
   cache = new Map();
+}
+
+// Below these odds a team's guaranteed path isn't searched from simulations: its winning finishes
+// are too rare for the samples to settle one (tested against exact answers), so it falls back to
+// the likeliest finish found.
+const NEED_MIN = 0.005;
+// The path the page shows for a guaranteed set of results: those results, the visitor's picks,
+// and the favorite in every other game (the likeliest way the rest goes; any way works).
+function needMask(need) {
+  let m = 0;
+  P.forEach((g, k) => {
+    const v = locks[k] !== undefined ? locks[k] : (need.games >>> k) & 1 ? (need.homeWins >>> k) & 1 : g.pHome >= 0.5 ? 1 : 0;
+    if (v) m |= 1 << k;
+  });
+  return m >>> 0;
+}
+function withNeed(res, i, need) {
+  if (!need) return res;
+  const mask = needMask(need);
+  if (!B12.qualifies(ctx, mask, i)) return res; // only a coin toss could do this; show the plain path
+  return { ...res, need, path: { mask, prob: need.prob }, ex: B12.explain(ctx, mask) };
 }
 
 function teamAnalysis(i) {
@@ -338,13 +361,15 @@ function teamAnalysis(i) {
       winOutGuaranteed: e.winOutGuaranteed, hasOwnGames: remaining[i] > 0,
       imp: { p: e.p, hits: Infinity, games: e.games }, path, ex: path ? B12.explain(ctx, path.mask) : null,
     };
+    // older data (or a run out of time) has no guaranteed path: keep the likeliest finish
+    if (e.need) Object.assign(res, withNeed(res, i, { ...e.need, exact: true }));
     cache.set(key, res);
     return res;
   }
   const mi = B12.impact(ctx, main, i);
   let imp = mi, explore = null, approx = false;
   if (mi.hits < 1500) {
-    explore = B12.simulate(ctx, N_EXPLORE, locks, 2, { uniform: true });
+    explore = uniform;
     const ei = B12.impact(ctx, explore, i);
     if (ei.hits > mi.hits) { imp = ei; approx = true; }
   }
@@ -356,7 +381,8 @@ function teamAnalysis(i) {
   const ex = path ? B12.explain(ctx, path.mask) : null;
   const pMain = mi.p;
   const p = mi.hits >= 50 ? pMain : imp.p;
-  const res = { p, approx: mi.hits < 50 && approx, first: main.first[i] / main.nSims, pWinOut, hasOwnGames: remaining[i] > 0, imp, path, ex };
+  let res = { p, approx: mi.hits < 50 && approx, first: main.first[i] / main.nSims, pWinOut, hasOwnGames: remaining[i] > 0, imp, path, ex };
+  if (path && p >= NEED_MIN) res = withNeed(res, i, B12.guaranteedPathSim(ctx, i, [main, uniform, fw, fwu], locks));
   cache.set(key, res);
   return res;
 }
@@ -616,6 +642,11 @@ function winOutButton(team) {
 // of the remaining games (at ESPN's odds) that still put the team in. Cached with the analysis.
 function pathDetails(i, A) {
   if (A.pathDetails) return A.pathDetails;
+  // a guaranteed path shows exactly its results and the visitor's picks, and they're always enough
+  if (A.need) {
+    const isKey = (g, k) => locks[k] !== undefined || ((A.need.games >>> k) & 1) === 1;
+    return (A.pathDetails = { isKey, dependsOn: new Set(), reliability: 1 });
+  }
   const m = A.path.mask >>> 0;
   const base = (g, k) => A.imp.hits < 30 || g.h === i || g.a === i || locks[k] !== undefined || matters(A.imp.games[k]);
   const dependsOn = new Set();
@@ -669,7 +700,10 @@ function renderTeam() {
       : `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + 15000).toLocaleString("en-US")} simulated finishes${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. A very unlikely path may still exist; simulation can't prove it doesn't.</p></header></div>`;
   } else {
     const m = A.path.mask;
-    const pathOdds = P.map((g, k) => (locks[k] !== undefined ? null : ((m >>> k) & 1) ? g.pHome : 1 - g.pHome));
+    const pd = pathDetails(i, A);
+    const isKey = pd.isKey;
+    // upsets among the results shown, not the games that don't matter
+    const pathOdds = P.map((g, k) => (locks[k] !== undefined || !isKey(g, k) ? null : ((m >>> k) & 1) ? g.pHome : 1 - g.pHome));
     const upsets = pathOdds.filter((p) => p !== null && p < 0.5 - TOSS_UP).length;
     const tossUps = pathOdds.filter((p) => p !== null && p < 0.5 && isTossUp(p)).length; // toss-ups going to the slight underdog
     const count = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -678,8 +712,6 @@ function renderTeam() {
       : tossUps === 0 ? count(upsets, "upset")
       : `${count(upsets, "upset")} + ${count(tossUps, "toss-up")}`;
     const weeks = [...new Set(P.map((g) => g.week))];
-    const pd = pathDetails(i, A);
-    const isKey = pd.isKey;
     const weekBlocks = (key) => weeks.map((w) => {
       const rows = P.map((g, k) => [g, k]).filter(([g, k]) => g.week === w && isKey(g, k) === key)
         .sort(([a], [b]) => (b.h === i || b.a === i) - (a.h === i || a.a === i))
@@ -695,21 +727,30 @@ function renderTeam() {
     const oddsText = shownProb >= 0.1 ? pct(shownProb, 0) : oneIn(shownProb);
     const oddsLabel = shown.length === 1 ? (nPicks ? "Odds of the other result" : "Odds of this result")
       : `Odds of ${nPicks ? "the other" : "these"} ${shown.length} results`;
-    // how often these shown results are enough, with the games not shown at ESPN's odds
+    // how often these shown results are enough, with the games not shown at ESPN's odds; shown
+    // only to qualify a path that isn't guaranteed (long shots, or data without guaranteed paths)
     const sure = pd.reliability >= 0.9995;
     const enough = sure ? "Always in" : `${pd.reliability < 0.005 ? "Under 1%" : pct(pd.reliability, 0)} of the time`;
     const stat = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+    const nothing = A.need && !shown.length; // clinched, or the picks alone are enough
     const stats = `<dl class="path-stats">
-      ${stat("Needs", needs)}
+      ${stat("Needs", nothing ? (nPicks ? "Just your picks" : "Nothing more") : needs)}
       ${shown.length ? stat(oddsLabel, oddsText) : ""}
-      ${shown.length ? stat(shown.length === 1 ? "If it happens" : "If they happen", enough) : ""}
-    </dl>${shown.length && !sure ? `<p class="path-note">The rest comes down to games not shown.</p>` : ""}`;
+      ${shown.length && !A.need && !sure ? stat(shown.length === 1 ? "If it happens" : "If they happen", enough) : ""}
+    </dl>${shown.length && !sure ? `<p class="path-note">The rest comes down to games not shown.</p>` : ""}${A.need && A.need.checks && shown.length ? `<p class="path-note">Checked against ${A.need.checks.toLocaleString("en-US")} simulated finishes with these results, not every possible one.</p>` : ""}`;
+    const minorHead = A.need
+      ? `<summary>${nMinor} other game${nMinor > 1 ? "s" : ""} ${nMinor > 1 ? "don't" : "doesn't"} matter${shown.length + nPicks === 1 ? " if this happens" : shown.length + nPicks ? " if these happen" : ""}</summary>
+      <p class="note">${esc(t.short)} is in whichever way ${nMinor > 1 ? "they go" : "it goes"}. Shown with the favorite winning.</p>`
+      : `<summary>${nMinor} other game${nMinor > 1 ? "s" : ""} barely matter to ${esc(t.short)}</summary>
+      <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>`;
     const body = weekBlocks(true) + (nMinor ? `<details class="minor" id="path-minor"${openState["path-minor"] ? " open" : ""}>
-      <summary>${nMinor} other game${nMinor > 1 ? "s" : ""} barely matter to ${esc(t.short)}</summary>
-      <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
+      ${minorHead}${weekBlocks(false)}</details>` : "");
+    const lead = A.need
+      ? `${A.need.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that guarantees ${esc(t.short)} a title-game spot, whatever happens in the other games.`
+      : `${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game.`;
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
-      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game.</p>
+      <p>${lead}</p>
       ${stats}
       <p class="path-key"><span class="wb">W</span> marks the winner. Percentages are ESPN's odds of that result.</p></header>
       ${body}

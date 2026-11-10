@@ -19,6 +19,16 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   [ACC PDF](https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf)).
   The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
   in" and "must" are only shown when proven over every finish.
+- **Paths:** a team's path is the likeliest set of results that *guarantees* it a title-game
+  spot however the other games go, and it shows only those games. The probability of a set is
+  the product of ESPN's odds for its results, so every game in the likeliest one is needed.
+  `exact.js` finds it from the full enumeration by branch and bound (`guaranteedPath`), inside
+  the same time budget. With what-ifs set, or too many games left for exact odds, the page finds
+  it from its simulations instead (`guaranteedPathSim` in the engine: the likeliest set that
+  rules out every simulated finish where the team misses, re-checked with 20,000 simulations
+  with those results forced). Below 0.5% odds the simulations rarely reach a team's winning
+  finishes, so the page falls back to the likeliest single finish it found. Tested against
+  brute force over every partial set of results, and against the exact answers.
 - **Time budget:** each extra unplayed game doubles the work, so `exact.js` times a sample
   of finishes first and skips if the whole run would take more than 80% of
   `EXACT_BUDGET_SECONDS` (180 in the workflow); a run that still overruns stops at the
