@@ -153,6 +153,21 @@ test("path rows: odds in one column, ! for upsets, !! for big upsets, a check be
   assert.doesNotMatch(els.team.innerHTML, /class="po[^"]*\bpick\b/, "not the picker card class");
 });
 
+test("path odds cover the results shown, not every remaining game", async () => {
+  const { els, handlers } = render(data, "#ttu");
+  await settle();
+  const head = () => text(els.team.innerHTML.split("Most likely path")[1].split("Week")[0]);
+  const keyRows = () => (els.team.innerHTML.split("How the standings end")[0].split('<details class="minor"')[0].match(/class="game/g) || []).length;
+  assert.doesNotMatch(els.team.innerHTML, /full slate/);
+  const m = head().match(/Odds of these (\d+) results: (\d+%|1 in [\d,.]+)\./);
+  assert.ok(m, head());
+  assert.equal(+m[1], keyRows(), "counts the rows shown above the folded games");
+  // with a pick on a shown game, that game is left out of the odds
+  const locked = els.team.innerHTML.match(/data-k="(\d+)" data-v="1"/)[1];
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: locked, v: "1" } } : null) } });
+  assert.match(head(), /Odds of the other \d+ results?: /);
+});
+
 test("intro reads 'Results through <date> with N games left'", async () => {
   const { els } = render(data, "#utah");
   await settle();

@@ -535,12 +535,21 @@ function renderTeam() {
       return rows ? `<div class="week"><h3>Week ${w}</h3>${rows}</div>` : "";
     }).join("");
     const nMinor = P.filter((g, k) => !isKey(g, k)).length;
+    // Odds of the results shown (the games that matter), not every remaining game: picks the
+    // visitor set aren't chances, so they're left out of the product.
+    const shown = P.map((g, k) => [g, k]).filter(([g, k]) => isKey(g, k) && locks[k] === undefined);
+    const shownProb = shown.reduce((acc, [g, k]) => acc * (((m >>> k) & 1) ? g.pHome : 1 - g.pHome), 1);
+    const nPicks = P.filter((g, k) => isKey(g, k) && locks[k] !== undefined).length;
+    const oddsText = shownProb >= 0.1 ? pct(shownProb, 0) : oneIn(shownProb);
+    const oddsLine = !shown.length ? ""
+      : shown.length === 1 ? `Odds of ${nPicks ? "the other result" : "this result"}: ${oddsText}.`
+      : `Odds of ${nPicks ? "the other" : "these"} ${shown.length} results: ${oddsText}.`;
     const body = weekBlocks(true) + (nMinor ? `<details class="minor" id="path-minor"${openState["path-minor"] ? " open" : ""}>
       <summary>${nMinor} other game${nMinor > 1 ? "s" : ""} barely matter to ${esc(t.short)}</summary>
       <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
-      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
+      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} ${oddsLine}</p>
       <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
       ${body}
       ${explainHTML(i, A.ex)}
