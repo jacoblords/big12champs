@@ -1,7 +1,8 @@
-# Big 12 Title Paths
+# Title Paths
 
-Pick a Big 12 team and see its likeliest path to the conference championship game: which
-results it needs, who to root for, and how the official tiebreakers settle the standings.
+Pick a Big 12 or SEC team and see its likeliest path to the conference championship game:
+which results it needs, who to root for, and how the official tiebreakers settle the standings.
+The Big 12 page is the site root and the SEC's is `/sec/`; the header links them.
 
 Live at **https://titlepaths.com** (GitHub Pages with a custom domain; the old
 `jacoblords.github.io/big12champs` address redirects there). DNS is four A records for the
@@ -10,8 +11,9 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
 
 - **Odds:** [`exact.js`](exact.js) enumerates every possible finish of the remaining games
   (2^24 = 16.8 million with three weeks left, about 40 seconds), weights each by ESPN's
-  Matchup Predictor win probabilities, and sorts each by the Big 12's tiebreaking procedures
-  ([official PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf)).
+  Matchup Predictor win probabilities, and sorts each by the league's tiebreaking procedures
+  ([Big 12 PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf),
+  [SEC](https://www.secsports.com/news/2024/08/sec-announces-football-tie-breaking-process)).
   The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
   in" and "must" are only shown when proven over every finish.
 - **Time budget:** each extra unplayed game doubles the work, so `exact.js` times a sample
@@ -24,8 +26,14 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
 - **Limits:** the odds are only as good as ESPN's predictions, and games are treated as
   independent. Adding correlated team strength moved the 2026-11-09 odds by about a point at
   most.
-- **Engine:** [`engine.js`](engine.js). Run against final results it reproduces 2024
-  (ASU, then Iowa State out of a four-way tie via strength of schedule) and 2025.
+- **Engine:** [`engine.js`](engine.js). One set of steps; `RULES` says which each league
+  uses and how it names them. The SEC has no total-wins step (so non-conference games are left
+  out entirely) and, after a three-way-or-more tie for first, seeds the two teams that got in
+  with the two-team steps. Run against final results it reproduces the Big 12's 2024 (ASU, then
+  Iowa State out of a four-way tie via strength of schedule) and 2025, and the SEC's 2024 and
+  2025 (Alabama and Georgia out of a four-way tie at 7-1, Alabama #1 on head-to-head).
+- **Adding a league:** an entry in `LEAGUES` in `fetch_data.py` (ESPN group, path), in
+  `RULES` in `engine.js`, and in `LEAGUE_TEXT` in `app.html`, plus a step in `update.yml`.
 - **Page:** [`app.html`](app.html), a template; `fetch_data.py` inlines the engine.
 
 ## Data and caching
@@ -57,6 +65,8 @@ node --test tests/*.test.js                 # engine rules, exact solver, page r
 python3 -m unittest discover -s tests       # fetcher caching rules against a fake ESPN
 ```
 
+- `tests/sec.test.js`: the SEC's 2024 and 2025 title games, its published 2025 final-week
+  scenario, and its two differences from the Big 12.
 - `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
   hand-built standings table for each rule and corner case (sweep rule, restart after a
   seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
@@ -72,9 +82,11 @@ offline from the fixture and checks it.
 ## Local use
 
 ```bash
-python3 fetch_data.py --site site   # incremental; reuses ./data.json
-python3 -m http.server -d site      # then open http://localhost:8000
+python3 fetch_data.py --site site               # Big 12; incremental, reuses ./data.json
+python3 fetch_data.py --league sec --site site  # SEC; reuses ./data-sec.json, writes site/sec/
+python3 -m http.server -d site                  # then open http://localhost:8000
 ```
 
-`fetch_data.py` also writes `big12-path.html`, a single self-contained page with the data
-embedded. Set `SEASON` (or `--season`) for another year.
+`fetch_data.py` also writes `<league>-path.html`, a single self-contained page with the data
+embedded. Set `SEASON` (or `--season`) for another year. The deploy workflow runs one step per
+league; each writes its page every run, so a deploy for one league's change carries both.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Incremental, schedule-aware fetch of Big 12 data from ESPN's public JSON APIs.
+"""Incremental, schedule-aware fetch of one conference's data from ESPN's public JSON APIs.
 
 Visitors never call ESPN. This script runs on a timer (GitHub Actions), starts from the
 previously published data.json, and only calls ESPN for things that can have changed:
@@ -11,7 +11,7 @@ previously published data.json, and only calls ESPN for things that can have cha
   teams/logos  fetched once
 
 Usage:
-  python3 fetch_data.py [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
+  python3 fetch_data.py [--league big12|sec] [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
@@ -22,7 +22,12 @@ from pathlib import Path
 SITE = "https://site.api.espn.com/apis/site/v2/sports/football/college-football"
 CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/college-football"
 STANDINGS = "https://site.web.api.espn.com/apis/v2/sports/football/college-football/standings"
-BIG12_GROUP = 4
+# Each league's page lives at <site>/<path>. group: ESPN's conference id. The page's nav lists
+# these in this order; the tiebreak rules live in engine.js under the same ids.
+LEAGUES = {
+    "big12": {"id": "big12", "name": "Big 12", "path": "", "group": 4},
+    "sec": {"id": "sec", "name": "SEC", "path": "sec/", "group": 8},
+}
 SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h
 SCHEDULE_TTL = dt.timedelta(hours=24)
@@ -109,8 +114,8 @@ def fetch_logo(tid, dark=False):
         return None
 
 
-def fetch_teams(season):
-    st = get(f"{STANDINGS}?group={BIG12_GROUP}&season={season}")
+def fetch_teams(league, season):
+    st = get(f"{STANDINGS}?group={league['group']}&season={season}")
     entries = (st.get("standings") or st["children"][0]["standings"])["entries"]
 
     def one(e):
@@ -123,14 +128,14 @@ def fetch_teams(season):
     return pmap(one, entries)
 
 
-def fetch_week(season, week):
-    """Every game involving a Big 12 team that week, in one call."""
-    d = get(f"{SITE}/scoreboard?groups={BIG12_GROUP}&seasontype=2&week={week}&dates={season}&limit=200")
+def fetch_week(league, season, week):
+    """Every game involving one of the league's teams that week, in one call."""
+    d = get(f"{SITE}/scoreboard?groups={league['group']}&seasontype=2&week={week}&dates={season}&limit=200")
     out = []
     for e in d.get("events", []):
         c = e["competitions"][0]
         notes = " ".join(n.get("headline", "") for n in c.get("notes") or [])
-        if (c.get("type") or {}).get("type") == "conference-championship" or "Big 12 Championship" in notes:
+        if (c.get("type") or {}).get("type") == "conference-championship" or f"{league['name']} Championship" in notes:
             continue  # title game: excluded from records and the 12-game win count
         comp = {x["homeAway"]: x for x in c["competitors"]}
         h, a = comp["home"], comp["away"]
@@ -146,7 +151,7 @@ def fetch_week(season, week):
             "home": h["team"]["id"], "away": a["team"]["id"],
             "homeName": h["team"].get("abbreviation"), "awayName": a["team"].get("abbreviation"),
             "neutral": bool(c.get("neutralSite")),
-            # ESPN's own flag: two Big 12 teams can meet in a non-conference game
+            # ESPN's own flag: two league teams can meet in a non-conference game
             # (e.g. Arizona at Kansas State in 2024, scheduled before Arizona joined).
             "confFlag": c.get("conferenceCompetition"),
             "completed": done or canceled, "canceled": canceled, "postponed": stype.get("name") == "STATUS_POSTPONED",
@@ -155,8 +160,8 @@ def fetch_week(season, week):
     return out
 
 
-def fetch_calendar(season):
-    d = get(f"{SITE}/scoreboard?groups={BIG12_GROUP}&seasontype=2&week=1&dates={season}&limit=1")
+def fetch_calendar(league, season):
+    d = get(f"{SITE}/scoreboard?groups={league['group']}&seasontype=2&week=1&dates={season}&limit=1")
     reg = [c for c in d["leagues"][0]["calendar"] if str(c.get("value")) == "2"][0]
     return [{"week": int(e["value"]), "start": e["startDate"], "end": e["endDate"]} for e in reg["entries"]]
 
@@ -184,20 +189,27 @@ def fetch_prediction(gid):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--league", choices=sorted(LEAGUES), default="big12")
     ap.add_argument("--season", type=int, default=int(os.environ.get("SEASON", "2026")))
     ap.add_argument("--prev", default=None, help="previous data (default: --data-out)")
-    ap.add_argument("--data-out", default=str(HERE / "data.json"), help="where to keep the full data file")
-    ap.add_argument("--site", default=None, help="write index.html + data.json here (fetch mode)")
-    ap.add_argument("--artifact", default=str(HERE / "big12-path.html"), help="write a self-contained page here ('' to skip)")
+    ap.add_argument("--data-out", default=None, help="where to keep the full data file (default: data.json, data-<league>.json)")
+    ap.add_argument("--site", default=None, help="site root: writes <league path>/index.html + data.json under it, every run")
+    ap.add_argument("--artifact", default=None, help="write a self-contained page here ('' to skip; default <league>-path.html)")
     ap.add_argument("--force-build", action="store_true", help="rebuild pages even if data is unchanged")
     ap.add_argument("--github-output", action="store_true")
     ap.add_argument("--offline", action="store_true", help="no ESPN calls: rebuild from --prev only (tests, CI)")
     ap.add_argument("--no-exact", action="store_true", help="skip the exact enumeration")
     args = ap.parse_args()
+    league = LEAGUES[args.league]
+    if args.data_out is None:
+        args.data_out = str(HERE / ("data.json" if league["id"] == "big12" else f"data-{league['id']}.json"))
+    if args.artifact is None:
+        args.artifact = str(HERE / f"{league['id']}-path.html")
     now = now_utc()
 
     prev = load_prev(args.prev or args.data_out)
-    if not prev or prev.get("schema") != SCHEMA or prev.get("season") != args.season:
+    if not prev or prev.get("schema") != SCHEMA or prev.get("season") != args.season \
+            or prev.get("league", "big12") != league["id"]:
         prev = None
     meta = dict(prev["meta"]) if prev else {}
     teams = prev["teams"] if prev else None
@@ -210,7 +222,7 @@ def main():
         if not prev:
             sys.exit("--offline needs a usable --prev data file")
     elif not teams:
-        teams = fetch_teams(args.season); changed.append("teams")
+        teams = fetch_teams(league, args.season); changed.append("teams")
     else:
         # one-time backfill for data published before dark-mode logos existed
         missing = [t for t in teams if "logoDark" not in t]
@@ -219,7 +231,7 @@ def main():
                 t["logoDark"] = uri
             changed.append(f"dark logos for {len(missing)} teams")
     if not calendar and not args.offline:
-        calendar = fetch_calendar(args.season); changed.append("calendar")
+        calendar = fetch_calendar(league, args.season); changed.append("calendar")
 
     # Which weeks need a scoreboard call?
     weeks = set()
@@ -239,7 +251,7 @@ def main():
             meta["scheduleCheckedAt"] = iso(now)
     if weeks:
         print(f"scoreboards for weeks {sorted(weeks)}")
-        for wk_games in pmap(lambda w: fetch_week(args.season, w), sorted(weeks)):
+        for wk_games in pmap(lambda w: fetch_week(league, args.season, w), sorted(weeks)):
             for ng in wk_games:
                 old = games.get(ng["id"])
                 ng["pHome"] = None if ng["completed"] else (old or {}).get("pHome")
@@ -275,8 +287,8 @@ def main():
     for t in teams:
         t["fpi"] = fpi.get(t["id"])
     for g in games.values():
-        both_b12 = g["home"] in team_ids and g["away"] in team_ids
-        g["conf"] = both_b12 and (g.get("confFlag") if g.get("confFlag") is not None else True)
+        both_in = g["home"] in team_ids and g["away"] in team_ids
+        g["conf"] = both_in and (g.get("confFlag") if g.get("confFlag") is not None else True)
         g["homeFBS"] = g["home"] in fpi
         g["awayFBS"] = g["away"] in fpi
 
@@ -288,7 +300,7 @@ def main():
         meta["updatedAt"] = iso(now)
     meta["espnCalls"] = calls
 
-    data = {"schema": SCHEMA, "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
+    data = {"schema": SCHEMA, "league": league["id"], "leagues": list(LEAGUES.values()), "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
     if prev and prev.get("exact"):
         data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
@@ -311,20 +323,25 @@ def main():
             except (OSError, subprocess.CalledProcessError) as e:
                 print(f"exact odds unavailable ({e}); the page will use simulation")
                 data.pop("exact", None)
-        payload = json.dumps(data, separators=(",", ":"))
-        tpl = (HERE / "app.html").read_text().replace("/*__ENGINE__*/", (HERE / "engine.js").read_text())
-        if args.site:
-            site = Path(args.site); site.mkdir(parents=True, exist_ok=True)
-            (site / "data.json").write_text(payload)
-            (site / "favicon.svg").write_text((HERE / "favicon.svg").read_text())
-            (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
-                                             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
-                                             "<link rel=\"icon\" href=\"favicon.svg\" type=\"image/svg+xml\">"
-                                             "</head><body>\n" + tpl + "\n</body></html>\n")
-            print(f"wrote {site}/index.html + data.json")
-        if args.artifact:
-            Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", script_safe(payload)))
-            print(f"wrote {args.artifact}")
+    payload = json.dumps(data, separators=(",", ":"))
+    tpl = ((HERE / "app.html").read_text().replace("/*__ENGINE__*/", (HERE / "engine.js").read_text())
+           .replace("<title>Title Paths</title>", f"<title>{league['name']} Title Paths</title>", 1))
+    # Written every run, changed or not: one deploy carries every league's page, so a run that
+    # only changed the SEC still has to put the Big 12 page in the site.
+    if args.site:
+        root = Path(args.site); root.mkdir(parents=True, exist_ok=True)
+        site = root / league["path"]; site.mkdir(parents=True, exist_ok=True)
+        up = "../" * league["path"].count("/")
+        (site / "data.json").write_text(payload)
+        (root / "favicon.svg").write_text((HERE / "favicon.svg").read_text())
+        (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+                                         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
+                                         f"<link rel=\"icon\" href=\"{up}favicon.svg\" type=\"image/svg+xml\">"
+                                         "</head><body>\n" + tpl + "\n</body></html>\n")
+        print(f"wrote {site}/index.html + data.json")
+    if build and args.artifact:
+        Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", script_safe(payload)))
+        print(f"wrote {args.artifact}")
     if args.github_output and os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
             f.write(f"changed={'true' if build else 'false'}\n")

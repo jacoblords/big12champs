@@ -4,3 +4,5 @@ site/
 big12-path.html
 __pycache__/
 .DS_Store
+data-*.json
+*-path.html

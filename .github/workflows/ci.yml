@@ -27,27 +27,30 @@ jobs:
       - name: Fetcher tests (fake ESPN, no network)
         run: python -m unittest discover -s tests -v
 
-      - name: Build the site offline from the fixture, exact odds included
+      - name: Build the site offline from the fixtures, exact odds included
         env:
           # CI checks that exact odds are correct, not how fast this runner is; the
           # production budget lives in update.yml.
           EXACT_BUDGET_SECONDS: "900"
-        run: >
-          python fetch_data.py --offline --force-build
-          --prev tests/fixtures/season-2026-11-09.json
-          --data-out "$RUNNER_TEMP/data.json" --site site --artifact ''
+        run: |
+          python fetch_data.py --league big12 --offline --force-build --prev tests/fixtures/season-2026-11-09.json \
+            --data-out "$RUNNER_TEMP/data.json" --site site --artifact ''
+          python fetch_data.py --league sec --offline --force-build --prev tests/fixtures/sec-season-2026-11-09.json \
+            --data-out "$RUNNER_TEMP/data-sec.json" --site site --artifact ''
 
-      - name: Built page parses and carries exact odds
+      - name: Built pages parse and carry exact odds
         run: |
           node -e '
             const fs = require("fs"), vm = require("vm");
-            const html = fs.readFileSync("site/index.html", "utf8");
-            const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-            if (scripts.length !== 2) throw new Error("expected 2 scripts, found " + scripts.length);
-            scripts.forEach((s) => new vm.Script(s));
-            const d = JSON.parse(fs.readFileSync("site/data.json", "utf8"));
-            if (!d.exact || d.exact.skipped || d.exact.teams.length !== d.teams.length) throw new Error("exact odds missing");
-            const total = d.exact.teams.reduce((s, t) => s + t.p, 0);
-            if (Math.abs(total - 2) > 1e-9) throw new Error("title-game odds sum to " + total);
-            console.log("ok:", d.exact.finishes, "finishes");
+            for (const dir of ["site", "site/sec"]) {
+              const html = fs.readFileSync(dir + "/index.html", "utf8");
+              const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+              if (scripts.length !== 2) throw new Error(dir + ": expected 2 scripts, found " + scripts.length);
+              scripts.forEach((s) => new vm.Script(s));
+              const d = JSON.parse(fs.readFileSync(dir + "/data.json", "utf8"));
+              if (!d.exact || d.exact.skipped || d.exact.teams.length !== d.teams.length) throw new Error(dir + ": exact odds missing");
+              const total = d.exact.teams.reduce((s, t) => s + t.p, 0);
+              if (Math.abs(total - 2) > 1e-9) throw new Error(dir + ": title-game odds sum to " + total);
+              console.log("ok:", dir, d.exact.finishes, "finishes");
+            }
           '

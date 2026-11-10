@@ -1,8 +1,10 @@
-// Big 12 championship-game tiebreaker engine + Monte Carlo simulator.
-// Implements the official "Big 12 Football Tiebreaking Procedures" (16-team format, 2024-).
+// Conference championship-game tiebreaker engine + Monte Carlo simulator.
+// Implements the official Big 12 and SEC football tiebreaking procedures (16-team, no-division
+// formats, 2024-). Both share one set of steps; a league picks which it uses, in order.
 (function (root) {
   "use strict";
 
+  // Steps by their Big 12 letters (step ids everywhere: traces, tests, the page).
   const STEP = {
     a: "Head-to-head",
     b: "Record vs. common conference opponents",
@@ -13,7 +15,22 @@
     g: "Coin toss",
   };
 
+  // steps: which steps the league uses, in order. label: the league's own name for each step.
+  // reseedTop2: when three or more tie for first, the two teams who get in are then seeded by
+  // the two-team steps (SEC, 2025: Alabama and Georgia got in on opponents' winning percentage,
+  // then Alabama was #1 for beating Georgia).
+  // The Big 12 seeds them in the order they came out of the tiebreaker.
+  const RULES = {
+    big12: { steps: ["a", "b", "c", "d", "e", "f", "g"], label: { a: "a", b: "b", c: "c", d: "d", e: "e", f: "f", g: "g" }, reseedTop2: false },
+    sec: { steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true },
+  };
+
   function build(data) {
+    const rules = RULES[data.league || "big12"];
+    if (!rules) throw new Error("unknown league " + data.league);
+    // Non-conference games only matter through total wins; without that step they can't change
+    // the standings, so they aren't left to play (halves what exact.js enumerates for the SEC).
+    const nonConfMatters = rules.steps.includes("e");
     const teams = data.teams;
     const N = teams.length;
     const idx = {};
@@ -26,6 +43,7 @@
       const h = idx[g.home], a = idx[g.away];
       if (h === undefined && a === undefined) continue;
       if (!g.completed) {
+        if (!g.conf && !nonConfMatters) continue;
         pending.push({
           id: g.id, week: g.week, date: g.date, h, a, conf: g.conf,
           homeName: g.homeName, awayName: g.awayName,
@@ -38,7 +56,7 @@
       const homeWon = g.winner === g.home;
       applyResult(g.conf, h, a, homeWon, g.homeFBS, g.awayFBS, fixedH2H, fixedConfW, fixedConfL, fixedWins, fixedFcsWins, N);
     }
-    return { teams, N, idx, fixedH2H, fixedConfW, fixedConfL, fixedWins, fixedFcsWins, pending };
+    return { rules, teams, N, idx, fixedH2H, fixedConfW, fixedConfL, fixedWins, fixedFcsWins, pending };
   }
 
   function applyResult(conf, h, a, homeWon, homeFBS, awayFBS, H2H, CW, CL, W, FW, N) {
@@ -63,7 +81,7 @@
     // strength of conference schedule: combined conf record of each team's conference opponents
     const sosW = new Int32Array(N), sosG = new Int32Array(N);
     for (let t = 0; t < N; t++) for (let o = 0; o < N; o++) if (H2H[t * N + o] !== 0) { sosW[t] += CW[o]; sosG[t] += CW[o] + CL[o]; }
-    return { N, H2H, CW, CL, total, sosW, sosG, fpi: ctx.teams.map((t) => (t.fpi == null ? -99 : t.fpi)) };
+    return { N, H2H, CW, CL, total, sosW, sosG, fpi: ctx.teams.map((t) => (t.fpi == null ? -99 : t.fpi)), rules: ctx.rules };
   }
 
   // exact percentage comparison as fractions
@@ -155,6 +173,7 @@
       return -1;
     };
     let w, vals;
+    const uses = (step) => st.rules.steps.includes(step);
 
     // a. head-to-head
     if (!multi) {
@@ -199,8 +218,10 @@
       if (w >= 0) return w;
     }
     // e. total wins
-    w = decide("e", topNum(T, st.total), () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
-    if (w >= 0) return w;
+    if (uses("e")) {
+      w = decide("e", topNum(T, st.total), () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
+      if (w >= 0) return w;
+    }
     // f. rating (FPI stand-in)
     w = decide("f", topNum(T, st.fpi), () => T.map((t) => names[t] + " " + st.fpi[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.fpi, 1) }));
     if (w >= 0) return w;
@@ -211,6 +232,7 @@
   }
 
   // Returns [seed1, seed2]; trace (optional array) collects tiebreak decisions.
+  // Under reseedTop2, decisions that only pick who gets in are marked .spot.
   function titleGame(st, rng, trace, names) {
     const groups = confGroups(st);
     const G1 = groups[0];
@@ -229,7 +251,10 @@
     const s1 = pickOne(st, G1, rng, trace, names, info);
     const rest = info.pool.filter((t) => t !== s1);
     const s2 = pickOne(st, rest, rng, trace, names);
-    return [s1, s2];
+    if (!st.rules.reseedTop2) return [s1, s2];
+    if (trace) for (const tr of trace) tr.spot = true;
+    const top = pickOne(st, [s1, s2], rng, trace, names);
+    return [top, top === s1 ? s2 : s1];
   }
 
   function mulberry32(a) {
@@ -365,7 +390,7 @@
     return { st, seeds, trace, groups: confGroups(st) };
   }
 
-  const api = { STEP, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups };
+  const api = { STEP, RULES, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups };
   root.B12 = api;
   if (typeof module !== "undefined") module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

@@ -338,3 +338,58 @@ test("ESPN-supplied text is escaped", async () => {
   await settle();
   assert.doesNotMatch(els.team.innerHTML + els.picker.innerHTML, /<img src=x|"><script>/);
 });
+
+// ---- leagues: header nav and the SEC page ----
+const LEAGUES = [{ id: "big12", name: "Big 12", path: "", group: 4 }, { id: "sec", name: "SEC", path: "sec/", group: 8 }];
+// 2025 SEC with its final week of conference games left to play: a small exact enumeration
+function secFinalWeek() {
+  const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "final-sec-2025.json"), "utf8"));
+  for (const g of d.games) if (g.week === 14 && g.conf) Object.assign(g, { completed: false, winner: null, pHome: 0.6 });
+  d.leagues = LEAGUES;
+  d.exact = solve(d);
+  return d;
+}
+
+test("header: the season first, then every league, the current one marked", async () => {
+  const { els } = render({ ...data, leagues: LEAGUES }, "");
+  await settle();
+  const nav = els.leagues.innerHTML;
+  assert.match(text(nav), /^\s*2026 season Big 12 SEC\s*$/);
+  assert.match(nav, /<a href="\.\/" aria-current="page">Big 12<\/a>/);
+  assert.match(nav, /<a href="sec\/">SEC<\/a>/);
+  assert.equal(els.title.textContent, "Big 12 Title Paths");
+});
+
+test("SEC page: links back up a level, SEC wording, numbered SEC steps, SEC sources", async () => {
+  const sec = secFinalWeek();
+  const { els } = render(sec, "#ala");
+  await settle();
+  assert.match(els.leagues.innerHTML, /<a href="\.\.\/">Big 12<\/a>/);
+  assert.match(els.leagues.innerHTML, /<a href="\.\/" aria-current="page">SEC<\/a>/);
+  assert.equal(els.title.textContent, "SEC Title Paths");
+  assert.match(text(els.team.innerHTML), /Alabama Crimson Tide \d+-\d+ SEC/);
+  assert.match(els.methodText.textContent, /official SEC tiebreakers/);
+  const rules = text(els.rules.innerHTML);
+  assert.match(rules, /The six steps/);
+  assert.match(rules, /Capped relative total scoring margin/);
+  assert.doesNotMatch(rules, /Total wins/);
+  assert.match(rules, /seeded by the two-team steps/);
+  assert.match(els.foot.innerHTML, /secsports\.com/);
+  assert.match(els.foot.innerHTML, /groups=8/);
+  assert.doesNotMatch(els.foot.innerHTML + rules, /Big 12/);
+});
+
+test("SEC tiebreaks show the league's step numbers, and say who got in before who is #1", async () => {
+  const sec = secFinalWeek();
+  let sawSpot = false, sawNumber = false;
+  for (const t of sec.teams) {
+    const { els } = render(sec, "#" + t.abbr.toLowerCase());
+    await settle();
+    const html = els.team.innerHTML;
+    assert.doesNotMatch(html, /Step [a-g]</, t.abbr);
+    if (/Step [1-6]</.test(html)) sawNumber = true;
+    if (/gets a title-game spot/.test(text(html))) sawSpot = true;
+  }
+  assert.ok(sawNumber, "some path shows a numbered step");
+  assert.ok(sawSpot, "some path picks the two teams before seeding them");
+});
