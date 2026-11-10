@@ -105,9 +105,9 @@ test("close games are toss-ups, not upsets, and the path sentence counts them th
     const html = els.team.innerHTML;
     const path = html.split("How the standings end")[0];
     if (!/Most likely path/.test(path)) continue;
-    const upsetTags = (path.match(/class="tag ups">Upset · /g) || []).length;
-    const tossDog = [...path.matchAll(/class="tag toss"[^>]*>Toss-up · (\d+)%/g)].filter((m) => +m[1] < 50).length;
-    if (/class="tag toss"/.test(path)) sawToss = true;
+    const upsetTags = (path.match(/class="po ups" title="Upset: /g) || []).length;
+    const tossDog = [...path.matchAll(/class="po" title="Toss-up: [^"]*?(\d+)%"/g)].filter((m) => +m[1] < 50).length;
+    if (/title="Toss-up: /.test(path)) sawToss = true;
     const sentence = text(html).match(/It needs [^.]*\./)[0];
     if (upsetTags === 0 && tossDog === 0) assert.match(sentence, /no upsets: every favorite wins/, t.abbr);
     else if (upsetTags === 0) assert.match(sentence, /no real upsets, but .*toss-up/, t.abbr);
@@ -115,6 +115,27 @@ test("close games are toss-ups, not upsets, and the path sentence counts them th
     if (tossDog > 0) assert.match(sentence, /toss-up/, `${t.abbr}: ${sentence}`);
   }
   assert.ok(sawToss, "toss-up tags appear");
+});
+
+test("path rows: one odds column; only upsets colored; picks are a check; explanations on hover", async () => {
+  const { els, handlers } = render(data, "#ttu");
+  await settle();
+  const path = () => els.team.innerHTML.split("How the standings end")[0];
+  const cells = () => [...path().matchAll(/<span class="po( ups| pick)?" title="([^"]+)"[^>]*>([^<]+)<\/span>/g)].map((m) => ({ cls: (m[1] || "").trim(), title: m[2], text: m[3] }));
+  const games = (path().match(/class="game/g) || []).length;
+  assert.equal(cells().length, games, "every game row has exactly one odds cell");
+  for (const c of cells()) {
+    if (c.cls === "ups") assert.match(c.title, /^Upset: ESPN gives .* only \d+%$/);
+    else if (c.cls === "") assert.match(c.title, /^(Toss-up: )?ESPN gives .* \d+%$/);
+    assert.match(c.text, /^\d+%$/);
+  }
+  assert.doesNotMatch(path(), /The percentage is ESPN's odds/, "no always-on key text");
+  assert.doesNotMatch(path(), /class="tag /, "no pill tags in path rows");
+  // lock a result: that row shows a check instead of a percentage
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "0", v: "1" } } : null) } });
+  const picks = cells().filter((c) => c.cls === "pick");
+  assert.equal(picks.length, 1);
+  assert.match(picks[0].title, /^You set this: .* wins$/);
 });
 
 test("intro reads 'Results through <date> with N games left'", async () => {
