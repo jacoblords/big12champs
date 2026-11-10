@@ -353,11 +353,12 @@ test("ESPN-supplied text is escaped", async () => {
   assert.doesNotMatch(els.team.innerHTML + els.picker.innerHTML, /<img src=x|"><script>/);
 });
 
-// ---- leagues: header nav and the SEC page ----
+// ---- leagues: header nav, the SEC and ACC pages ----
 const PNG = "data:image/png;base64,iVBORw0KGgo=";
 const LEAGUES = [
   { id: "big12", name: "Big 12", path: "", group: 4, logo: PNG, logoDark: PNG, sponsor: { name: "Monster Energy", logo: PNG } },
   { id: "sec", name: "SEC", path: "sec/", group: 8, logo: PNG, logoDark: PNG },
+  { id: "acc", name: "ACC", path: "acc/", group: 1, logo: PNG, logoDark: PNG },
 ];
 // 2025 SEC with its final week of conference games left to play: a small exact enumeration
 function secFinalWeek() {
@@ -372,15 +373,17 @@ test("header: a quiet league switch and the season above, the league's logo lead
   const { els } = render({ ...data, leagues: LEAGUES }, "");
   await settle();
   const nav = els.leagues.innerHTML;
-  assert.match(text(nav), /^\s*Big 12 SEC\s*$/);
+  assert.match(text(nav), /^\s*Big 12 SEC ACC\s*$/);
   assert.equal(els.season.textContent, "2026 season");
   const link = (re) => nav.match(re)[0];
   const big12 = link(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/);
   const sec = link(/<a href="sec\/"[^>]*>[\s\S]*?<\/a>/);
+  const acc = link(/<a href="acc\/"[^>]*>[\s\S]*?<\/a>/);
   assert.match(text(big12), /Big 12/);
   assert.match(text(sec), /SEC/);
+  assert.match(text(acc), /ACC/);
   // each league's logo (light and dark) in the switch; no sponsor there
-  for (const a of [big12, sec]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
+  for (const a of [big12, sec, acc]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
   assert.doesNotMatch(nav, /sponsor/);
   // the title: Monster's claw, then the Big 12 logo, then the name
   const lockup = els.lockup.innerHTML;
@@ -430,4 +433,56 @@ test("SEC tiebreaks show the league's step numbers, and say who got in before wh
   }
   assert.ok(sawNumber, "some path shows a numbered step");
   assert.ok(sawSpot, "some path picks the two teams before seeding them");
+});
+
+// The 2026 ACC snapshot with week 11 decided by ESPN's favorites: 14 games left. Five teams play
+// eight conference games and twelve play nine, so ties across schedule lengths show up.
+function accLateSeason() {
+  const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "acc-season-2026-11-09.json"), "utf8"));
+  for (const g of d.games) if (!g.completed && g.week === 11) Object.assign(g, { completed: true, winner: g.pHome >= 0.5 ? g.home : g.away });
+  d.leagues = LEAGUES;
+  d.exact = solve(d);
+  return d;
+}
+
+test("ACC page: its own steps, the tied-team definition, FPI standing in, the ACC's policy", async () => {
+  const acc = accLateSeason();
+  const { els } = render(acc, "#mia");
+  await settle();
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/"[^>]*>[\s\S]*?<\/a>/)[0]), /Big 12/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/sec\/"[^>]*>[\s\S]*?<\/a>/)[0]), /SEC/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/)[0]), /ACC/);
+  assert.equal(els.title.textContent, "ACC Title Paths");
+  assert.doesNotMatch(els.lockup.innerHTML, /sponsor/);
+  assert.match(text(els.team.innerHTML), /Miami Hurricanes \d+-\d+ ACC/);
+  assert.match(els.methodText.textContent, /official ACC tiebreakers/);
+  const rules = text(els.rules.innerHTML);
+  assert.match(rules, /The three steps/);
+  assert.match(rules, /Team Success Ranking/);
+  assert.match(rules, /Who counts as tied/);
+  assert.match(rules, /Working down/);
+  assert.match(rules, /ESPN's FPI in its place/);
+  assert.doesNotMatch(rules, /Total wins|Common opponents|Walk the standings/);
+  assert.match(els.foot.innerHTML, /ACC_Football_Tiebreaker_Policy/);
+  assert.match(els.foot.innerHTML, /groups=1/);
+  assert.doesNotMatch(els.foot.innerHTML + rules, /Big 12|SEC/);
+});
+
+test("ACC tiebreaks: numbered steps, and teams tied on different schedules are named with their records", async () => {
+  const acc = accLateSeason();
+  let sawNumber = false;
+  for (const t of acc.teams) {
+    const { els } = render(acc, "#" + t.abbr.toLowerCase());
+    await settle();
+    const html = els.team.innerHTML;
+    assert.doesNotMatch(html, /Step [a-g4-9]</, t.abbr);
+    if (/Step [1-3]</.test(html)) sawNumber = true;
+  }
+  assert.ok(sawNumber, "some path shows a numbered step");
+  // Clemson's likeliest path: Miami 7-2 over nine games and Clemson 6-2 over eight are tied on losses
+  const { els } = render(acc, "#clem");
+  await settle();
+  const say = text(els.team.innerHTML);
+  assert.match(say, /Miami \(7-2\) and Clemson \(6-2\) count as tied: two losses each, over nine and eight conference games\. Miami gets the #1 seed by beating Clemson\./);
+  assert.match(say, /Both teams tied for first make the title game/);
 });

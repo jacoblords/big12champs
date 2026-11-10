@@ -1,6 +1,6 @@
 // Conference championship-game tiebreaker engine + Monte Carlo simulator.
-// Implements the official Big 12 and SEC football tiebreaking procedures (16-team, no-division
-// formats, 2024-). Both share one set of steps; a league picks which it uses, in order.
+// Implements the official Big 12, SEC and ACC football tiebreaking procedures (no-division
+// formats, 2024-). All share one set of steps; a league picks which it uses, in order.
 (function (root) {
   "use strict";
 
@@ -11,7 +11,7 @@
     c: "Record vs. next-highest common opponent (standings walk)",
     d: "Strength of conference schedule",
     e: "Total wins (12-game season, max 1 FCS win)",
-    f: "Rating (Big 12: SportSource team rating, FPI as stand-in; SEC: capped relative scoring margin)",
+    f: "Rating (Big 12, ACC: SportSource rating, FPI as stand-in; SEC: capped relative scoring margin)",
     g: "Coin toss",
   };
 
@@ -28,12 +28,31 @@
   // rating: what step f compares. "fpi": ESPN's FPI, standing in for the Big 12's private
   // SportSource rating. "margin": the SEC's capped relative total scoring margin, computed from
   // real scores with its published formula (Appendix A).
+  // redefine (ACC, 2026-): teams play different numbers of conference games, so "tied" means the
+  // best winning percentage plus any team with a different number of games and the same number
+  // of wins or of losses as them (ACC policy 1). Every restart redefines the tie from the teams
+  // still in contention, and a two-team tie's winner is only in once nobody is tied with it:
+  // "starting with the highest win percentage, working downward" (2.a). See titleGameRedefine.
+  // before: the rules for earlier seasons, when a league changed its procedure.
   // Labels are the leagues' own: the Big 12 letters its steps; the SEC letters them too (A-F) but
-  // numbers its procedures, so the page uses numbers to keep the two apart.
+  // numbers its procedures, so the page uses numbers to keep the two apart. The ACC numbers its
+  // three-team steps 1-3 (and its two-team steps i-iii).
+  const NONE = { reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, redefine: false };
+  // ACC 2024-2025 (policy of Aug. 2024, reworded Sept. 2025 without changing a step): the SEC's
+  // steps with SportSource's Team Rating Score, and the first team out of the tiebreaker is #1.
+  // Its standings walk orders tied opponents "with ties broken"; the SEC's head-to-head split
+  // stands in for the full procedure.
+  const ACC_2025 = { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "a", b: "b", c: "c", d: "d", f: "e", g: "f" }, h2hLoserOut: true, walkSplitsTies: true, rating: "fpi" };
   const RULES = {
-    big12: { steps: ["a", "b", "c", "d", "e", "f", "g"], label: { a: "a", b: "b", c: "c", d: "d", e: "e", f: "f", g: "g" }, reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, rating: "fpi" },
-    sec: { steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true, h2hLoserOut: true, walkSplitsTies: true, rating: "margin" },
+    big12: { ...NONE, steps: ["a", "b", "c", "d", "e", "f", "g"], label: { a: "a", b: "b", c: "c", d: "d", e: "e", f: "f", g: "g" }, rating: "fpi" },
+    sec: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true, h2hLoserOut: true, walkSplitsTies: true, rating: "margin" },
+    acc: { ...NONE, steps: ["a", "f", "g"], label: { a: "1", f: "2", g: "3" }, h2hLoserOut: true, redefine: true, rating: "fpi", before: { season: 2026, rules: ACC_2025 } },
   };
+  function rulesFor(league, season) {
+    const r = RULES[league || "big12"];
+    if (!r) throw new Error("unknown league " + league);
+    return r.before && season < r.before.season ? r.before.rules : r;
+  }
 
   // SEC Appendix A, one game: points scored as a share of what the opponent allows on average
   // (capped at 200%), minus points allowed as a share of what it scores on average. In percent.
@@ -67,8 +86,7 @@
   }
 
   function build(data) {
-    const rules = RULES[data.league || "big12"];
-    if (!rules) throw new Error("unknown league " + data.league);
+    const rules = rulesFor(data.league, data.season);
     // Non-conference games only matter through total wins; without that step they can't change
     // the standings, so they aren't left to play (halves what exact.js enumerates for the SEC).
     const nonConfMatters = rules.steps.includes("e");
@@ -202,6 +220,8 @@
     return null;
   }
 
+  const CUT = -2; // pickOne with info.stopOnCut: teams were cut (info.cut) and nobody picked
+
   // Runs the steps for a 2-team or 3+-team tie; returns the team that is seeded first.
   // At each step of a 3+-team tie: a team alone at the top is seeded. Otherwise any team
   // below the best value is eliminated, and the teams still level start over at step a
@@ -235,7 +255,9 @@
         return top[0];
       }
       if (multi && top.length < T.length) {
-        if (trace) push({ step, cut: T.filter((t) => !top.includes(t)), detail: txt(detail) }, extra);
+        const cut = T.filter((t) => !top.includes(t));
+        if (trace) push({ step, cut, detail: txt(detail) }, extra);
+        if (info && info.stopOnCut) { info.cut = cut; return CUT; } // the caller redefines the tie
         return pickOne(st, top, rng, trace, names, info); // the rest start over at step a
       }
       return -1;
@@ -254,7 +276,7 @@
         vals = {}; for (const t of T) vals[t] = recVs(st, t, T);
         const v = vals;
         w = decide("a", topFrac(T, v), () => recText(v) + " among tied teams", () => ({ rows: recRows(v) }));
-        if (w >= 0) return w;
+        if (w !== -1) return w;
       } else {
         // not everyone played: a team that beat all the others comes out. In the SEC a team that
         // lost to all the others is eliminated and the rest start over; in the Big 12 it stays in.
@@ -265,6 +287,7 @@
           const loser = T.find((x) => T.every((y) => y === x || st.H2H[x * st.N + y] < 0));
           if (loser !== undefined) {
             push({ step: "a", cut: [loser], detail: trace && names[loser] + " lost to every other tied team" });
+            if (info && info.stopOnCut) { info.cut = [loser]; return CUT; }
             return pickOne(st, T.filter((t) => t !== loser), rng, trace, names, info);
           }
         }
@@ -273,34 +296,34 @@
     // b. common conference opponents (played by all tied teams)
     const common = [];
     for (let o = 0; o < st.N; o++) if (!Tset.has(o) && T.every((t) => st.H2H[t * st.N + o] !== 0)) common.push(o);
-    if (common.length) {
+    if (common.length && uses("b")) {
       vals = {}; for (const t of T) vals[t] = recVs(st, t, common);
       const v = vals;
       w = decide("b", topFrac(T, v), () => recText(v) + " vs " + common.map((o) => names[o]).join(", "), () => ({ rows: recRows(v), against: common }));
-      if (w >= 0) return w;
+      if (w !== -1) return w;
     }
     // c. standings walk
-    const found = walk(st, T, Tset);
+    const found = uses("c") && walk(st, T, Tset);
     if (found) {
       const { G, vals: v } = found;
       w = decide("c", topFrac(T, v), () => "vs " + G.map((g) => names[g]).join("/") + ": " + recText(v), () => ({ rows: recRows(v), against: G }));
-      if (w >= 0) return w;
+      if (w !== -1) return w;
     }
     // d. strength of conference schedule
     vals = {}; for (const t of T) vals[t] = [st.sosW[t], st.sosG[t]];
-    {
+    if (uses("d")) {
       const v = vals;
       w = decide("d", topFrac(T, v), () => T.map((t) => names[t] + " " + (v[t][0] / v[t][1]).toFixed(3)).join(", "), () => ({ rows: pctRows(v) }));
-      if (w >= 0) return w;
+      if (w !== -1) return w;
     }
     // e. total wins
     if (uses("e")) {
       w = decide("e", topNum(T, st.total), () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
-      if (w >= 0) return w;
+      if (w !== -1) return w;
     }
     // f. rating: FPI (Big 12 stand-in) or capped relative scoring margin (SEC)
     w = decide("f", topNum(T, st.rating), () => T.map((t) => names[t] + " " + st.rating[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.rating, 1) }));
-    if (w >= 0) return w;
+    if (w !== -1) return w;
     // g. coin toss
     w = T[Math.floor(rng() * T.length)];
     push({ step: "g", winner: w, detail: "random draw" });
@@ -309,7 +332,58 @@
 
   // Returns [seed1, seed2]; trace (optional array) collects tiebreak decisions.
   // Under reseedTop2, decisions that only pick who gets in are marked .spot.
+  // ACC 2026 "Tied Teams" among pool: the best winning percentage, plus any team that played a
+  // different number of conference games with the same wins or the same losses as one of them.
+  function definedTie(st, pool) {
+    const pct = (t) => [st.CW[t], st.CW[t] + st.CL[t]];
+    let best = pool[0];
+    for (const t of pool) if (cmpFrac(...pct(t), ...pct(best)) > 0) best = t;
+    const top = pool.filter((t) => cmpFrac(...pct(t), ...pct(best)) === 0);
+    const G = (t) => st.CW[t] + st.CL[t];
+    const tiedTo = (t) => top.some((x) => G(x) !== G(t) && (st.CW[x] === st.CW[t] || st.CL[x] === st.CL[t]));
+    return pool.filter((t) => top.includes(t) || tiedTo(t));
+  }
+
+  // ACC 2026: fill the two spots one at a time, each time defining the tie afresh from the teams
+  // still in contention for that spot (everyone not yet in; teams removed are out for that spot only).
+  // - A team alone in its tie is in.
+  // - Two tied teams with both spots open are both in; the two-team steps seed them. (The ACC's
+  //   Michael Strickland to On3, July 2026: 8-1, 7-1 and 7-2 with no 9-0 team: "the 8-1 team and
+  //   the 7-1 team would be compared for the first spot", and the 8-1 team then gets the second.)
+  // - Otherwise a two-team tie's loser is removed and the tie is redefined around the winner, who
+  //   may now be tied with a lower team (Strickland: 9-0 in, then 8-1, 7-2, 7-1 for the last spot:
+  //   if the 7-1 team beats the 8-1 team, "it would then be compared to the 7-2 team").
+  // - A tie of three or more places a team (policy 2.b: "placed into the Championship Game"), or
+  //   removes teams and starts over.
+  // Seeds are in the order the teams got in; the 2026 policy doesn't say who hosts.
+  function titleGameRedefine(st, rng, trace, names) {
+    const placed = [];
+    while (placed.length < 2) {
+      let pool = [];
+      for (let t = 0; t < st.N; t++) if (!placed.includes(t)) pool.push(t);
+      for (;;) {
+        const T = definedTie(st, pool);
+        if (T.length === 1) { placed.push(T[0]); break; }
+        if (T.length === 2 && !placed.length) {
+          const s1 = pickOne(st, T, rng, trace, names);
+          return [s1, s1 === T[0] ? T[1] : T[0]];
+        }
+        if (T.length === 2) {
+          const w = pickOne(st, T, rng, trace, names);
+          pool = pool.filter((t) => t !== (w === T[0] ? T[1] : T[0]));
+          continue;
+        }
+        const info = { stopOnCut: true };
+        const w = pickOne(st, T, rng, trace, names, info);
+        if (w >= 0) { placed.push(w); break; }
+        pool = pool.filter((t) => !info.cut.includes(t));
+      }
+    }
+    return placed;
+  }
+
   function titleGame(st, rng, trace, names) {
+    if (st.rules.redefine) return titleGameRedefine(st, rng, trace, names);
     const groups = confGroups(st);
     const G1 = groups[0];
     if (G1.length === 1) {
@@ -572,7 +646,7 @@
     return null;
   }
 
-  const api = { STEP, RULES, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups, guaranteedPathSim };
+  const api = { STEP, RULES, rulesFor, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups, guaranteedPathSim };
   root.B12 = api;
   if (typeof module !== "undefined") module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

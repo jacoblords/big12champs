@@ -37,12 +37,14 @@ jobs:
             --data-out "$RUNNER_TEMP/data.json" --site site --artifact ''
           python fetch_data.py --league sec --offline --force-build --prev tests/fixtures/sec-season-2026-11-09.json \
             --data-out "$RUNNER_TEMP/data-sec.json" --site site --artifact ''
+          python fetch_data.py --league acc --offline --force-build --prev tests/fixtures/acc-season-2026-11-09.json \
+            --data-out "$RUNNER_TEMP/data-acc.json" --site site --artifact ''
 
       - name: Built pages parse and carry exact odds
         run: |
           node -e '
             const fs = require("fs"), vm = require("vm");
-            for (const dir of ["site", "site/sec"]) {
+            for (const dir of ["site", "site/sec", "site/acc"]) {
               const html = fs.readFileSync(dir + "/index.html", "utf8");
               const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
               if (scripts.length !== 2) throw new Error(dir + ": expected 2 scripts, found " + scripts.length);

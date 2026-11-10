@@ -172,7 +172,7 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(fake2.urls, [])
 
 
-    def test_sec_page_lives_under_its_path_with_both_leagues_in_the_nav(self):
+    def test_sec_page_lives_under_its_path_with_every_league_in_the_nav(self):
         now = first_kickoff()
         prev = copy.deepcopy(FIXTURE)
         prev["league"] = "sec"
@@ -182,12 +182,29 @@ class FetchTests(unittest.TestCase):
         self.assertIn("<title>SEC Title Paths</title>", site)
         self.assertEqual(written["league"], "sec")
         self.assertEqual([(l["id"], l["name"], l["path"]) for l in self.site_data["leagues"]],
-                         [("big12", "Big 12", ""), ("sec", "SEC", "sec/")])
+                         [("big12", "Big 12", ""), ("sec", "SEC", "sec/"), ("acc", "ACC", "acc/")])
+
+    def test_acc_page_lives_under_acc(self):
+        now = first_kickoff()
+        prev = copy.deepcopy(FIXTURE)
+        prev["league"] = "acc"
+        written, site = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build", "--league", "acc", league_path="acc")
+        self.assertIn("<title>ACC Title Paths</title>", site)
+        self.assertEqual(written["league"], "acc")
 
     def test_another_leagues_data_is_not_reused(self):
         now = first_kickoff()
         with self.assertRaises(SystemExit):  # Big 12 data can't seed the SEC
             self.run_fetch(copy.deepcopy(FIXTURE), now, FakeESPN(), "--offline", "--league", "sec", league_path="sec")
+
+    def test_acc_calls_use_the_acc_group(self):
+        now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
+        prev = self.fresh_prev(now)
+        prev["league"] = "acc"
+        fake = FakeESPN()
+        self.run_fetch(prev, now, fake, "--league", "acc", league_path="acc")
+        self.assertEqual(len(fake.urls), 1)
+        self.assertIn("groups=1&", fake.urls[0])
 
     def test_sec_calls_use_the_sec_group(self):
         now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
@@ -242,6 +259,17 @@ class ScoreboardParsing(unittest.TestCase):
         sb = scoreboard(games, extra_events=[title])
         with mock.patch.object(F, "get", lambda url, raw=False: sb):
             parsed = F.fetch_week(F.LEAGUES["sec"], 2025, 15)
+        self.assertNotIn("title", [g["id"] for g in parsed])
+
+    def test_acc_title_game_is_left_out(self):
+        # 2024 and 2025: ESPN's note reads "ACC Championship"
+        games = [g for g in FIXTURE["games"] if g["week"] == 11][:2]
+        title = copy.deepcopy(scoreboard(games[:1])["events"][0])
+        title["id"] = "title"
+        title["competitions"][0]["notes"] = [{"headline": "ACC Championship"}]
+        sb = scoreboard(games, extra_events=[title])
+        with mock.patch.object(F, "get", lambda url, raw=False: sb):
+            parsed = F.fetch_week(F.LEAGUES["acc"], 2025, 15)
         self.assertNotIn("title", [g["id"] for g in parsed])
 
     def test_canceled_game_is_completed_without_a_winner(self):
