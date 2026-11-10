@@ -43,4 +43,36 @@ function reducedSeason() {
   return data;
 }
 
-module.exports = { reducedSeason, standingsTable, seeds };
+// A final-season fixture with the given weeks un-played, and every finish of those games: who won
+// each, and who is in the title game. For replaying published "if X wins..." scenarios.
+function replayFinal(file, weeks) {
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", file), "utf8"));
+  for (const g of data.games) {
+    if (weeks.includes(g.week)) Object.assign(g, { completed: false, winner: null, pHome: 0.5 });
+  }
+  const ctx = B.build(data);
+  const abbr = (i) => ctx.teams[i].abbr;
+  const idx = Object.fromEntries(ctx.teams.map((t, i) => [t.abbr, i]));
+  const finishes = [];
+  for (let m = 0; m < 2 ** ctx.pending.length; m++) {
+    const out = Uint8Array.from(ctx.pending, (g, k) => (m >>> k) & 1);
+    let coin = false;
+    const seeds = B.titleGame(B.standings(ctx, out), () => { coin = true; return 0; });
+    const results = ctx.pending.map((g, k) => ({ week: g.week, teams: [abbr(g.h), abbr(g.a)], winner: abbr(out[k] ? g.h : g.a) }));
+    const games = (team, week) => results.filter((r) => r.teams.includes(team) && (week == null || r.week === week));
+    finishes.push({
+      won: (team, week) => games(team, week).some((r) => r.winner === team),
+      lost: (team, week) => games(team, week).some((r) => r.winner !== team),
+      // won every remaining game / beat this particular opponent
+      wonOut: (team) => games(team).every((r) => r.winner === team),
+      beat: (team, opp) => results.some((r) => r.teams.includes(team) && r.teams.includes(opp) && r.winner === team),
+      pair: new Set(seeds.map(abbr)),
+      first: abbr(seeds[0]),
+      mask: m >>> 0,
+      coin,
+    });
+  }
+  return { ctx, finishes, idx };
+}
+
+module.exports = { reducedSeason, standingsTable, seeds, replayFinal };

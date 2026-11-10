@@ -73,6 +73,9 @@ python3 -m unittest discover -s tests       # fetcher caching rules against a fa
 
 - `tests/sec.test.js`: the SEC's 2024 and 2025 title games, published final-week scenarios,
   and the worked examples in the SEC's official procedure.
+- `tests/sec-scenarios.test.js`: SEC scenarios from CBS, SDS and FanSided in November 2024 and
+  2025, replayed over every finish. Where an article overlooked a combination, the exception is
+  pinned with the step that decides it.
 - `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
   hand-built standings table for each rule and corner case (sweep rule, restart after a
   seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
