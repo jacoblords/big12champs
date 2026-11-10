@@ -51,28 +51,57 @@ function replayFinal(file, weeks) {
     if (weeks.includes(g.week)) Object.assign(g, { completed: false, winner: null, pHome: 0.5 });
   }
   const ctx = B.build(data);
-  const abbr = (i) => ctx.teams[i].abbr;
-  const idx = Object.fromEntries(ctx.teams.map((t, i) => [t.abbr, i]));
-  const finishes = [];
-  for (let m = 0; m < 2 ** ctx.pending.length; m++) {
-    const out = Uint8Array.from(ctx.pending, (g, k) => (m >>> k) & 1);
-    let coin = false;
-    const seeds = B.titleGame(B.standings(ctx, out), () => { coin = true; return 0; });
-    const results = ctx.pending.map((g, k) => ({ week: g.week, teams: [abbr(g.h), abbr(g.a)], winner: abbr(out[k] ? g.h : g.a) }));
-    const games = (team, week) => results.filter((r) => r.teams.includes(team) && (week == null || r.week === week));
-    finishes.push({
-      won: (team, week) => games(team, week).some((r) => r.winner === team),
-      lost: (team, week) => games(team, week).some((r) => r.winner !== team),
-      // won every remaining game / beat this particular opponent
-      wonOut: (team) => games(team).every((r) => r.winner === team),
-      beat: (team, opp) => results.some((r) => r.teams.includes(team) && r.teams.includes(opp) && r.winner === team),
-      pair: new Set(seeds.map(abbr)),
-      first: abbr(seeds[0]),
-      mask: m >>> 0,
-      coin,
-    });
-  }
-  return { ctx, finishes, idx };
+  const masks = [];
+  for (let m = 0; m < 2 ** ctx.pending.length; m++) masks.push(m >>> 0);
+  return { ctx, finishes: masks.map((m) => finishOf(ctx, m)), idx: indexOf(ctx) };
 }
 
-module.exports = { reducedSeason, standingsTable, seeds, replayFinal };
+// A season snapshot with too many games left to try every combination (2026, in season): n random
+// finishes of its remaining games, each game a coin flip, from a fixed seed. Not a proof like
+// replayFinal, but a claim that fails shows up.
+function sampleSeason(file, n, seed = 1) {
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", file), "utf8"));
+  const ctx = B.build(data);
+  const P = ctx.pending.length;
+  let s = seed >>> 0;
+  const rnd = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s; };
+  const masks = [];
+  for (let k = 0; k < n; k++) {
+    let m = 0;
+    for (let i = 0; i < P; i++) if (rnd() & 0x10000) m |= 1 << i;
+    masks.push(m >>> 0);
+  }
+  return { ctx, finishes: masks.map((m) => finishOf(ctx, m)), idx: indexOf(ctx) };
+}
+
+const indexOf = (ctx) => Object.fromEntries(ctx.teams.map((t, i) => [t.abbr, i]));
+
+// One finish of ctx's remaining games (bit k of m: the home team of game k wins): who won what,
+// the final conference records, and who is in the title game.
+function finishOf(ctx, m) {
+  const abbr = (i) => ctx.teams[i].abbr;
+  const idx = indexOf(ctx);
+  const out = Uint8Array.from(ctx.pending, (g, k) => (m >>> k) & 1);
+  let coin = false;
+  const st = B.standings(ctx, out);
+  const seeds = B.titleGame(st, () => { coin = true; return 0; });
+  const results = ctx.pending.map((g, k) => ({ week: g.week, teams: [abbr(g.h), abbr(g.a)], winner: abbr(out[k] ? g.h : g.a) }));
+  const games = (team, week) => results.filter((r) => r.teams.includes(team) && (week == null || r.week === week));
+  return {
+    won: (team, week) => games(team, week).some((r) => r.winner === team),
+    lost: (team, week) => games(team, week).some((r) => r.winner !== team),
+    // won every remaining game / beat this particular opponent
+    wonOut: (team) => games(team).every((r) => r.winner === team),
+    wins: (team) => games(team).filter((r) => r.winner === team).length,
+    beat: (team, opp) => results.some((r) => r.teams.includes(team) && r.teams.includes(opp) && r.winner === team),
+    // final conference record, "7-2"
+    rec: (team) => `${st.CW[idx[team]]}-${st.CL[idx[team]]}`,
+    losses: (team) => st.CL[idx[team]],
+    pair: new Set(seeds.map(abbr)),
+    first: abbr(seeds[0]),
+    mask: m >>> 0,
+    coin,
+  };
+}
+
+module.exports = { reducedSeason, standingsTable, seeds, replayFinal, sampleSeason };

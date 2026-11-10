@@ -363,36 +363,52 @@
   // ACC 2026: fill the two spots one at a time, each time defining the tie afresh from the teams
   // still in contention for that spot (everyone not yet in; teams removed are out for that spot only).
   // - A team alone in its tie is in.
-  // - Two tied teams with both spots open are both in; the two-team steps seed them. (The ACC's
-  //   Michael Strickland to On3, July 2026: 8-1, 7-1 and 7-2 with no 9-0 team: "the 8-1 team and
-  //   the 7-1 team would be compared for the first spot", and the 8-1 team then gets the second.)
-  // - Otherwise a two-team tie's loser is removed and the tie is redefined around the winner, who
-  //   may now be tied with a lower team (Strickland: 9-0 in, then 8-1, 7-2, 7-1 for the last spot:
+  // - Policy 2.a: a tie across schedules of different lengths is "broken starting with the highest
+  //   win percentage, working downward": the teams with the best percentage are settled among
+  //   themselves first, and their winner meets the teams at the next percentage, and so on. (The
+  //   ACC's Michael Strickland to On3, July 2026: the winner of the 8-1 vs 7-1 head-to-head "would
+  //   move on to be compared to the next team".)
+  // - With both spots open, that winner takes the first spot, and the tie for the second is
+  //   redefined (Strickland, no 9-0 team: "the 8-1 team and the 7-1 team would be compared for the
+  //   first spot ... That team gets the spot").
+  // - For the last spot, a two-team comparison's loser is removed and the tie is redefined around
+  //   the winner, who may now be tied with a lower team (Strickland: 9-0 in, then 8-1, 7-2, 7-1:
   //   if the 7-1 team beats the 8-1 team, "it would then be compared to the 7-2 team").
   // - A tie of three or more places a team (policy 2.b: "placed into the Championship Game"), or
   //   removes teams and starts over.
   // Seeds are in the order the teams got in; the 2026 policy doesn't say who hosts.
   function titleGameRedefine(st, rng, trace, names) {
     const placed = [];
+    const pct = (t) => [st.CW[t], st.CW[t] + st.CL[t]];
     while (placed.length < 2) {
       let pool = [];
       for (let t = 0; t < st.N; t++) if (!placed.includes(t)) pool.push(t);
       for (;;) {
         const T = definedTie(st, pool);
         if (T.length === 1) { placed.push(T[0]); break; }
-        if (T.length === 2 && !placed.length) {
-          const s1 = pickOne(st, T, rng, trace, names);
-          return [s1, s1 === T[0] ? T[1] : T[0]];
+        // the tied teams by winning percentage, best first
+        const levels = [];
+        for (const t of [...T].sort((x, y) => -cmpFrac(...pct(x), ...pct(y)))) {
+          const L = levels[levels.length - 1];
+          if (L && cmpFrac(...pct(t), ...pct(L[0])) === 0) L.push(t); else levels.push([t]);
         }
-        if (T.length === 2) {
-          const w = pickOne(st, T, rng, trace, names);
-          pool = pool.filter((t) => t !== (w === T[0] ? T[1] : T[0]));
-          continue;
+        let cand = -1, cut = null, byThree = false;
+        const beaten = [];
+        for (const L of levels) {
+          const tie = (cand < 0 ? L : [cand, ...L]).sort((x, y) => x - y);
+          if (tie.length === 1) { cand = tie[0]; continue; }
+          const info = { stopOnCut: true };
+          const w = pickOne(st, tie, rng, trace, names, tie.length > 2 ? info : undefined);
+          if (w === CUT) { cut = info.cut; break; }
+          beaten.push(...tie.filter((t) => t !== w));
+          cand = w;
+          byThree = tie.length > 2;
         }
-        const info = { stopOnCut: true };
-        const w = pickOne(st, T, rng, trace, names, info);
-        if (w >= 0) { placed.push(w); break; }
-        pool = pool.filter((t) => !info.cut.includes(t));
+        if (cut) { pool = pool.filter((t) => !cut.includes(t)); continue; }
+        // placed by a tie of three or more, or the first spot: in
+        if (byThree || !placed.length) { placed.push(cand); break; }
+        // the last spot, settled two at a time: the beaten teams are out, and the tie is redefined
+        pool = pool.filter((t) => !beaten.includes(t));
       }
     }
     return placed;

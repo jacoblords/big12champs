@@ -13,12 +13,27 @@
 //     copy of 2025-11-26). Seven scenarios, with the step-by-step for the ties.
 // Where the engine disagrees with a scenario, the trace shows the sheet overlooked something; each
 // such exception is pinned below with the step that decides it.
-//   No press scenarios were needed: the conference covered both seasons' final weeks itself.
+// Press claims, checked the same way where they're stated outright (below each test's sources):
+//   CBS Sports, Nov. 20, 2024 (two weeks left): Oregon has clinched, with "no possible tiebreaker
+//     scenario" leaving it out; Ohio State is in if it beats Indiana and Michigan.
+//     https://www.cbssports.com/college-football/news/2024-big-ten-championship-game-how-ohio-state-penn-state-indiana-can-clinch-spot-vs-oregon
+//   Sports Illustrated, Nov. 19, 2025 (two weeks left): Indiana clinches "as long as they beat
+//     Purdue", and can clinch idle "if the Trojans beat the Ducks ... and the Terrapins beat the
+//     Wolverines".
+//     https://www.si.com/college-football/big-ten-championship-game-scenarios-entering-week-13-can-anyone-unseat-indiana-ohio-state
+//   2026, in season (sampled): IndyStar, Nov. 8, 2026: Indiana wins out "and the Hoosiers clinch a
+//     berth"; Trojans Wire, Nov. 8, 2026: UCLA (6-0) "just needs two wins to secure a berth".
+//     https://sports.yahoo.com/articles/ohio-states-loss-oregon-means-002548022.html
+//     https://sports.yahoo.com/articles/big-ten-teams-rooting-fiercely-135330071.html
+//   Not used: Fox Sports, Nov. 24, 2025, has Michigan vs Indiana in the four-way 8-1 tie by
+//     comparing head-to-head results pairwise. The procedure only uses head-to-head among three or
+//     more teams when they all played each other or one beat all the others (B.1), and the
+//     conference's own sheet gives Oregon vs Michigan (pinned in the 2025 test).
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const B = require("../engine.js");
-const { replayFinal } = require("./helpers.js");
+const { replayFinal, sampleSeason } = require("./helpers.js");
 
 const pairOf = (f) => [...f.pair].sort().join(" vs ");
 // Check a scenario on every finish it covers: the pair, and #1 when the scenario names it.
@@ -170,4 +185,31 @@ test("2025 after week 13 (the conference's seven scenarios)", () => {
   check(finishes, all(not(iu), not(osu), not(ore)), ["MICH", "OSU"], "#6", "MICH");
   // #7 Purdue, Ohio State and Washington win: Ohio State 9-0, Indiana 8-1.
   check(finishes, all(not(iu), osu, not(ore)), ["OSU", "IU"], "#7", "OSU");
+});
+
+test("press, 2024 after week 12 (CBS): Oregon can't be left out; Ohio State in by beating Indiana and Michigan", () => {
+  const { finishes } = replayFinal("final-big10-2024.json", [13, 14]);
+  for (const f of finishes) assert.ok(f.pair.has("ORE"), "Oregon clinched");
+  const osu = finishes.filter((f) => f.beat("OSU", "IU") && f.beat("OSU", "MICH"));
+  assert.ok(osu.length > 0);
+  for (const f of osu) assert.ok(f.pair.has("OSU"), "Ohio State beats Indiana and Michigan");
+});
+
+test("press, 2025 after week 12 (SI): Indiana in by beating Purdue, or idle with USC and Maryland wins", () => {
+  const { finishes } = replayFinal("final-big10-2025.json", [13, 14]);
+  const covers = [(f) => f.beat("IU", "PUR"), (f) => f.beat("USC", "ORE") && f.beat("MD", "MICH")];
+  for (const c of covers) {
+    const fs = finishes.filter(c);
+    assert.ok(fs.length > 0);
+    for (const f of fs) assert.ok(f.pair.has("IU"), "Indiana in");
+  }
+});
+
+test("press, 2026 after week 10 (IndyStar, Trojans Wire): Indiana winning out, or UCLA winning two, is in", () => {
+  const { finishes } = sampleSeason("big10-season-2026-11-10.json", 20000);
+  const iu = finishes.filter((f) => f.wonOut("IU"));
+  const ucla = finishes.filter((f) => f.wins("UCLA") >= 2);
+  assert.ok(iu.length > 0 && ucla.length > 0);
+  for (const f of iu) assert.ok(f.pair.has("IU"), "Indiana wins out");
+  for (const f of ucla) assert.ok(f.pair.has("UCLA"), "UCLA wins two");
 });
