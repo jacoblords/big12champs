@@ -38,8 +38,9 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   or more for first, the two teams that got in are seeded with the two-team steps. Run against final results it reproduces the Big 12's 2024 (ASU, then
   Iowa State out of a four-way tie via strength of schedule) and 2025, and the SEC's 2024 and
   2025 (Alabama and Georgia out of a four-way tie at 7-1, Alabama #1 on head-to-head).
-- **Adding a league:** an entry in `LEAGUES` in `fetch_data.py` (ESPN group, path), in
-  `RULES` in `engine.js`, and in `LEAGUE_TEXT` in `app.html`, plus a step in `update.yml`.
+- **Adding a league:** see [docs/adding-a-league.md](docs/adding-a-league.md): the rules
+  research, the tests to write first, and the places a league is wired in.
+  `tools/final_fixture.py <league> <season>` builds a finished-season test fixture.
 - **Page:** [`app.html`](app.html), a template; `fetch_data.py` inlines the engine.
 
 ## Data and caching
