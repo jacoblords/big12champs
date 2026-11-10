@@ -107,7 +107,7 @@ button { font: inherit; color: inherit; }
 /* path */
 .week { display: grid; gap: 6px; }
 .week h3 { font-size: 0.85rem; color: var(--muted); }
-.game { display: grid; grid-template-columns: 1fr auto 1fr 3.2em; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(--sunk); font-size: 0.92rem; }
+.game { display: grid; grid-template-columns: 1fr auto 1fr 4.4em; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(--sunk); font-size: 0.92rem; }
 .game .side { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .game .side.home { justify-content: flex-end; }
 .game img { width: 20px; height: 20px; object-fit: contain; flex: none; }
@@ -124,9 +124,12 @@ details.minor .week + .week { margin-top: 10px; }
 .game .at { color: var(--muted); font-size: 0.8rem; }
 .game.mine { box-shadow: inset 3px 0 0 var(--accent); }
 /* odds column: same width on every row; only upsets are colored */
-.game .po { text-align: right; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; cursor: help; }
+.game .po { display: grid; grid-template-columns: 1fr 1.2em; align-items: baseline; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.game .po .n { text-align: right; }
+.game .po .x { padding-left: 3px; font-weight: 700; letter-spacing: -0.05em; }
 .game .po.ups { color: var(--warn); font-weight: 600; }
-.game .po.set { font-size: 0.95rem; color: var(--ink); } /* not .pick: that is the team-picker card */
+.game .po.set .x { color: var(--ink); font-weight: 400; } /* class is "set", not "pick": .pick is the team-picker card */
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .tag { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tag.ups { background: var(--warn-soft); color: var(--warn); }
 
@@ -196,7 +199,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
   .big { grid-column: 1 / -1; text-align: left; }
   .rg-row { grid-template-columns: minmax(0, 1fr) 120px; }
   .rg-row .root { grid-column: 1 / -1; grid-row: 2; }
-  .game { grid-template-columns: 1fr auto 1fr 2.8em; gap: 6px; }
+  .game { grid-template-columns: 1fr auto 1fr 4em; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -396,15 +399,13 @@ function gameRow(g, i, winnerHome, mark) {
   const locked = locks[i] !== undefined;
   // One fixed-width column: ESPN's odds of this result, amber when it's an upset, a check for a
   // result the visitor set. The explanation lives in the hover text, not on the page.
-  const winner = esc(T[hw ? g.h : g.a].short);
-  const odds = pct(pW, 0);
-  const cell = locked
-    ? `<span class="po set" title="You set this: ${winner} wins" aria-label="You set this: ${winner} wins">&#10003;</span>`
-    : isTossUp(pW)
-      ? `<span class="po" title="Toss-up: ESPN gives ${winner} ${odds}" aria-label="Toss-up: ESPN gives ${winner} ${odds}">${odds}</span>`
-      : pW < 0.5
-        ? `<span class="po ups" title="Upset: ESPN gives ${winner} only ${odds}" aria-label="Upset: ESPN gives ${winner} only ${odds}">${odds}</span>`
-        : `<span class="po" title="ESPN gives ${winner} ${odds}" aria-label="ESPN gives ${winner} ${odds}">${odds}</span>`;
+  // Odds column: ESPN's odds of this result, then a fixed-width mark slot so numbers stay aligned:
+  // "!" for an upset (under 45%), "!!" for a big one (under 25%), a check for a result the
+  // visitor set (it takes the slot; an upset pick keeps its amber number).
+  const ups = pW < 0.5 - TOSS_UP, big = pW < 0.25;
+  const markText = locked ? "&#10003;" : big ? "!!" : ups ? "!" : "";
+  const sr = locked ? "you set this result" : big ? "big upset" : ups ? "upset" : isTossUp(pW) ? "toss-up" : "";
+  const cell = `<span class="po${ups ? " ups" : ""}${locked ? " set" : ""}"><span class="n">${pct(pW, 0)}</span><span class="x" aria-hidden="true">${markText}</span>${sr ? `<span class="vh">, ${sr}</span>` : ""}</span>`;
   return `<div class="game${mark ? " mine" : ""}">
     <div class="side away ${hw ? "l" : "w"}">${logo(g.a)}<span>${esc(T[g.a].short)}</span>${hw ? "" : `<span class="wb" title="Wins in this path">W</span>`}</div>
     <span class="at">at</span>
@@ -540,7 +541,7 @@ function renderTeam() {
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
       <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} Exact odds of this full slate: ${oneIn(A.path.prob)}.</p>
-      <p><span class="wb">W</span> marks the team that wins each game in this path.</p></header>
+      <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
       ${body}
       ${explainHTML(i, A.ex)}
     </div>`;
