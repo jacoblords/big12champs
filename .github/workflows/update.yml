@@ -29,7 +29,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
-      changed: ${{ steps.fetch.outputs.changed }}
+      changed: ${{ steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' }}
+    env:
+      # exact.js skips (and the page uses simulation) when enumerating would take longer
+      EXACT_BUDGET_SECONDS: "180"
+      PUBLISHED: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+      FORCE: ${{ github.event_name != 'schedule' && '--force-build' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,17 +43,13 @@ jobs:
       - uses: actions/setup-node@v4  # exact.js
         with:
           node-version: "22"
-      - id: fetch
-        env:
-          # exact.js skips (and the page uses simulation) when enumerating would take longer
-          EXACT_BUDGET_SECONDS: "180"
-        run: >
-          python fetch_data.py
-          --prev "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data.json"
-          --site site --artifact ''
-          ${{ github.event_name != 'schedule' && '--force-build' || '' }}
-          --github-output
-      - if: steps.fetch.outputs.changed == 'true'
+      # One step per league, each starting from its own published data. Every step writes its
+      # page into site/ whether or not it changed, so one deploy carries all of them.
+      - id: big12
+        run: python fetch_data.py --league big12 --prev "$PUBLISHED/data.json" --site site --artifact '' $FORCE --github-output
+      - id: sec
+        run: python fetch_data.py --league sec --prev "$PUBLISHED/sec/data.json" --site site --artifact '' $FORCE --github-output
+      - if: steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site

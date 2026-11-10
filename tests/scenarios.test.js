@@ -11,33 +11,9 @@
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const B = require("../engine.js");
+const { replayFinal } = require("./helpers.js");
 
-function replay(season, weeks) {
-  const data = JSON.parse(JSON.stringify(require(`./fixtures/final-${season}.json`)));
-  for (const g of data.games) {
-    if (weeks.includes(g.week)) Object.assign(g, { completed: false, winner: null, pHome: 0.5 });
-  }
-  const ctx = B.build(data);
-  const abbr = (i) => ctx.teams[i].abbr;
-  const idx = Object.fromEntries(ctx.teams.map((t, i) => [t.abbr, i]));
-  // every finish: which team won each un-played game, and who's in the title game
-  const finishes = [];
-  for (let m = 0; m < 2 ** ctx.pending.length; m++) {
-    const out = Uint8Array.from(ctx.pending, (g, k) => (m >>> k) & 1);
-    let coin = false;
-    const seeds = B.titleGame(B.standings(ctx, out), () => { coin = true; return 0; });
-    const results = ctx.pending.map((g, k) => ({ week: g.week, teams: [abbr(g.h), abbr(g.a)], winner: abbr(out[k] ? g.h : g.a) }));
-    const games = (team, week) => results.filter((r) => r.teams.includes(team) && (week == null || r.week === week));
-    finishes.push({
-      won: (team, week) => games(team, week).some((r) => r.winner === team),
-      lost: (team, week) => games(team, week).some((r) => r.winner !== team),
-      pair: new Set(seeds.map(abbr)),
-      coin,
-    });
-  }
-  return { ctx, finishes, idx };
-}
+const replay = (season, weeks) => replayFinal(`final-${season}.json`, weeks);
 const pairOf = (f) => [...f.pair].sort().join(" vs ");
 
 test("2024 final week: every published 7-2 tie scenario", () => {

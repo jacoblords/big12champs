@@ -338,3 +338,82 @@ test("ESPN-supplied text is escaped", async () => {
   await settle();
   assert.doesNotMatch(els.team.innerHTML + els.picker.innerHTML, /<img src=x|"><script>/);
 });
+
+// ---- leagues: header nav and the SEC page ----
+const PNG = "data:image/png;base64,iVBORw0KGgo=";
+const LEAGUES = [
+  { id: "big12", name: "Big 12", path: "", group: 4, logo: PNG, logoDark: PNG, sponsor: { name: "Monster Energy", logo: PNG } },
+  { id: "sec", name: "SEC", path: "sec/", group: 8, logo: PNG, logoDark: PNG },
+];
+// 2025 SEC with its final week of conference games left to play: a small exact enumeration
+function secFinalWeek() {
+  const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "final-sec-2025.json"), "utf8"));
+  for (const g of d.games) if (g.week === 14 && g.conf) Object.assign(g, { completed: false, winner: null, pHome: 0.6 });
+  d.leagues = LEAGUES;
+  d.exact = solve(d);
+  return d;
+}
+
+test("header: a quiet league switch and the season above, the league's logo leading the title", async () => {
+  const { els } = render({ ...data, leagues: LEAGUES }, "");
+  await settle();
+  const nav = els.leagues.innerHTML;
+  assert.match(text(nav), /^\s*Big 12 SEC\s*$/);
+  assert.equal(els.season.textContent, "2026 season");
+  const link = (re) => nav.match(re)[0];
+  const big12 = link(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/);
+  const sec = link(/<a href="sec\/"[^>]*>[\s\S]*?<\/a>/);
+  assert.match(text(big12), /Big 12/);
+  assert.match(text(sec), /SEC/);
+  // each league's logo (light and dark) in the switch; no sponsor there
+  for (const a of [big12, sec]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
+  assert.doesNotMatch(nav, /sponsor/);
+  // the title: Monster's claw, then the Big 12 logo, then the name
+  const lockup = els.lockup.innerHTML;
+  assert.match(lockup, /<img class="sponsor" src="data:image\/png;base64,[^"]+" alt="Monster Energy"[^>]*>.*class="logo-light"/s);
+  assert.equal(els.lockup.hidden, false);
+  assert.equal(els.title.textContent, "Big 12 Title Paths");
+});
+
+test("header: no league logos in the data, no empty logo block", async () => {
+  const { els } = render(data, "");
+  await settle();
+  assert.equal(els.lockup.hidden, true);
+  assert.equal(els.title.textContent, "Big 12 Title Paths");
+});
+
+test("SEC page: links back up a level, SEC wording, numbered SEC steps, SEC sources", async () => {
+  const sec = secFinalWeek();
+  const { els } = render(sec, "#ala");
+  await settle();
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/"[^>]*>[\s\S]*?<\/a>/)[0]), /Big 12/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/)[0]), /SEC/);
+  assert.equal(els.title.textContent, "SEC Title Paths");
+  assert.doesNotMatch(els.lockup.innerHTML, /sponsor/, "Monster sponsors the Big 12, not the SEC");
+  assert.match(els.lockup.innerHTML, /class="logo-light"/);
+  assert.match(text(els.team.innerHTML), /Alabama Crimson Tide \d+-\d+ SEC/);
+  assert.match(els.methodText.textContent, /official SEC tiebreakers/);
+  const rules = text(els.rules.innerHTML);
+  assert.match(rules, /The six steps/);
+  assert.match(rules, /Capped relative total scoring margin/);
+  assert.doesNotMatch(rules, /Total wins/);
+  assert.match(rules, /seeded by the two-team steps/);
+  assert.match(els.foot.innerHTML, /secsports\.com/);
+  assert.match(els.foot.innerHTML, /groups=8/);
+  assert.doesNotMatch(els.foot.innerHTML + rules, /Big 12/);
+});
+
+test("SEC tiebreaks show the league's step numbers, and say who got in before who is #1", async () => {
+  const sec = secFinalWeek();
+  let sawSpot = false, sawNumber = false;
+  for (const t of sec.teams) {
+    const { els } = render(sec, "#" + t.abbr.toLowerCase());
+    await settle();
+    const html = els.team.innerHTML;
+    assert.doesNotMatch(html, /Step [a-g]</, t.abbr);
+    if (/Step [1-6]</.test(html)) sawNumber = true;
+    if (/gets a title-game spot/.test(text(html))) sawSpot = true;
+  }
+  assert.ok(sawNumber, "some path shows a numbered step");
+  assert.ok(sawSpot, "some path picks the two teams before seeding them");
+});

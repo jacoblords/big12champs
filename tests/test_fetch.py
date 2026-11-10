@@ -53,30 +53,39 @@ class FakeESPN:
         raise AssertionError(f"unexpected ESPN call {url}")
 
 
+PNG = "data:image/png;base64,iVBORw0KGgo="
+
+
 def first_kickoff():
     return min(F.parse(g["date"]) for g in FIXTURE["games"] if not g["completed"])
 
 
 class FetchTests(unittest.TestCase):
-    def run_fetch(self, prev, now, fake, *extra):
+    def run_fetch(self, prev, now, fake, *extra, league_path=""):
+        """Returns (data written, or None) and the league's page in the site (always written)."""
         with tempfile.TemporaryDirectory() as tmp:
             prev_path = Path(tmp) / "prev.json"
             prev_path.write_text(json.dumps(prev))
             out = Path(tmp) / "data.json"
+            gh_out = Path(tmp) / "gh_output"
             argv = ["fetch_data.py", "--prev", str(prev_path), "--data-out", str(out), "--artifact", "",
-                    "--no-exact", "--site", str(Path(tmp) / "site"), *extra]
+                    "--no-exact", "--site", str(Path(tmp) / "site"), "--github-output", *extra]
             with mock.patch.object(F, "get", fake), mock.patch.object(F, "now_utc", lambda: now), \
-                    mock.patch.object(sys, "argv", argv), mock.patch("builtins.print"):
+                    mock.patch.object(sys, "argv", argv), mock.patch("builtins.print"), \
+                    mock.patch.dict("os.environ", {"GITHUB_OUTPUT": str(gh_out)}):
                 F.main()
             written = json.loads(out.read_text()) if out.exists() else None
-            index = Path(tmp) / "site" / "index.html"
+            self.changed = gh_out.read_text().strip()
+            index = Path(tmp) / "site" / league_path / "index.html"
             site = index.read_text() if index.exists() else None
             if site is not None:
                 self.assertTrue((Path(tmp) / "site" / "favicon.svg").exists(), "favicon shipped with the site")
+                self.site_data = json.loads((index.parent / "data.json").read_text())
         return written, site
 
     def fresh_prev(self, now):
         prev = copy.deepcopy(FIXTURE)
+        prev["leagues"] = [{**l, "logo": PNG, "logoDark": PNG} for l in F.LEAGUES.values()]
         prev["meta"]["scheduleCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
         prev["meta"]["fpiCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
         return prev
@@ -87,7 +96,9 @@ class FetchTests(unittest.TestCase):
         written, site = self.run_fetch(self.fresh_prev(now), now, fake)
         self.assertEqual(fake.urls, [])
         self.assertIsNone(written)
-        self.assertFalse(site)
+        self.assertEqual(self.changed, "changed=false")
+        # the page is still written, so a deploy for another league's change carries this one too
+        self.assertTrue(site)
 
     def test_result_not_looked_for_before_kickoff_plus_3h(self):
         now = first_kickoff() + dt.timedelta(hours=2, minutes=50)
@@ -105,6 +116,7 @@ class FetchTests(unittest.TestCase):
         self.assertTrue(all(g["completed"] and g["winner"] == g["home"] for g in week11))
         self.assertTrue(all(g["pHome"] is None for g in week11), "finished games drop their prediction")
         self.assertTrue(site)
+        self.assertEqual(self.changed, "changed=true")
 
     def test_game_still_in_progress_is_retried_next_run(self):
         now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
@@ -160,6 +172,54 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(fake2.urls, [])
 
 
+    def test_sec_page_lives_under_its_path_with_both_leagues_in_the_nav(self):
+        now = first_kickoff()
+        prev = copy.deepcopy(FIXTURE)
+        prev["league"] = "sec"
+        written, site = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build", "--league", "sec", league_path="sec")
+        self.assertTrue(site)
+        self.assertIn('<link rel="icon" href="../favicon.svg"', site)
+        self.assertIn("<title>SEC Title Paths</title>", site)
+        self.assertEqual(written["league"], "sec")
+        self.assertEqual([(l["id"], l["name"], l["path"]) for l in self.site_data["leagues"]],
+                         [("big12", "Big 12", ""), ("sec", "SEC", "sec/")])
+
+    def test_another_leagues_data_is_not_reused(self):
+        now = first_kickoff()
+        with self.assertRaises(SystemExit):  # Big 12 data can't seed the SEC
+            self.run_fetch(copy.deepcopy(FIXTURE), now, FakeESPN(), "--offline", "--league", "sec", league_path="sec")
+
+    def test_sec_calls_use_the_sec_group(self):
+        now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
+        prev = self.fresh_prev(now)
+        prev["league"] = "sec"
+        fake = FakeESPN()
+        self.run_fetch(prev, now, fake, "--league", "sec", league_path="sec")
+        self.assertEqual(len(fake.urls), 1)
+        self.assertIn("groups=8&", fake.urls[0])
+
+
+    def test_league_logos_fetched_once_and_the_big_12_carries_its_sponsor(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        del prev["leagues"]  # published before league logos existed
+        fake = FakeESPN()
+        written, _ = self.run_fetch(prev, now, fake)
+        conf = [u for u in fake.urls if "/ncaa_conf/" in u]
+        self.assertEqual(len(conf), 2 * len(F.LEAGUES), "light and dark logo per league")
+        self.assertEqual(len(fake.urls), len(conf))
+        for l in written["leagues"]:
+            self.assertTrue(l["logo"].startswith("data:image/png;base64,"), l["id"])
+            self.assertTrue(l["logoDark"].startswith("data:image/png;base64,"), l["id"])
+        big12 = written["leagues"][0]
+        self.assertEqual(big12["sponsor"]["name"], "Monster Energy")
+        self.assertTrue(big12["sponsor"]["logo"].startswith("data:image/png;base64,iVBORw0KGgo"), "the claw, a real PNG")
+        self.assertNotIn("sponsor", written["leagues"][1])
+        fake2 = FakeESPN()
+        self.run_fetch(written, now, fake2)
+        self.assertEqual(fake2.urls, [], "kept from the previous data")
+
+
 class ScoreboardParsing(unittest.TestCase):
     def test_title_game_and_non_conference_flag(self):
         games = [g for g in FIXTURE["games"] if g["week"] == 11][:2]
@@ -170,15 +230,25 @@ class ScoreboardParsing(unittest.TestCase):
         sb = scoreboard(games, extra_events=[title])
         sb["events"][1]["competitions"][0]["conferenceCompetition"] = False
         with mock.patch.object(F, "get", lambda url, raw=False: sb):
-            parsed = F.fetch_week(2026, 11)
+            parsed = F.fetch_week(F.LEAGUES["big12"], 2026, 11)
         self.assertEqual([g["id"] for g in parsed], [g["id"] for g in games])
         self.assertIs(parsed[1]["confFlag"], False)
+
+    def test_sec_title_game_is_left_out(self):
+        games = [g for g in FIXTURE["games"] if g["week"] == 11][:2]
+        title = copy.deepcopy(scoreboard(games[:1])["events"][0])
+        title["id"] = "title"
+        title["competitions"][0]["notes"] = [{"headline": "SEC Championship"}]
+        sb = scoreboard(games, extra_events=[title])
+        with mock.patch.object(F, "get", lambda url, raw=False: sb):
+            parsed = F.fetch_week(F.LEAGUES["sec"], 2025, 15)
+        self.assertNotIn("title", [g["id"] for g in parsed])
 
     def test_canceled_game_is_completed_without_a_winner(self):
         sb = scoreboard([g for g in FIXTURE["games"] if g["week"] == 11][:1], final=False)
         sb["events"][0]["competitions"][0]["status"]["type"] = {"name": "STATUS_CANCELED", "completed": False}
         with mock.patch.object(F, "get", lambda url, raw=False: sb):
-            g = F.fetch_week(2026, 11)[0]
+            g = F.fetch_week(F.LEAGUES["big12"], 2026, 11)[0]
         self.assertTrue(g["completed"])
         self.assertTrue(g["canceled"])
         self.assertIsNone(g["winner"])

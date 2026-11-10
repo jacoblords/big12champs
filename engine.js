@@ -1,19 +1,77 @@
-// Big 12 championship-game tiebreaker engine + Monte Carlo simulator.
-// Implements the official "Big 12 Football Tiebreaking Procedures" (16-team format, 2024-).
+// Conference championship-game tiebreaker engine + Monte Carlo simulator.
+// Implements the official Big 12 and SEC football tiebreaking procedures (16-team, no-division
+// formats, 2024-). Both share one set of steps; a league picks which it uses, in order.
 (function (root) {
   "use strict";
 
+  // Steps by their Big 12 letters (step ids everywhere: traces, tests, the page).
   const STEP = {
     a: "Head-to-head",
     b: "Record vs. common conference opponents",
     c: "Record vs. next-highest common opponent (standings walk)",
     d: "Strength of conference schedule",
     e: "Total wins (12-game season, max 1 FCS win)",
-    f: "Team rating (SportSource; ESPN FPI used as stand-in)",
+    f: "Rating (Big 12: SportSource team rating, FPI as stand-in; SEC: capped relative scoring margin)",
     g: "Coin toss",
   };
 
+  // steps: which steps the league uses, in order. label: the league's own name for each step.
+  // reseedTop2: when three or more tie for first, the two teams who get in are then seeded by
+  // the two-team steps (SEC, 2025: Alabama and Georgia got in on opponents' winning percentage,
+  // then Alabama was #1 for beating Georgia).
+  // The Big 12 seeds them in the order they came out of the tiebreaker.
+  // h2hLoserOut: with no round robin, a team that lost to every other tied team is eliminated
+  // (SEC procedure 2.A.2.b); in the Big 12 it stays in.
+  // walkSplitsTies: in the standings walk, a tied group of opponents is first ordered by
+  // head-to-head and only counted together when that can't separate it (SEC 1.C.1); the Big 12
+  // always counts the group together.
+  // rating: what step f compares. "fpi": ESPN's FPI, standing in for the Big 12's private
+  // SportSource rating. "margin": the SEC's capped relative total scoring margin, computed from
+  // real scores with its published formula (Appendix A).
+  // Labels are the leagues' own: the Big 12 letters its steps; the SEC letters them too (A-F) but
+  // numbers its procedures, so the page uses numbers to keep the two apart.
+  const RULES = {
+    big12: { steps: ["a", "b", "c", "d", "e", "f", "g"], label: { a: "a", b: "b", c: "c", d: "d", e: "e", f: "f", g: "g" }, reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, rating: "fpi" },
+    sec: { steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true, h2hLoserOut: true, walkSplitsTies: true, rating: "margin" },
+  };
+
+  // SEC Appendix A, one game: points scored as a share of what the opponent allows on average
+  // (capped at 200%), minus points allowed as a share of what it scores on average. In percent.
+  function gameMargin(pointsFor, pointsAgainst, opp) {
+    const off = opp.allowed > 0 ? Math.min((pointsFor / opp.allowed) * 100, 200) : 200;
+    const def = opp.scored > 0 ? (pointsAgainst / opp.scored) * 100 : 0;
+    return off - def;
+  }
+
+  // Each team's capped relative scoring margin, averaged over its finished conference games.
+  // Season scoring averages come from every finished game with a score. Unplayed games have no
+  // score, so in season this is the margin so far; it is exact once the season is over.
+  function scoringMargins(data, idx, N) {
+    const pts = new Float64Array(N), allowed = new Float64Array(N), played = new Float64Array(N);
+    const scored = data.games.filter((g) => g.completed && g.homeScore != null && g.awayScore != null);
+    for (const g of scored) {
+      for (const [t, pf, pa] of [[idx[g.home], g.homeScore, g.awayScore], [idx[g.away], g.awayScore, g.homeScore]]) {
+        if (t === undefined) continue;
+        pts[t] += pf; allowed[t] += pa; played[t]++;
+      }
+    }
+    const avg = (t) => ({ scored: pts[t] / played[t], allowed: allowed[t] / played[t] });
+    const sum = new Float64Array(N), n = new Float64Array(N);
+    for (const g of scored) {
+      const h = idx[g.home], a = idx[g.away];
+      if (!g.conf || h === undefined || a === undefined) continue;
+      sum[h] += gameMargin(g.homeScore, g.awayScore, avg(a)); n[h]++;
+      sum[a] += gameMargin(g.awayScore, g.homeScore, avg(h)); n[a]++;
+    }
+    return Array.from(sum, (x, t) => (n[t] ? x / n[t] : 0));
+  }
+
   function build(data) {
+    const rules = RULES[data.league || "big12"];
+    if (!rules) throw new Error("unknown league " + data.league);
+    // Non-conference games only matter through total wins; without that step they can't change
+    // the standings, so they aren't left to play (halves what exact.js enumerates for the SEC).
+    const nonConfMatters = rules.steps.includes("e");
     const teams = data.teams;
     const N = teams.length;
     const idx = {};
@@ -26,6 +84,7 @@
       const h = idx[g.home], a = idx[g.away];
       if (h === undefined && a === undefined) continue;
       if (!g.completed) {
+        if (!g.conf && !nonConfMatters) continue;
         pending.push({
           id: g.id, week: g.week, date: g.date, h, a, conf: g.conf,
           homeName: g.homeName, awayName: g.awayName,
@@ -38,7 +97,8 @@
       const homeWon = g.winner === g.home;
       applyResult(g.conf, h, a, homeWon, g.homeFBS, g.awayFBS, fixedH2H, fixedConfW, fixedConfL, fixedWins, fixedFcsWins, N);
     }
-    return { teams, N, idx, fixedH2H, fixedConfW, fixedConfL, fixedWins, fixedFcsWins, pending };
+    const rating = rules.rating === "margin" ? scoringMargins(data, idx, N) : teams.map((t) => (t.fpi == null ? -99 : t.fpi));
+    return { rules, rating, teams, N, idx, fixedH2H, fixedConfW, fixedConfL, fixedWins, fixedFcsWins, pending };
   }
 
   function applyResult(conf, h, a, homeWon, homeFBS, awayFBS, H2H, CW, CL, W, FW, N) {
@@ -63,7 +123,7 @@
     // strength of conference schedule: combined conf record of each team's conference opponents
     const sosW = new Int32Array(N), sosG = new Int32Array(N);
     for (let t = 0; t < N; t++) for (let o = 0; o < N; o++) if (H2H[t * N + o] !== 0) { sosW[t] += CW[o]; sosG[t] += CW[o] + CL[o]; }
-    return { N, H2H, CW, CL, total, sosW, sosG, fpi: ctx.teams.map((t) => (t.fpi == null ? -99 : t.fpi)) };
+    return { N, H2H, CW, CL, total, sosW, sosG, rating: ctx.rating, rules: ctx.rules };
   }
 
   // exact percentage comparison as fractions
@@ -105,8 +165,34 @@
   // stops at the first group that separates the tied teams and returns it with their records.
   // (2024: BYU and Iowa State "had the same results against each common opponent", so step c
   // didn't separate them and strength of schedule did.)
+  // SEC: a tied group of opponents is ordered by head-to-head where it can be (two teams: the
+  // winner of their game; three or more: their record against each other if they all played,
+  // otherwise a team that beat, or lost to, all the others), and only counted together where
+  // head-to-head can't separate it.
+  function splitByH2H(st, G) {
+    if (G.length < 2) return [G];
+    const r = (x, y) => st.H2H[x * st.N + y];
+    if (G.length === 2) {
+      const v = r(G[0], G[1]);
+      return v > 0 ? [[G[0]], [G[1]]] : v < 0 ? [[G[1]], [G[0]]] : [G];
+    }
+    const roundRobin = G.every((x) => G.every((y) => x === y || r(x, y) !== 0));
+    if (roundRobin) {
+      const wins = (x) => G.filter((y) => r(x, y) > 0).length;
+      const levels = [...new Set(G.map(wins))].sort((a, b) => b - a);
+      if (levels.length === 1) return [G];
+      return levels.flatMap((w) => splitByH2H(st, G.filter((x) => wins(x) === w)));
+    }
+    const top = G.find((x) => G.every((y) => y === x || r(x, y) > 0));
+    if (top !== undefined) return [[top], ...splitByH2H(st, G.filter((x) => x !== top))];
+    const bottom = G.find((x) => G.every((y) => y === x || r(x, y) < 0));
+    if (bottom !== undefined) return [...splitByH2H(st, G.filter((x) => x !== bottom)), [bottom]];
+    return [G];
+  }
+
   function walk(st, T, Tset) {
-    for (const G of confGroups(st, Tset)) {
+    const groups = confGroups(st, Tset);
+    for (const G of st.rules.walkSplitsTies ? groups.flatMap((g) => splitByH2H(st, g)) : groups) {
       const common = G.filter((o) => T.every((t) => st.H2H[t * st.N + o] !== 0));
       if (!common.length) continue;
       const vals = {};
@@ -155,6 +241,7 @@
       return -1;
     };
     let w, vals;
+    const uses = (step) => st.rules.steps.includes(step);
 
     // a. head-to-head
     if (!multi) {
@@ -169,9 +256,17 @@
         w = decide("a", topFrac(T, v), () => recText(v) + " among tied teams", () => ({ rows: recRows(v) }));
         if (w >= 0) return w;
       } else {
-        // not everyone played: only a team that beat all the others comes out; nobody is cut
+        // not everyone played: a team that beat all the others comes out. In the SEC a team that
+        // lost to all the others is eliminated and the rest start over; in the Big 12 it stays in.
         for (const x of T) {
           if (T.every((y) => y === x || st.H2H[x * st.N + y] > 0)) { push({ step: "a", winner: x, detail: trace && names[x] + " beat every other tied team" }); return x; }
+        }
+        if (st.rules.h2hLoserOut) {
+          const loser = T.find((x) => T.every((y) => y === x || st.H2H[x * st.N + y] < 0));
+          if (loser !== undefined) {
+            push({ step: "a", cut: [loser], detail: trace && names[loser] + " lost to every other tied team" });
+            return pickOne(st, T.filter((t) => t !== loser), rng, trace, names, info);
+          }
         }
       }
     }
@@ -199,10 +294,12 @@
       if (w >= 0) return w;
     }
     // e. total wins
-    w = decide("e", topNum(T, st.total), () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
-    if (w >= 0) return w;
-    // f. rating (FPI stand-in)
-    w = decide("f", topNum(T, st.fpi), () => T.map((t) => names[t] + " " + st.fpi[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.fpi, 1) }));
+    if (uses("e")) {
+      w = decide("e", topNum(T, st.total), () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
+      if (w >= 0) return w;
+    }
+    // f. rating: FPI (Big 12 stand-in) or capped relative scoring margin (SEC)
+    w = decide("f", topNum(T, st.rating), () => T.map((t) => names[t] + " " + st.rating[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.rating, 1) }));
     if (w >= 0) return w;
     // g. coin toss
     w = T[Math.floor(rng() * T.length)];
@@ -211,6 +308,7 @@
   }
 
   // Returns [seed1, seed2]; trace (optional array) collects tiebreak decisions.
+  // Under reseedTop2, decisions that only pick who gets in are marked .spot.
   function titleGame(st, rng, trace, names) {
     const groups = confGroups(st);
     const G1 = groups[0];
@@ -229,7 +327,10 @@
     const s1 = pickOne(st, G1, rng, trace, names, info);
     const rest = info.pool.filter((t) => t !== s1);
     const s2 = pickOne(st, rest, rng, trace, names);
-    return [s1, s2];
+    if (!st.rules.reseedTop2) return [s1, s2];
+    if (trace) for (const tr of trace) tr.spot = true;
+    const top = pickOne(st, [s1, s2], rng, trace, names);
+    return [top, top === s1 ? s2 : s1];
   }
 
   function mulberry32(a) {
@@ -365,7 +466,7 @@
     return { st, seeds, trace, groups: confGroups(st) };
   }
 
-  const api = { STEP, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups };
+  const api = { STEP, RULES, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups };
   root.B12 = api;
   if (typeof module !== "undefined") module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

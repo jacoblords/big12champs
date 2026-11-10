@@ -1,4 +1,4 @@
-<title>Big 12 Title Paths</title>
+<title>Title Paths</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,6 +65,19 @@ button { font: inherit; color: inherit; }
 .top { padding-block: 28px 18px; display: grid; gap: 8px; }
 .top h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); text-transform: uppercase; }
 .top p { margin: 0; max-width: 70ch; color: var(--muted); }
+/* a quiet strip: league switch on the left, season on the right */
+.topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 18px; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+.leagues { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.leagues a { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.leagues a:hover { color: var(--ink); }
+.leagues a[aria-current="page"] { color: var(--ink); }
+.leagues a img { height: 18px; width: auto; max-width: 30px; object-fit: contain; }
+.leagues a:not([aria-current="page"]) img { filter: grayscale(1); opacity: 0.55; }
+.leagues a:hover img { filter: none; opacity: 1; }
+/* the league's logo (and title sponsor's) leads the headline */
+.titlerow { display: flex; align-items: center; gap: 16px; }
+.lockup { display: flex; flex: none; align-items: center; gap: 10px; padding-right: 16px; border-right: 3px solid var(--ink); align-self: stretch; }
+.lockup img { height: clamp(36px, 7vw, 56px); width: auto; object-fit: contain; }
 
 /* picker */
 .picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; padding-block: 8px 20px; }
@@ -213,8 +226,8 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
 <div class="wrap">
   <header class="top">
-    <div class="eyebrow" id="eyebrow">Big 12 football</div>
-    <h1>Big 12 Title Paths</h1>
+    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><span class="eyebrow" id="season"></span></div>
+    <div class="titlerow"><div class="lockup" id="lockup" hidden></div><h1 id="title">Title Paths</h1></div>
     <p id="lede"></p>
   </header>
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
@@ -227,45 +240,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
     <p class="note" id="caveat"></p>
   </section>
 
-  <section class="block" id="rules">
-    <h2>Tiebreaker rules</h2>
-    <p class="note">The goal is to seed the two teams with the best conference winning percentage. There are no divisions and not everyone plays everyone, so ties are settled by the steps below. The procedure is the same for two teams and for three or more; what differs is how head-to-head works and what happens after a team is seeded.</p>
-    <div class="rules">
-      <div class="panel">
-        <h3>The seven steps</h3>
-        <ol type="a">
-          <li><b>Head-to-head.</b> Two teams: the winner of their game. Three or more: winning percentage in games among the tied teams.</li>
-          <li><b>Common opponents.</b> Winning percentage against conference opponents that every tied team played.</li>
-          <li><b>Walk the standings.</b> Record against the highest-placed common opponent, then the next, and so on. A group of tied teams in the standings counts as one opponent, using records before that group's own tiebreak.</li>
-          <li><b>Strength of conference schedule.</b> Combined conference winning percentage of each team's conference opponents.</li>
-          <li><b>Total wins</b> in the 12-game regular season. Only one win over an FCS team counts, and games exempt from the NCAA's game limit are left out.</li>
-          <li><b>SportSource Analytics Team Rating Score</b> after the last regular-season weekend.</li>
-          <li><b>Coin toss.</b></li>
-        </ol>
-      </div>
-      <div class="panel">
-        <h3>Corner cases</h3>
-        <ul>
-          <li><b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.</li>
-          <li><b>Clear #1, tie for second:</b> the tied teams run the steps and the winner is the #2 seed.</li>
-          <li><b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step a, using the two-team steps once only two remain, to find #2.</li>
-          <li><b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step b. Losing to everyone does not knock a team out.</li>
-          <li><b>Title game:</b> not counted in conference records or in the 12-game win total.</li>
-          <li><b>Only two teams get ranked:</b> the tiebreakers pick the two title-game teams and stop there. In the standings on this page, "T3" means teams still tied at that spot.</li>
-        </ul>
-      </div>
-      <div class="panel">
-        <h3>How this site reads the gray areas</h3>
-        <ul>
-          <li>In a tie of three or more, a team alone at the top of a step is seeded. If the step leaves several level at the top, the teams below them drop out and the rest start over at step a, as the Big 12 applied it in 2024 (Colorado dropped out of the four-way tie before BYU and Iowa State went to strength of schedule).</li>
-          <li>Step b leaves the tied teams themselves out of the common-opponent set.</li>
-          <li>Step c only counts common opponents: within a group of teams tied in the standings, only the members every tied team played. A group with no common members is skipped.</li>
-          <li>Step f uses ESPN's current FPI because the SportSource rating is not public. This step almost never decides anything.</li>
-          <li>Run against final results, the engine reproduces the Big 12's own rulings: 2024 (four-way tie at 7-2: ASU #1 on common opponents, Colorado drops out, Iowa State #2 over BYU on strength of schedule, .444 to .383) and 2025 (Texas Tech, then BYU).</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+  <section class="block" id="rules"></section>
 
   <footer id="foot"></footer>
 </div>
@@ -279,6 +254,12 @@ function app(DATA) {
 const ctx = B12.build(DATA);
 const T = ctx.teams;
 const P = ctx.pending;
+const RULES = ctx.rules;
+// Leagues come from fetch_data.py (names, paths, ESPN groups); older data has none and is Big 12.
+const LEAGUE_ID = DATA.league || "big12";
+const LEAGUES = DATA.leagues || [{ id: "big12", name: "Big 12", path: "", group: 4 }];
+const LG = LEAGUES.find((l) => l.id === LEAGUE_ID);
+const stepName = (s) => RULES.label[s];
 const N_MAIN = 40000, N_EXPLORE = 30000;
 let locks = new Array(P.length).fill(undefined);
 let main = null, cache = new Map(), sel = null;
@@ -380,6 +361,97 @@ function teamAnalysis(i) {
   return res;
 }
 
+// Each league's rulebook, in plain words. Step text is keyed by the engine's step ids; a league
+// lists only the steps it uses (RULES.steps), under its own names (RULES.label).
+const STEP_TEXT = {
+  a: "<b>Head-to-head.</b> Two teams: the winner of their game. Three or more: winning percentage in games among the tied teams.",
+  b: "<b>Common opponents.</b> Winning percentage against conference opponents that every tied team played.",
+  c: "<b>Walk the standings.</b> Record against the highest-placed common opponent, then the next, and so on. A group of tied teams in the standings counts as one opponent, using records before that group's own tiebreak.",
+  d: "<b>Strength of conference schedule.</b> Combined conference winning percentage of each team's conference opponents.",
+  e: "<b>Total wins</b> in the 12-game regular season. Only one win over an FCS team counts, and games exempt from the NCAA's game limit are left out.",
+  f: "<b>SportSource Analytics Team Rating Score</b> after the last regular-season weekend.",
+  g: "<b>Coin toss.</b>",
+};
+const s = stepName;
+const LEAGUE_TEXT = {
+  big12: {
+    steps: {},
+    stepOn: {},
+    col: {},
+    h2h: "<b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step b. Losing to everyone does not knock a team out.",
+    threeWay: "<b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step a, using the two-team steps once only two remain, to find #2.",
+    titleGame: "<b>Title game:</b> not counted in conference records or in the 12-game win total.",
+    gray: [
+      "In a tie of three or more, a team alone at the top of a step is seeded. If the step leaves several level at the top, the teams below them drop out and the rest start over at step a, as the Big 12 applied it in 2024 (Colorado dropped out of the four-way tie before BYU and Iowa State went to strength of schedule).",
+      "Step b leaves the tied teams themselves out of the common-opponent set.",
+      "Step c only counts common opponents: within a group of teams tied in the standings, only the members every tied team played. A group with no common members is skipped.",
+      "Step f uses ESPN's current FPI because the SportSource rating is not public. This step almost never decides anything.",
+      "Run against final results, the engine reproduces the Big 12's own rulings: 2024 (four-way tie at 7-2: ASU #1 on common opponents, Colorado drops out, Iowa State #2 over BYU on strength of schedule, .444 to .383) and 2025 (Texas Tech, then BYU).",
+    ],
+    policy: { url: "https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf", title: "Big 12 Football Tiebreaking Procedures (official PDF)" },
+  },
+  sec: {
+    steps: {
+      d: "<b>Opponents' winning percentage.</b> The average conference winning percentage of all of a team's conference opponents.",
+      f: "<b>Capped relative total scoring margin</b> against all conference opponents, per SportSource Analytics: points scored as a share of what each opponent usually allows (capped at 200%), minus points allowed as a share of what it usually scores, averaged over conference games.",
+      g: "<b>Random draw.</b>",
+    },
+    stepOn: { d: "on opponents' winning percentage", f: "on capped scoring margin", g: "by random draw" },
+    col: { f: "Scoring margin" },
+    h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. A team that lost to every other tied team is out, and the rest start over. Otherwise skip to step ${s("b")}.`,
+    threeWay: `<b>Three or more tie for first:</b> run the steps until one team stands alone at the top of a step. That team is in, and everyone still in contention starts over at step ${s("a")} for the second spot. If a step leaves two teams level at the top, both are in. If it leaves three or more level, they start over and the rest are out. The two teams who get in are then seeded by the two-team steps, so the first team in is not always #1.`,
+    titleGame: "<b>Title game:</b> not counted in conference records.",
+    gray: [
+      "Everything above follows the SEC's official procedure, and its worked examples are part of this site's tests.",
+      `Step ${s("c")}: opponents tied in the standings are first ordered by head-to-head, as the procedure says. Only when that can't separate them are records against them combined, and then only against the ones every tied team played.`,
+      `Step ${s("d")}: the site combines opponents' records; the SEC averages each opponent's winning percentage. The two only differ if a canceled game leaves teams with different numbers of conference games.`,
+      `Step ${s("f")} is computed from real scores with the SEC's published formula, using season scoring averages from every game with a score. Before the season ends it can only use the games played so far. SportSource's own figures may differ slightly. This step almost never decides anything.`,
+      "No step looks at non-conference games, so they are left out of the odds, the paths and the rooting guide.",
+      "Run against final results, the engine reproduces both SEC title games: 2024 (Texas #1 at 7-1, Georgia #2 over Tennessee on head-to-head) and 2025 (four-way tie at 7-1: Alabama and Georgia in on opponents' winning percentage, .500 and .469, over Ole Miss and Texas A&M; Alabama #1 for beating Georgia). It also agrees with the scenarios reporters published in the last two weeks of both seasons, everywhere they didn't overlook a combination of results.",
+    ],
+    policy: { url: "https://www.secsports.com/fbtiebreaker", title: "Southeastern Conference Official Football Tiebreakers (secsports.com)" },
+  },
+};
+const TEXT = LEAGUE_TEXT[LEAGUE_ID];
+const COUNT_WORD = ["", "one", "two", "three", "four", "five", "six", "seven", "eight"];
+
+function renderHeader() {
+  // links are relative, so they work on any host: up from this league's folder, then down
+  const up = "../".repeat((LG.path.match(/\//g) || []).length);
+  const href = (l) => (l.id === LEAGUE_ID ? "./" : up + l.path || "./");
+  // league logos are decorative (the name follows); a sponsor's is read out ("Monster Energy Big 12 Title Paths")
+  const leagueLogo = (l) => !isPng(l.logo) ? "" : !isPng(l.logoDark) ? `<img src="${l.logo}" alt="">`
+    : `<img class="logo-light" src="${l.logo}" alt=""><img class="logo-dark" src="${l.logoDark}" alt="">`;
+  const sponsor = (l) => (l.sponsor && isPng(l.sponsor.logo) ? `<img class="sponsor" src="${l.sponsor.logo}" alt="${esc(l.sponsor.name)}" title="${esc(l.sponsor.name)} ${esc(l.name)}">` : "");
+  $("leagues").innerHTML = LEAGUES.map((l) => `<a href="${href(l)}"${l.id === LEAGUE_ID ? ' aria-current="page"' : ""}>${leagueLogo(l)}<span>${esc(l.name)}</span></a>`).join("");
+  $("season").textContent = `${DATA.season} season`;
+  const lockup = sponsor(LG) + leagueLogo(LG);
+  $("lockup").innerHTML = lockup;
+  $("lockup").hidden = !lockup;
+  $("title").textContent = `${LG.name} Title Paths`;
+  document.title = `${LG.name} Title Paths`;
+}
+
+function renderRules() {
+  const li = (x) => `<li>${x}</li>`;
+  const steps = RULES.steps.map((k) => li(TEXT.steps[k] || STEP_TEXT[k])).join("");
+  const corners = [
+    "<b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.",
+    "<b>Clear #1, tie for second:</b> the tied teams run the steps and the winner is the #2 seed.",
+    TEXT.threeWay,
+    TEXT.h2h,
+    TEXT.titleGame,
+    `<b>Only two teams get ranked:</b> the tiebreakers pick the two title-game teams and stop there. In the standings on this page, "T3" means teams still tied at that spot.`,
+  ].map(li).join("");
+  $("rules").innerHTML = `<h2>Tiebreaker rules</h2>
+    <p class="note">The goal is to seed the two teams with the best conference winning percentage. There are no divisions and not everyone plays everyone, so ties are settled by the steps below. The procedure is the same for two teams and for three or more; what differs is how head-to-head works and what happens after a team is seeded.</p>
+    <div class="rules">
+      <div class="panel"><h3>The ${COUNT_WORD[RULES.steps.length]} steps</h3><ol type="${s("a") === "a" ? "a" : "1"}">${steps}</ol></div>
+      <div class="panel"><h3>Corner cases</h3><ul>${corners}</ul></div>
+      <div class="panel"><h3>How this site reads the gray areas</h3><ul>${TEXT.gray.map(li).join("")}</ul></div>
+    </div>`;
+}
+
 function renderPicker() {
   const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
   $("picker").innerHTML = order.map((i) => {
@@ -420,8 +492,8 @@ function gameRow(g, i, winnerHome, mark) {
     ${cell}</div>`;
 }
 
-const STEP_ON = { a: "on head-to-head", b: "on record against common opponents", c: "by walking down the standings", d: "on strength of conference schedule", e: "on total wins", f: "on team rating (FPI stand-in)", g: "by coin toss" };
-const STEP_COL = { a: "Vs. tied teams", b: "Vs. common opponents", c: "Vs. next group", d: "Opponents' conf. win %", e: "Total wins", f: "FPI" };
+const STEP_ON = { a: "on head-to-head", b: "on record against common opponents", c: "by walking down the standings", d: "on strength of conference schedule", e: "on total wins", f: "on team rating (FPI stand-in)", g: "by coin toss", ...TEXT.stepOn };
+const STEP_COL = { a: "Vs. tied teams", b: "Vs. common opponents", c: "Vs. next group", d: "Opponents' conf. win %", e: "Total wins", f: "FPI", ...TEXT.col };
 const NUM_WORD = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 
 // One tiebreak decision: a plain sentence, then the tied teams' deciding numbers, winner first.
@@ -436,16 +508,17 @@ function tiebreakHTML(tr, ex) {
   let how = STEP_ON[tr.step];
   if (!tr.rows && tr.step === "a") {
     const other = tr.tied.find((t) => t !== tr.winner);
-    how = n === 2 ? `by beating ${name(other)}` : "by beating every other tied team";
+    how = n === 2 ? `by beating ${name(other)}` : tr.cut ? "by losing to every other tied team" : "by beating every other tied team";
   }
   const listed = !tr.rows && n > 2 ? ` (${tr.tied.map(name).join(", ")})` : "";
   // a step that doesn't single out one team but leaves some behind: those teams drop out
   const cut = tr.cut || [];
   const kept = tr.tied.filter((t) => !cut.includes(t));
+  // tr.spot: this decision only picks a title-game team; the two are seeded afterwards
   const outcome = cut.length
     ? `${names(cut)} ${cut.length === 1 ? "drops" : "drop"} out ${how}, and ${names(kept)} start over.`
-    : `<b>${name(tr.winner)}</b> gets ${seed} ${how}.`;
-  const say = `<p class="tb-say">${who}${listed} tied at ${record(st, tr.tied[0])}. ${outcome} <span class="tb-step">Step ${tr.step}</span></p>`;
+    : `<b>${name(tr.winner)}</b> gets ${tr.spot ? "a title-game spot" : seed} ${how}.`;
+  const say = `<p class="tb-say">${who}${listed} tied at ${record(st, tr.tied[0])}. ${outcome} <span class="tb-step">Step ${stepName(tr.step)}</span></p>`;
   if (!tr.rows) return `<div class="tb">${say}</div>`;
   const rows = tr.rows.slice().sort((a, b) => (b.t === tr.winner) - (a.t === tr.winner) || cut.includes(a.t) - cut.includes(b.t) || b.key - a.key);
   const col = tr.step === "c" && tr.against ? `Vs. ${tr.against.map((o) => esc(T[o].abbr)).join(", ")}` : STEP_COL[tr.step];
@@ -649,7 +722,7 @@ function renderTeam() {
   $("team").innerHTML = `
     <div class="hero" style="--team:${safeColor(t.color)}">
       ${logo(i)}
-      <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} Big 12 · ${overall[i]} overall</div></div>
+      <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
       <div class="big"><div class="pct">${pIn === 0 && A.path ? "&lt;0.1%" : pct(pIn)}</div><div class="lbl">to reach the title game</div></div>
     </div>
     <div class="facts">${facts.join("")}</div>
@@ -702,21 +775,22 @@ window.addEventListener("hashchange", () => {
 (function () {
   const fetched = new Date(DATA.fetchedAt);
   const lastDone = DATA.games.filter((g) => g.completed && g.conf).map((g) => g.date).sort().pop();
-  $("eyebrow").textContent = `Big 12 football · ${DATA.season} season`;
+  renderHeader();
+  renderRules();
   const through = new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" });
   $("lede").textContent = `Results through ${through} with ${P.length} ${P.length === 1 ? "game" : "games"} left. Pick a team to see its likeliest way into the title game and who to root for.`;
   $("methodText").textContent = EX
-    ? `With ${P.length} games left there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official Big 12 tiebreakers, so the odds here are exact for those inputs.`
-    : `Each of the ${P.length} remaining games is played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, and every simulated finish is sorted by the official Big 12 tiebreakers. Simulated odds are typically within half a point of exact.`;
+    ? `With ${P.length} games left there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official ${LG.name} tiebreakers, so the odds here are exact for those inputs.`
+    : `Each of the ${P.length} remaining games is played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, and every simulated finish is sorted by the official ${LG.name} tiebreakers. Simulated odds are typically within half a point of exact.`;
   $("caveat").textContent = EX
     ? "These odds are only as good as ESPN's game predictions, which update about once a day. They treat each game as independent; with this little season left, that moves them by about a point at most."
     : "These odds are only as good as ESPN's game predictions, which update about once a day. They also treat each game as independent, which can make them a bit too confident with much of the season left.";
   const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   const meta = DATA.meta || {};
   $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${meta.nextResultCheck ? ` The next result can't land before ${when(meta.nextResultCheck)} (kickoff + 3 hours); until then only ESPN's odds can move.` : ""} Times are in your time zone.</div>
-  <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=4&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
+  <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
   ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
-  <div>Tiebreakers: <a href="https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf" target="_blank" rel="noopener">Big 12 Football Tiebreaking Procedures (official PDF)</a>. Not affiliated with the Big 12 or ESPN.</div>`;
+  <div>Tiebreakers: <a href="${TEXT.policy.url}" target="_blank" rel="noopener">${TEXT.policy.title}</a>. Not affiliated with the ${esc(LG.name)} or ESPN.</div>`;
   runMain();
   const h = location.hash.slice(1).toLowerCase();
   let i = T.findIndex((t) => t.abbr.toLowerCase() === h);
