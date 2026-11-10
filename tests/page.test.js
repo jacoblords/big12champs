@@ -132,10 +132,18 @@ test("tiebreaks render as a sentence and a table, winner first, no bullets", asy
     if (!ends) continue;
     assert.doesNotMatch(ends, /<ul class="why"/);
     for (const block of ends.split('<div class="tb">').slice(1)) {
-      assert.match(text(block), /tied at \d+-\d+\. \S.* gets the #[12] seed .*Step [a-g]/);
+      assert.match(text(block), /tied at \d+-\d+\. (\S.* gets the #[12] seed |.* drops? out .* start over\.).*Step [a-g]/);
       const cells = [...block.matchAll(/<span class="([^"]*)" role="cell">([^<]*)<\/span>/g)];
       if (!cells.length) continue;
-      assert.match(cells[0][1], /win/, `${t.abbr}: winner is the first row`);
+      if (/drops? out/.test(text(block))) {
+        // drop-out step: teams that stay are listed first, dropped teams after, crossed out
+        const names = cells.filter((c, k) => k % 2 === 0).map((c) => /\bout\b/.test(c[1]));
+        assert.equal(names[0], false, `${t.abbr}: a team that stays is listed first`);
+        assert.ok(names.includes(true), `${t.abbr}: dropped teams are marked`);
+        assert.deepEqual(names, names.slice().sort((a, b) => a - b), `${t.abbr}: dropped teams come last`);
+      } else {
+        assert.match(cells[0][1], /win/, `${t.abbr}: winner is the first row`);
+      }
       checked++;
     }
   }

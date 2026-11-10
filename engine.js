@@ -88,79 +88,90 @@
     return [w, g];
   }
 
-  // unique best among T for a fraction-valued metric; returns team or -1
-  function uniqueBestFrac(T, vals) {
-    let best = -1, tie = false;
-    for (const t of T) {
-      if (best < 0) { best = t; continue; }
-      const c = cmpFrac(vals[t][0], vals[t][1], vals[best][0], vals[best][1]);
-      if (c > 0) { best = t; tie = false; } else if (c === 0) tie = true;
-    }
-    return tie ? -1 : best;
+  // the teams tied for the best value at a step (fractions compared exactly)
+  function topFrac(T, vals) {
+    let best = T[0];
+    for (const t of T) if (cmpFrac(vals[t][0], vals[t][1], vals[best][0], vals[best][1]) > 0) best = t;
+    return T.filter((t) => cmpFrac(vals[t][0], vals[t][1], vals[best][0], vals[best][1]) === 0);
   }
-  function uniqueBestNum(T, vals) {
-    let best = -1, tie = false;
-    for (const t of T) {
-      if (best < 0) { best = t; continue; }
-      if (vals[t] > vals[best]) { best = t; tie = false; } else if (vals[t] === vals[best]) tie = true;
-    }
-    return tie ? -1 : best;
+  function topNum(T, arr) {
+    let best = -Infinity;
+    for (const t of T) if (arr[t] > best) best = arr[t];
+    return T.filter((t) => arr[t] === best);
   }
 
-  // Step c: walk down the standings. Tied placement groups count collectively.
-  // Interpretation: a group is used when every tied team played at least one member of it.
-  function walk(st, T, Tset, log, names) {
-    const groups = confGroups(st, Tset);
-    for (const G of groups) {
+  // Step c: walk down the standings against common opponents only. A group of teams tied in
+  // the standings counts collectively, but only its members that every tied team played. The walk
+  // stops at the first group that separates the tied teams and returns it with their records.
+  // (2024: BYU and Iowa State "had the same results against each common opponent", so step c
+  // didn't separate them and strength of schedule did.)
+  function walk(st, T, Tset) {
+    for (const G of confGroups(st, Tset)) {
+      const common = G.filter((o) => T.every((t) => st.H2H[t * st.N + o] !== 0));
+      if (!common.length) continue;
       const vals = {};
-      let ok = true;
-      for (const t of T) { const r = recVs(st, t, G); if (r[1] === 0) { ok = false; break; } vals[t] = r; }
-      if (!ok) continue;
-      const best = uniqueBestFrac(T, vals);
-      if (best >= 0) {
-        if (log) {
-          log.detail = "vs " + G.map((g) => names[g]).join("/") + ": " + T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ");
-          log.vals = vals; log.against = G.slice();
-        }
-        return best;
-      }
+      for (const t of T) vals[t] = recVs(st, t, common);
+      if (topFrac(T, vals).length < T.length) return { G: common, vals };
     }
-    return -1;
+    return null;
   }
 
   // Runs the steps for a 2-team or 3+-team tie; returns the team that is seeded first.
-  function pickOne(st, T, rng, trace, names) {
+  // At each step of a 3+-team tie: a team alone at the top is seeded. Otherwise any team
+  // below the best value is eliminated, and the teams still level start over at step a
+  // (with the two-team steps once only two remain). This is how the Big 12 applies "if at any
+  // point the multiple-team tie is reduced to two teams" (e.g. its 2025 title-game scenarios).
+  // info (optional) gets .pool: the teams still in the tiebreaker when the seed was picked. Teams
+  // eliminated along the way stay out: the next seed comes from the rest of that pool (2025
+  // published scenario: TTU drops out of a four-way tie, ASU is #1, then BYU beats Utah for #2).
+  function pickOne(st, T, rng, trace, names, info) {
+    if (info) info.pool = T;
     if (T.length === 1) return T[0];
     const Tset = new Set(T);
     const multi = T.length > 2;
-    // trace entries: tied teams, deciding step, winner, a text detail, and (when there are
-    // numbers to compare) rows of {t, text, key} plus the opponents they were measured against
-    const note = (step, winner, detail, extra) => {
-      if (trace) {
-        const x = typeof extra === "function" ? extra() : extra || {};
-        trace.push({ tied: T.slice(), step, winner, detail: typeof detail === "function" ? detail() : detail, rows: x.rows || null, against: x.against || null });
-      }
-      return winner;
+    // trace entries: tied teams, deciding step, winner (or the teams cut), a text detail, and
+    // (when there are numbers to compare) rows of {t, text, key} plus the opponents measured against
+    const push = (entry, extra) => {
+      if (!trace) return;
+      const x = typeof extra === "function" ? extra() : extra || {};
+      trace.push({ tied: T.slice(), winner: null, cut: null, rows: x.rows || null, against: x.against || null, ...entry });
     };
+    const txt = (d) => (typeof d === "function" ? d() : d);
     const recRows = (v) => T.map((t) => ({ t, text: v[t][0] + "-" + (v[t][1] - v[t][0]), key: v[t][1] ? v[t][0] / v[t][1] : 0 }));
     const pctRows = (v) => T.map((t) => ({ t, text: (v[t][0] / v[t][1]).toFixed(3).replace(/^0/, ""), key: v[t][0] / v[t][1] }));
     const numRows = (arr, digits) => T.map((t) => ({ t, text: arr[t].toFixed(digits), key: arr[t] }));
-    let w, vals, detail;
+    const recText = (v) => T.map((t) => names[t] + " " + v[t][0] + "-" + (v[t][1] - v[t][0])).join(", ");
+
+    // Apply one step's result. Returns the seeded team, or -1 to go on to the next step.
+    const decide = (step, top, detail, extra) => {
+      if (top.length === 1) {
+        if (trace) push({ step, winner: top[0], detail: txt(detail) }, extra);
+        return top[0];
+      }
+      if (multi && top.length < T.length) {
+        if (trace) push({ step, cut: T.filter((t) => !top.includes(t)), detail: txt(detail) }, extra);
+        return pickOne(st, top, rng, trace, names, info); // the rest start over at step a
+      }
+      return -1;
+    };
+    let w, vals;
 
     // a. head-to-head
     if (!multi) {
       const r = st.H2H[T[0] * st.N + T[1]];
-      if (r !== 0) { w = r > 0 ? T[0] : T[1]; return note("a", w, () => names[w] + " beat " + names[w === T[0] ? T[1] : T[0]]); }
+      if (r !== 0) { w = r > 0 ? T[0] : T[1]; push({ step: "a", winner: w, detail: trace && names[w] + " beat " + names[w === T[0] ? T[1] : T[0]] }); return w; }
     } else {
       let allPlayed = true;
       for (const x of T) for (const y of T) if (x !== y && st.H2H[x * st.N + y] === 0) allPlayed = false;
       if (allPlayed) {
         vals = {}; for (const t of T) vals[t] = recVs(st, t, T);
-        w = uniqueBestFrac(T, vals);
-        if (w >= 0) return note("a", w, () => T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ") + " among tied teams", () => ({ rows: recRows(vals) }));
+        const v = vals;
+        w = decide("a", topFrac(T, v), () => recText(v) + " among tied teams", () => ({ rows: recRows(v) }));
+        if (w >= 0) return w;
       } else {
+        // not everyone played: only a team that beat all the others comes out; nobody is cut
         for (const x of T) {
-          if (T.every((y) => y === x || st.H2H[x * st.N + y] > 0)) return note("a", x, () => names[x] + " beat every other tied team");
+          if (T.every((y) => y === x || st.H2H[x * st.N + y] > 0)) { push({ step: "a", winner: x, detail: trace && names[x] + " beat every other tied team" }); return x; }
         }
       }
     }
@@ -169,26 +180,34 @@
     for (let o = 0; o < st.N; o++) if (!Tset.has(o) && T.every((t) => st.H2H[t * st.N + o] !== 0)) common.push(o);
     if (common.length) {
       vals = {}; for (const t of T) vals[t] = recVs(st, t, common);
-      w = uniqueBestFrac(T, vals);
-      if (w >= 0) return note("b", w, () => T.map((t) => names[t] + " " + vals[t][0] + "-" + (vals[t][1] - vals[t][0])).join(", ") + " vs " + common.map((o) => names[o]).join(", "), () => ({ rows: recRows(vals), against: common }));
+      const v = vals;
+      w = decide("b", topFrac(T, v), () => recText(v) + " vs " + common.map((o) => names[o]).join(", "), () => ({ rows: recRows(v), against: common }));
+      if (w >= 0) return w;
     }
     // c. standings walk
-    const log = trace ? {} : null;
-    w = walk(st, T, Tset, log, names);
-    if (w >= 0) return note("c", w, log && log.detail, () => ({ rows: recRows(log.vals), against: log.against }));
+    const found = walk(st, T, Tset);
+    if (found) {
+      const { G, vals: v } = found;
+      w = decide("c", topFrac(T, v), () => "vs " + G.map((g) => names[g]).join("/") + ": " + recText(v), () => ({ rows: recRows(v), against: G }));
+      if (w >= 0) return w;
+    }
     // d. strength of conference schedule
     vals = {}; for (const t of T) vals[t] = [st.sosW[t], st.sosG[t]];
-    w = uniqueBestFrac(T, vals);
-    if (w >= 0) return note("d", w, () => T.map((t) => names[t] + " " + (vals[t][0] / vals[t][1]).toFixed(3)).join(", "), () => ({ rows: pctRows(vals) }));
+    {
+      const v = vals;
+      w = decide("d", topFrac(T, v), () => T.map((t) => names[t] + " " + (v[t][0] / v[t][1]).toFixed(3)).join(", "), () => ({ rows: pctRows(v) }));
+      if (w >= 0) return w;
+    }
     // e. total wins
-    w = uniqueBestNum(T, st.total);
-    if (w >= 0) return note("e", w, () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
+    w = decide("e", topNum(T, st.total), () => T.map((t) => names[t] + " " + st.total[t]).join(", "), () => ({ rows: numRows(st.total, 0) }));
+    if (w >= 0) return w;
     // f. rating (FPI stand-in)
-    w = uniqueBestNum(T, st.fpi);
-    if (w >= 0) return note("f", w, () => T.map((t) => names[t] + " " + st.fpi[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.fpi, 1) }));
+    w = decide("f", topNum(T, st.fpi), () => T.map((t) => names[t] + " " + st.fpi[t].toFixed(1)).join(", "), () => ({ rows: numRows(st.fpi, 1) }));
+    if (w >= 0) return w;
     // g. coin toss
     w = T[Math.floor(rng() * T.length)];
-    return note("g", w, () => "random draw");
+    push({ step: "g", winner: w, detail: "random draw" });
+    return w;
   }
 
   // Returns [seed1, seed2]; trace (optional array) collects tiebreak decisions.
@@ -204,8 +223,11 @@
       const s1 = pickOne(st, G1, rng, trace, names);
       return [s1, s1 === G1[0] ? G1[1] : G1[0]];
     }
-    const s1 = pickOne(st, G1, rng, trace, names);
-    const rest = G1.filter((t) => t !== s1);
+    // 3+ tied for first: #1 comes out of the tiebreaker; #2 comes from the teams still in it
+    // when #1 was seeded (teams eliminated on the way are out).
+    const info = {};
+    const s1 = pickOne(st, G1, rng, trace, names, info);
+    const rest = info.pool.filter((t) => t !== s1);
     const s2 = pickOne(st, rest, rng, trace, names);
     return [s1, s2];
   }

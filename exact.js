@@ -22,10 +22,14 @@ const ESTIMATE_SHARE = 0.8; // leave room for a slower runner than the estimate 
 // Timing window for the estimate: after the JIT has warmed up (first 8k finishes).
 const WARMUP = 1 << 13, CALIBRATION = 1 << 15;
 
+// The engine's own code is part of the key, so a change to the tiebreaker rules forces a
+// recompute instead of reusing odds calculated under the old rules.
+const ENGINE_HASH = crypto.createHash("sha256").update(fs.readFileSync(require.resolve("./engine.js"))).digest("hex").slice(0, 12);
+
 function inputsKey(data) {
   const parts = data.games.map((g) => [g.id, g.completed ? 1 : 0, g.winner || "", g.completed ? "" : g.pHome].join(":"));
   const fpi = data.teams.map((t) => t.id + "=" + t.fpi);
-  return crypto.createHash("sha256").update(parts.join("|") + "#" + fpi.join(",")).digest("hex").slice(0, 16);
+  return crypto.createHash("sha256").update(ENGINE_HASH + "#" + parts.join("|") + "#" + fpi.join(",")).digest("hex").slice(0, 16);
 }
 
 // opts.budgetSec: time allowed. opts.deadlineSec: hard stop (defaults to the budget).

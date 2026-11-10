@@ -28,29 +28,37 @@ const L = "ABCDEFGHIJKLMNOP".split("");
 function seeds(st, rng = noCoin) {
   const trace = [];
   const s = B.titleGame(st, rng, trace, L);
-  return { seeds: s.map((i) => L[i]), steps: trace.map((t) => `${t.tied.map((i) => L[i]).join("")}>${L[t.winner]}:${t.step}`) };
+  // "ABC>A:b" = A seeded at step b; "ABC-C:b" = C dropped out at step b
+  const fmt = (t) => t.tied.map((i) => L[i]).join("") + (t.winner != null ? ">" + L[t.winner] : "-" + t.cut.map((i) => L[i]).join("")) + ":" + t.step;
+  return { seeds: s.map((i) => L[i]), steps: trace.map(fmt) };
 }
 
-test("2024 final standings: ASU #1, Iowa State #2 out of a four-way tie at 7-2", () => {
+test("2024 final standings: the Big 12's own ruling, step by step", () => {
+  // Four teams at 7-2. ASU seeded on common opponents (4-0). Colorado "fell out first".
+  // BYU and Iowa State "had the same results against each common opponent", so steps b and c
+  // were even, and strength of schedule (Iowa State 36-45, BYU 31-50) put Iowa State in.
   const ctx = B.build(fixture("final-2024.json"));
   assert.equal(ctx.pending.length, 0);
   const ex = B.explain(ctx, 0);
   assert.deepEqual(ex.seeds.map((i) => abbr(ctx, i)), ["ASU", "ISU"]);
-  // ASU seeded on common opponents; the other three restart and Iowa State wins on strength of schedule
-  assert.deepEqual(ex.trace.map((t) => [t.tied.length, abbr(ctx, t.winner), t.step]), [[4, "ASU", "b"], [3, "ISU", "d"]]);
+  const steps = ex.trace.map((t) => [t.tied.length, t.winner != null ? abbr(ctx, t.winner) : "-" + t.cut.map((i) => abbr(ctx, i)).join("/"), t.step]);
+  assert.deepEqual(steps, [[4, "ASU", "b"], [3, "-COLO", "b"], [2, "ISU", "d"]]);
+  const sos = ex.trace[2].rows;
+  const byAbbr = Object.fromEntries(sos.map((r) => [abbr(ctx, r.t), r.text]));
+  assert.deepEqual(byAbbr, { BYU: ".383", ISU: ".444" }); // 31/81 and 36/81
 });
 
 test("tiebreak traces carry each tied team's deciding number", () => {
   const ctx = B.build(fixture("final-2024.json"));
   const ex = B.explain(ctx, 0);
-  const [first, second] = ex.trace;
+  const [first, , third] = ex.trace;
   const row = (tr, abbr) => tr.rows.find((r) => abbr === ctx.teams[r.t].abbr);
   // step b: records vs the four common opponents
   assert.equal(row(first, "ASU").text, "4-0");
   assert.equal(first.against.length, 4);
   // step d: opponents' conference win %, formatted like .452
-  assert.match(row(second, "ISU").text, /^\.\d{3}$/);
-  assert.ok(row(second, "ISU").key > row(second, "BYU").key);
+  assert.match(row(third, "ISU").text, /^\.\d{3}$/);
+  assert.ok(row(third, "ISU").key > row(third, "BYU").key);
 });
 
 test("2025 final standings: Texas Tech #1, BYU #2 (tied at 8-1, Texas Tech won head-to-head)", () => {
@@ -130,16 +138,76 @@ test("after a team is seeded, the rest restart at step a", () => {
   assert.deepEqual(r.steps, ["ABCD>A:b", "BCD>B:a"]);
 });
 
-test("standings walk: tied group counts collectively, before its own tiebreak", () => {
-  // B and C tie for second, never played, and share no common opponent. Neither played A,
-  // so the walk skips A. Next are D and E, tied at 6-3: B went 1-0 against that group
-  // (beat D), C went 0-1 (lost to E). B wins at step c.
-  const r = seeds(standingsTable(5, {
-    records: [[9, 0], [7, 2], [7, 2], [6, 3], [6, 3]],
-    beat: [[1, 3], [4, 2]],
+test("standings walk: a tied group counts collectively, before its own tiebreak", () => {
+  // B and C tie for second. Common opponents D (6-3) and F (5-4): both 1-1, so step b is even.
+  // Walking down: A isn't common, so it's skipped; the D/E group counts as one, and D is the
+  // only member both played: B beat D, C lost to D. B wins at step c.
+  const r = seeds(standingsTable(6, {
+    records: [[9, 0], [7, 2], [7, 2], [6, 3], [6, 3], [5, 4]],
+    beat: [[1, 3], [5, 1], [3, 2], [2, 5]],
   }));
   assert.deepEqual(r.seeds, ["A", "B"]);
   assert.deepEqual(r.steps, ["BC>B:c"]);
+});
+
+test("standings walk only counts common opponents, even inside a tied group", () => {
+  // Like BYU and Iowa State in 2024: both beat D and F, so every common opponent is even.
+  // C also lost to E, which only C played. That loss must not count at step c (D and E
+  // are tied in the standings), so it goes on to strength of schedule, where C is ahead.
+  const r = seeds(standingsTable(6, {
+    records: [[9, 0], [7, 2], [7, 2], [6, 3], [6, 3], [5, 4]],
+    beat: [[1, 3], [2, 3], [1, 5], [2, 5], [4, 2]],
+    sos: { 1: [40, 81], 2: [42, 81] },
+  }));
+  assert.deepEqual(r.seeds, ["A", "C"]);
+  assert.deepEqual(r.steps, ["BC>C:d"]);
+});
+
+test("3+ team tie: teams behind at a step drop out and the rest start over", () => {
+  // A, B, C tied; nobody beat both others. Common opponents D and E: A 2-0, B 2-0, C 0-2.
+  // C drops out; A and B restart with the two-team steps: they played, A won.
+  const r = seeds(standingsTable(6, {
+    records: [[9, 0], [7, 2], [7, 2], [7, 2], [5, 4], [5, 4]],
+    beat: [[1, 2], [1, 4], [1, 5], [2, 4], [2, 5], [4, 3], [5, 3]],
+  }));
+  assert.deepEqual(r.seeds, ["A", "B"]);
+  assert.deepEqual(r.steps, ["BCD-D:b", "BC>B:a"]);
+});
+
+test("round robin among tied teams: the ones behind drop out", () => {
+  // A, B, C, D all played each other: A and B 2-1, C and D 1-2. C and D drop out at step a;
+  // A and B restart as a two-team tie and A won their game.
+  const r = seeds(standingsTable(4, {
+    records: [[7, 2], [7, 2], [7, 2], [7, 2]],
+    beat: [[0, 1], [0, 2], [3, 0], [1, 2], [1, 3], [2, 3]],
+  }));
+  assert.equal(r.seeds[0], "A");
+  assert.deepEqual(r.steps.slice(0, 2), ["ABCD-CD:a", "AB>A:a"]);
+});
+
+test("reported scenario (r/BigXII): Houston and BYU win out, Texas Tech loses to TCU", () => {
+  // Texas Tech drops out of the three-way tie at 7-2 on common opponents (Baylor, Cincinnati),
+  // then Houston beats BYU on common opponents, 3-1 to 2-2 (UCF is the difference).
+  const ctx = B.build(fixture("season-2026-11-09.json"));
+  const id = (a) => ctx.teams.findIndex((t) => t.abbr === a);
+  const [HOU, BYU, TTU, TCU] = ["HOU", "BYU", "TTU", "TCU"].map(id);
+  let m = 0;
+  ctx.pending.forEach((g, k) => {
+    let homeWins = g.pHome >= 0.5;
+    if (g.h === HOU || g.h === BYU) homeWins = true;
+    if (g.a === HOU || g.a === BYU) homeWins = false;
+    if (g.h === TTU) homeWins = g.a !== TCU;
+    if (g.a === TTU) homeWins = false;
+    if (homeWins) m |= 1 << k;
+  });
+  const ex = B.explain(ctx, m >>> 0);
+  assert.deepEqual(ex.seeds.map((i) => abbr(ctx, i)), ["UTAH", "HOU"]);
+  const [cut, final] = ex.trace;
+  assert.deepEqual(cut.cut.map((i) => abbr(ctx, i)), ["TTU"]);
+  assert.equal(cut.step, "b");
+  assert.equal(abbr(ctx, final.winner), "HOU");
+  assert.equal(final.step, "b");
+  assert.ok(final.against.map((o) => abbr(ctx, o)).includes("UCF"));
 });
 
 test("strength of schedule, then total wins, then rating, then coin toss", () => {
