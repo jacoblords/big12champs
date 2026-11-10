@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Title Paths</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -807,8 +808,9 @@ function renderTeam() {
         <span class="bar"><i style="left:${lo * 100}%;width:${Math.max((hi - lo) * 100, 1)}%"></i></span>`;
     }
     const L = locks[k];
+    const awayFav = g.pHome < 0.5;
     return `<div class="rg-row${!locked && swing < 0.005 && !matters(c) ? " flat" : ""}">
-      <div class="m"><span class="t">${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}${own ? " ·  their game" : ""}</span><span class="s">Week ${g.week} · ESPN: ${esc(T[g.h].abbr)} ${pct(g.pHome, 0)}</span></div>
+      <div class="m"><span class="t">${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}${own ? " ·  their game" : ""}</span><span class="s">Week ${g.week} · ESPN: ${esc(T[awayFav ? g.a : g.h].abbr)} ${pct(awayFav ? 1 - g.pHome : g.pHome, 0)}</span></div>
       <div class="root">${root}</div>
       <div class="seg" role="group" aria-label="What if: ${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}">
         <button data-k="${k}" data-v="0" aria-pressed="${L === 0}" title="${esc(T[g.a].short)} wins">${esc(T[g.a].abbr)}</button>

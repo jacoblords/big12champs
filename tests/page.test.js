@@ -95,6 +95,27 @@ test("picker cards show the record and an odds pill that fills with the odds", a
   }
 });
 
+test("rooting guide quotes ESPN's odds for the favorite, home or away", async () => {
+  const d = JSON.parse(JSON.stringify(data));
+  const abbr = Object.fromEntries(d.teams.map((t) => [t.id, t.abbr]));
+  const pending = d.games.filter((g) => !g.completed);
+  pending.forEach((g, k) => { g.pHome = k % 2 ? 0.3 : 0.7; });
+  d.exact = solve(d);
+  const seen = new Set();
+  for (const t of d.teams) {
+    const { els } = render(d, "#" + t.abbr.toLowerCase());
+    await settle();
+    for (const m of els.team.innerHTML.matchAll(/<span class="t">([^<]+?) at ([^<]+?)(?: · +their game)?<\/span><span class="s">Week \d+ · ESPN: ([^<]+) (\d+)%<\/span>/g)) {
+      const g = pending.find((x) => abbr[x.away] === m[1] && abbr[x.home] === m[2]);
+      assert.ok(g, `${m[1]} at ${m[2]}`);
+      assert.equal(m[3], g.pHome < 0.5 ? m[1] : m[2], `${m[1]} at ${m[2]}`);
+      assert.equal(m[4], "70", `${m[1]} at ${m[2]}`);
+      seen.add(m[3] === m[1] ? "away" : "home");
+    }
+  }
+  assert.deepEqual([...seen].sort(), ["away", "home"], "both kinds of favorite appear");
+});
+
 test("close games are toss-ups, not upsets, and the path sentence counts them that way", async () => {
   // make a few remaining games coin flips
   const close = JSON.parse(JSON.stringify(data));
