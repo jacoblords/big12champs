@@ -1,9 +1,10 @@
 # Adding a league
 
-How the SEC was added, written down so the next league (the ACC) goes faster. The order
+How the SEC and the ACC were added, written down so the next league goes faster. The order
 matters: **rules first, then tests, then code.** Tiebreak procedures are long, and summaries of
 them are often wrong. The SEC was first built from press summaries and got three rules wrong;
-the official document caught all three.
+the official document caught all three. The ACC rewrote its procedure for 2026, so the seasons
+in its tests ran under different rules from the live page.
 
 A league touches these places, and nothing else:
 
@@ -29,7 +30,19 @@ A league touches these places, and nothing else:
   - search the embedded page data for `.pdf`. The SEC's procedure PDF was only linked from
     inside that data.
 - Check the latest snapshot links the same version. Rules change, often with schedule changes.
+  A file can change under the same URL: the ACC's `2023/5/17/ACC_FOOTBALL_TIEBREAKER_POLICY.pdf`
+  held one version in 2023, another from Aug. 2024 and a third from Sept. 2025. Compare Wayback
+  snapshots of the PDF itself, and `pdfinfo` creation dates.
+- Sidearm-hosted conference sites (theacc.com) serve their documents from
+  `s3.amazonaws.com/sidearm.sites/<site>/documents/...`; a search for the document title often
+  finds that URL directly.
+- **If the procedure changed, find the old one too.** The real title games and published
+  scenarios in your tests ran under it. Put it in `RULES.<league>.before: { season, rules }`,
+  so `rulesFor(league, season)` picks the rules by the data's season.
 - Read all of it, especially the worked examples. Every example becomes a test.
+- No worked examples in the document? Look for the conference explaining it to reporters. The
+  ACC's 2026 policy has none, but its vice president of football walked On3 through two, which
+  settled what "working downward" means. Sites that refuse a fetch (403) often have a Wayback copy.
 
 ## 2. Compare it with the engine, rule by rule
 
@@ -47,14 +60,23 @@ Each league lists the steps it uses in `RULES`, in order, with its own labels.
 
 Go through these questions; they are where the Big 12 and the SEC differ:
 
-| Question | Switch in `RULES` | Big 12 | SEC |
-|---|---|---|---|
-| Which steps, in what order, called what? | `steps`, `label` | a-g, lettered | no e; numbered 1-6 |
-| Do non-conference games count anywhere (e.g. total wins)? | follows from step e | yes | no, so they aren't enumerated |
-| No round robin: is a team that lost to all the others out? | `h2hLoserOut` | no | yes |
-| Standings walk: tied opponents counted together, or split by head-to-head first? | `walkSplitsTies` | together | split first |
-| What does the rating step compare? | `rating` (`"fpi"` or `"margin"`) | private SportSource rating, so FPI stands in | published scoring-margin formula |
-| A tie of 3+ for first: are the two who get in re-seeded with the two-team steps? | `reseedTop2` | no | yes |
+| Question | Switch in `RULES` | Big 12 | SEC | ACC 2024-25 | ACC 2026- |
+|---|---|---|---|---|---|
+| Which steps, in what order, called what? | `steps`, `label` | a-g, lettered | no e; numbered 1-6 | no e; lettered a-f | a, f, g only; numbered 1-3 |
+| Do non-conference games count anywhere (e.g. total wins)? | follows from step e | yes | no, so they aren't enumerated | no | no |
+| No round robin: is a team that lost to all the others out? | `h2hLoserOut` | no | yes | yes | yes |
+| Standings walk: tied opponents counted together, or split by head-to-head first? | `walkSplitsTies` | together | split first | split first (stands in for "with ties broken") | no walk |
+| What does the rating step compare? | `rating` (`"fpi"` or `"margin"`) | private SportSource rating, so FPI stands in | published scoring-margin formula | private, FPI | private, FPI |
+| A tie of 3+ for first: are the two who get in re-seeded with the two-team steps? | `reseedTop2` | no | yes | no | no |
+| Do teams play different numbers of conference games, with "tied" redefined for it? | `redefine` | no | no | no | yes |
+| Did the procedure change between seasons? | `before` | no | no | | 2024-25 rules kept |
+
+`redefine` replaces the title-game driver (`titleGameRedefine` in `engine.js`): the tie is
+defined from the best winning percentage plus teams on the other schedule length with the same
+wins or the same losses; a two-team tie's winner is only in once nobody is tied with it; and
+every restart defines the tie again. Where a rating step decides almost everything (the ACC's
+2026 rules), say so plainly on the page: FPI is a stand-in, and those finishes can go the other
+way.
 
 Also check these. Both leagues so far agree with the engine on them:
 
@@ -98,7 +120,9 @@ games per team, so you can check the schedule length (8, 9, or a mix).
 `tests/scenarios.test.js` for the Big 12's official ones):
 
 - Use the conference's own published scenarios if it has them. The Big 12 publishes them; the
-  SEC doesn't. Otherwise use press articles from the last two or three weeks of a season, with
+  SEC doesn't; the ACC did once (2025's final week). To find them, list the conference's news
+  URLs for November in the Wayback CDX (`url=<site>/news/<year>/1&matchType=prefix`) and grep
+  for "tiebreak". Otherwise use press articles from the last two or three weeks of a season, with
   claims stated outright ("if X wins, X is in").
 - Record the date, the outlet, and which games had been played when each article was written.
 - `replayFinal(file, weeks)` un-plays those weeks and gives every finish. `check` and `checkIn`
@@ -111,6 +135,10 @@ games per team, so you can check the schedule length (8, 9, or a mix).
 
   Pin each exception with the step that decides it, so it stays documented. Change the engine
   only if the official text says it's wrong.
+- A combination that ends "finish higher than X in the SportSource ranking" can't be checked
+  against FPI. Check instead that the rating step decides it, between the teams named.
+- When scraping an article's lists, don't drop repeated lines: the same bullet ("Virginia beats
+  Virginia Tech") can belong to two teams' lists, and losing one makes a claim look wrong.
 
 Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
 
@@ -120,11 +148,13 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
    leagues in this order. The fetcher skips the title game using ESPN's game type or a note
    containing `"<name> Championship"`. Check that the title game really is excluded: in 2025,
    ESPN didn't mark the SEC game as a conference championship, and only the note caught it.
+   (The ACC's reads "ACC Championship"; the fixture script's per-team count shows it: 8-8.)
 2. **`RULES`** in `engine.js`, from step 2.
 3. **`LEAGUE_TEXT`** in `app.html`:
    - `steps`: overrides of the shared step text, only where the league's wording differs.
    - `stepOn` and `col`: wording for the tiebreak sentences and tables.
-   - `h2h`, `threeWay`, `titleGame`: the corner cases.
+   - `h2h`, `threeWay`, `titleGame`: the corner cases. Optional `tied` and `ladder` add corner
+     cases first and after the tie-for-second line (the ACC uses both).
    - `gray`: every judgment call the site makes, plus what the engine reproduces.
    - `policy`: the official document's link.
 4. **`update.yml`**: add a step like the SEC's, with its own `--prev "$PUBLISHED/<id>/data.json"`.
@@ -139,7 +169,8 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
 ## 5. Check it
 
 - **Exact odds:** each unplayed game the tiebreakers can see doubles the work. Count the
-  conference games left in the last three weeks: about 24 or fewer runs in under a minute.
+  conference games left in the last three weeks: about 24 or fewer runs in under a minute (the
+  ACC on 2026-11-09: 22 games, 4.2 million finishes, 15 seconds).
   Leagues without a total-wins step skip non-conference games. Larger counts fall back to
   simulation, with no change needed.
 - **Look at it:**
@@ -150,18 +181,21 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
 
   Then serve `/tmp/site`. Check both themes and a phone-width window. Open a few teams whose
   paths need a tiebreak and read the sentences.
+- **Tied teams with different records:** under `redefine`, a tie can be 7-2 and 6-2. The page
+  names each record and says what they share; check a path that shows one.
+- **Port in use:** another session may hold the usual preview port. Pick another; don't stop
+  a server you didn't start.
 - **CSS:** `app.html` is one stylesheet. New class names can collide with existing ones. The
   header's `.bar` once took on the rooting guide's 6px progress bar.
 
-## Notes for the ACC
+## What the ACC taught
 
-These are starting points to verify, not facts to build on.
-
-- ESPN group **1**. 17 teams in 2026: MIA, WAKE, SMU, DUKE, LOU, CLEM, PITT, VT, UNC, FSU, STAN,
-  UVA, NCSU, BC, SYR, CAL, GT. Notre Dame isn't in the standings.
-- The ACC said in 2025 it would update its tiebreaker for the 2026 season, as it moves toward
-  more conference games. Find the 2026 version, and check whether every team plays the same
-  number of conference games. Unequal schedules make the difference between averaging opponents'
-  percentages and combining their records real (the site combines them).
-- The 2025 ACC race reportedly ended in a large tie with Duke reaching the title game at 6-2. If
-  that holds up, it's the regression test to start with.
+- The rules changed for the season being shown, so the tests carry both versions (`before`).
+  2024 and 2025 reproduce the real title games only under the old rules. The 2025 tie also runs
+  under the new ones, and FPI picks Miami, which is what coverage of the new policy said.
+- Only the conference can tell you what an ambiguous clause means. "Starting with the highest
+  win percentage, working downward" read three ways until the ACC's own examples settled it.
+- 17 teams and mixed schedule lengths: check the conference-games-per-team line from
+  `final_fixture.py`, and games per team in the live data (2026: five teams at 8, twelve at 9).
+- Notre Dame plays a partial ACC schedule but isn't in ESPN's group 1 standings, so its games
+  count as non-conference, which matches the ACC's standings.

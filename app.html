@@ -411,6 +411,30 @@ const LEAGUE_TEXT = {
     ],
     policy: { url: "https://www.secsports.com/fbtiebreaker", title: "Southeastern Conference Official Football Tiebreakers (secsports.com)" },
   },
+  acc: {
+    steps: {
+      a: "<b>Head-to-head.</b> Two teams: the winner of their game. Three or more: record in games among the tied teams, when they all played each other.",
+      f: "<b>SportSource Analytics Team Success Ranking</b> after the last regular-season weekend. It rates each team's whole season, non-conference games included.",
+      g: "<b>Random draw.</b>",
+    },
+    stepOn: { f: "on team ranking (FPI stand-in)", g: "by random draw" },
+    col: {},
+    tied: "<b>Who counts as tied:</b> in 2026 five teams play eight conference games and twelve play nine. The teams with the best winning percentage are tied, and so is any team on the other schedule length with the same number of wins or the same number of losses. 8-1 and 7-1 are tied (one loss each), and so are 7-1 and 7-2 (seven wins each), but 8-1 and 7-2 are not.",
+    ladder: "<b>Working down:</b> when the lower-percentage team wins a two-team tie, it then meets anyone tied with it. The ACC's own example: with a 9-0 team in, if 7-1 beats 8-1 it then meets 7-2, and that winner gets the spot. A 7-2 team can never pass an 8-1 team directly.",
+    h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. A team that lost to every other tied team is out, and the rest start over. Otherwise go to step ${s("f")}.`,
+    threeWay: `<b>Three or more tied:</b> a team alone at the top of a step is in. If several are level at the top of step ${s("a")}, the rest are out and they start over. After each team gets in, who is tied is worked out again from everyone left, so a team that wasn't in the first tie can be in the next.`,
+    titleGame: "<b>Title game:</b> not counted in conference records.",
+    gray: [
+      `Step ${s("f")} decides most ties, and the Team Success Ranking is private: SportSource lets the ACC publish where its teams rank only once the step is used. This site uses ESPN's FPI in its place, so a finish decided at step ${s("f")} can go the other way in the real standings. Read those paths as "needs the better ranking".`,
+      "Two teams tied for both spots are both in. The policy doesn't say who is #1, so the site seeds them with the two-team steps, the way the ACC's Michael Strickland described it (\"compared for the first spot\"). Otherwise teams are seeded in the order they get in.",
+      "Working down follows Strickland's explanation to On3 in July 2026. The policy itself only says ties are broken \"starting with the highest win percentage, working downward\".",
+      "A team removed from a tie is out for that spot only, and back in contention for the next.",
+      `In a tie of three or more, the team step ${s("f")} picks is "placed into the Championship Game", so it isn't compared again with lower teams the way the winner of a two-team tie is.`,
+      "No step looks at non-conference games directly, so they are left out of the odds, the paths and the rooting guide. The real ranking does count them.",
+      "Run against final results under the 2024-25 procedure, the engine reproduces both ACC title games: 2024 (SMU 8-0 and Clemson 7-1) and 2025 (Virginia 7-1; Duke out of a five-way tie at 6-2 on opponents' winning percentage, .500 to .438). It agrees with every combination in the ACC's own 2025 final-week scenarios. Under the 2026 rules, the same tie goes to the ranking, and FPI picks Miami.",
+    ],
+    policy: { url: "https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf", title: "ACC Football Tiebreaker Policy, as amended July 1, 2026 (official PDF)" },
+  },
 };
 const TEXT = LEAGUE_TEXT[LEAGUE_ID];
 const COUNT_WORD = ["", "one", "two", "three", "four", "five", "six", "seven", "eight"];
@@ -436,13 +460,15 @@ function renderRules() {
   const li = (x) => `<li>${x}</li>`;
   const steps = RULES.steps.map((k) => li(TEXT.steps[k] || STEP_TEXT[k])).join("");
   const corners = [
+    TEXT.tied,
     "<b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.",
     "<b>Clear #1, tie for second:</b> the tied teams run the steps and the winner is the #2 seed.",
+    TEXT.ladder,
     TEXT.threeWay,
     TEXT.h2h,
     TEXT.titleGame,
     `<b>Only two teams get ranked:</b> the tiebreakers pick the two title-game teams and stop there. In the standings on this page, "T3" means teams still tied at that spot.`,
-  ].map(li).join("");
+  ].filter(Boolean).map(li).join("");
   $("rules").innerHTML = `<h2>Tiebreaker rules</h2>
     <p class="note">The goal is to seed the two teams with the best conference winning percentage. There are no divisions and not everyone plays everyone, so ties are settled by the steps below. The procedure is the same for two teams and for three or more; what differs is how head-to-head works and what happens after a team is seeded.</p>
     <div class="rules">
@@ -496,6 +522,9 @@ const STEP_ON = { a: "on head-to-head", b: "on record against common opponents",
 const STEP_COL = { a: "Vs. tied teams", b: "Vs. common opponents", c: "Vs. next group", d: "Opponents' conf. win %", e: "Total wins", f: "FPI", ...TEXT.col };
 const NUM_WORD = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 
+// ACC 2026: a two-team tie's winner that then meets another tied team ("working downward")
+const ladderWin = (tr, ex) => RULES.redefine && tr.winner != null && ex.trace.slice(ex.trace.indexOf(tr) + 1).some((x) => x.tied.includes(tr.winner));
+
 // One tiebreak decision: a plain sentence, then the tied teams' deciding numbers, winner first.
 function tiebreakHTML(tr, ex) {
   const st = ex.st, [s1, s2] = ex.seeds;
@@ -517,8 +546,20 @@ function tiebreakHTML(tr, ex) {
   // tr.spot: this decision only picks a title-game team; the two are seeded afterwards
   const outcome = cut.length
     ? `${names(cut)} ${cut.length === 1 ? "drops" : "drop"} out ${how}, and ${names(kept)} start over.`
+    : ladderWin(tr, ex) ? `<b>${name(tr.winner)}</b> wins this tie ${how}, and moves on.`
     : `<b>${name(tr.winner)}</b> gets ${tr.spot ? "a title-game spot" : seed} ${how}.`;
-  const say = `<p class="tb-say">${who}${listed} tied at ${record(st, tr.tied[0])}. ${outcome} <span class="tb-step">Step ${stepName(tr.step)}</span></p>`;
+  // ACC 2026: tied teams can have different records (same wins or same losses, different schedules)
+  const pairTie = (x, y) => {
+    const [k, what] = st.CW[x] === st.CW[y] ? [st.CW[x], "win"] : [st.CL[x], "loss"];
+    const games = (t) => NUM_WORD[st.CW[t] + st.CL[t]];
+    return `count as tied: ${NUM_WORD[k] || k} ${what}${k === 1 ? "" : what === "win" ? "s" : "es"} each, over ${games(x)} and ${games(y)} conference games`;
+  };
+  const recs = [...new Set(tr.tied.map((t) => record(st, t)))];
+  const at = recs.length === 1 ? `tied at ${recs[0]}`
+    : n === 2 ? pairTie(tr.tied[0], tr.tied[1])
+    : `tied (${tr.tied.map((t) => `${name(t)} ${record(st, t)}`).join(", ")})`;
+  const whoRec = recs.length === 1 || n > 2 ? who + listed : `${name(tr.tied[0])} (${record(st, tr.tied[0])}) and ${name(tr.tied[1])} (${record(st, tr.tied[1])})`;
+  const say = `<p class="tb-say">${whoRec} ${at}. ${outcome} <span class="tb-step">Step ${stepName(tr.step)}</span></p>`;
   if (!tr.rows) return `<div class="tb">${say}</div>`;
   const rows = tr.rows.slice().sort((a, b) => (b.t === tr.winner) - (a.t === tr.winner) || cut.includes(a.t) - cut.includes(b.t) || b.key - a.key);
   const col = tr.step === "c" && tr.against ? `Vs. ${tr.against.map((o) => esc(T[o].abbr)).join(", ")}` : STEP_COL[tr.step];
@@ -552,7 +593,7 @@ function explainHTML(i, ex) {
     parts.push(`<p class="tb-say">${top.length === 1 && ex.groups[1].length === 1 ? "No ties at the top. The standings decide it." : "No tiebreaker needed."}</p>`);
   }
   for (const tr of ex.trace) parts.push(tiebreakHTML(tr, ex));
-  if (top.length === 2 && ex.trace.length && ex.trace[0].tied.length === 2) parts.push(`<p class="tb-note">Both teams tied for first make the title game; the tiebreak only sets who is #1.</p>`);
+  if (ex.trace.length === 1 && ex.trace[0].tied.length === 2 && [s1, s2].every((t) => ex.trace[0].tied.includes(t))) parts.push(`<p class="tb-note">Both teams tied for first make the title game; the tiebreak only sets who is #1.</p>`);
   return `<div class="ends"><h3>How the standings end</h3><div class="stand">${stand}</div>${parts.join("")}</div>`;
 }
 
