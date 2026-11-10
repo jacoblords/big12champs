@@ -152,12 +152,16 @@ details.minor .week + .week { margin-top: 10px; }
 .rg-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 132px; gap: 10px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--line); }
 .rg-row.flat { opacity: 0.5; }
 /* the visitor's own what-ifs, pinned above the rest */
-.rg-picks { display: grid; padding: 2px 10px 4px; margin-bottom: 8px; background: var(--warn-soft); border-radius: 8px; }
+.rg-picks { display: grid; padding: 2px 10px 4px; margin-bottom: 8px; background: var(--win-soft); border-radius: 8px; }
 .rg-picks > .rg-row:last-child { border-bottom: 0; }
 .rg-picks-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 4px 2px; }
-.rg-picks-head span { font-family: var(--display); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--warn); }
+.rg-picks-head span { font-family: var(--display); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--win); }
 .rg-picks-head button { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 0.8rem; cursor: pointer; }
 .rg-picks-head button:hover { border-color: var(--muted); }
+/* one click: the selected team wins all its remaining games */
+.wo-btn { justify-self: start; display: inline-flex; align-items: center; gap: 6px; background: var(--surface); color: var(--win); border: 1px solid var(--win); border-radius: 999px; padding: 4px 14px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+.wo-btn:hover { background: var(--win-soft); }
+.wo-btn[aria-pressed="true"] { background: var(--win); color: var(--surface); }
 .rg-row .m { display: grid; gap: 2px; min-width: 0; }
 .rg-row .m .t { font-weight: 600; font-size: 0.92rem; }
 .rg-row .m .s { font-size: 0.78rem; color: var(--muted); }
@@ -463,6 +467,18 @@ function explainHTML(i, ex) {
   return `<div class="ends"><h3>How the standings end</h3><div class="stand">${stand}</div>${parts.join("")}</div>`;
 }
 
+// The selected team's remaining games, and whether they're all locked as wins
+function ownGames(team) { return P.map((g, k) => [g, k]).filter(([g]) => g.h === team || g.a === team); }
+function winsOutLocked(team) {
+  const own = ownGames(team);
+  return own.length > 0 && own.every(([g, k]) => locks[k] === (g.h === team ? 1 : 0));
+}
+function winOutButton(team) {
+  if (!ownGames(team).length) return "";
+  const on = winsOutLocked(team);
+  return `<button id="winOut" class="wo-btn" type="button" data-team="${team}" aria-pressed="${on}">${on ? "&#10003; " + esc(T[team].short) + " wins out (undo)" : "What if " + esc(T[team].short) + " wins out?"}</button>`;
+}
+
 function renderTeam() {
   const i = sel, t = T[i];
   const A = teamAnalysis(i);
@@ -576,6 +592,7 @@ function renderTeam() {
       ${pathHTML}
       <div class="panel">
         <header><h3>Who to root for</h3><p>The games that move ${esc(t.short)}'s odds, biggest first. Use the buttons to lock in a result and see what changes.</p></header>
+        ${winOutButton(i)}
         <div class="rg">${rg}</div>
       </div>
     </div>`;
@@ -601,7 +618,14 @@ document.addEventListener("click", (e) => {
     runMain(); renderAll();
     return;
   }
-  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); }
+  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); return; }
+  const wo = e.target.closest("#winOut");
+  if (wo) {
+    // set (or undo) every remaining game of this team as a win; other picks are left alone
+    const team = +wo.dataset.team, on = winsOutLocked(team);
+    for (const [g, k] of ownGames(team)) locks[k] = on ? undefined : g.h === team ? 1 : 0;
+    runMain(); renderAll();
+  }
 });
 window.addEventListener("hashchange", () => {
   const h = location.hash.slice(1).toLowerCase();
