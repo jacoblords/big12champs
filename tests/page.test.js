@@ -112,11 +112,11 @@ test("close games are toss-ups, not upsets, and the path sentence counts them th
     const upsetTags = cells.filter((c) => c.ups).length;
     const tossDog = cells.filter((c) => c.sr === "toss-up" && c.pct < 50).length;
     if (cells.some((c) => c.sr === "toss-up")) sawToss = true;
-    const sentence = text(html).match(/It needs [^.]*\./)[0];
-    if (upsetTags === 0 && tossDog === 0) assert.match(sentence, /no upsets: every favorite wins/, t.abbr);
-    else if (upsetTags === 0) assert.match(sentence, /no real upsets, but .*toss-up/, t.abbr);
-    else assert.match(sentence, new RegExp(`needs (one|${upsetTags}) upsets?`), `${t.abbr}: ${sentence}`);
-    if (tossDog > 0) assert.match(sentence, /toss-up/, `${t.abbr}: ${sentence}`);
+    const sentence = html.match(/<dt>Needs<\/dt><dd>([^<]+)<\/dd>/)[1];
+    if (upsetTags === 0 && tossDog === 0) assert.equal(sentence, "No upsets", t.abbr);
+    else if (upsetTags === 0) assert.match(sentence, /^\d+ toss-ups? to the underdog$/, t.abbr);
+    else assert.match(sentence, new RegExp(`^${upsetTags} upsets?`), `${t.abbr}: ${sentence}`);
+    if (tossDog > 0) assert.match(sentence, new RegExp(`${tossDog} toss-ups?`), `${t.abbr}: ${sentence}`);
   }
   assert.ok(sawToss, "toss-up tags appear");
 });
@@ -128,7 +128,7 @@ test("path rows: odds in one column, ! for upsets, !! for big upsets, a check be
     await settle();
     const path = els.team.innerHTML.split("How the standings end")[0];
     if (!/Most likely path/.test(path)) continue;
-    assert.match(path, /The percentage is ESPN's odds of that result\./);
+    assert.match(path, /Percentages are ESPN's odds of that result\./);
     const cells = oddsCells(path);
     assert.equal(cells.length, (path.match(/class="game/g) || []).length, `${t.abbr}: one odds cell per row`);
     assert.doesNotMatch(path, /<span class="po[^>]*title=/, "no hover text");
@@ -159,13 +159,13 @@ test("path odds cover the results shown, not every remaining game", async () => 
   const head = () => text(els.team.innerHTML.split("Most likely path")[1].split("Week")[0]);
   const keyRows = () => (els.team.innerHTML.split("How the standings end")[0].split('<details class="minor"')[0].match(/class="game/g) || []).length;
   assert.doesNotMatch(els.team.innerHTML, /full slate/);
-  const m = head().match(/Odds of these (\d+) results: (\d+%|1 in [\d,.]+)\./);
+  const m = els.team.innerHTML.match(/<dt>Odds of these (\d+) results<\/dt><dd>(\d+%|1 in [\d,.]+)<\/dd>/);
   assert.ok(m, head());
   assert.equal(+m[1], keyRows(), "counts the rows shown above the folded games");
   // with a pick on a shown game, that game is left out of the odds
   const locked = els.team.innerHTML.match(/data-k="(\d+)" data-v="1"/)[1];
   handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: locked, v: "1" } } : null) } });
-  assert.match(head(), /Odds of the other \d+ results?: /);
+  assert.match(els.team.innerHTML, /<dt>Odds of the other( \d+)? results?<\/dt>/);
 });
 
 test("every path says how often its shown results are enough", async () => {
@@ -173,10 +173,13 @@ test("every path says how often its shown results are enough", async () => {
   for (const t of data.teams) {
     const { els } = render(data, "#" + t.abbr.toLowerCase());
     await settle();
-    const head = text((els.team.innerHTML.split("Most likely path")[1] || "").split("Week")[0]);
-    if (!head) continue;
+    const html = els.team.innerHTML;
+    if (!/Most likely path/.test(html)) continue;
     paths++;
-    assert.match(head, new RegExp(`If (they|it) happens?, ${t.short.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} (is in no matter how the other games go|gets in (\\d+%|under 1%) of the time; the rest comes down to games not shown)\\.`), `${t.abbr}: ${head}`);
+    const m = html.match(/<dt>If (?:they happen|it happens)<\/dt><dd>(Always in|(?:\d+%|Under 1%) of the time)<\/dd><\/div>/);
+    assert.ok(m, `${t.abbr}: reliability stat`);
+    // the note appears only when the shown results aren't always enough
+    assert.equal(/The rest comes down to games not shown\./.test(html), m[1] !== "Always in", t.abbr);
   }
   assert.ok(paths > 5);
 });

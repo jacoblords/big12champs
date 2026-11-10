@@ -103,6 +103,13 @@ button { font: inherit; color: inherit; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; align-content: start; min-width: 0; }
 .panel > header { display: grid; gap: 4px; }
 .panel > header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+/* most-likely-path summary: three small labeled stats instead of one long paragraph */
+.path-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; margin: 6px 0 0; }
+.path-stats > div { background: var(--sunk); border-radius: 8px; padding: 8px 10px; display: grid; gap: 2px; align-content: start; }
+.path-stats dt { font-family: var(--display); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.path-stats dd { margin: 0; font-weight: 600; font-size: 0.95rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.panel > header .path-note { font-size: 0.8rem; }
+.panel > header .path-key { font-size: 0.8rem; margin-top: 4px; }
 
 /* path */
 .week { display: grid; gap: 6px; }
@@ -551,11 +558,11 @@ function renderTeam() {
     const pathOdds = P.map((g, k) => (locks[k] !== undefined ? null : ((m >>> k) & 1) ? g.pHome : 1 - g.pHome));
     const upsets = pathOdds.filter((p) => p !== null && p < 0.5 - TOSS_UP).length;
     const tossUps = pathOdds.filter((p) => p !== null && p < 0.5 && isTossUp(p)).length; // toss-ups going to the slight underdog
-    const plural = (n, word) => `${n === 1 ? "one" : n} ${word}${n === 1 ? "" : "s"}`;
-    const needs = upsets === 0 && tossUps === 0 ? "It needs no upsets: every favorite wins."
-      : upsets === 0 ? `It needs no real upsets, but ${plural(tossUps, "toss-up")} ${tossUps === 1 ? "has" : "have"} to go to the slight underdog.`
-      : tossUps === 0 ? `It needs ${plural(upsets, "upset")}.`
-      : `It needs ${plural(upsets, "upset")}, plus ${plural(tossUps, "toss-up")} going to the slight underdog.`;
+    const count = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+    const needs = upsets === 0 && tossUps === 0 ? "No upsets"
+      : upsets === 0 ? `${count(tossUps, "toss-up")} to the underdog`
+      : tossUps === 0 ? count(upsets, "upset")
+      : `${count(upsets, "upset")} + ${count(tossUps, "toss-up")}`;
     const weeks = [...new Set(P.map((g) => g.week))];
     const pd = pathDetails(i, A);
     const isKey = pd.isKey;
@@ -572,21 +579,25 @@ function renderTeam() {
     const shownProb = shown.reduce((acc, [g, k]) => acc * (((m >>> k) & 1) ? g.pHome : 1 - g.pHome), 1);
     const nPicks = P.filter((g, k) => isKey(g, k) && locks[k] !== undefined).length;
     const oddsText = shownProb >= 0.1 ? pct(shownProb, 0) : oneIn(shownProb);
-    const oddsLine = !shown.length ? ""
-      : shown.length === 1 ? `Odds of ${nPicks ? "the other result" : "this result"}: ${oddsText}.`
-      : `Odds of ${nPicks ? "the other" : "these"} ${shown.length} results: ${oddsText}.`;
+    const oddsLabel = shown.length === 1 ? (nPicks ? "Odds of the other result" : "Odds of this result")
+      : `Odds of ${nPicks ? "the other" : "these"} ${shown.length} results`;
     // how often these shown results are enough, with the games not shown at ESPN's odds
     const sure = pd.reliability >= 0.9995;
-    const reliableLine = sure
-      ? `If ${shown.length === 1 ? "it happens" : "they happen"}, ${esc(t.short)} is in no matter how the other games go.`
-      : `If ${shown.length === 1 ? "it happens" : "they happen"}, ${esc(t.short)} gets in ${pd.reliability < 0.005 ? "under 1%" : pct(pd.reliability, 0)} of the time; the rest comes down to games not shown.`;
+    const enough = sure ? "Always in" : `${pd.reliability < 0.005 ? "Under 1%" : pct(pd.reliability, 0)} of the time`;
+    const stat = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+    const stats = `<dl class="path-stats">
+      ${stat("Needs", needs)}
+      ${shown.length ? stat(oddsLabel, oddsText) : ""}
+      ${shown.length ? stat(shown.length === 1 ? "If it happens" : "If they happen", enough) : ""}
+    </dl>${shown.length && !sure ? `<p class="path-note">The rest comes down to games not shown.</p>` : ""}`;
     const body = weekBlocks(true) + (nMinor ? `<details class="minor" id="path-minor"${openState["path-minor"] ? " open" : ""}>
       <summary>${nMinor} other game${nMinor > 1 ? "s" : ""} barely matter to ${esc(t.short)}</summary>
       <p class="note">Either result barely changes their overall odds. In a scenario that comes down to a deep tiebreaker, one of these can still tip strength of schedule.</p>${weekBlocks(false)}</details>` : "");
     pathHTML = `<div class="panel">
       <header><h3>Most likely path</h3>
-      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game. ${needs} ${oddsLine} ${reliableLine}</p>
-      <p><span class="wb">W</span> marks the team that wins each game in this path. The percentage is ESPN's odds of that result.</p></header>
+      <p>${A.exact ? "The single likeliest set of results" : "The likeliest set of results the simulations found"} that puts ${esc(t.short)} in the title game.</p>
+      ${stats}
+      <p class="path-key"><span class="wb">W</span> marks the winner. Percentages are ESPN's odds of that result.</p></header>
       ${body}
       ${explainHTML(i, A.ex)}
     </div>`;
