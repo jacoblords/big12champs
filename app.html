@@ -151,6 +151,13 @@ details.minor .week + .week { margin-top: 10px; }
 .rg { display: grid; gap: 4px; }
 .rg-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 132px; gap: 10px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--line); }
 .rg-row.flat { opacity: 0.5; }
+/* the visitor's own what-ifs, pinned above the rest */
+.rg-picks { display: grid; padding: 2px 10px 4px; margin-bottom: 8px; background: var(--warn-soft); border-radius: 8px; }
+.rg-picks > .rg-row:last-child { border-bottom: 0; }
+.rg-picks-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 4px 2px; }
+.rg-picks-head span { font-family: var(--display); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--warn); }
+.rg-picks-head button { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 0.8rem; cursor: pointer; }
+.rg-picks-head button:hover { border-color: var(--muted); }
 .rg-row .m { display: grid; gap: 2px; min-width: 0; }
 .rg-row .m .t { font-weight: 600; font-size: 0.92rem; }
 .rg-row .m .s { font-size: 0.78rem; color: var(--muted); }
@@ -373,7 +380,7 @@ function renderLocks() {
   const n = locks.filter((l) => l !== undefined).length;
   const el = $("locks");
   el.hidden = n === 0;
-  el.innerHTML = n ? `<span><b>${n} result${n > 1 ? "s" : ""} set by you.</b> All odds below assume ${n > 1 ? "they happen" : "it happens"}, and are simulated (${N_MAIN.toLocaleString("en-US")} runs, typically within half a point) rather than exact.</span><button id="clearLocks">Clear what-ifs</button>` : "";
+  el.innerHTML = n ? `<span><b>${n} result${n > 1 ? "s" : ""} set by you.</b> All odds below assume ${n > 1 ? "they happen" : "it happens"}, and are simulated (${N_MAIN.toLocaleString("en-US")} runs, typically within half a point) rather than exact.</span>` : "";
 }
 
 // A game ESPN has within 45-55% is a toss-up: the underdog winning it isn't really an upset.
@@ -518,7 +525,7 @@ function renderTeam() {
   // rooting guide
   const rows = P.map((g, k) => ({ g, k, c: A.imp.games[k] }))
     .map((r) => ({ ...r, swing: r.c.pH == null || r.c.pA == null ? 0 : Math.abs(r.c.pH - r.c.pA) }))
-    .sort((a, b) => (locks[a.k] !== undefined) - (locks[b.k] !== undefined) || b.swing - a.swing);
+    .sort((a, b) => b.swing - a.swing);
   const rgRow = ({ g, k, c, swing }) => {
     const own = g.h === i || g.a === i;
     const locked = locks[k] !== undefined;
@@ -546,9 +553,16 @@ function renderTeam() {
         <button data-k="${k}" data-v="1" aria-pressed="${L === 1}" title="${esc(T[g.h].short)} wins">${esc(T[g.h].abbr)}</button>
       </div></div>`;
   };
-  const keyRow = (r) => A.imp.hits < 30 || r.g.h === i || r.g.a === i || locks[r.k] !== undefined || matters(r.c);
-  const minorRows = rows.filter((r) => !keyRow(r));
-  const rg = rows.filter(keyRow).map(rgRow).join("") + (minorRows.length ? `<details class="minor" id="rg-minor"${openState["rg-minor"] ? " open" : ""}>
+  // results the visitor locked in stay pinned at the top, in their own box with the clear button
+  const picked = rows.filter((r) => locks[r.k] !== undefined);
+  const open = rows.filter((r) => locks[r.k] === undefined);
+  const picks = picked.length ? `<div class="rg-picks">
+    <div class="rg-picks-head"><span>Your picks (${picked.length})</span><button id="clearLocks" type="button">Clear all</button></div>
+    ${picked.map(rgRow).join("")}
+  </div>` : "";
+  const keyRow = (r) => A.imp.hits < 30 || r.g.h === i || r.g.a === i || matters(r.c);
+  const minorRows = open.filter((r) => !keyRow(r));
+  const rg = picks + open.filter(keyRow).map(rgRow).join("") + (minorRows.length ? `<details class="minor" id="rg-minor"${openState["rg-minor"] ? " open" : ""}>
     <summary>${minorRows.length} game${minorRows.length > 1 ? "s" : ""} that barely matter</summary>${minorRows.map(rgRow).join("")}</details>` : "");
 
   $("team").innerHTML = `
