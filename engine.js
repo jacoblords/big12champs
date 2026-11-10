@@ -121,7 +121,11 @@
   // below the best value is eliminated, and the teams still level start over at step a
   // (with the two-team steps once only two remain). This is how the Big 12 applies "if at any
   // point the multiple-team tie is reduced to two teams" (e.g. its 2025 title-game scenarios).
-  function pickOne(st, T, rng, trace, names) {
+  // info (optional) gets .pool: the teams still in the tiebreaker when the seed was picked. Teams
+  // eliminated along the way stay out: the next seed comes from the rest of that pool (2025
+  // published scenario: TTU drops out of a four-way tie, ASU is #1, then BYU beats Utah for #2).
+  function pickOne(st, T, rng, trace, names, info) {
+    if (info) info.pool = T;
     if (T.length === 1) return T[0];
     const Tset = new Set(T);
     const multi = T.length > 2;
@@ -146,7 +150,7 @@
       }
       if (multi && top.length < T.length) {
         if (trace) push({ step, cut: T.filter((t) => !top.includes(t)), detail: txt(detail) }, extra);
-        return pickOne(st, top, rng, trace, names); // the rest start over at step a
+        return pickOne(st, top, rng, trace, names, info); // the rest start over at step a
       }
       return -1;
     };
@@ -219,8 +223,11 @@
       const s1 = pickOne(st, G1, rng, trace, names);
       return [s1, s1 === G1[0] ? G1[1] : G1[0]];
     }
-    const s1 = pickOne(st, G1, rng, trace, names);
-    const rest = G1.filter((t) => t !== s1);
+    // 3+ tied for first: #1 comes out of the tiebreaker; #2 comes from the teams still in it
+    // when #1 was seeded (teams eliminated on the way are out).
+    const info = {};
+    const s1 = pickOne(st, G1, rng, trace, names, info);
+    const rest = info.pool.filter((t) => t !== s1);
     const s2 = pickOne(st, rest, rng, trace, names);
     return [s1, s2];
   }
