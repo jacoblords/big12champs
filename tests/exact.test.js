@@ -67,6 +67,11 @@ test("best path is the likeliest finish that qualifies, by brute force", () => {
   }
 });
 
+test("cache key includes the engine's code", () => {
+  const src = require("fs").readFileSync(require.resolve("../exact.js"), "utf8");
+  assert.match(src, /ENGINE_HASH \+ "#"/);
+});
+
 test("cache key changes with inputs and only with inputs", () => {
   const same = JSON.parse(JSON.stringify(data));
   same.meta = { checkedAt: "later" };

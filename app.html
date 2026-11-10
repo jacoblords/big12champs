@@ -145,6 +145,7 @@ details.minor .week + .week { margin-top: 10px; }
 .tb-table > .v { text-align: right; }
 .tb-table > .win { background: var(--accent-soft); font-weight: 600; }
 .tb-table > .v.win { color: var(--accent); }
+.tb-table > .out { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
 
 /* rooting guide */
 .rg { display: grid; gap: 4px; }
@@ -235,11 +236,11 @@ footer code { font-size: 0.8rem; word-break: break-all; }
       <div class="panel">
         <h3>How this site reads the gray areas</h3>
         <ul>
-          <li>A step settles the tie only when one team is alone at the top. Teams are never dropped for trailing at a step.</li>
+          <li>In a tie of three or more, a team alone at the top of a step is seeded. If the step leaves several level at the top, the teams below them drop out and the rest start over at step a, as the Big 12 applied it in 2024 (Colorado dropped out of the four-way tie before BYU and Iowa State went to strength of schedule).</li>
           <li>Step b leaves the tied teams themselves out of the common-opponent set.</li>
-          <li>Step c uses a standings group once every tied team has played at least one member of it, and compares win percentage against the group as a whole. Groups that some tied team never played are skipped.</li>
+          <li>Step c only counts common opponents: within a group of teams tied in the standings, only the members every tied team played. A group with no common members is skipped.</li>
           <li>Step f uses ESPN's current FPI because the SportSource rating is not public. This step almost never decides anything.</li>
-          <li>Run against final results, the engine reproduces 2024 (ASU #1; Iowa State #2 out of a four-way tie at 7-2, via strength of schedule) and 2025 (Texas Tech, then BYU).</li>
+          <li>Run against final results, the engine reproduces the Big 12's own rulings: 2024 (four-way tie at 7-2: ASU #1 on common opponents, Colorado drops out, Iowa State #2 over BYU on strength of schedule, .444 to .383) and 2025 (Texas Tech, then BYU).</li>
         </ul>
       </div>
     </div>
@@ -403,19 +404,27 @@ function tiebreakHTML(tr, ex) {
   const n = tr.tied.length;
   const who = n === 2 ? `${name(tr.tied[0])} and ${name(tr.tied[1])}` : `${NUM_WORD[n] ? NUM_WORD[n][0].toUpperCase() + NUM_WORD[n].slice(1) : n} teams`;
   const seed = tr.winner === s1 ? "the #1 seed" : tr.winner === s2 ? "the #2 seed" : "the tiebreak";
+  const list = (ts) => ts.length === 2 ? `${name(ts[0])} and ${name(ts[1])}` : ts.slice(0, -1).map(name).join(", ") + ", and " + name(ts[ts.length - 1]);
+  const names = (ts) => ts.length === 1 ? name(ts[0]) : list(ts);
   let how = STEP_ON[tr.step];
   if (!tr.rows && tr.step === "a") {
     const other = tr.tied.find((t) => t !== tr.winner);
     how = n === 2 ? `by beating ${name(other)}` : "by beating every other tied team";
   }
   const listed = !tr.rows && n > 2 ? ` (${tr.tied.map(name).join(", ")})` : "";
-  const say = `<p class="tb-say">${who}${listed} tied at ${record(st, tr.tied[0])}. <b>${name(tr.winner)}</b> gets ${seed} ${how}. <span class="tb-step">Step ${tr.step}</span></p>`;
+  // a step that doesn't single out one team but leaves some behind: those teams drop out
+  const cut = tr.cut || [];
+  const kept = tr.tied.filter((t) => !cut.includes(t));
+  const outcome = cut.length
+    ? `${names(cut)} ${cut.length === 1 ? "drops" : "drop"} out ${how}, and ${names(kept)} start over.`
+    : `<b>${name(tr.winner)}</b> gets ${seed} ${how}.`;
+  const say = `<p class="tb-say">${who}${listed} tied at ${record(st, tr.tied[0])}. ${outcome} <span class="tb-step">Step ${tr.step}</span></p>`;
   if (!tr.rows) return `<div class="tb">${say}</div>`;
-  const rows = tr.rows.slice().sort((a, b) => (b.t === tr.winner) - (a.t === tr.winner) || b.key - a.key);
+  const rows = tr.rows.slice().sort((a, b) => (b.t === tr.winner) - (a.t === tr.winner) || cut.includes(a.t) - cut.includes(b.t) || b.key - a.key);
   const col = tr.step === "c" && tr.against ? `Vs. ${tr.against.map((o) => esc(T[o].abbr)).join(", ")}` : STEP_COL[tr.step];
   const table = `<div class="tb-table" role="table">
     <span class="h" role="columnheader">Team</span><span class="h v" role="columnheader">${col}</span>
-    ${rows.map((r) => `<span class="${r.t === tr.winner ? "win" : ""}" role="cell">${name(r.t)}</span><span class="v${r.t === tr.winner ? " win" : ""}" role="cell">${esc(r.text)}</span>`).join("")}
+    ${rows.map((r) => { const c = r.t === tr.winner ? "win" : cut.includes(r.t) ? "out" : ""; return `<span class="${c}" role="cell">${name(r.t)}</span><span class="v ${c}" role="cell">${esc(r.text)}</span>`; }).join("")}
   </div>`;
   const note = tr.step === "b" && tr.against ? `<p class="tb-note">Common opponents: ${tr.against.map((o) => esc(T[o].short)).join(", ")}</p>` : "";
   return `<div class="tb">${say}${table}${note}</div>`;
