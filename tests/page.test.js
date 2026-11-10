@@ -179,6 +179,43 @@ test("a what-if switches to simulation and says so", async () => {
   assert.match(text(els.team.innerHTML), /Your pick|Set by you/);
 });
 
+test("what-ifs stay pinned at the top of the rooting guide, with the clear button", async () => {
+  const { els, handlers } = render(data, "#utah");
+  await settle();
+  const pick = (k, v) => handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: String(k), v } } : null) } });
+  pick(5, "1");
+  pick(9, "0");
+  const html = els.team.innerHTML;
+  const guide = html.split("Who to root for")[1];
+  const box = guide.indexOf('class="rg-picks"');
+  const firstOther = guide.indexOf('class="rg-row', guide.indexOf("</div>", guide.lastIndexOf("Set by you")));
+  assert.ok(box > -1 && box < firstOther, "picks box comes before the other games");
+  assert.match(text(guide.slice(box)), /Your picks \(2\) Clear all/);
+  assert.equal((guide.slice(box).split('class="rg-picks"')[1].match(/Set by you/g) || []).length, 2);
+  assert.doesNotMatch(els.locks.innerHTML, /clearLocks/, "the top banner no longer has the button");
+  handlers.click({ target: { id: "clearLocks", closest: () => null } });
+  assert.doesNotMatch(els.team.innerHTML, /rg-picks/);
+  assert.equal(els.locks.hidden, true);
+});
+
+test("one click sets the selected team to win out, and again undoes it", async () => {
+  const { els, handlers } = render(data, "#ttu");
+  await settle();
+  const ttu = data.teams.findIndex((t) => t.abbr === "TTU");
+  const remaining = data.games.filter((g) => !g.completed && (g.home === data.teams[ttu].id || g.away === data.teams[ttu].id)).length;
+  assert.ok(remaining > 0);
+  assert.match(els.team.innerHTML, /id="winOut"[^>]*aria-pressed="false"[^>]*>What if Texas Tech wins out\?/);
+  const clickWinOut = () => handlers.click({ target: { id: "", closest: (sel) => (sel === "#winOut" ? { dataset: { team: String(ttu) } } : null) } });
+  clickWinOut();
+  const box = els.team.innerHTML.split('class="rg-picks"')[1];
+  assert.ok(box, "picks box appears");
+  assert.equal((box.match(/Set by you: Texas Tech wins/g) || []).length, remaining);
+  assert.match(els.team.innerHTML, /id="winOut"[^>]*aria-pressed="true"/);
+  clickWinOut();
+  assert.doesNotMatch(els.team.innerHTML, /rg-picks/);
+  assert.equal(els.locks.hidden, true);
+});
+
 test("without exact data the page still works on simulation", async () => {
   const noExact = { ...data, exact: undefined };
   const { els } = render(noExact, "#utah");
