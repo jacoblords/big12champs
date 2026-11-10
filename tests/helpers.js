@@ -9,7 +9,7 @@ const noCoin = () => { throw new Error("coin toss should not be reached"); };
 // Teams are 0..n-1, named by letter. Records are set explicitly, so a team can have
 // games against teams outside the test (which is how real ties look).
 // rules: a league's tiebreak rules (B.RULES.sec); the Big 12's when left out.
-function standingsTable(n, { records, beat = [], sos = {}, total = {}, fpi = {}, rules }) {
+function standingsTable(n, { records, beat = [], sos = {}, total = {}, fpi = {}, rating, rules }) {
   const H2H = new Int8Array(n * n);
   for (const [w, l] of beat) { H2H[w * n + l] = 1; H2H[l * n + w] = -1; }
   const CW = new Int16Array(n), CL = new Int16Array(n);
@@ -18,8 +18,8 @@ function standingsTable(n, { records, beat = [], sos = {}, total = {}, fpi = {},
   for (let t = 0; t < n; t++) { const [w, g] = sos[t] || [40, 81]; sosW[t] = w; sosG[t] = g; }
   const tot = new Int16Array(n);
   for (let t = 0; t < n; t++) tot[t] = total[t] ?? 8;
-  const f = Array.from({ length: n }, (_, t) => fpi[t] ?? 0);
-  return { N: n, H2H, CW, CL, total: tot, sosW, sosG, fpi: f, rules: rules || B.RULES.big12 };
+  const f = Array.from({ length: n }, (_, t) => (rating || fpi)[t] ?? 0);
+  return { N: n, H2H, CW, CL, total: tot, sosW, sosG, rating: f, rules: rules || B.RULES.big12 };
 }
 const L = "ABCDEFGHIJKLMNOP".split("");
 function seeds(st, rng = noCoin) {

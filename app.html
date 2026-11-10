@@ -377,6 +377,8 @@ const LEAGUE_TEXT = {
   big12: {
     steps: {},
     stepOn: {},
+    col: {},
+    h2h: "<b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step b. Losing to everyone does not knock a team out.",
     threeWay: "<b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step a, using the two-team steps once only two remain, to find #2.",
     titleGame: "<b>Title game:</b> not counted in conference records or in the 12-game win total.",
     gray: [
@@ -390,22 +392,24 @@ const LEAGUE_TEXT = {
   },
   sec: {
     steps: {
-      d: "<b>Opponents' winning percentage.</b> Combined conference winning percentage of all of a team's conference opponents.",
-      f: "<b>Capped relative total scoring margin</b> against all conference opponents, from SportSource Analytics.",
+      d: "<b>Opponents' winning percentage.</b> The average conference winning percentage of all of a team's conference opponents.",
+      f: "<b>Capped relative total scoring margin</b> against all conference opponents, per SportSource Analytics: points scored as a share of what each opponent usually allows (capped at 200%), minus points allowed as a share of what it usually scores, averaged over conference games.",
       g: "<b>Random draw.</b>",
     },
-    stepOn: { d: "on opponents' winning percentage", f: "on scoring margin (FPI stand-in)", g: "by random draw" },
-    threeWay: `<b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is in. Everyone left starts over at step ${s("a")} to find the second team. The two are then seeded by the two-team steps, so the first team in is not always #1.`,
+    stepOn: { d: "on opponents' winning percentage", f: "on capped scoring margin", g: "by random draw" },
+    col: { f: "Scoring margin" },
+    h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. A team that lost to every other tied team is out, and the rest start over. Otherwise skip to step ${s("b")}.`,
+    threeWay: `<b>Three or more tie for first:</b> run the steps until one team stands alone at the top of a step. That team is in, and everyone still in contention starts over at step ${s("a")} for the second spot. If a step leaves two teams level at the top, both are in. If it leaves three or more level, they start over and the rest are out. The two teams who get in are then seeded by the two-team steps, so the first team in is not always #1.`,
     titleGame: "<b>Title game:</b> not counted in conference records.",
     gray: [
-      `In a tie of three or more, a team alone at the top of a step is in. If the step leaves several level at the top, the teams below them drop out and the rest start over at step ${s("a")}.`,
-      `Step ${s("b")} leaves the tied teams themselves out of the common-opponent set.`,
-      `Step ${s("c")} only counts common opponents: within a group of teams tied in the standings, only the members every tied team played. A group with no common members is skipped.`,
-      `Step ${s("f")} uses ESPN's current FPI because SportSource's scoring margin is not public. This step almost never decides anything.`,
+      "Everything above follows the SEC's official procedure, and its worked examples are part of this site's tests.",
+      `Step ${s("c")}: opponents tied in the standings are first ordered by head-to-head, as the procedure says. Only when that can't separate them are records against them combined, and then only against the ones every tied team played.`,
+      `Step ${s("d")}: the site combines opponents' records; the SEC averages each opponent's winning percentage. The two only differ if a canceled game leaves teams with different numbers of conference games.`,
+      `Step ${s("f")} is computed from real scores with the SEC's published formula, using season scoring averages from every game with a score. Before the season ends it can only use the games played so far. SportSource's own figures may differ slightly. This step almost never decides anything.`,
       "No step looks at non-conference games, so they are left out of the odds, the paths and the rooting guide.",
       "Run against final results, the engine reproduces both SEC title games: 2024 (Texas #1 at 7-1, Georgia #2 over Tennessee on head-to-head) and 2025 (four-way tie at 7-1: Alabama and Georgia in on opponents' winning percentage, .500 and .469, over Ole Miss and Texas A&M; Alabama #1 for beating Georgia). It also matches the published 2025 final-week scenarios.",
     ],
-    policy: { url: "https://www.secsports.com/news/2024/08/sec-announces-football-tie-breaking-process", title: "SEC announces football tie-breaking process (official)" },
+    policy: { url: "https://www.secsports.com/fbtiebreaker", title: "Southeastern Conference Official Football Tiebreakers (secsports.com)" },
   },
 };
 const TEXT = LEAGUE_TEXT[LEAGUE_ID];
@@ -435,7 +439,7 @@ function renderRules() {
     "<b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.",
     "<b>Clear #1, tie for second:</b> the tied teams run the steps and the winner is the #2 seed.",
     TEXT.threeWay,
-    `<b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step ${s("b")}. Losing to everyone does not knock a team out.`,
+    TEXT.h2h,
     TEXT.titleGame,
     `<b>Only two teams get ranked:</b> the tiebreakers pick the two title-game teams and stop there. In the standings on this page, "T3" means teams still tied at that spot.`,
   ].map(li).join("");
@@ -489,7 +493,7 @@ function gameRow(g, i, winnerHome, mark) {
 }
 
 const STEP_ON = { a: "on head-to-head", b: "on record against common opponents", c: "by walking down the standings", d: "on strength of conference schedule", e: "on total wins", f: "on team rating (FPI stand-in)", g: "by coin toss", ...TEXT.stepOn };
-const STEP_COL = { a: "Vs. tied teams", b: "Vs. common opponents", c: "Vs. next group", d: "Opponents' conf. win %", e: "Total wins", f: "FPI" };
+const STEP_COL = { a: "Vs. tied teams", b: "Vs. common opponents", c: "Vs. next group", d: "Opponents' conf. win %", e: "Total wins", f: "FPI", ...TEXT.col };
 const NUM_WORD = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 
 // One tiebreak decision: a plain sentence, then the tied teams' deciding numbers, winner first.
@@ -504,7 +508,7 @@ function tiebreakHTML(tr, ex) {
   let how = STEP_ON[tr.step];
   if (!tr.rows && tr.step === "a") {
     const other = tr.tied.find((t) => t !== tr.winner);
-    how = n === 2 ? `by beating ${name(other)}` : "by beating every other tied team";
+    how = n === 2 ? `by beating ${name(other)}` : tr.cut ? "by losing to every other tied team" : "by beating every other tied team";
   }
   const listed = !tr.rows && n > 2 ? ` (${tr.tied.map(name).join(", ")})` : "";
   // a step that doesn't single out one team but leaves some behind: those teams drop out

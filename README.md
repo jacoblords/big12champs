@@ -29,9 +29,13 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   independent. Adding correlated team strength moved the 2026-11-09 odds by about a point at
   most.
 - **Engine:** [`engine.js`](engine.js). One set of steps; `RULES` says which each league
-  uses and how it names them. The SEC has no total-wins step (so non-conference games are left
-  out entirely) and, after a three-way-or-more tie for first, seeds the two teams that got in
-  with the two-team steps. Run against final results it reproduces the Big 12's 2024 (ASU, then
+  uses and how it names them. Where the SEC's
+  [official procedure](https://storage.googleapis.com/secsports-prod/upload/2024/10/29/f6fc7cd9-3031-4357-8754-80bfa4b9c4c0.pdf)
+  differs from the Big 12's: no total-wins step (so non-conference games are left out
+  entirely); with no round robin, a team that lost to every other tied team is eliminated; in
+  the standings walk, a tied group of opponents is ordered by head-to-head before being combined;
+  step 5 is a capped relative scoring margin computed from real scores; and after a tie of three
+  or more for first, the two teams that got in are seeded with the two-team steps. Run against final results it reproduces the Big 12's 2024 (ASU, then
   Iowa State out of a four-way tie via strength of schedule) and 2025, and the SEC's 2024 and
   2025 (Alabama and Georgia out of a four-way tie at 7-1, Alabama #1 on head-to-head).
 - **Adding a league:** an entry in `LEAGUES` in `fetch_data.py` (ESPN group, path), in
@@ -67,8 +71,8 @@ node --test tests/*.test.js                 # engine rules, exact solver, page r
 python3 -m unittest discover -s tests       # fetcher caching rules against a fake ESPN
 ```
 
-- `tests/sec.test.js`: the SEC's 2024 and 2025 title games, its published 2025 final-week
-  scenario, and its two differences from the Big 12.
+- `tests/sec.test.js`: the SEC's 2024 and 2025 title games, published final-week scenarios,
+  and the worked examples in the SEC's official procedure.
 - `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
   hand-built standings table for each rule and corner case (sweep rule, restart after a
   seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
