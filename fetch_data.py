@@ -11,7 +11,7 @@ previously published data.json, and only calls ESPN for things that can have cha
   teams/logos  fetched once
 
 Usage:
-  python3 fetch_data.py [--league big12|sec] [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
+  python3 fetch_data.py [--league big12|sec|acc] [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
@@ -29,6 +29,7 @@ LEAGUES = {
     "big12": {"id": "big12", "name": "Big 12", "path": "", "group": 4,
               "sponsor": {"name": "Monster Energy", "file": "monster-claw.png"}},
     "sec": {"id": "sec", "name": "SEC", "path": "sec/", "group": 8},
+    "acc": {"id": "acc", "name": "ACC", "path": "acc/", "group": 1},
 }
 SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h
