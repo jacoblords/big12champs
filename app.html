@@ -880,9 +880,42 @@ function renderAll() {
   renderPicker(); renderLocks(); renderTeam();
 }
 
+// The link carries the view so it can be shared: "#tcu&picks=401752890h.401752891a&sort=swing".
+// The team comes first (old "#tcu" links still work); each pick is ESPN's game id plus h or a for
+// the side that wins, so picks survive data updates and drop out once their game is played.
+function parseHash() {
+  const out = { team: -1, locks: null, sort: null };
+  const parts = location.hash.slice(1).toLowerCase().split("&");
+  out.team = T.findIndex((t) => t.abbr.toLowerCase() === decodeURIComponent(parts[0] || ""));
+  for (const part of parts.slice(1)) {
+    const [key, val = ""] = part.split("=");
+    if (key === "picks") {
+      out.locks = new Array(P.length).fill(undefined);
+      for (const pk of val.split(".")) {
+        const m = /^(.+)([ha])$/.exec(pk);
+        const k = m ? P.findIndex((g) => String(g.id).toLowerCase() === m[1]) : -1;
+        if (k >= 0) out.locks[k] = m[2] === "h" ? 1 : 0;
+      }
+    } else if (key === "sort" && (val === "week" || val === "swing")) out.sort = val;
+  }
+  return out;
+}
+function hashFor() {
+  let h = "#" + T[sel].abbr.toLowerCase();
+  const picks = P.map((g, k) => (locks[k] === undefined ? "" : g.id + (locks[k] ? "h" : "a"))).filter(Boolean);
+  if (picks.length) h += "&picks=" + picks.join(".");
+  if (rgSort !== "week") h += "&sort=" + rgSort;
+  return h;
+}
+function writeHash() {
+  const h = hashFor();
+  if (location.hash === h) return;
+  try { history.replaceState(null, "", h); } catch (e) { location.hash = h; }
+}
+
 function select(i, push) {
   sel = i;
-  if (push) { try { history.replaceState(null, "", "#" + T[i].abbr.toLowerCase()); } catch (e) { location.hash = T[i].abbr.toLowerCase(); } }
+  if (push) writeHash();
   renderPicker(); renderTeam();
 }
 
@@ -893,23 +926,23 @@ document.addEventListener("click", (e) => {
   if (seg) {
     const k = +seg.dataset.k, v = seg.dataset.v;
     locks[k] = v === "" ? undefined : +v;
-    runMain(); renderAll();
+    runMain(); renderAll(); writeHash();
     return;
   }
   const sort = e.target.closest(".rg-sort button");
   if (sort) {
     rgSort = sort.dataset.sort;
     try { localStorage.setItem("rgSort", rgSort); } catch (e) {}
-    renderTeam();
+    renderTeam(); writeHash();
     return;
   }
-  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); return; }
+  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); writeHash(); return; }
   const wo = e.target.closest("#winOut");
   if (wo) {
     // set (or undo) every remaining game of this team as a win; other picks are left alone
     const team = +wo.dataset.team, on = winsOutLocked(team);
     for (const [g, k] of ownGames(team)) locks[k] = on ? undefined : g.h === team ? 1 : 0;
-    runMain(); renderAll();
+    runMain(); renderAll(); writeHash();
   }
 });
 // hovering a result previews the selected team's odds under it in the big number
@@ -926,10 +959,15 @@ document.addEventListener("mouseover", (e) => {
     heroSaved = null;
   }
 });
+// a link pasted into the address bar of an open page: take everything it sets
 window.addEventListener("hashchange", () => {
-  const h = location.hash.slice(1).toLowerCase();
-  const i = T.findIndex((t) => t.abbr.toLowerCase() === h);
-  if (i >= 0 && i !== sel) select(i, false);
+  if (location.hash === hashFor()) return;
+  const h = parseHash();
+  if (h.team >= 0) sel = h.team;
+  if (h.sort) rgSort = h.sort;
+  const next = h.locks || new Array(P.length).fill(undefined);
+  if (next.join() !== locks.join()) { locks = next; runMain(); }
+  renderAll();
 });
 
 // boot
@@ -952,9 +990,11 @@ window.addEventListener("hashchange", () => {
   <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
   ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
   <div>Tiebreakers: <a href="${TEXT.policy.url}" target="_blank" rel="noopener">${TEXT.policy.title}</a>. Not affiliated with the ${esc(LG.name)} or ESPN.</div>`;
+  const h = parseHash();
+  if (h.locks) locks = h.locks;
+  if (h.sort) rgSort = h.sort; // for this view only; the visitor's own choice stays saved
   runMain();
-  const h = location.hash.slice(1).toLowerCase();
-  let i = T.findIndex((t) => t.abbr.toLowerCase() === h);
+  let i = h.team;
   if (i < 0) {
     // open on the conference leader: best conference win percentage, ties broken by title-game odds
     const pctOf = (k) => (curW[k] + curL[k] ? curW[k] / (curW[k] + curL[k]) : 0);
@@ -962,6 +1002,8 @@ window.addEventListener("hashchange", () => {
   }
   sel = i;
   renderAll();
+  // tidy a shared link: drop picks for games played since, keep the rest
+  if (location.hash) writeHash();
 })();
 }
 

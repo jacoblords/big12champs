@@ -23,8 +23,10 @@ function render(data, hash) {
     getElementById: (id) => (els[id] ||= { id, innerHTML: "", textContent: "", hidden: false, scrollIntoView() {} }),
     addEventListener: (type, fn) => { handlers[type] = fn; },
   };
+  const location = { hash: hash || "" };
   const sandbox = {
-    document, window: { addEventListener() {} }, location: { hash: hash || "" }, history: { replaceState() {} },
+    document, window: { addEventListener: (type, fn) => { handlers["window:" + type] = fn; } }, location,
+    history: { replaceState: (_, __, url) => { location.hash = url; } },
     fetch: async () => ({ ok: true, json: async () => data }), console, Math, Date, JSON,
   };
   vm.createContext(sandbox);
@@ -564,4 +566,46 @@ test("Big Ten tiebreaks show the league's step numbers", async () => {
     if (/Step [1-6]</.test(html)) sawNumber = true;
   }
   assert.ok(sawNumber, "some path shows a numbered step");
+});
+
+test("the link carries the team, what-if picks and order, and opening it restores them", async () => {
+  const { els, handlers, sandbox } = render(data, "#utah");
+  await settle();
+  const pick = (k, v) => handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: String(k), v } } : null) } });
+  pick(5, "1");
+  pick(9, "0");
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".rg-sort button" ? { dataset: { sort: "swing" } } : null) } });
+  const link = sandbox.location.hash;
+  const pending = data.games.filter((g) => !g.completed);
+  assert.match(link, /^#utah&picks=\d+[ha]\.\d+[ha]&sort=swing$/);
+  const before = els.team.innerHTML;
+
+  const again = render(data, link);
+  await settle();
+  assert.equal(again.els.team.innerHTML, before, "same view from the link");
+  assert.equal(again.els.locks.hidden, false);
+  assert.equal(again.sandbox.location.hash, link);
+  assert.ok(pending.length > 9);
+
+  // clearing the picks takes them out of the link
+  handlers.click({ target: { id: "clearLocks", closest: () => null } });
+  assert.equal(sandbox.location.hash, "#utah&sort=swing");
+});
+
+test("a link's picks for games already played, or unknown games, are dropped", async () => {
+  const { els, sandbox } = render(data, "#utah&picks=999h.notagamea&sort=bogus");
+  await settle();
+  assert.equal(els.locks.hidden, true);
+  assert.equal(sandbox.location.hash, "#utah");
+});
+
+test("an old team-only link still works, and a new link pasted into an open page applies", async () => {
+  const { els, handlers, sandbox } = render(data, "#ttu");
+  await settle();
+  assert.match(text(els.team.innerHTML), /Texas Tech/);
+  const g = data.games.find((x) => !x.completed);
+  sandbox.location.hash = `#utah&picks=${g.id}a`;
+  handlers["window:hashchange"]();
+  assert.match(text(els.team.innerHTML), /Utah Utes/);
+  assert.equal(els.locks.hidden, false);
 });
