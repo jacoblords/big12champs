@@ -178,6 +178,14 @@ details.minor .week + .week { margin-top: 10px; }
 .rg { display: grid; gap: 4px; }
 .rg-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 132px; gap: 10px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--line); }
 .rg-row.flat { opacity: 0.5; }
+.rg-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.rg-sort { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; font-size: 0.8rem; }
+.rg-sort button { border: 0; background: transparent; padding: 4px 12px; cursor: pointer; color: var(--muted); }
+.rg-sort button + button { border-left: 1px solid var(--line); }
+.rg-sort button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.rg-week { display: grid; }
+.rg-week + .rg-week { margin-top: 10px; }
+.rg-week h4 { margin: 0; padding: 4px 4px 2px; font-family: var(--display); font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
 /* the visitor's own what-ifs, pinned above the rest */
 .rg-picks { display: grid; padding: 2px 10px 4px; margin-bottom: 8px; background: var(--win-soft); border-radius: 8px; }
 .rg-picks > .rg-row:last-child { border-bottom: 0; }
@@ -194,6 +202,8 @@ details.minor .week + .week { margin-top: 10px; }
 .rg-row .m .s { font-size: 0.78rem; color: var(--muted); }
 .root { display: grid; gap: 3px; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 .root .who { font-weight: 600; }
+.root .odds2 { display: grid; }
+.root .odds2 > span { white-space: nowrap; }
 .bar { position: relative; height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
 .bar i { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; }
 .seg { display: grid; grid-template-columns: 1fr 34px 1fr; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; font-size: 0.78rem; }
@@ -266,6 +276,9 @@ const stepName = (s) => RULES.label[s];
 const N_MAIN = 40000, N_EXPLORE = 30000;
 let locks = new Array(P.length).fill(undefined);
 let main = null, uniform = null, cache = new Map(), sel = null;
+// rooting guide order: "swing" (biggest first) or "week"; remembered per browser
+let rgSort = "swing";
+try { if (localStorage.getItem("rgSort") === "week") rgSort = "week"; } catch (e) {}
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -799,12 +812,12 @@ function renderTeam() {
     else if (swing < 0.005 && !matters(c)) root = `<span class="muted">Doesn't matter</span>`;
     else {
       const homeBetter = c.pH > c.pA;
-      const who = homeBetter ? g.h : g.a;
+      const who = homeBetter ? g.h : g.a, other = homeBetter ? g.a : g.h;
       const hi = Math.max(c.pH, c.pA), lo = Math.min(c.pH, c.pA);
       // only claimed when proven over every finish
       const must = A.exact && (homeBetter ? c.needH : c.needA) ? ` <span class="tag ups" title="No finish gets them in without this result">Must</span>` : "";
       root = `<span><span class="who">${own ? "Win: " : "Root for "}${esc(T[who].short)}</span>${must}</span>
-        <span class="muted">${pct(hi)} if so · ${pct(lo)} if not</span>
+        <span class="muted odds2"><span>${pct(hi)} if ${esc(T[who].abbr)} wins</span><span>${pct(lo)} if ${esc(T[other].abbr)} wins</span></span>
         <span class="bar"><i style="left:${lo * 100}%;width:${Math.max((hi - lo) * 100, 1)}%"></i></span>`;
     }
     const L = locks[k];
@@ -827,8 +840,14 @@ function renderTeam() {
   </div>` : "";
   const keyRow = (r) => A.imp.hits < 30 || r.g.h === i || r.g.a === i || matters(r.c);
   const minorRows = open.filter((r) => !keyRow(r));
-  const rg = picks + open.filter(keyRow).map(rgRow).join("") + (minorRows.length ? `<details class="minor" id="rg-minor"${openState["rg-minor"] ? " open" : ""}>
-    <summary>${minorRows.length} game${minorRows.length > 1 ? "s" : ""} that barely matter</summary>${minorRows.map(rgRow).join("")}</details>` : "");
+  // by week: the same rows under week headings, biggest swing first within each week
+  const listRows = (rs) => rgSort !== "week" ? rs.map(rgRow).join("")
+    : [...new Set(rs.map((r) => r.g.week))].sort((a, b) => a - b)
+      .map((w) => `<div class="rg-week"><h4>Week ${w}</h4>${rs.filter((r) => r.g.week === w).map(rgRow).join("")}</div>`).join("");
+  const rg = picks + listRows(open.filter(keyRow)) + (minorRows.length ? `<details class="minor" id="rg-minor"${openState["rg-minor"] ? " open" : ""}>
+    <summary>${minorRows.length} game${minorRows.length > 1 ? "s" : ""} that barely matter</summary>${listRows(minorRows)}</details>` : "");
+  const sortBtn = (v, label) => `<button type="button" data-sort="${v}" aria-pressed="${rgSort === v}">${label}</button>`;
+  const sortCtl = `<div class="rg-sort" role="group" aria-label="Order games">${sortBtn("swing", "Biggest swing")}${sortBtn("week", "By week")}</div>`;
 
   $("team").innerHTML = `
     <div class="hero" style="--team:${safeColor(t.color)}">
@@ -840,8 +859,8 @@ function renderTeam() {
     <div class="cols">
       ${pathHTML}
       <div class="panel">
-        <header><h3>Who to root for</h3><p>The games that move ${esc(t.short)}'s odds, biggest first. Use the buttons to lock in a result and see what changes.</p></header>
-        ${winOutButton(i)}
+        <header><h3>Who to root for</h3><p>The games that move ${esc(t.short)}'s odds, ${rgSort === "week" ? "week by week" : "biggest first"}. Use the buttons to lock in a result and see what changes.</p></header>
+        <div class="rg-tools">${winOutButton(i)}${sortCtl}</div>
         <div class="rg">${rg}</div>
       </div>
     </div>`;
@@ -865,6 +884,13 @@ document.addEventListener("click", (e) => {
     const k = +seg.dataset.k, v = seg.dataset.v;
     locks[k] = v === "" ? undefined : +v;
     runMain(); renderAll();
+    return;
+  }
+  const sort = e.target.closest(".rg-sort button");
+  if (sort) {
+    rgSort = sort.dataset.sort;
+    try { localStorage.setItem("rgSort", rgSort); } catch (e) {}
+    renderTeam();
     return;
   }
   if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); return; }
