@@ -80,6 +80,7 @@ class FetchTests(unittest.TestCase):
             site = index.read_text() if index.exists() else None
             if site is not None:
                 self.assertTrue((Path(tmp) / "site" / "favicon.svg").exists(), "favicon shipped with the site")
+                self.assertIn("static.cloudflareinsights.com/beacon.min.js", site.split("</head>")[0], "analytics beacon in the head")
                 self.site_data = json.loads((index.parent / "data.json").read_text())
         return written, site
 
