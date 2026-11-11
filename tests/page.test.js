@@ -105,7 +105,7 @@ test("rooting guide quotes ESPN's odds for the favorite, home or away", async ()
   for (const t of d.teams) {
     const { els } = render(d, "#" + t.abbr.toLowerCase());
     await settle();
-    for (const m of els.team.innerHTML.matchAll(/<span class="t">([^<]+?) at ([^<]+?)(?: · +their game)?<\/span><span class="s">Week \d+ · ESPN: ([^<]+) (\d+)%<\/span>/g)) {
+    for (const m of els.team.innerHTML.matchAll(/<span class="t">(?:<span class="me">(?:<img[^>]*>)+<\/span>)?([^<]+?) at (?:<span class="me">(?:<img[^>]*>)+<\/span>)?([^<]+?)<\/span><span class="s">(?:Week \d+ · )?ESPN: ([^<]+) (\d+)%<\/span>/g)) {
       const g = pending.find((x) => abbr[x.away] === m[1] && abbr[x.home] === m[2]);
       assert.ok(g, `${m[1]} at ${m[2]}`);
       assert.equal(m[3], g.pHome < 0.5 ? m[1] : m[2], `${m[1]} at ${m[2]}`);
@@ -278,7 +278,7 @@ test("a what-if switches to simulation and says so", async () => {
   handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? seg : null) } });
   assert.equal(els.locks.hidden, false);
   assert.match(text(els.locks.innerHTML), /simulated/);
-  assert.match(text(els.team.innerHTML), /Your pick|Set by you/);
+  assert.match(text(els.team.innerHTML), /Your picks \(1\)/);
 });
 
 test("what-ifs stay pinned at the top of the rooting guide, with the clear button", async () => {
@@ -290,10 +290,10 @@ test("what-ifs stay pinned at the top of the rooting guide, with the clear butto
   const html = els.team.innerHTML;
   const guide = html.split("Who to root for")[1];
   const box = guide.indexOf('class="rg-picks"');
-  const firstOther = guide.indexOf('class="rg-row', guide.indexOf("</div>", guide.lastIndexOf("Set by you")));
+  const firstOther = guide.indexOf('class="rg-row', guide.indexOf("</div>", guide.lastIndexOf("&#10003; ")));
   assert.ok(box > -1 && box < firstOther, "picks box comes before the other games");
   assert.match(text(guide.slice(box)), /Your picks \(2\) Clear all/);
-  assert.equal((guide.slice(box).split('class="rg-picks"')[1].match(/Set by you/g) || []).length, 2);
+  assert.equal((guide.slice(box).split('class="rg-picks"')[1].match(/aria-pressed="true"[^>]*>&#10003; /g) || []).length, 2, "each pick's pressed button is checked");
   assert.doesNotMatch(els.locks.innerHTML, /clearLocks/, "the top banner no longer has the button");
   handlers.click({ target: { id: "clearLocks", closest: () => null } });
   assert.doesNotMatch(els.team.innerHTML, /rg-picks/);
@@ -311,7 +311,7 @@ test("one click sets the selected team to win out, and again undoes it", async (
   clickWinOut();
   const box = els.team.innerHTML.split('class="rg-picks"')[1];
   assert.ok(box, "picks box appears");
-  assert.equal((box.match(/Set by you: Texas Tech wins/g) || []).length, remaining);
+  assert.equal((box.match(/aria-pressed="true" title="Texas Tech wins"[^>]*>&#10003; TTU</g) || []).length, remaining);
   assert.match(els.team.innerHTML, /id="winOut"[^>]*aria-pressed="true"[^>]*>&#10003; Texas Tech wins out<\/button>/);
   clickWinOut();
   assert.doesNotMatch(els.team.innerHTML, /rg-picks/);
