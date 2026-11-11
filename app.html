@@ -202,8 +202,11 @@ details.minor .week + .week { margin-top: 10px; }
 .rg-row .m .s { font-size: 0.78rem; color: var(--muted); }
 .root { display: grid; gap: 3px; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 .root .who { font-weight: 600; }
-.root .odds2 { display: grid; }
-.root .odds2 > span { white-space: nowrap; }
+.rg-pick { display: grid; gap: 3px; }
+.rg-under { display: grid; grid-template-columns: 1fr 34px 1fr; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rg-odds { display: inline-flex; align-items: center; justify-content: center; gap: 3px; white-space: nowrap; }
+.rg-odds img { width: 13px; height: 13px; object-fit: contain; }
+.rg-odds.up { color: var(--win); font-weight: 600; }
 .bar { position: relative; height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
 .bar i { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; }
 .seg { display: grid; grid-template-columns: 1fr 34px 1fr; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; font-size: 0.78rem; }
@@ -276,9 +279,10 @@ const stepName = (s) => RULES.label[s];
 const N_MAIN = 40000, N_EXPLORE = 30000;
 let locks = new Array(P.length).fill(undefined);
 let main = null, uniform = null, cache = new Map(), sel = null;
-// rooting guide order: "swing" (biggest first) or "week"; remembered per browser
-let rgSort = "swing";
-try { if (localStorage.getItem("rgSort") === "week") rgSort = "week"; } catch (e) {}
+// rooting guide order: "week" (default) or "swing" (biggest first); remembered per browser
+let rgSort = "week";
+let heroSaved = null; // the big number while a hover preview replaces it
+try { if (localStorage.getItem("rgSort") === "swing") rgSort = "swing"; } catch (e) {}
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -712,6 +716,7 @@ function pathDetails(i, A) {
 }
 
 function renderTeam() {
+  heroSaved = null;
   const i = sel, t = T[i];
   const A = teamAnalysis(i);
   const pIn = A.p;
@@ -812,24 +817,29 @@ function renderTeam() {
     else if (swing < 0.005 && !matters(c)) root = `<span class="muted">Doesn't matter</span>`;
     else {
       const homeBetter = c.pH > c.pA;
-      const who = homeBetter ? g.h : g.a, other = homeBetter ? g.a : g.h;
+      const who = homeBetter ? g.h : g.a;
       const hi = Math.max(c.pH, c.pA), lo = Math.min(c.pH, c.pA);
       // only claimed when proven over every finish
       const must = A.exact && (homeBetter ? c.needH : c.needA) ? ` <span class="tag ups" title="No finish gets them in without this result">Must</span>` : "";
       root = `<span><span class="who">${own ? "Win: " : "Root for "}${esc(T[who].short)}</span>${must}</span>
-        <span class="muted odds2"><span>${pct(hi)} if ${esc(T[who].abbr)} wins</span><span>${pct(lo)} if ${esc(T[other].abbr)} wins</span></span>
         <span class="bar"><i style="left:${lo * 100}%;width:${Math.max((hi - lo) * 100, 1)}%"></i></span>`;
     }
     const L = locks[k];
+    // the selected team's title-game odds under each result, shown under that result's button
+    // with the team's logo, so they don't read as the game's win chances
+    const known = !locked && c.pH != null && c.pA != null;
+    const mark = logo(i) || `<span class="abbr">${esc(t.abbr)}</span>`;
+    const chip = (p, better) => known ? `<span class="rg-odds${better ? " up" : ""}" title="${esc(t.short)}'s odds of reaching the title game">${mark}${pct(p)}</span>` : "<span></span>";
+    const odds = (p) => known ? ` data-odds="${pct(p)}"` : "";
     const awayFav = g.pHome < 0.5;
     return `<div class="rg-row${!locked && swing < 0.005 && !matters(c) ? " flat" : ""}">
       <div class="m"><span class="t">${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}${own ? " ·  their game" : ""}</span><span class="s">Week ${g.week} · ESPN: ${esc(T[awayFav ? g.a : g.h].abbr)} ${pct(awayFav ? 1 - g.pHome : g.pHome, 0)}</span></div>
       <div class="root">${root}</div>
-      <div class="seg" role="group" aria-label="What if: ${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}">
-        <button data-k="${k}" data-v="0" aria-pressed="${L === 0}" title="${esc(T[g.a].short)} wins">${esc(T[g.a].abbr)}</button>
+      <div class="rg-pick"><div class="seg" role="group" aria-label="What if: ${esc(T[g.a].abbr)} at ${esc(T[g.h].abbr)}">
+        <button data-k="${k}" data-v="0" aria-pressed="${L === 0}" title="${esc(T[g.a].short)} wins"${odds(c.pA)} data-if="${esc(T[g.a].short)}">${esc(T[g.a].abbr)}</button>
         <button class="auto" data-k="${k}" data-v="" aria-pressed="${L === undefined}" title="Use ESPN odds">–</button>
-        <button data-k="${k}" data-v="1" aria-pressed="${L === 1}" title="${esc(T[g.h].short)} wins">${esc(T[g.h].abbr)}</button>
-      </div></div>`;
+        <button data-k="${k}" data-v="1" aria-pressed="${L === 1}" title="${esc(T[g.h].short)} wins"${odds(c.pH)} data-if="${esc(T[g.h].short)}">${esc(T[g.h].abbr)}</button>
+      </div>${known ? `<div class="rg-under">${chip(c.pA, c.pA > c.pH + 0.0005)}<span></span>${chip(c.pH, c.pH > c.pA + 0.0005)}</div>` : ""}</div></div>`;
   };
   // results the visitor locked in stay pinned at the top, in their own box with the clear button
   const picked = rows.filter((r) => locks[r.k] !== undefined);
@@ -853,7 +863,7 @@ function renderTeam() {
     <div class="hero" style="--team:${safeColor(t.color)}">
       ${logo(i)}
       <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
-      <div class="big"><div class="pct">${pIn === 0 && A.path ? "&lt;0.1%" : pct(pIn)}</div><div class="lbl">to reach the title game</div></div>
+      <div class="big"><div class="pct" id="heroPct">${pIn === 0 && A.path ? "&lt;0.1%" : pct(pIn)}</div><div class="lbl" id="heroLbl">to reach the title game</div></div>
     </div>
     <div class="facts">${facts.join("")}</div>
     <div class="cols">
@@ -900,6 +910,20 @@ document.addEventListener("click", (e) => {
     const team = +wo.dataset.team, on = winsOutLocked(team);
     for (const [g, k] of ownGames(team)) locks[k] = on ? undefined : g.h === team ? 1 : 0;
     runMain(); renderAll();
+  }
+});
+// hovering a result previews the selected team's odds under it in the big number
+document.addEventListener("mouseover", (e) => {
+  const b = e.target.closest(".seg button[data-odds]");
+  const pctEl = document.getElementById("heroPct"), lbl = document.getElementById("heroLbl");
+  if (!pctEl || !lbl) return;
+  if (b) {
+    if (!heroSaved) heroSaved = [pctEl.innerHTML, lbl.textContent];
+    pctEl.textContent = b.dataset.odds;
+    lbl.textContent = "if " + b.dataset.if + " wins";
+  } else if (heroSaved) {
+    [pctEl.innerHTML, lbl.textContent] = heroSaved;
+    heroSaved = null;
   }
 });
 window.addEventListener("hashchange", () => {
