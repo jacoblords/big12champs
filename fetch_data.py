@@ -213,6 +213,11 @@ def fetch_prediction(gid):
         return gid, None
 
 
+# Cloudflare Web Analytics: cookieless visit counts, nothing shown on the page. Only the deployed
+# site carries it; the standalone artifact doesn't. The token is public (it ships in page source).
+ANALYTICS = ("<script defer src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
+             "data-cf-beacon='{\"token\": \"b61d792272ac4a3599d794ab83c99af7\"}'></script>")
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--league", choices=sorted(LEAGUES), default="big12")
@@ -366,7 +371,7 @@ def main():
         (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
                                          "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
                                          f"<link rel=\"icon\" href=\"{up}favicon.svg\" type=\"image/svg+xml\">"
-                                         "</head><body>\n" + tpl + "\n</body></html>\n")
+                                         + ANALYTICS + "</head><body>\n" + tpl + "\n</body></html>\n")
         print(f"wrote {site}/index.html + data.json")
     if build and args.artifact:
         Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", script_safe(payload)))
