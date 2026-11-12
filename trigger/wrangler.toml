@@ -1,0 +1,22 @@
+# Cloudflare Worker that starts update.yml on time. See trigger/README.md.
+name = "titlepaths-trigger"
+main = "worker.mjs"
+compatibility_date = "2026-11-01"
+
+# No HTTP endpoint: the worker only runs on its cron triggers.
+workers_dev = false
+preview_urls = false
+
+[vars]
+REPO = "jacoblords/big12champs"
+WORKFLOW = "update.yml"
+REF = "main"
+
+# UTC, like GitHub's. Every 15 minutes Thursday through Sunday (Thursday evening through late
+# Saturday night in US time) and every 30 minutes Monday to Wednesday. A run with nothing due
+# makes no ESPN calls and deploys nothing, so the cadence costs ESPN nothing extra.
+[triggers]
+crons = ["*/15 * * * THU,FRI,SAT,SUN", "*/30 * * * MON,TUE,WED"]
+
+[observability]
+enabled = true
