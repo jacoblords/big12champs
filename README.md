@@ -70,7 +70,9 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
 - **Adding a league:** see [docs/adding-a-league.md](docs/adding-a-league.md): the rules
   research, the tests to write first, and the places a league is wired in.
   `tools/final_fixture.py <league> <season>` builds a finished-season test fixture.
-- **Page:** [`app.html`](app.html), a template; `fetch_data.py` inlines the engine.
+- **Page:** [`app.html`](app.html), a template; `fetch_data.py` inlines the engine. Once every conference game is final it shows
+  final standings: each team's seed or "Out" and how the tiebreakers decided it, with no odds,
+  paths or rooting guide.
 
 ## Data and caching
 
@@ -83,7 +85,7 @@ changed. A game that isn't final yet is simply asked about again on the next run
 |---|---|---|
 | Results | a game is past kickoff + 3h and not final yet (that week's scoreboard) | 1 per week |
 | Schedule | weeks with unplayed games, once a day (kickoff times move) | ≤ 3 |
-| FPI | every 6 hours | 1 |
+| FPI | every 6 hours, until it has run once after the last regular-season game (then frozen: the tiebreak uses it as of that weekend) | 1 |
 | Predictions | when ESPN's FPI run changes, or a game has none yet | 1 per unplayed game |
 | Teams, logos, calendar | once | ~34 |
 

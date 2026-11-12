@@ -427,12 +427,12 @@ const LEAGUE_TEXT = {
     col: {},
     h2h: "<b>Head-to-head when not all tied teams played each other:</b> only a team that beat every other tied team is pulled out and seeded. Otherwise skip to step b. Losing to everyone does not knock a team out.",
     threeWay: "<b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step a, using the two-team steps once only two remain, to find #2.",
-    titleGame: "<b>Title game:</b> not counted in conference records or in the 12-game win total.",
     gray: [
       "In a tie of three or more, a team alone at the top of a step is seeded. If the step leaves several level at the top, the teams below them drop out and the rest start over at step a, as the Big 12 applied it in 2024 (Colorado dropped out of the four-way tie before BYU and Iowa State went to strength of schedule).",
       "Step b leaves the tied teams themselves out of the common-opponent set.",
       "Step c only counts common opponents: within a group of teams tied in the standings, only the members every tied team played. A group with no common members is skipped.",
-      "Step f uses ESPN's current FPI because the SportSource rating is not public. This step almost never decides anything.",
+      "Step e counts every regular-season win. The site can't tell which games are exempt from the NCAA's game limit (a trip to Hawaii, for one), so a team that plays thirteen could be overcounted.",
+      "Step f uses ESPN's FPI because the SportSource rating is not public: the current one during the season, and the first run after the last regular-season weekend once it's over. This step almost never decides anything.",
       "Run against final results, the engine reproduces the Big 12's own rulings: 2024 (four-way tie at 7-2: ASU #1 on common opponents, Colorado drops out, Iowa State #2 over BYU on strength of schedule, .444 to .383) and 2025 (Texas Tech, then BYU).",
     ],
     policy: { url: "https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf", title: "Big 12 Football Tiebreaking Procedures (official PDF)" },
@@ -447,7 +447,6 @@ const LEAGUE_TEXT = {
     col: { f: "Scoring margin" },
     h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. A team that lost to every other tied team is out, and the rest start over. Otherwise skip to step ${s("b")}.`,
     threeWay: `<b>Three or more tie for first:</b> run the steps until one team stands alone at the top of a step. That team is in, and everyone still in contention starts over at step ${s("a")} for the second spot. If a step leaves two teams level at the top, both are in. If it leaves three or more level, they start over and the rest are out. The two teams who get in are then seeded by the two-team steps, so the first team in is not always #1.`,
-    titleGame: "<b>Title game:</b> not counted in conference records.",
     gray: [
       "Everything above follows the SEC's official procedure, and its worked examples are part of this site's tests.",
       `Step ${s("c")}: opponents tied in the standings are first ordered by head-to-head, as the procedure says. Only when that can't separate them are records against them combined, and then only against the ones every tied team played.`,
@@ -467,10 +466,10 @@ const LEAGUE_TEXT = {
     stepOn: { f: "on team ranking (FPI stand-in)", g: "by random draw" },
     col: {},
     tied: "<b>Who counts as tied:</b> in 2026 five teams play eight conference games and twelve play nine. The teams with the best winning percentage are tied, and so is any team on the other schedule length with the same number of wins or the same number of losses. 8-1 and 7-1 are tied (one loss each), and so are 7-1 and 7-2 (seven wins each), but 8-1 and 7-2 are not.",
+    twoTie: "<b>Two teams tie for first:</b> with the same record, both play in the title game, and the winner of their game is #1. With different schedule lengths (8-1 and 7-1), the winner of their comparison takes the first spot, and the loser can still meet a team tied with it (7-2) for the second.",
     ladder: "<b>Working down:</b> ties are broken from the best winning percentage down. The teams with the best percentage are settled among themselves first; the winner then meets the tied teams with the next percentage. Each time a lower-percentage team wins, it then meets anyone tied with it. The ACC's own example: with a 9-0 team in, if 7-1 beats 8-1 it then meets 7-2, and that winner gets the spot. A 7-2 team can never pass an 8-1 team directly.",
     h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. A team that lost to every other tied team is out, and the rest start over. Otherwise go to step ${s("f")}.`,
     threeWay: `<b>Three or more tied:</b> a team alone at the top of a step is in. If several are level at the top of step ${s("a")}, the rest are out and they start over. After each team gets in, who is tied is worked out again from everyone left, so a team that wasn't in the first tie can be in the next.`,
-    titleGame: "<b>Title game:</b> not counted in conference records.",
     gray: [
       `Step ${s("f")} decides most ties, and the Team Success Ranking is private: SportSource lets the ACC publish where its teams rank only once the step is used. This site uses ESPN's FPI in its place, so a finish decided at step ${s("f")} can go the other way in the real standings. Read those paths as "needs the better ranking".`,
       "With both spots open, the winner of the top comparison takes the first spot, and the tie for the second is worked out again, the way the ACC's Michael Strickland described it to On3 in July 2026 (\"compared for the first spot\"). So two tied teams aren't automatically both in: the loser may still meet a team tied with it. The policy doesn't say who is #1, so teams are seeded in the order they get in.",
@@ -493,9 +492,9 @@ const LEAGUE_TEXT = {
     col: {},
     h2h: `<b>Head-to-head when not all tied teams played each other:</b> a team that beat every other tied team is in. Otherwise go to step ${s("b")}. Losing to everyone does not knock a team out.`,
     threeWay: `<b>Three or more tie for first:</b> run the steps until one team stands alone at the top of a step. That team is in, and everyone still in contention starts over at step ${s("a")} for the second spot. If a step leaves two teams level at the top, both are in. If it leaves three or more level, the rest are out and those three or more go on to the next step, not back to step ${s("a")}. The two teams who get in are then seeded by the two-team steps, so the first team in is not always #1.`,
-    titleGame: "<b>Title game:</b> not counted in conference records. Every team plays nine conference games.",
+    schedules: "<b>Schedules:</b> every team plays nine conference games, so ties are always between equal records.",
     gray: [
-      `Step ${s("f")} uses ESPN's current FPI because the SportSource rating is not public. It only decides a tie that is exact on every step before it.`,
+      `Step ${s("f")} uses ESPN's FPI because the SportSource rating is not public: the current one during the season, and the first run after the last regular-season weekend once it's over. It only decides a tie that is exact on every step before it.`,
       `Step ${s("c")}: the procedure walks common opponents "based on their order of finish" without saying how opponents tied in the standings are ordered. The site counts such a group together, against the members every tied team played.`,
       `When a step knocks some teams out of a tie of three or more and three or more are still level, the site follows the procedure's wording, "move to next step in tiebreaker with remaining tied teams", and doesn't go back to head-to-head. The other leagues start over, and no published Big Ten case has settled which the conference means. It matters rarely: in a few finishes in a thousand, a team that beat the others head-to-head is passed over.`,
       "The procedure is the Big Ten's 2024 document. The conference has published no newer football version, and its 2026 title-game page refers to the same tiebreakers.",
@@ -530,12 +529,12 @@ function renderRules() {
   const steps = RULES.steps.map((k) => li(TEXT.steps[k] || STEP_TEXT[k])).join("");
   const corners = [
     TEXT.tied,
-    "<b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.",
+    TEXT.twoTie || "<b>Two teams tie for first:</b> both play in the title game. The winner of their game is the #1 seed. If they did not play, the two-team steps decide #1.",
     "<b>Clear #1, tie for second:</b> the tied teams run the steps and the winner is the #2 seed.",
     TEXT.ladder,
     TEXT.threeWay,
     TEXT.h2h,
-    TEXT.titleGame,
+    TEXT.schedules,
     `<b>Only two teams get ranked:</b> the tiebreakers pick the two title-game teams and stop there. In the standings on this page, "T3" means teams still tied at that spot.`,
   ].filter(Boolean).map(li).join("");
   $("rules").innerHTML = `<h2>Tiebreaker rules</h2>
@@ -552,8 +551,9 @@ function renderPicker() {
   $("picker").innerHTML = order.map((i) => {
     const p = odds(i).p;
     const fill = p > 0 ? Math.max(p * 100, 3) : 0; // keep a sliver visible for long shots
+    const label = !P.length ? (finalSeeds().includes(i) ? "#" + (finalSeeds().indexOf(i) + 1) : "Out") : pct(p);
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
-      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${pct(p)}</b></span></button>`;
+      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span></button>`;
   }).join("");
 }
 
@@ -716,8 +716,27 @@ function pathDetails(i, A) {
   return (A.pathDetails = { isKey, dependsOn, reliability: totW ? inW / totW : 0 });
 }
 
+// Every conference game played: the standings are final, so no odds, paths or rooting guide.
+let finalEx = null;
+const finalSeeds = () => (finalEx ||= B12.explain(ctx, 0)).seeds;
+function renderFinal(i) {
+  const t = T[i], seeds = finalSeeds(), seed = seeds.indexOf(i) + 1;
+  $("team").innerHTML = `
+    <div class="hero" style="--team:${safeColor(t.color)}">
+      ${logo(i)}
+      <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
+      <div class="big"><div class="pct">${seed ? "#" + seed : "Out"}</div><div class="lbl">${seed ? "seed in the title game" : "of the title game"}</div></div>
+    </div>
+    <div class="panel"><header><h3>Final standings</h3><p>Every conference game is played. ${seed
+      ? `${esc(t.short)} is the #${seed} seed and plays ${esc(T[seeds[2 - seed]].short)} for the title.`
+      : `${esc(T[seeds[0]].short)} and ${esc(T[seeds[1]].short)} play for the title.`}</p></header>
+      ${explainHTML(i, finalEx)}
+    </div>`;
+}
+
 function renderTeam() {
   heroSaved = null;
+  if (!P.length) return renderFinal(sel);
   const i = sel, t = T[i];
   const A = teamAnalysis(i);
   const pIn = A.p;
@@ -981,7 +1000,10 @@ window.addEventListener("hashchange", () => {
   renderHeader();
   renderRules();
   const through = new Date(lastDone).toLocaleDateString("en-US", { month: "long", day: "numeric" });
-  $("lede").textContent = `Results through ${through} with ${P.length} ${P.length === 1 ? "game" : "games"} left. Pick a team to see its likeliest way into the title game and who to root for.`;
+  if (!P.length) {
+    $("lede").textContent = `Final standings: every ${LG.name} game is played, the last on ${through}. Pick a team to see where it finished and how the tiebreakers set the title game.`;
+    $("method").hidden = true;
+  } else $("lede").textContent = `Results through ${through} with ${P.length} ${P.length === 1 ? "game" : "games"} left. Pick a team to see its likeliest way into the title game and who to root for.`;
   $("methodText").textContent = EX
     ? `With ${P.length} games left there are ${(2 ** P.length).toLocaleString("en-US")} possible finishes. Every one is weighted by ESPN's Matchup Predictor odds and sorted by the official ${LG.name} tiebreakers, so the odds here are exact for those inputs.`
     : `Each of the ${P.length} remaining games is played out ${N_MAIN.toLocaleString("en-US")} times using ESPN's Matchup Predictor odds, and every simulated finish is sorted by the official ${LG.name} tiebreakers. Simulated odds are typically within half a point of exact.`;

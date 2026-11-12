@@ -521,6 +521,34 @@ test("ACC tiebreaks: numbered steps, and teams tied on different schedules are n
   assert.match(say, /Four teams tied \(SMU 5-4, Clemson 5-3, Pitt 5-4, Virginia Tech 5-4\)\. SMU gets the #2 seed/);
 });
 
+// Every conference game played (the 2026 snapshot finished by ESPN's favorites): final standings,
+// with no odds, paths or rooting guide left to show.
+test("season over: final standings and seeds, no odds or rooting guide", async () => {
+  const d = reducedSeason();
+  for (const g of d.games) if (!g.completed) Object.assign(g, { completed: true, winner: g.pHome >= 0.5 ? g.home : g.away, pHome: null });
+  d.exact = solve(d);
+  const seeds = d.exact.teams.map((t, k) => [t.p, k]).filter(([p]) => p === 1).map(([, k]) => d.teams[k].abbr);
+  assert.equal(seeds.length, 2);
+  let sawOut = false;
+  for (const t of d.teams) {
+    const { els } = render(d, "#" + t.abbr.toLowerCase());
+    await settle();
+    const team = text(els.team.innerHTML);
+    assert.match(els.lede.textContent, /^Final standings: every Big 12 game is played, the last on November \d+\./);
+    assert.equal(els.method.hidden, true);
+    assert.match(team, /Final standings Every conference game is played\./);
+    assert.match(team, /How the standings end #1 /);
+    assert.doesNotMatch(team, /Who to root for|games? left|Most likely path|Eliminated|undefined|NaN/);
+    const picker = text(els.picker.innerHTML);
+    assert.match(picker, /#1/);
+    assert.match(picker, /#2/);
+    assert.doesNotMatch(picker, /%/);
+    if (seeds.includes(t.abbr)) assert.match(team, /#[12] seed in the title game .* is the #[12] seed and plays /);
+    else { sawOut = true; assert.match(team, /Out of the title game .* play for the title\./); }
+  }
+  assert.ok(sawOut);
+});
+
 // The 2026 Big Ten snapshot with weeks 11 and 12 decided by ESPN's favorites: the last nine
 // conference games left (the full snapshot has 27, too many for exact odds).
 function big10LateSeason() {

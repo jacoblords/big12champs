@@ -147,6 +147,35 @@ class FetchTests(unittest.TestCase):
         self.assertEqual([("/powerindex" in u) for u in fake.urls], [True])
         self.assertEqual(written["meta"]["fpiCheckedAt"], F.iso(now), "the check is saved so the next run skips it")
 
+    def finished_season(self, fpi_run):
+        """The fixture with every game final, as of the Wednesday after the last weekend."""
+        prev = copy.deepcopy(FIXTURE)
+        for g in prev["games"]:
+            if not g["completed"]:
+                g.update(completed=True, winner=g["home"], homeScore=31, awayScore=17, pHome=None)
+        last = max(F.parse(g["date"]) for g in prev["games"])
+        now = last + dt.timedelta(days=4)
+        prev["leagues"] = [{**l, "logo": PNG, "logoDark": PNG} for l in F.LEAGUES.values()]
+        prev["meta"].update(scheduleCheckedAt=F.iso(now - dt.timedelta(hours=1)),
+                            fpiCheckedAt=F.iso(now - dt.timedelta(hours=7)), fpiRun=F.iso(fpi_run(last)))
+        return prev, now
+
+    def test_fpi_frozen_once_it_has_run_after_the_last_game(self):
+        # title games and bowls move FPI; the tiebreak uses it as of the last regular-season weekend
+        prev, now = self.finished_season(lambda last: last + dt.timedelta(hours=28))
+        fake = FakeESPN(fpi_run="2026-12-07T09:00Z")
+        written, site = self.run_fetch(prev, now, fake)
+        self.assertEqual(fake.urls, [])
+        self.assertIsNone(written)
+        self.assertTrue(site)
+
+    def test_fpi_still_fetched_until_it_has_run_after_the_last_game(self):
+        prev, now = self.finished_season(lambda last: last - dt.timedelta(days=5))
+        fake = FakeESPN(fpi_run="2026-11-30T09:00Z")
+        written, _ = self.run_fetch(prev, now, fake)
+        self.assertEqual(["/powerindex" in u for u in fake.urls], [True])
+        self.assertEqual(written["meta"]["fpiRun"], "2026-11-30T09:00Z")
+
     def test_offline_build_makes_no_calls(self):
         now = first_kickoff() + dt.timedelta(days=3)  # everything would be due online
         fake = FakeESPN()

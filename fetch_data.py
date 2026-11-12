@@ -299,7 +299,13 @@ def main():
     # FPI: tiebreaker f stand-in, FBS membership, and the clock for ESPN's prediction model.
     fpi_stale = False
     fpi_at = parse(meta.get("fpiCheckedAt"))
-    if not args.offline and (not fpi or not fpi_at or now - fpi_at >= FPI_TTL):
+    # Once every game is final and FPI has run since, the rating is frozen: the tiebreak uses it as
+    # of the last regular-season weekend, and later runs (title games, bowls) could re-seed a
+    # finished race.
+    last_kick = max((parse(g["date"]) for g in games.values()), default=None)
+    fpi_final = bool(games) and all(g["completed"] for g in games.values()) \
+        and parse(meta.get("fpiRun")) is not None and parse(meta["fpiRun"]) >= last_kick + RESULT_DELAY
+    if not args.offline and not fpi_final and (not fpi or not fpi_at or now - fpi_at >= FPI_TTL):
         fpi, run = fetch_fpi(args.season)
         meta["fpiCheckedAt"] = iso(now)
         if run != meta.get("fpiRun"):
