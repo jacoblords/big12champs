@@ -62,7 +62,7 @@ jobs:
                 if (!/^(\.\.\/)*logos\/[0-9a-f]{16}\.png$/.test(u)) throw new Error(dir + ": team logo not a file: " + u.slice(0, 40));
                 if (!fs.existsSync(dir + "/" + u)) throw new Error(dir + ": missing " + u);
               }
-              // the league's gameday page: the same template with GAMEDAY on, its own data copy one level down
+              // each league has a gameday page: the same template with GAMEDAY on, its own data copy one level down
               const gd = fs.readFileSync(dir + "/gameday/index.html", "utf8");
               const gdScripts = [...gd.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
               if (gdScripts.length !== 2 || !gdScripts[1].includes("const GAMEDAY = true;")) throw new Error(dir + ": gameday page not built as one");
