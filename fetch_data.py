@@ -42,6 +42,9 @@ SCHEDULE_TTL = dt.timedelta(hours=24)
 # with unplayed games instead of waiting up to SCHEDULE_TTL. 2: TV, spread, venue, TBD times.
 SCHEDULE_FIELDS = 2
 FPI_TTL = dt.timedelta(hours=6)
+# The CFP committee publishes Tuesday nights from early November; checked as often as FPI.
+CFP_TTL = dt.timedelta(hours=6)
+CFP_FINAL_AFTER = dt.timedelta(days=6)  # selection day: Sunday after the title games
 HERE = Path(__file__).resolve().parent
 
 calls = 0
@@ -313,6 +316,17 @@ def fetch_fpi(season):
     return fpi, run
 
 
+def fetch_cfp(season):
+    """The CFP committee's latest Top 25 as {"date", "week", "ranks": {team id: rank}}, or None
+    before the committee's first ranking of the season."""
+    d = get(f"{SITE}/rankings?season={season}")
+    r = next((r for r in d.get("rankings") or [] if r.get("type") == "cfp"), None)
+    if not r or not r.get("ranks"):
+        return None
+    return {"date": r.get("date"), "week": (r.get("occurrence") or {}).get("number"),
+            "ranks": {x["team"]["id"]: x["current"] for x in r["ranks"]}}
+
+
 def fetch_prediction(gid):
     try:
         p = get(f"{CORE}/events/{gid}/competitions/{gid}/predictor")
@@ -389,6 +403,7 @@ def main():
     games = {g["id"]: g for g in prev["games"]} if prev else {}
     fpi = prev.get("fpi", {}) if prev else {}
     calendar = prev.get("calendar") if prev else None
+    cfp = prev.get("cfp") if prev else None
     changed = []
     leagues, fetched = league_entries(prev.get("leagues") if prev else None, args.offline)
     if fetched and prev:
@@ -461,6 +476,19 @@ def main():
             meta["fpiRun"] = run
             changed.append(f"FPI run {run}")
 
+    # CFP rankings: shown next to team names, every FBS team's (opponents' too)
+    # Frozen once the season is over and the selection-day ranking is in (a week after the last
+    # regular-season game, past the title games); ESPN keeps that one up through the bowls.
+    cfp_at = parse(meta.get("cfpCheckedAt"))
+    cfp_final = bool(games) and all(g["completed"] for g in games.values()) \
+        and parse((cfp or {}).get("date")) is not None and parse(cfp["date"]) >= last_kick + CFP_FINAL_AFTER
+    if not args.offline and not cfp_final and (not cfp_at or now - cfp_at >= CFP_TTL):
+        new_cfp = fetch_cfp(args.season)
+        meta["cfpCheckedAt"] = iso(now)
+        if new_cfp != cfp:
+            cfp = new_cfp
+            changed.append(f"CFP rankings {(cfp or {}).get('date')}")
+
     pending = [g for g in games.values() if not g["completed"]]
     need = [] if args.offline else [g["id"] for g in pending if fpi_stale or g.get("pHome") is None]
     if need:
@@ -522,13 +550,15 @@ def main():
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
     if baseline:
         data["baseline"] = baseline
+    if cfp:
+        data["cfp"] = cfp
     if prev and prev.get("exact"):
         data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
     print(f"{calls} ESPN calls; {len(changed)} changes" + (f": {', '.join(changed[:8])}{' …' if len(changed) > 8 else ''}" if changed else ""))
 
     # A check that found nothing new still has to be saved, or the next run repeats it.
     checks_moved = not args.offline and (
-        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt")))
+        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt", "cfpCheckedAt")))
     build = bool(changed) or checks_moved or args.force_build
     if build:
         out = Path(args.data_out)

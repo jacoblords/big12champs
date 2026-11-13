@@ -255,6 +255,8 @@ details.minor .week + .week { margin-top: 10px; }
 .game .po .x { padding-left: 3px; font-weight: 700; letter-spacing: -0.05em; }
 .game .po.ups { color: var(--warn); font-weight: 600; }
 .game .po.set .x { color: var(--ink); font-weight: 400; } /* class is "set", not "pick": .pick is the team-picker card */
+/* CFP ranking in front of a team's name, ESPN style: "24 Boise St" */
+.rk { font-family: var(--display); font-weight: 600; font-size: 0.78em; color: var(--muted); margin-right: 0.3em; font-variant-numeric: tabular-nums; letter-spacing: 0; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .tag { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tag.ups { background: var(--warn-soft); color: var(--warn); }
@@ -380,6 +382,14 @@ const GAMEDAY = /*__GAMEDAY__*/false;
 function app(DATA) {
 const ctx = B12.build(DATA);
 const T = ctx.teams;
+// The CFP committee's latest Top 25 (DATA.cfp, by ESPN team id): a rank in front of a ranked
+// team's name, opponents from outside the league included.
+const CFP = (DATA.cfp && DATA.cfp.ranks) || {};
+const CFP_DAY = DATA.cfp && DATA.cfp.date ? new Date(DATA.cfp.date).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" }) : "";
+const rk = (id) => {
+  const r = CFP[id];
+  return Number.isInteger(r) && r > 0 ? `<span class="rk" title="CFP ranking${CFP_DAY ? ", " + CFP_DAY : ""}"><span class="vh">CFP No. </span>${r}</span>` : "";
+};
 const P = ctx.pending;
 const RULES = ctx.rules;
 // Leagues come from fetch_data.py (names, paths, ESPN groups); older data has none and is Big 12.
@@ -741,8 +751,9 @@ function kickoff(g) {
 // a team in a game: one of the league's, or a non-conference opponent known only by ESPN's abbreviation
 const sideOf = (g, home) => {
   const i = ctx.idx[home ? g.home : g.away];
-  return i === undefined ? { i, name: (home ? g.homeName : g.awayName) || "TBD", abbr: (home ? g.homeName : g.awayName) || "TBD" }
-    : { i, name: T[i].short, abbr: T[i].abbr };
+  const id = home ? g.home : g.away;
+  return i === undefined ? { i, id, name: (home ? g.homeName : g.awayName) || "TBD", abbr: (home ? g.homeName : g.awayName) || "TBD" }
+    : { i, id, name: T[i].short, abbr: T[i].abbr };
 };
 // How much a game moves the race: the title-game odds that change hands between its two results
 // (half the summed swings, since the two spots add to two). Teams moved less than a point aren't listed.
@@ -819,7 +830,7 @@ function gameCard(g, top, dim) {
     const score = home ? hs : as;
     const right = (done || started) && score != null ? String(score)
       : pg && pg.pKnown ? `<span title="ESPN's odds of winning">${pct(home ? pg.pHome : 1 - pg.pHome, 0)}</span>` : "";
-    return `<div class="gc-team${won ? " won" : lost ? " lost" : ""}">${side.i === undefined ? "<span></span>" : logo(side.i) || "<span></span>"}<span>${esc(side.name)}</span><span class="r">${right}</span></div>`;
+    return `<div class="gc-team${won ? " won" : lost ? " lost" : ""}">${side.i === undefined ? "<span></span>" : logo(side.i) || "<span></span>"}<span>${rk(side.id)}${esc(side.name)}</span><span class="r">${right}</span></div>`;
   };
   const extra = [g.spread, g.overUnder != null ? "O/U " + g.overUnder : "", g.venue].filter(Boolean).map(esc).join(" · ");
   let stakes = "";
@@ -877,7 +888,7 @@ function renderGameday() {
     .sort((x, y) => y.p - x.p || curW[y.i] - curW[x.i] || (y.d || 0) - (x.d || 0));
   const race = rows.map(({ i, d, p }) => {
     const delta = d == null ? "" : `<span class="delta${d > 0 ? " up" : d < 0 ? " down" : ""}">${d ? `<span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh">${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"} this week</span>` : `<span aria-hidden="true">&ndash;</span><span class="vh">no change this week</span>`}</span>`;
-    return `<button type="button" data-rt="${i}" aria-pressed="${i === focusTeam}"${p === 0 ? ' class="out"' : ""} style="--team:${safeColor(T[i].color)}" title="Highlight ${esc(T[i].short)} in the games">${logo(i) || "<span></span>"}<b>${esc(T[i].abbr)}</b><span class="now">${BASE && BASE[i] != null ? `<span class="was">${pct(BASE[i])} &rarr; </span>` : ""}${pct(p)}</span>${delta}</button>`;
+    return `<button type="button" data-rt="${i}" aria-pressed="${i === focusTeam}"${p === 0 ? ' class="out"' : ""} style="--team:${safeColor(T[i].color)}" title="Highlight ${esc(T[i].short)} in the games">${logo(i) || "<span></span>"}<b>${rk(T[i].id)}${esc(T[i].abbr)}</b><span class="now">${BASE && BASE[i] != null ? `<span class="was">${pct(BASE[i])} &rarr; </span>` : ""}${pct(p)}</span>${delta}</button>`;
   }).join("");
   let topId = null, topStake = 0.02; // a "biggest" game has to move at least a little
   for (const g of games) {
@@ -898,7 +909,7 @@ function renderPicker() {
     const fill = p > 0 ? Math.max(p * 100, 3) : 0; // keep a sliver visible for long shots
     const label = !P.length ? (finalSeeds().includes(i) ? "#" + (finalSeeds().indexOf(i) + 1) : "Out") : pct(p);
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
-      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}${o.est ? " est" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span></button>`;
+      ${logo(i)}<span class="ab">${rk(T[i].id)}${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}${o.est ? " est" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span></button>`;
   }).join("");
 }
 
@@ -926,9 +937,9 @@ function gameRow(g, i, winnerHome, mark) {
   const sr = locked ? "you set this result" : big ? "big upset" : ups ? "upset" : isTossUp(pW) ? "toss-up" : "";
   const cell = `<span class="po${ups ? " ups" : ""}${locked ? " set" : ""}"><span class="n">${pct(pW, 0)}</span><span class="x" aria-hidden="true">${markText}</span>${sr ? `<span class="vh">, ${sr}</span>` : ""}</span>`;
   return `<div class="game${mark ? " mine" : ""}">
-    <div class="side away ${hw ? "l" : "w"}">${logo(g.a)}<span>${esc(T[g.a].short)}</span>${hw ? "" : `<span class="wb" title="Wins in this path">W</span>`}</div>
+    <div class="side away ${hw ? "l" : "w"}">${logo(g.a)}<span>${rk(T[g.a].id)}${esc(T[g.a].short)}</span>${hw ? "" : `<span class="wb" title="Wins in this path">W</span>`}</div>
     <span class="at">at</span>
-    <div class="side home ${hw ? "w" : "l"}">${hw ? `<span class="wb" title="Wins in this path">W</span>` : ""}<span>${esc(T[g.h].short)}</span>${logo(g.h)}</div>
+    <div class="side home ${hw ? "w" : "l"}">${hw ? `<span class="wb" title="Wins in this path">W</span>` : ""}<span>${rk(T[g.h].id)}${esc(T[g.h].short)}</span>${logo(g.h)}</div>
     ${cell}</div>`;
 }
 
@@ -1003,7 +1014,7 @@ function explainHTML(i, ex) {
     place += g.length;
   }
   const shown = rows.filter((r, k) => k < 7 || r.t === i);
-  const stand = shown.map(({ t, label }) => `<span class="seed">${label}</span><span class="${t === i ? "me" : ""}">${esc(T[t].name)}</span><span>${record(st, t)}</span>`).join("");
+  const stand = shown.map(({ t, label }) => `<span class="seed">${label}</span><span class="${t === i ? "me" : ""}">${rk(T[t].id)}${esc(T[t].name)}</span><span>${record(st, t)}</span>`).join("");
   const top = ex.groups[0];
   const parts = [];
   if (!ex.trace.length) {
@@ -1069,7 +1080,7 @@ function renderFinal(i) {
   $("team").innerHTML = `
     <div class="hero" style="--team:${safeColor(t.color)}">
       ${logo(i)}
-      <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
+      <div><h2>${rk(t.id)}${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
       <div class="big"><div class="pct">${seed ? "#" + seed : "Out"}</div><div class="lbl">${seed ? "seed in the title game" : "of the title game"}</div></div>
     </div>
     <div class="panel"><header><h3>Final standings</h3><p>Every conference game is played. ${seed
@@ -1199,7 +1210,7 @@ function renderTeam() {
     const odds = (p) => known ? ` data-odds="${pct(p)}"` : "";
     const awayFav = g.pHome < 0.5;
     // the selected team's own games: its logo in front of its name, nothing else
-    const side = (x) => (x === i && logo(i) ? `<span class="me">${logo(i)}</span>` : "") + esc(T[x].abbr);
+    const side = (x) => (x === i && logo(i) ? `<span class="me">${logo(i)}</span>` : "") + rk(T[x].id) + esc(T[x].abbr);
     return `<div class="rg-row${!locked && swing < 0.005 && !matters(c) ? " flat" : ""}">
       <div class="m"><span class="t">${side(g.a)} at ${side(g.h)}</span><span class="s">${inWeek ? "" : `Week ${g.week} · `}ESPN: ${esc(T[awayFav ? g.a : g.h].abbr)} ${pct(awayFav ? 1 - g.pHome : g.pHome, 0)}</span></div>
       <div class="root">${root}</div>
@@ -1230,7 +1241,7 @@ function renderTeam() {
   $("team").innerHTML = `
     <div class="hero" style="--team:${safeColor(t.color)}">
       ${logo(i)}
-      <div><h2>${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
+      <div><h2>${rk(t.id)}${esc(t.name)}</h2><div class="rec num">${curW[i]}-${curL[i]} ${esc(LG.name)} · ${overall[i]} overall</div></div>
       <div class="big"><div class="pct" id="heroPct">${pIn === 0 && A.path ? "&lt;0.1%" : pct(pIn)}</div><div class="lbl" id="heroLbl">to reach the title game</div></div>
     </div>
     <div class="facts">${facts.join("")}</div>
@@ -1622,7 +1633,7 @@ function defaultTeam() {
   const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   const meta = DATA.meta || {};
   $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${P.length ? ` A result counts once ESPN calls the game final, checked every 15 minutes Thursday to Sunday${GAMEDAY ? ", when live scores and win probability refresh too" : ""}; between results, only ESPN's pregame odds move the title odds.` : ""} Times are in your time zone.</div>
-  <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
+  <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>)${CFP_DAY ? `, and the CFP committee's rankings of ${CFP_DAY} (<code>…/rankings</code>), shown as the small number before a team's name` : ""}. A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
   ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
   <div>Tiebreakers: <a href="${TEXT.policy.url}" target="_blank" rel="noopener">${TEXT.policy.title}</a>. Not affiliated with the ${esc(LG.name)} or ESPN.</div>`;
   if (GAMEDAY) {

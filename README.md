@@ -106,6 +106,10 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     year's thread rather than last year's.
 
   Nothing on it is live to the second. It updates with the 15-minute fetch on game days.
+- **CFP rankings:** the committee's latest Top 25 (ESPN's `rankings`, the `cfp` entry, not the AP
+  poll) goes in `data.cfp` by ESPN team id, and the page puts the rank before a ranked team's
+  name: picker, team header, path, standings, rooting guide, and gameday's race and game cards
+  (opponents from outside the league too). Before the committee's first ranking there are none.
 - **Adding a league:** see [docs/adding-a-league.md](docs/adding-a-league.md): the rules
   research, the tests to write first, and the places a league is wired in.
   `tools/final_fixture.py <league> <season>` builds a finished-season test fixture.
@@ -131,6 +135,7 @@ A game that isn't final yet is simply asked about again on the next run:
 | FPI | every 6 hours, until it has run once after the last regular-season game (then frozen: the tiebreak uses it as of that weekend) | 1 |
 | Predictions | when ESPN's FPI run changes, or a game has none yet | 1 per unplayed game |
 | Win probability, live score | this week's games from kickoff until ESPN calls them final, every run; a game ESPN calls final has its week's scoreboard read in the same run, so its result lands then instead of at kickoff + 3h | 1 per game under way |
+| CFP rankings | every 6 hours, until the season is over and the selection-day ranking is in | 1 |
 | Teams, logos, calendar | once | ~34 |
 
 A cold start is about 75 calls. Most scheduled runs make none and deploy nothing. On a
