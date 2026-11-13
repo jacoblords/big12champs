@@ -119,27 +119,42 @@ button { font: inherit; color: inherit; }
 .pick .odds b { position: relative; font-size: 0.75rem; font-weight: 600; color: var(--bar-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pick .odds.hot b { color: var(--accent); }
 .pick.out { opacity: 0.55; }
-/* change since the week began: the line keeps its height when empty so cards stay even */
-.pick .delta { min-height: 1.15em; font-size: 0.72rem; font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; color: var(--muted); }
+/* the league page's link to its gameday page */
+.top-right { display: flex; align-items: center; gap: 14px; }
+.gdlink { font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; text-decoration: none; padding: 2px 11px; border: 1px solid var(--accent); border-radius: 999px; }
+.gdlink:hover { background: var(--accent-soft); }
+
+/* gameday page: how the race has moved this week, and the slate with what each game does to it */
+.gd { display: grid; gap: 26px; padding-bottom: 10px; }
+.gd h2 { font-size: 1.5rem; }
+.gd-sec { display: grid; gap: 12px; }
+.gd-sec > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; border-top: 3px solid var(--ink); padding-top: 14px; }
+.gd-sec > header p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+.race { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 10px; }
+.race a { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 5px 9px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); color: inherit; text-decoration: none; font-variant-numeric: tabular-nums; font-size: 0.88rem; }
+.race a:hover { border-color: var(--muted); }
+.race a.out { opacity: 0.55; }
+.race img { width: 20px; height: 20px; object-fit: contain; }
+.race b { font-family: var(--display); font-weight: 700; letter-spacing: 0.04em; font-size: 0.98rem; }
+.race .was { font-size: 0.78rem; color: var(--muted); font-weight: 400; }
+.race .now { font-weight: 600; text-align: right; white-space: nowrap; }
+.race .delta { min-width: 2.6em; text-align: right; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+/* phones: two to a row; the starting odds stay in the row's label */
+@media (max-width: 640px) { .race { grid-template-columns: 1fr 1fr; gap: 5px 6px; } .race a { gap: 6px; padding: 5px 7px; } .race .was { display: none; } }
 .delta.up { color: var(--win); }
 .delta.down { color: var(--loss); }
-
-/* this week: how the race has moved, and the slate with what each game does to it */
-.wk { padding-block: 4px 22px; }
-.wk > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; cursor: pointer; list-style: none; padding-bottom: 12px; border-top: 3px solid var(--ink); padding-top: 14px; }
-.wk > summary::-webkit-details-marker { display: none; }
-.wk > summary::before { content: "\25B8"; font-size: 0.9rem; color: var(--muted); transition: transform .15s; }
-.wk[open] > summary::before { transform: rotate(90deg); }
-.wk > summary h2 { font-size: 1.5rem; }
-.wk > summary span { color: var(--muted); font-size: 0.88rem; }
-.wk-body { display: grid; gap: 14px; }
-.movers { display: flex; flex-wrap: wrap; gap: 6px; }
-.mover { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 5px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; font-size: 0.84rem; font-variant-numeric: tabular-nums; cursor: pointer; }
-.mover:hover { border-color: var(--muted); }
-.mover img { width: 18px; height: 18px; object-fit: contain; }
-.mover b { font-family: var(--display); font-weight: 700; letter-spacing: 0.04em; font-size: 0.95rem; }
-.mover .was { color: var(--muted); }
-.wk-quiet { margin: 0; color: var(--muted); font-size: 0.88rem; }
+.gd-none { margin: 0; color: var(--muted); }
+/* in-game win probability */
+.wp { display: grid; gap: 2px; border-top: 1px solid var(--line); padding-top: 8px; }
+.wp-lab { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.wp-lab b { color: var(--ink); font-weight: 600; }
+.wp svg { display: block; width: 100%; height: 76px; border-block: 1px dotted var(--line); }
+.wp .q { stroke: var(--line); stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; }
+.wp .m { stroke: var(--muted); vector-effect: non-scaling-stroke; }
+.wp .f { opacity: 0.3; }
+.wp .l { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.wp-q { position: relative; height: 1.2em; font-size: 0.68rem; color: var(--muted); }
+.wp-q span { position: absolute; transform: translateX(-50%); }
 .games { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
 .gc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 9px; align-content: start; min-width: 0; }
 .gc.top { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
@@ -314,15 +329,15 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
 <div class="wrap" id="page" aria-busy="true">
   <header class="top">
-    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><span class="eyebrow" id="season"></span></div>
+    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><div class="top-right"><a class="gdlink" id="gdlink" href="gameday/" hidden></a><span class="eyebrow" id="season"></span></div></div>
     <div class="titlerow"><div class="lockup" id="lockup" hidden></div><h1 id="title">Title Paths</h1></div>
     <p id="lede"></p>
   </header>
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
-  <details class="wk" id="week" hidden></details>
   <div class="locks" id="locks" hidden></div>
   <p class="vh" id="announce" aria-live="polite"></p>
   <main id="team"></main>
+  <main class="gd" id="gameday" hidden></main>
 
   <section class="block" id="method">
     <h2>How the odds work</h2>
@@ -342,6 +357,8 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 // Embedded for the self-contained build; null on the hosted site, which loads page-data.json
 // (data.json with its logos moved out to files; fetch_data.py writes both).
 const EMBEDDED = /*__DATA__*/null;
+// fetch_data.py builds each league's gameday page (<league>/gameday/) from this same template with this set
+const GAMEDAY = /*__GAMEDAY__*/false;
 function app(DATA) {
 const ctx = B12.build(DATA);
 const T = ctx.teams;
@@ -385,10 +402,7 @@ function pct(p, digits) {
 const logit = (p) => { p = Math.min(Math.max(p, 1e-12), 1 - 1e-12); return Math.log(p / (1 - p)); };
 const matters = (c) => c.pH != null && c.pA != null && Math.abs(logit(c.pH) - logit(c.pA)) >= 0.3;
 const openState = {};
-document.addEventListener("toggle", (e) => {
-  if (e.target.id) openState[e.target.id] = e.target.open;
-  if (e.target.id === "week") try { localStorage.setItem("weekOpen", e.target.open ? "1" : "0"); } catch (err) {}
-}, true);
+document.addEventListener("toggle", (e) => { if (e.target.id) openState[e.target.id] = e.target.open; }, true);
 function oneIn(p) {
   const n = 1 / p;
   if (n < 10) return "1 in " + n.toFixed(1);
@@ -583,8 +597,8 @@ const COUNT_WORD = ["", "one", "two", "three", "four", "five", "six", "seven", "
 
 function renderHeader() {
   // links are relative, so they work on any host: up from this league's folder, then down
-  const up = "../".repeat((LG.path.match(/\//g) || []).length);
-  const href = (l) => (l.id === LEAGUE_ID ? "./" : up + l.path || "./");
+  const up = "../".repeat((LG.path.match(/\//g) || []).length + (GAMEDAY ? 1 : 0));
+  const href = (l) => (l.id === LEAGUE_ID ? "./" : up + l.path + (GAMEDAY ? "gameday/" : "") || "./");
   // league logos are decorative (the name follows); a sponsor's is read out ("Monster Energy Big 12 Title Paths")
   const leagueLogo = (l) => !isPng(l.logo) ? "" : !isPng(l.logoDark) ? `<img src="${l.logo}" alt="">`
     : `<img class="logo-light" src="${l.logo}" alt=""><img class="logo-dark" src="${l.logoDark}" alt="">`;
@@ -594,8 +608,12 @@ function renderHeader() {
   const lockup = sponsor(LG) + leagueLogo(LG);
   $("lockup").innerHTML = lockup;
   $("lockup").hidden = !lockup;
-  $("title").textContent = `${LG.name} Title Paths`;
-  document.title = `${LG.name} Title Paths`;
+  const title = `${LG.name} ${GAMEDAY ? "Gameday" : "Title Paths"}`;
+  $("title").textContent = title;
+  document.title = title;
+  const link = $("gdlink");
+  link.hidden = GAMEDAY || !WEEK || !weekGames().length;
+  if (!link.hidden) link.textContent = `Week ${WEEK.week} gameday`;
 }
 
 function renderRules() {
@@ -620,7 +638,7 @@ function renderRules() {
     </div>`;
 }
 
-// ---- This week: the week's games, and how each team's odds have moved since it began ----
+// ---- Gameday page: the week's games, and how each team's odds have moved since it began ----
 // DATA.baseline: every team's odds as published when the week started (fetch_data.py keeps them
 // until the next week). Compared with the odds now, with no what-ifs. Shown only during that week.
 const WEEK = (() => {
@@ -632,7 +650,6 @@ const BASE = (() => {
   if (!WEEK || !b || b.week !== WEEK.week || !b.odds) return null;
   return T.map((t) => (typeof b.odds[t.id] === "number" ? b.odds[t.id] : null));
 })();
-const noPicks = () => locks.every((l) => l === undefined);
 const baseKey = keyOf(new Array(P.length).fill(undefined));
 const pendingAt = new Map(P.map((g, k) => [g.id, k]));
 // The odds with no what-ifs, and each team's odds under each result of game k ([away wins, home
@@ -662,12 +679,6 @@ function weekDelta(i) {
   return Math.round((W.p[i] - BASE[i]) * 100);
 }
 const sinceWhen = () => new Date(DATA.baseline.at).toLocaleString("en-US", { weekday: "short", hour: "numeric", minute: "2-digit" });
-function deltaHTML(i) {
-  const d = noPicks() ? weekDelta(i) : null;
-  if (!d) return "";
-  const word = d > 0 ? "up" : "down";
-  return `<span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh">, ${word} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"} since ${sinceWhen()}</span>`;
-}
 const confMatters = RULES.steps.includes("e"); // non-conference games count (total wins step)
 // ESPN parks a kickoff it hasn't set at midnight Eastern; its day is the day in Eastern time
 const ET_MS = 5 * 3600e3;
@@ -701,22 +712,57 @@ function stakesOf(k) {
   });
   return { total: total / 2, rows: rows.sort((a, b) => b.sw - a.sw) };
 }
+// ESPN's in-game win probability (g.wp, from fetch_data.py: [seconds from kickoff, home odds in
+// thousandths]) as a chart in the style of ESPN's: the away team's side on top, the home team's
+// below, shaded toward whoever leads in that team's color.
+function wpChart(g, a, h) {
+  const pts = (g.wp && g.wp.pts) || [];
+  if (pts.length < 2) return "";
+  const W = 300, H = 80, mid = H / 2, tMax = Math.max(3600, pts[pts.length - 1][0]);
+  const X = (t) => ((t / tMax) * W).toFixed(1), Y = (v) => ((Math.min(Math.max(v, 0), 1000) / 1000) * H).toFixed(1);
+  const line = pts.map(([t, v]) => `${X(t)},${Y(v)}`).join(" ");
+  const area = `0,${mid} ${line} ${X(pts[pts.length - 1][0])},${mid}`;
+  const color = (side) => (side.i === undefined ? "var(--muted)" : safeColor(T[side.i].color));
+  const id = "wp" + String(g.id).replace(/[^0-9A-Za-z]/g, "");
+  const quarters = [900, 1800, 2700].map((t) => `<line x1="${X(t)}" x2="${X(t)}" y1="0" y2="${H}" class="q"/>`).join("");
+  const labels = ["1st", "2nd", "3rd", "4th"].map((q, n) => `<span style="left:${((n * 900 + 450) / tMax * 100).toFixed(1)}%">${q}</span>`).join("")
+    + (tMax > 3600 ? `<span style="left:${((3600 + tMax) / 2 / tMax * 100).toFixed(1)}%">OT</span>` : "");
+  const now = pts[pts.length - 1][1] / 1000;
+  const lab = (side, p) => `<div class="wp-lab"><span>${esc(side.abbr)}</span><b>${pct(p, 0)}</b></div>`;
+  return `<div class="wp" role="img" aria-label="ESPN win probability: ${esc(a.abbr)} ${pct(1 - now, 0)}, ${esc(h.abbr)} ${pct(now, 0)}">
+    ${lab(a, 1 - now)}
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><clipPath id="${id}a"><rect x="0" y="0" width="${W}" height="${mid}"/></clipPath><clipPath id="${id}h"><rect x="0" y="${mid}" width="${W}" height="${mid}"/></clipPath></defs>
+      ${quarters}<line x1="0" x2="${W}" y1="${mid}" y2="${mid}" class="m"/>
+      <polygon points="${area}" fill="${color(a)}" clip-path="url(#${id}a)" class="f"/>
+      <polygon points="${area}" fill="${color(h)}" clip-path="url(#${id}h)" class="f"/>
+      <polyline points="${line}" class="l"/>
+    </svg>
+    <div class="wp-q" aria-hidden="true">${labels}</div>
+    ${lab(h, now)}</div>`;
+}
 function gameCard(g, top) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
-  const done = g.completed && !g.canceled, started = !g.completed && g.timeValid !== false && Date.now() >= new Date(g.date).getTime();
-  const status = g.canceled ? "Canceled" : g.postponed ? "Postponed" : done ? "Final" : started ? `<span class="live">Under way</span>` : kickoff(g);
+  // ESPN's summary can call a game final a few minutes before our results check does
+  const wp = g.wp && !g.canceled ? g.wp : null;
+  const done = (g.completed && !g.canceled) || !!(wp && wp.final);
+  const started = !done && !g.completed && g.timeValid !== false && Date.now() >= new Date(g.date).getTime();
+  const hs = g.completed ? g.homeScore : wp ? wp.homeScore : null, as = g.completed ? g.awayScore : wp ? wp.awayScore : null;
+  const winner = g.completed ? g.winner : done && hs != null && as != null && hs !== as ? (hs > as ? g.home : g.away) : null;
+  const status = g.canceled ? "Canceled" : g.postponed ? "Postponed" : done ? "Final"
+    : started ? `<span class="live">${wp && wp.detail ? esc(wp.detail) : "Under way"}</span>` : kickoff(g);
   const when = `<div class="gc-when"><span>${status}${g.tv ? " · " + esc(g.tv) : ""}</span>${top ? `<span class="tag">Biggest stakes</span>` : ""}</div>`;
   const line = (side, home) => {
-    const won = done && g.winner === (home ? g.home : g.away), lost = done && g.winner && !won;
-    const score = home ? g.homeScore : g.awayScore;
-    const right = done && score != null ? String(score)
+    const won = done && winner === (home ? g.home : g.away), lost = done && winner && !won;
+    const score = home ? hs : as;
+    const right = (done || started) && score != null ? String(score)
       : pg && pg.pKnown ? `<span title="ESPN's odds of winning">${pct(home ? pg.pHome : 1 - pg.pHome, 0)}</span>` : "";
     return `<div class="gc-team${won ? " won" : lost ? " lost" : ""}">${side.i === undefined ? "<span></span>" : logo(side.i) || "<span></span>"}<span>${esc(side.name)}</span><span class="r">${right}</span></div>`;
   };
   const extra = [g.spread, g.overUnder != null ? "O/U " + g.overUnder : "", g.venue].filter(Boolean).map(esc).join(" · ");
   let stakes = "";
-  const S = !done && !g.canceled ? stakesOf(k) : null;
+  const S = !done && !g.canceled && !g.completed ? stakesOf(k) : null;
   if (S && S.rows.length) {
     const cell = (p, better) => `<span class="v${better ? " up" : ""}">${pct(p)}</span>`;
     stakes = `<div class="gc-stakes" role="table" aria-label="Title-game odds by result">
@@ -729,46 +775,42 @@ function gameCard(g, top) {
     <a href="https://www.espn.com/college-football/game/_/gameId/${encodeURIComponent(g.id)}" target="_blank" rel="noopener">ESPN Gamecast</a>
     <a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent('"Game Thread" ' + q)}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener">r/CFB threads</a>
     <a href="https://x.com/search?q=${encodeURIComponent(q)}&amp;f=live" target="_blank" rel="noopener">On X</a></div>`;
-  return `<article class="gc${top ? " top" : ""}">${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${stakes}${links}</article>`;
+  return `<article class="gc${top ? " top" : ""}">${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;
 }
-let weekOpenSet = false;
-function renderWeek() {
-  const el = $("week");
-  const games = weekGames();
-  el.hidden = !WEEK || !games.length;
-  if (el.hidden) return;
-  if (!weekOpenSet) {
-    let open = true;
-    try { open = localStorage.getItem("weekOpen") !== "0"; } catch (e) {}
-    el.open = open; weekOpenSet = true;
-  }
-  const W = weekOdds();
-  let movers = "";
-  if (BASE && W) {
-    const moved = T.map((_, i) => ({ i, d: weekDelta(i) })).filter((m) => m.d).sort((x, y) => Math.abs(y.d) - Math.abs(x.d) || y.d - x.d);
-    movers = moved.length
-      ? `<div class="movers" aria-label="Title-game odds since ${sinceWhen()}">${moved.map(({ i, d }) => `<button type="button" class="mover" data-go="${i}">${logo(i)}<b>${esc(T[i].abbr)}</b><span class="was">${pct(BASE[i])} &rarr;</span> ${pct(W.p[i])} <span class="delta ${d > 0 ? "up" : "down"}">${deltaHTML(i)}</span></button>`).join("")}</div>`
-      : `<p class="wk-quiet">No team's title-game odds have moved a point since ${sinceWhen()}.</p>`;
-  }
+function renderGameday() {
+  const games = weekGames(), W = weekOdds();
+  const left = games.filter((g) => !g.completed).length;
+  $("lede").innerHTML = WEEK && games.length
+    ? `Week ${WEEK.week}: ${games.length} game${games.length === 1 ? "" : "s"}${left < games.length ? `, ${left} still to play` : ""}. What each result does to the title race, and how the race has moved${BASE ? ` since ${sinceWhen()}` : " this week"}. <a href="../">Every team's path &rarr;</a>`
+    : `No ${esc(LG.name)} games to show this week. <a href="../">Every team's path &rarr;</a>`;
+  const el = $("gameday");
+  if (!WEEK || !games.length || !W) { el.innerHTML = ""; return; }
+  const rows = T.map((_, i) => ({ i, d: weekDelta(i), p: W.p[i] }))
+    .sort((x, y) => (y.d || 0) - (x.d || 0) || y.p - x.p || curW[y.i] - curW[x.i]);
+  const race = rows.map(({ i, d, p }) => {
+    const delta = d == null ? "" : `<span class="delta${d > 0 ? " up" : d < 0 ? " down" : ""}">${d ? `<span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh">${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"}</span>` : `<span aria-hidden="true">&ndash;</span><span class="vh">no change</span>`}</span>`;
+    const label = `${T[i].name}, ${curW[i]}-${curL[i]} ${LG.name}: ${BASE && BASE[i] != null ? `${pct(BASE[i])} then, ` : ""}${pct(p)} now`.replace("&lt;", "<");
+    return `<a href="../#${esc(encodeURIComponent(T[i].abbr.toLowerCase()))}"${p === 0 ? ' class="out"' : ""} title="${esc(label)}">${logo(i) || "<span></span>"}<b>${esc(T[i].abbr)}</b><span class="now">${BASE && BASE[i] != null ? `<span class="was">${pct(BASE[i])} &rarr; </span>` : ""}${pct(p)}</span>${delta}</a>`;
+  }).join("");
   let topId = null, topStake = 0.02; // a "biggest" game has to move at least a little
   for (const g of games) {
     const S = !g.completed ? stakesOf(pendingAt.get(g.id)) : null;
     if (S && S.total > topStake) { topStake = S.total; topId = g.id; }
   }
-  const left = games.filter((g) => !g.completed).length;
-  el.innerHTML = `<summary><h2>Week ${WEEK.week}</h2><span>${games.length} game${games.length === 1 ? "" : "s"}${left < games.length ? `, ${left} to play` : ""}${BASE ? ` · odds moves since ${sinceWhen()}` : ""}</span></summary>
-    <div class="wk-body">${movers}<div class="games">${games.map((g) => gameCard(g, g.id === topId)).join("")}</div></div>`;
+  el.innerHTML = `<section class="gd-sec" aria-labelledby="gd-race"><header><h2 id="gd-race">The race</h2><p>Odds of reaching the title game${BASE ? `, then (${sinceWhen()}) and now` : ""}. Pick a team for its path.</p></header>
+      <div class="race">${race}</div></section>
+    <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>Each team's title-game odds under either result, for the teams it moves by a point or more.</p></header>
+      <div class="games">${games.map((g) => gameCard(g, g.id === topId)).join("")}</div></section>`;
 }
 
 function renderPicker() {
   const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
   $("picker").innerHTML = order.map((i) => {
     const o = odds(i), p = o.p;
-    let d;
     const fill = p > 0 ? Math.max(p * 100, 3) : 0; // keep a sliver visible for long shots
     const label = !P.length ? (finalSeeds().includes(i) ? "#" + (finalSeeds().indexOf(i) + 1) : "Out") : pct(p);
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
-      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}${o.est ? " est" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span>${BASE ? `<span class="delta${(d = noPicks() ? weekDelta(i) : null) > 0 ? " up" : d < 0 ? " down" : ""}">${deltaHTML(i)}</span>` : ""}</button>`;
+      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}${o.est ? " est" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span></button>`;
   }).join("");
 }
 
@@ -1115,7 +1157,7 @@ function renderTeam() {
 }
 
 function renderAll() {
-  renderPicker(); renderWeek(); renderLocks(); renderTeam();
+  renderPicker(); renderLocks(); renderTeam();
 }
 
 // The link carries the view so it can be shared: "#tcu&picks=401752890h.401752891a&sort=swing".
@@ -1364,15 +1406,6 @@ function select(i, push) {
 }
 
 document.addEventListener("click", (e) => {
-  const go = e.target.closest("[data-go]");
-  if (go) {
-    const i = +go.dataset.go, btn = $("pick-" + T[i].abbr);
-    if (btn && btn.setAttribute) press(btn, ".picker");
-    select(i, true);
-    const team = $("team");
-    if (team.scrollIntoView) team.scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
   const pick = e.target.closest("[data-t]");
   if (pick) { press(pick, ".picker"); select(+pick.dataset.t, true); return; }
   const seg = e.target.closest(".seg button");
@@ -1463,6 +1496,15 @@ function defaultTeam() {
   <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
   ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
   <div>Tiebreakers: <a href="${TEXT.policy.url}" target="_blank" rel="noopener">${TEXT.policy.title}</a>. Not affiliated with the ${esc(LG.name)} or ESPN.</div>`;
+  if (GAMEDAY) {
+    for (const id of ["picker", "locks", "team", "method", "rules"]) $(id).hidden = true;
+    $("gameday").hidden = false;
+    // a simulated league without its precomputed view: run the no-what-ifs simulation here, once
+    if (!EX && !totals.has(baseKey) && P.length) totals.set(baseKey, B12.totals(ctx, B12.mainSims(ctx, locks)));
+    renderGameday();
+    firstRender(); firstRender = null;
+    return;
+  }
   const h = parseHash();
   if (h.locks) locks = h.locks;
   if (h.sort) rgSort = h.sort; // for this view only; the visitor's own choice stays saved

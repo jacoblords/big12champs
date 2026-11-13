@@ -37,13 +37,29 @@ def scoreboard(games, final=True, extra_events=()):
     return {"events": events + list(extra_events)}
 
 
+def summary(final, home_pct=(0.6, 0.7, 0.9)):
+    """ESPN's game summary: a win-probability point per play, and the score and clock."""
+    plays = [{"id": f"p{k}", "period": {"number": k + 1}, "clock": {"displayValue": "7:30"}} for k in range(len(home_pct))]
+    return {"drives": {"previous": [{"plays": plays}]},
+            "winprobability": [{"playId": f"p{k}", "homeWinPercentage": p} for k, p in enumerate(home_pct)],
+            "header": {"competitions": [{"status": {"type": {"completed": final, "shortDetail": "Final" if final else "3rd 7:30"}},
+                                         "competitors": [{"homeAway": "home", "score": "24"}, {"homeAway": "away", "score": "10"}]}]}}
+
+
 class FakeESPN:
-    def __init__(self, fpi_run="2026-11-09T09:00Z", final=True):
+    """Records every call. Game summaries (in-game win probability) go in .summaries, so the
+    caching tests can count the rest on their own."""
+    def __init__(self, fpi_run="2026-11-09T09:00Z", final=True, summary_final=None):
         self.urls = []
+        self.summaries = []
         self.fpi_run = fpi_run
         self.final = final
+        self.summary_final = final if summary_final is None else summary_final
 
     def __call__(self, url, raw=False):
+        if "/summary?event=" in url:
+            self.summaries.append(url.split("event=")[1])
+            return summary(self.summary_final)
         self.urls.append(url)
         if "/scoreboard" in url:
             week = int(url.split("week=")[1].split("&")[0])
@@ -131,8 +147,9 @@ class FetchTests(unittest.TestCase):
         fake = FakeESPN(final=False)
         written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
         self.assertEqual(len(fake.urls), 1)
-        # nothing changed, so nothing is written; the next run asks again
-        self.assertIsNone(written)
+        # no result yet (only the live win probability is new); the next run asks again
+        self.assertTrue(all(not g["completed"] for g in written["games"] if g["week"] == 11))
+        self.assertTrue(all(g.get("wp") for g in written["games"] if g["week"] == 11 and F.parse(g["date"]) <= now))
 
     def test_new_fpi_run_refetches_every_prediction(self):
         now = first_kickoff() - dt.timedelta(hours=1)
@@ -387,13 +404,60 @@ class FetchTests(unittest.TestCase):
         prev["exact"] = {"skipped": "too many"}
         prev["sim"] = {"teamIds": ids, "totals": {"nSims": 4, "appear": [k % 5 for k in range(len(ids))]}}
         written, _ = self.run_fetch(prev, now, FakeESPN())
-        self.assertEqual(written["baseline"]["odds"], {tid: round((k % 5) / 4, 4) for k, tid in enumerate(ids)})
+        self.assertEqual(written["baseline"]["odds"], {tid: round((k % 5) / 4, 6) for k, tid in enumerate(ids)})
 
     def test_offline_builds_keep_the_week_start_as_it_is(self):
         now = first_kickoff() - dt.timedelta(hours=1)
         prev = self.with_odds(self.fresh_prev(now), 0.25)
         written, _ = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build")
         self.assertNotIn("baseline", written)
+
+    def test_win_probability_for_this_weeks_games_once_they_kick_off_until_final(self):
+        kick = first_kickoff()
+        week11 = [g for g in FIXTURE["games"] if g["week"] == 11 and not g["completed"]]
+        started = lambda now: {g["id"] for g in week11 if F.parse(g["date"]) <= now}
+        # before kickoff: nothing
+        fake = FakeESPN()
+        self.run_fetch(self.fresh_prev(kick - dt.timedelta(minutes=5)), kick - dt.timedelta(minutes=5), fake)
+        self.assertEqual(fake.summaries, [])
+        # under way: the games that have kicked off, and the series is saved
+        now = kick + dt.timedelta(hours=1)
+        fake = FakeESPN(final=False)
+        written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
+        self.assertEqual(set(fake.summaries), started(now))
+        self.assertEqual(self.changed, "changed=true")
+        g = next(x for x in written["games"] if x["id"] == fake.summaries[0])
+        self.assertEqual(g["wp"], {"pts": [[450, 600], [1350, 700], [2250, 900]], "final": False,
+                                   "detail": "3rd 7:30", "homeScore": 24, "awayScore": 10})
+        # asked again next run while it's on; once ESPN says final, never again
+        fake = FakeESPN(final=False, summary_final=True)
+        written, _ = self.run_fetch(written, now, fake)
+        self.assertEqual(set(fake.summaries), started(now))
+        fake = FakeESPN(final=False)
+        self.run_fetch(written, now, fake)
+        self.assertEqual(fake.summaries, [])
+
+    def test_win_probability_skips_unset_kickoffs_and_other_weeks(self):
+        now = first_kickoff() + dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        for g in prev["games"]:
+            if g["week"] == 11:
+                g["timeValid"] = False
+        fake = FakeESPN(final=False)
+        self.run_fetch(prev, now, fake)
+        self.assertEqual(fake.summaries, [])
+
+    def test_play_times_and_thinning(self):
+        self.assertEqual(F.play_seconds({"period": {"number": 2}, "clock": {"displayValue": "10:00"}}), 1200)
+        self.assertEqual(F.play_seconds({"period": {"number": 6}}), 3600 + 240)
+        many = summary(True, [k / 500 for k in range(500)])
+        for k, pl in enumerate(many["drives"]["previous"][0]["plays"]):
+            pl["period"] = {"number": 1}
+        with mock.patch.object(F, "get", lambda url, raw=False: many):
+            _, wp = F.fetch_winprob("1")
+        self.assertEqual(len(wp["pts"]), F.WP_POINTS)
+        self.assertEqual(wp["pts"][0][1], 0)
+        self.assertEqual(wp["pts"][-1][1], 998)
 
 class ScoreboardParsing(unittest.TestCase):
     def test_title_game_and_non_conference_flag(self):
