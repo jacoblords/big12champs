@@ -35,6 +35,9 @@ LEAGUES = {
 SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h
 SCHEDULE_TTL = dt.timedelta(hours=24)
+# Bumped when fetch_week starts keeping more of the scoreboard: the next run re-reads every week
+# with unplayed games instead of waiting up to SCHEDULE_TTL. 2: TV, spread, venue, TBD times.
+SCHEDULE_FIELDS = 2
 FPI_TTL = dt.timedelta(hours=6)
 HERE = Path(__file__).resolve().parent
 
@@ -193,6 +196,10 @@ def fetch_week(league, season, week):
         if done:
             winner = h["team"]["id"] if h.get("winner") else a["team"]["id"] if a.get("winner") else None
         sc = lambda x: int(float(x["score"])) if done and x.get("score") not in (None, "") else None
+        odds = (c.get("odds") or [{}])[0] or {}
+        venue = c.get("venue") or {}
+        addr = venue.get("address") or {}
+        tv = c.get("broadcast") or ", ".join(dict.fromkeys(n for b in c.get("broadcasts") or [] for n in b.get("names") or []))
         out.append({
             "id": e["id"], "week": week, "date": e["date"],
             "home": h["team"]["id"], "away": a["team"]["id"],
@@ -203,8 +210,34 @@ def fetch_week(league, season, week):
             "confFlag": c.get("conferenceCompetition"),
             "completed": done or canceled, "canceled": canceled, "postponed": stype.get("name") == "STATUS_POSTPONED",
             "winner": winner, "homeScore": sc(h), "awayScore": sc(a),
+            # for the page's game cards: ESPN's text, escaped by the page. timeValid false: the
+            # kickoff time isn't set yet (ESPN parks those at midnight Eastern).
+            "timeValid": c.get("timeValid", True) is not False,
+            "tv": tv or None, "spread": odds.get("details") or None, "overUnder": odds.get("overUnder"),
+            "venue": venue.get("fullName"), "city": ", ".join(x for x in (addr.get("city"), addr.get("state")) if x) or None,
         })
     return out
+
+
+def current_week(calendar, now):
+    """The regular-season week (ESPN's calendar, Monday to Monday) that now falls in, if any."""
+    for c in calendar or []:
+        if parse(c["start"]) <= now < parse(c["end"]):
+            return c["week"]
+    return None
+
+
+def odds_snapshot(d):
+    """Each team's title-game odds in a data file, by team id: the exact odds when it has them,
+    else its precomputed simulation. None when it has neither."""
+    e = d.get("exact") or {}
+    if e.get("teams") and not e.get("skipped"):
+        return {t["id"]: round(t["p"], 4) for t in e["teams"]}
+    s = d.get("sim") or {}
+    tot = s.get("totals") or {}
+    if tot.get("nSims") and s.get("teamIds"):
+        return {tid: round(tot["appear"][k] / tot["nSims"], 4) for k, tid in enumerate(s["teamIds"])}
+    return None
 
 
 def fetch_calendar(league, season):
@@ -318,9 +351,10 @@ def main():
             if parse(g["date"]) + RESULT_DELAY <= now:
                 weeks.add(g["week"])  # should be final by now
         sched_at = parse(meta.get("scheduleCheckedAt"))
-        if not sched_at or now - sched_at >= SCHEDULE_TTL:
+        if not sched_at or now - sched_at >= SCHEDULE_TTL or meta.get("scheduleFields") != SCHEDULE_FIELDS:
             weeks |= {g["week"] for g in games.values() if not g["completed"]}
             meta["scheduleCheckedAt"] = iso(now)
+            meta["scheduleFields"] = SCHEDULE_FIELDS
     if weeks:
         print(f"scoreboards for weeks {sorted(weeks)}")
         for wk_games in pmap(lambda w: fetch_week(league, args.season, w), sorted(weeks)):
@@ -328,11 +362,13 @@ def main():
                 old = games.get(ng["id"])
                 ng["pHome"] = None if ng["completed"] else (old or {}).get("pHome")
                 ng["predAt"] = (old or {}).get("predAt")
-                keys = ("date", "completed", "winner", "homeScore", "awayScore", "canceled", "postponed")
+                keys = ("date", "completed", "winner", "homeScore", "awayScore", "canceled", "postponed",
+                        "timeValid", "tv", "spread", "overUnder")
                 if not old or any(old.get(k) != ng.get(k) for k in keys):
                     changed.append(f"game {ng['awayName']}@{ng['homeName']}")
                 games[ng["id"]] = {**(old or {}), **ng}
         meta.setdefault("scheduleCheckedAt", iso(now))
+        meta.setdefault("scheduleFields", SCHEDULE_FIELDS)
 
     # FPI: tiebreaker f stand-in, FBS membership, and the clock for ESPN's prediction model.
     fpi_stale = False
@@ -361,6 +397,16 @@ def main():
             games[gid]["pHome"] = p if p is not None else games[gid].get("pHome")
             games[gid]["predAt"] = iso(now)
 
+    # The week's starting odds, for the page's "since" changes: the odds published when a new
+    # week began, i.e. the previous data's, before this run adds anything. Kept until the next week.
+    baseline = prev.get("baseline") if prev else None
+    week = None if args.offline else current_week(calendar, now)
+    if week is not None and prev and (baseline or {}).get("week") != week:
+        snap = odds_snapshot(prev)
+        if snap:
+            baseline = {"week": week, "at": prev["meta"].get("checkedAt") or prev.get("fetchedAt"), "odds": snap}
+            changed.append(f"week {week} starting odds")
+
     team_ids = {t["id"] for t in teams}
     for t in teams:
         t["fpi"] = fpi.get(t["id"])
@@ -380,6 +426,8 @@ def main():
 
     data = {"schema": SCHEMA, "league": league["id"], "leagues": leagues, "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
+    if baseline:
+        data["baseline"] = baseline
     if prev and prev.get("exact"):
         data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
     print(f"{calls} ESPN calls; {len(changed)} changes" + (f": {', '.join(changed[:8])}{' …' if len(changed) > 8 else ''}" if changed else ""))
