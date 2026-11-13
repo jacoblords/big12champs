@@ -72,7 +72,7 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   same template with `GAMEDAY` set by `fetch_data.py`, with its own copy of the page data one
   folder down. Two sections:
   - *The race:* every team's title-game odds now against the start of the week, biggest gain
-    first, each linking to its path. The starting odds are `data.baseline`: the odds already
+    first (not links: the page stays put). The starting odds are `data.baseline`: the odds already
     published when the fetcher first runs in a new week, kept until the next week.
   - *The games:* kickoff, TV, ESPN's line and venue, and ESPN's win odds, plus how each result
     would move every team's title-game odds (the same exact or simulated splits as the rooting

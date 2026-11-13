@@ -978,7 +978,8 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.equal(els.gameday.hidden, false);
   for (const id of ["picker", "team", "method", "rules"]) assert.equal(els[id].hidden, true, id + " hidden");
   assert.equal(els.title.textContent, "Big 12 Gameday");
-  assert.match(text(els.lede.innerHTML), /^Week 12: 8 games\. .* since .*Every team's path/);
+  assert.match(text(els.lede.innerHTML), /^Week 12: 8 games\. What each result does to the title race, and how it has moved this week\. Every team's path/);
+  assert.match(els.gameday.innerHTML, /Live odds of reaching the title game, updated every 15 minutes on game days\./);
   const gd = text(els.gameday.innerHTML);
   assert.match(gd, /FS1/);
   assert.match(gd, /UCF -6\.5 · O\/U 52\.5 · Acrisure Bounce House/);
@@ -993,14 +994,16 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
 });
 
-test("gameday: the race lists every team, biggest gain first, with then and now, linking to its path", async () => {
+test("gameday: the race lists every team, biggest gain first, with the week's start and now", async () => {
   const { els } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) });
   await settle();
-  const rows = [...els.gameday.innerHTML.matchAll(/<a href="\.\.\/#([a-z0-9%]+)"[^>]*>.*?<\/a>/g)];
+  const race = els.gameday.innerHTML.split('<div class="race">')[1].split("</section>")[0];
+  assert.doesNotMatch(race, /<a /, "rows stay on this page");
+  const rows = [...race.matchAll(/<div(?: class="out")?>.*?<b>([^<]+)<\/b>.*?<\/span><\/span><\/div>/g)];
   assert.equal(rows.length, data.teams.length);
-  assert.equal(rows[0][1], "utah");
-  assert.match(rows[0][0], /&#9650;20<\/span><span class="vh">up 20 points/);
-  assert.equal(rows[rows.length - 1][1], "tcu", "the biggest drop last");
+  assert.equal(rows[0][1], "UTAH");
+  assert.match(rows[0][0], /&#9650;20<\/span><span class="vh">up 20 points this week/);
+  assert.equal(rows[rows.length - 1][1], "TCU", "the biggest drop last");
   assert.match(rows[rows.length - 1][0], /&#9660;3/);
   assert.match(rows[1][0], /class="delta"><span aria-hidden="true">&ndash;/);
 });
