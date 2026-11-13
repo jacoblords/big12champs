@@ -139,32 +139,51 @@
     if (a !== undefined && !homeWon) { if (homeFBS) W[a]++; else FW[a]++; }
   }
 
-  // outcomes: Uint8Array over ctx.pending, 1 = home wins
-  function standings(ctx, outcomes) {
+  const SCRATCH = typeof Symbol === "function" ? Symbol("scratch") : "_scratch";
+  function scratchStandings(ctx) {
+    const st = standings(ctx, new Uint8Array(ctx.pending.length));
+    st[SCRATCH] = { W: new Int16Array(ctx.N), FW: new Int16Array(ctx.N) };
+    return st;
+  }
+  // outcomes: Uint8Array over ctx.pending, 1 = home wins. into (optional): a standings object to
+  // fill instead of allocating one; simulate() reuses one for every finish it plays out.
+  function standings(ctx, outcomes, into) {
     const { N } = ctx;
-    const H2H = ctx.fixedH2H.slice(), CW = ctx.fixedConfW.slice(), CL = ctx.fixedConfL.slice();
-    const W = ctx.fixedWins.slice(), FW = ctx.fixedFcsWins.slice();
-    ctx.pending.forEach((g, i) => applyResult(g.conf, g.h, g.a, outcomes[i] === 1, g.homeFBS, g.awayFBS, H2H, CW, CL, W, FW, N));
-    const total = new Int16Array(N);
+    const st = into || { N, H2H: new Int8Array(N * N), CW: new Int16Array(N), CL: new Int16Array(N), total: new Int16Array(N),
+      sosW: new Int32Array(N), sosG: new Int32Array(N), rating: ctx.rating, rules: ctx.rules };
+    // overall wins (FBS, FCS) only feed total; a reused object keeps its buffers out of sight
+    const W = into ? into[SCRATCH].W : new Int16Array(N), FW = into ? into[SCRATCH].FW : new Int16Array(N);
+    const { H2H, CW, CL, total, sosW, sosG } = st;
+    H2H.set(ctx.fixedH2H); CW.set(ctx.fixedConfW); CL.set(ctx.fixedConfL); W.set(ctx.fixedWins); FW.set(ctx.fixedFcsWins);
+    const pend = ctx.pending;
+    for (let i = 0; i < pend.length; i++) {
+      const g = pend[i];
+      applyResult(g.conf, g.h, g.a, outcomes[i] === 1, g.homeFBS, g.awayFBS, H2H, CW, CL, W, FW, N);
+    }
     for (let t = 0; t < N; t++) total[t] = W[t] + Math.min(FW[t], 1);
     // strength of conference schedule: combined conf record of each team's conference opponents
-    const sosW = new Int32Array(N), sosG = new Int32Array(N);
-    for (let t = 0; t < N; t++) for (let o = 0; o < N; o++) if (H2H[t * N + o] !== 0) { sosW[t] += CW[o]; sosG[t] += CW[o] + CL[o]; }
-    return { N, H2H, CW, CL, total, sosW, sosG, rating: ctx.rating, rules: ctx.rules };
+    sosW.fill(0); sosG.fill(0);
+    for (let t = 0; t < N; t++) {
+      const row = t * N;
+      for (let o = 0; o < N; o++) if (H2H[row + o] !== 0) { sosW[t] += CW[o]; sosG[t] += CW[o] + CL[o]; }
+    }
+    return st;
   }
 
   // exact percentage comparison as fractions
   const cmpFrac = (w1, g1, w2, g2) => w1 * g2 - w2 * g1;
 
   function confGroups(st, exclude) {
+    const CW = st.CW, CL = st.CL;
     const ids = [];
     for (let t = 0; t < st.N; t++) if (!exclude || !exclude.has(t)) ids.push(t);
-    ids.sort((x, y) => -cmpFrac(st.CW[x], st.CW[x] + st.CL[x], st.CW[y], st.CW[y] + st.CL[y]));
+    // same comparison as cmpFrac, inlined: this runs for every simulated finish
+    ids.sort((x, y) => CW[y] * (CW[x] + CL[x]) - CW[x] * (CW[y] + CL[y]));
     const groups = [];
+    let last = null;
     for (const t of ids) {
-      const last = groups[groups.length - 1];
-      if (last && cmpFrac(st.CW[t], st.CW[t] + st.CL[t], st.CW[last[0]], st.CW[last[0]] + st.CL[last[0]]) === 0) last.push(t);
-      else groups.push([t]);
+      if (last) { const l = last[0]; if (CW[t] * (CW[l] + CL[l]) - CW[l] * (CW[t] + CL[t]) === 0) { last.push(t); continue; } }
+      last = [t]; groups.push(last);
     }
     return groups;
   }
@@ -468,6 +487,7 @@
     const lw = opts.uniform ? new Float64Array(nSims) : null;
     const appear = new Float64Array(N), first = new Float64Array(N);
     const out = new Uint8Array(P);
+    const scratch = scratchStandings(ctx);
     for (let s = 0; s < nSims; s++) {
       let m = 0, w = 0;
       for (let i = 0; i < P; i++) {
@@ -479,7 +499,7 @@
       }
       masks[s] = m >>> 0;
       if (lw) lw[s] = w;
-      const st = standings(ctx, out);
+      const st = standings(ctx, out, scratch);
       const [a, b] = titleGame(st, rng);
       s1[s] = a; s2[s] = b; appear[a]++; appear[b]++; first[a]++;
     }
@@ -621,23 +641,38 @@
       return { fix, vals: (m & fix) >>> 0, cost: costOf(fix, m) };
     }
 
+    // Branch and bound over the results to fix. Two things keep each node cheap (both leave the
+    // search, and so its answer, exactly as it was):
+    // - only failures the set still contains are scanned. A child fixes one more result, so its
+    //   list is the parent's filtered to the failures that agree with it, in the same order; the
+    //   lists live in one buffer per depth (the search is depth-first, so a depth's buffer is free
+    //   again by the time a sibling needs it).
+    // - a failure's cheapest ruling-out result comes from the node's usable results sorted by
+    //   cost: the first one the failure disagrees with, usually the first or second looked at.
     function search(F, inc) {
       let best = inc.cost, bestFix = inc.fix, bestVals = inc.vals, nodes = 0;
-      function bb(fix, vals, ban1, ban0, c) {
+      const bufs = [F];
+      const optK = new Int32Array(2 * n), optV = new Int32Array(2 * n), optC = new Float64Array(2 * n);
+      const order = [];
+      function bb(fix, vals, ban1, ban0, c, act, nAct, depth) {
         if (++nodes > maxNodes || c >= best) return;
+        // the results still usable here, cheapest first
+        order.length = 0;
+        for (const k of free) {
+          if ((fix >>> k) & 1) continue;
+          if (!((ban1 >>> k) & 1)) order.push(2 * k + 1);
+          if (!((ban0 >>> k) & 1)) order.push(2 * k);
+        }
+        order.sort((a, b) => cost[a] - cost[b]);
+        const nOpt = order.length;
+        for (let j = 0; j < nOpt; j++) { optK[j] = order[j] >> 1; optV[j] = order[j] & 1; optC[j] = cost[order[j]]; }
         // Each failure the set still contains needs one more result that rules it out; the
         // cheapest such result for the hardest one bounds what's left to pay.
         let lb = 0, pick = -1;
-        for (let i = 0; i < F.length; i++) {
-          const f = F[i];
-          if (((f ^ vals) & fix) !== 0) continue;
+        for (let i = 0; i < nAct; i++) {
+          const f = act[i];
           let minc = Infinity;
-          for (const k of free) {
-            if ((fix >>> k) & 1) continue;
-            const v = 1 - ((f >>> k) & 1);
-            if (((v ? ban1 : ban0) >>> k) & 1) continue;
-            if (cost[2 * k + v] < minc) minc = cost[2 * k + v];
-          }
+          for (let j = 0; j < nOpt; j++) if (((f >>> optK[j]) & 1) !== optV[j]) { minc = optC[j]; break; }
           if (minc === Infinity) return; // this failure can't be ruled out in this branch
           if (minc > lb || pick < 0) { lb = Math.max(lb, minc); pick = f; }
         }
@@ -650,13 +685,18 @@
           if (!(((v ? ban1 : ban0) >>> k) & 1)) opts.push([k, v, cost[2 * k + v]]);
         }
         opts.sort((a, b) => a[2] - b[2]);
+        let next = bufs[depth + 1];
+        if (!next) next = bufs[depth + 1] = new Uint32Array(F.length);
         for (const [k, v, ck] of opts) {
-          bb((fix | (1 << k)) >>> 0, (vals | (v << k)) >>> 0, ban1, ban0, c + ck);
+          // the failures still contained once result k is fixed to v
+          let m = 0;
+          for (let i = 0; i < nAct; i++) if (((act[i] >>> k) & 1) === v) next[m++] = act[i];
+          bb((fix | (1 << k)) >>> 0, (vals | (v << k)) >>> 0, ban1, ban0, c + ck, next, m, depth + 1);
           // later branches may not use this result: those sets were covered here
           if (v) ban1 = (ban1 | (1 << k)) >>> 0; else ban0 = (ban0 | (1 << k)) >>> 0;
         }
       }
-      bb(0, 0, 0, 0, 0);
+      bb(0, 0, 0, 0, 0, F, F.length, 0);
       return { fix: bestFix, vals: bestVals, cost: best };
     }
 
