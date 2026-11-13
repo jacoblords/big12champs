@@ -370,8 +370,8 @@ test("a pick answers at once and recomputes after the frame, folding quick click
   const { els, handlers, sandbox } = render(data, "#ttu", { requestAnimationFrame: (fn) => frames.push(fn) });
   await settle();
   let sims = 0;
-  const simulate = sandbox.B12.simulate;
-  sandbox.B12.simulate = (...a) => { sims++; return simulate(...a); };
+  const mainSims = sandbox.B12.mainSims;
+  sandbox.B12.mainSims = (...a) => { sims++; return mainSims(...a); };
   const btn = (k, v) => ({ dataset: { k: String(k), v }, setAttribute(a, x) { this[a] = x; } });
   const pressed = btn(0, "1"), other = btn(0, "0");
   const seg = { querySelectorAll: () => [pressed, other] };
@@ -387,19 +387,119 @@ test("a pick answers at once and recomputes after the frame, folding quick click
   assert.equal(els.team.attrs["aria-busy"], "true");
   assert.match(sandbox.location.hash, /&picks=\w+\.\w+/, "the link updates at once");
   assert.equal(frames.length, 1, "one frame requested for both clicks");
+  assert.match(els.calc.textContent, /Simulating 40,000 seasons/, "says what it is doing");
   frames[0]();
   await settle();
-  // what one pick costs when it runs straight through (no frames to wait for)
-  const direct = render(data, "#ttu");
-  await settle();
-  let once = 0;
-  const sim1 = direct.sandbox.B12.simulate;
-  direct.sandbox.B12.simulate = (...a) => { once++; return sim1(...a); };
-  direct.handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "0", v: "1" } } : null) } });
-  assert.ok(once > 0);
-  assert.equal(sims, once, "two clicks, one recompute");
+  assert.equal(sims, 1, "two clicks, one run, for where they ended up");
   assert.equal(els.team.attrs["aria-busy"], undefined);
+  assert.equal(els.calc.textContent, "");
   assert.match(els.team.innerHTML, /class="rg-picks"/);
+});
+
+// A stand-in for the browser's Worker: runs the blob the page builds in its own context, and
+// passes every message through structuredClone, as the browser does.
+class FakeWorker {
+  constructor(url) {
+    const blob = require("buffer").resolveObjectURL(url);
+    this.ready = blob.text().then((src) => {
+      const w = vm.createContext({ console, Math, JSON });
+      w.self = w;
+      w.postMessage = (m) => { const c = structuredClone(m); setTimeout(() => this.onmessage({ data: c })); };
+      vm.runInContext(src, w);
+      this.w = w;
+    });
+    FakeWorker.made++;
+  }
+  postMessage(m) { const c = structuredClone(m); this.ready.then(() => this.w.onmessage({ data: c })); }
+  terminate() {}
+}
+FakeWorker.made = 0;
+function renderWithWorker(d, hash) {
+  // the page finds the engine's script among document.scripts
+  const r = render(d, hash, { Worker: FakeWorker, Blob, URL });
+  r.sandbox.document.scripts = pageScripts.map((textContent) => ({ src: "", textContent }));
+  return r;
+}
+const until = async (cond) => { for (let t = 0; t < 400 && !cond(); t++) await new Promise((r) => setTimeout(r, 25)); assert.ok(cond(), "timed out"); };
+
+test("simulated odds come from the worker, matching what the page computes itself", async () => {
+  const noExact = { ...data, exact: undefined };
+  const made = FakeWorker.made;
+  const w = renderWithWorker(noExact, "#ttu");
+  await until(() => w.els.team && /to reach the title game/.test(w.els.team.innerHTML));
+  assert.equal(FakeWorker.made, made + 1, "the page started a worker");
+  const here = render(noExact, "#ttu");
+  await settle();
+  assert.equal(w.els.team.innerHTML, here.els.team.innerHTML);
+  assert.equal(w.els.picker.innerHTML, here.els.picker.innerHTML);
+  // a pick: the click returns at once, the worker answers, the view matches a straight-through run
+  const pickIt = (h) => h.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "2", v: "0" } } : null) } });
+  const shown = w.els.team.innerHTML;
+  pickIt(w.handlers);
+  assert.equal(w.els.team.innerHTML, shown, "nothing computed inside the click");
+  assert.ok(w.els.calc.textContent, "a status line while it runs");
+  await until(() => w.els.team.innerHTML !== shown);
+  pickIt(here.handlers);
+  assert.equal(w.els.team.innerHTML, here.els.team.innerHTML);
+  assert.equal(w.els.calc.textContent, "");
+});
+
+test("one more pick shows estimated odds at once, then the full run's", async () => {
+  const noExact = { ...data, exact: undefined };
+  const frames = [];
+  const { els, handlers } = render(noExact, "#ttu", { requestAnimationFrame: (fn) => frames.push(fn) });
+  await settle();
+  while (frames.length) frames.shift()(); // the first view's run
+  await settle();
+  const pills = () => [...els.picker.innerHTML.matchAll(/id="pick-(\w+)"[\s\S]*?<span class="odds([^"]*)"><i[^>]*><\/i><b>([^<]+)<\/b>/g)].map((m) => ({ abbr: m[1], est: / est/.test(m[2]), label: m[3] }));
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "2", v: "0" } } : null) } });
+  const est = pills();
+  assert.ok(est.length && est.every((p) => p.est), "every pill marked as an estimate");
+  assert.match(els.calc.textContent, /Estimate shown, refining/);
+  assert.equal(els.picker.attrs["aria-busy"], undefined, "fresh estimates aren't dimmed");
+  assert.equal(els.team.attrs["aria-busy"], "true", "the rest of the view is");
+  frames.shift()();
+  await settle();
+  const full = pills();
+  assert.ok(full.every((p) => !p.est));
+  for (const f of full) {
+    const e = est.find((x) => x.abbr === f.abbr);
+    const n = (x) => (/^\d/.test(x) ? parseFloat(x) : x === "0%" ? 0 : null);
+    if (n(e.label) != null && n(f.label) != null) assert.ok(Math.abs(n(e.label) - n(f.label)) <= 3, `${f.abbr}: estimate ${e.label} vs ${f.label}`);
+  }
+  // undoing a pick (or several at once) has no estimate: the picker dims instead
+  handlers.click({ target: { id: "clearLocks", closest: () => null } });
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "3", v: "1" } } : null) } });
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "4", v: "1" } } : null) } });
+  assert.equal(els.picker.attrs["aria-busy"], "true");
+});
+
+test("a simulated league's no-pick view is precomputed with the data, and matches the page's own", async () => {
+  const { presim, inputsKey } = require("../exact.js");
+  const noExact = { ...data, exact: { skipped: "too many" } };
+  const withSim = { ...noExact, sim: JSON.parse(JSON.stringify(presim(noExact, inputsKey(noExact)))) };
+  for (const abbr of ["utah", "ttu", data.teams[data.teams.length - 1].abbr.toLowerCase()]) {
+    const pre = render(withSim, "#" + abbr);
+    let runs = 0;
+    const mainSims = pre.sandbox.B12.mainSims;
+    pre.sandbox.B12.mainSims = (...a) => { runs++; return mainSims(...a); };
+    await settle();
+    assert.equal(runs, 0, abbr + ": nothing simulated");
+    const live = render(noExact, "#" + abbr);
+    await settle();
+    assert.equal(pre.els.team.innerHTML, live.els.team.innerHTML, abbr);
+    assert.equal(pre.els.picker.innerHTML, live.els.picker.innerHTML, abbr);
+  }
+  // with a worker and no team in the link: straight to the leader, nothing to compute
+  const viaWorker = renderWithWorker(withSim, "");
+  await until(() => viaWorker.els.team && /to reach the title game/.test(viaWorker.els.team.innerHTML));
+  assert.match(text(viaWorker.els.team.innerHTML), /Utah Utes 7-0 Big 12/);
+  // data whose games no longer match is ignored
+  const stale = JSON.parse(JSON.stringify(withSim));
+  stale.sim.gameIds[0] = "nope";
+  const r = render(stale, "#utah");
+  await settle();
+  assert.match(text(r.els.team.innerHTML), /to reach the title game/);
 });
 
 test("a link cut short mid-escape opens the page on the default team", async () => {

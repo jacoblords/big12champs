@@ -64,10 +64,13 @@ jobs:
               }
               if (dir === "site/big10") {
                 if (!d.exact || !/over the 180s budget/.test(d.exact.skipped || "")) throw new Error(dir + ": expected simulated odds, got " + JSON.stringify(d.exact));
-                console.log("ok:", dir, "simulated:", d.exact.skipped);
+                // ...with the no-what-ifs view precomputed for every team
+                if (!d.sim || d.sim.key !== d.exact.key || d.sim.teams.length !== d.teams.length || !d.sim.totals.cond) throw new Error(dir + ": simulated view not precomputed");
+                console.log("ok:", dir, "simulated:", d.exact.skipped, "precomputed for", d.sim.teams.length, "teams");
                 continue;
               }
               if (!d.exact || d.exact.skipped || d.exact.teams.length !== d.teams.length) throw new Error(dir + ": exact odds missing");
+              if (d.sim) throw new Error(dir + ": exact odds carry no simulated view");
               const total = d.exact.teams.reduce((s, t) => s + t.p, 0);
               if (Math.abs(total - 2) > 1e-9) throw new Error(dir + ": title-game odds sum to " + total);
               console.log("ok:", dir, d.exact.finishes, "finishes");

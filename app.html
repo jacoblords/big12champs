@@ -60,6 +60,19 @@ html { scrollbar-gutter: stable; }
 .wrap[aria-busy="true"] { visibility: hidden; }
 /* odds being recomputed after a pick: dim the stale numbers, but only if it takes a moment */
 #picker[aria-busy="true"], #team[aria-busy="true"] { opacity: 0.55; cursor: progress; transition: opacity 0.15s 0.12s; }
+/* what is computing: a small pill fixed at the bottom of the screen, so it shows wherever the
+   visitor clicked (the rooting guide is far below the picker on a phone) and never moves the page.
+   Faded in after a beat so a quick update doesn't flash it. */
+.calc { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 6px); z-index: 10; margin: 0;
+  max-width: calc(100vw - 32px); padding: 7px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.12); font-size: 0.82rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; pointer-events: none; transition: opacity 0.15s, transform 0.15s; }
+.calc.on { opacity: 1; transform: translate(-50%, 0); transition-delay: 0.25s; }
+.calc.on::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--accent); vertical-align: 1px; animation: calcpulse 1s ease-in-out infinite alternate; }
+@keyframes calcpulse { from { opacity: 0.25; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .calc.on::before { animation: none; } }
+/* estimated while the full run is out: same size, quieter */
+.pick .odds.est b, .big .pct.est { color: var(--muted); }
 h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
 h2 { font-size: 1.7rem; text-transform: uppercase; }
 h3 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -272,6 +285,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
   <footer id="foot"></footer>
 </div>
+<p class="calc" id="calc" role="status" aria-live="polite"></p>
 
 <script>/*__ENGINE__*/</script>
 <script>
@@ -289,9 +303,9 @@ const LEAGUE_ID = DATA.league || "big12";
 const LEAGUES = DATA.leagues || [{ id: "big12", name: "Big 12", path: "", group: 4 }];
 const LG = LEAGUES.find((l) => l.id === LEAGUE_ID);
 const stepName = (s) => RULES.label[s];
-const N_MAIN = 40000, N_EXPLORE = 30000;
+const N_MAIN = B12.N_MAIN, N_EXPLORE = B12.N_EXPLORE, N_FORCED = B12.N_FORCED;
 let locks = new Array(P.length).fill(undefined);
-let main = null, uniform = null, cache = new Map(), sel = null;
+let sel = null;
 // rooting guide order: "week" (default) or "swing" (biggest first); remembered per browser
 let rgSort = "week";
 let heroSaved = null; // the big number while a hover preview replaces it
@@ -349,45 +363,55 @@ const EX = (() => {
   if (e.gameIds.some((id, k) => id !== P[k].id) || e.teams.some((t, k) => t.id !== T[k].id)) return null;
   return e;
 })();
-const exactMode = () => EX !== null && locks.every((l) => l === undefined);
+const exactMode = (lk = locks) => EX !== null && lk.every((l) => l === undefined);
+const keyOf = (lk) => lk.map((l) => (l === undefined ? "." : l)).join("");
+function lockKey() { return keyOf(locks); }
+
+// ---- Simulated odds: what-ifs set, or a league without exact odds ----
+// A set of what-ifs takes a few hundred ms to simulate, and each team's path search as long again
+// (seconds on a phone). That runs in a worker, off the page's thread, so the page answers clicks
+// at once; the results are cached by what-ifs (keyOf) and team. A simulated league's no-what-ifs
+// view comes precomputed with the data (DATA.sim), so most visits never wait at all.
+const totals = new Map();   // key -> { nSims, appear, first, cond } (B12.totals)
+const analyses = new Map(); // team + ":" + key -> B12.analyze
+const keysUsed = [];        // oldest first: the cache keeps the last few sets of what-ifs
+function remember(key) {
+  const at = keysUsed.indexOf(key);
+  if (at >= 0) keysUsed.splice(at, 1);
+  keysUsed.push(key);
+  while (keysUsed.length > 6) {
+    const old = keysUsed.shift();
+    totals.delete(old);
+    for (const k of [...analyses.keys()]) if (k.endsWith(":" + old)) analyses.delete(k);
+  }
+}
+const SIM = (() => {
+  const s = DATA.sim;
+  if (EX || !s || !s.totals || !s.teams || !s.gameIds || s.gameIds.length !== P.length) return null;
+  if (s.gameIds.some((id, k) => id !== P[k].id) || (s.teamIds || []).some((id, k) => id !== T[k].id)) return null;
+  return s;
+})();
+if (SIM) {
+  const key = keyOf(new Array(P.length).fill(undefined));
+  totals.set(key, SIM.totals);
+  SIM.teams.forEach((a, i) => analyses.set(i + ":" + key, a));
+  remember(key);
+}
+// The picker's odds while the real run is out: the previous run's runs where the newly picked
+// game already went that way (B12.totals cond). Shown marked as an estimate.
+let estimate = null; // { key, nSims, appear, first }
 function odds(i) {
-  return exactMode() ? { p: EX.teams[i].p, first: EX.teams[i].first } : { p: main.appear[i] / main.nSims, first: main.first[i] / main.nSims };
+  if (exactMode()) return { p: EX.teams[i].p, first: EX.teams[i].first };
+  const key = lockKey();
+  const t = totals.get(key) || (estimate && estimate.key === key ? estimate : null);
+  return { p: t.appear[i] / t.nSims, first: t.first[i] / t.nSims, est: t === estimate };
 }
-
-function lockKey() { return locks.map((l) => (l === undefined ? "." : l)).join(""); }
-
-function runMain() {
-  main = exactMode() ? null : B12.simulate(ctx, N_MAIN, locks, 1);
-  // every result a coin flip: reaches the rare finishes the main run misses (shared by all teams)
-  uniform = exactMode() ? null : B12.simulate(ctx, N_EXPLORE, locks, 2, { uniform: true });
-  cache = new Map();
-}
-
-// Below these odds a team's guaranteed path isn't searched from simulations: its winning finishes
-// are too rare for the samples to settle one (tested against exact answers), so it falls back to
-// the likeliest finish found.
-const NEED_MIN = 0.005;
-// The path the page shows for a guaranteed set of results: those results, the visitor's picks,
-// and the favorite in every other game (the likeliest way the rest goes; any way works).
-function needMask(need) {
-  let m = 0;
-  P.forEach((g, k) => {
-    const v = locks[k] !== undefined ? locks[k] : (need.games >>> k) & 1 ? (need.homeWins >>> k) & 1 : g.pHome >= 0.5 ? 1 : 0;
-    if (v) m |= 1 << k;
-  });
-  return m >>> 0;
-}
-function withNeed(res, i, need) {
-  if (!need) return res;
-  const mask = needMask(need);
-  if (!B12.qualifies(ctx, mask, i)) return res; // only a coin toss could do this; show the plain path
-  return { ...res, need, path: { mask, prob: need.prob }, ex: B12.explain(ctx, mask) };
-}
+const ready = () => sel != null && (exactMode() || (totals.has(lockKey()) && analyses.has(sel + ":" + lockKey())));
 
 function teamAnalysis(i) {
-  const key = i + ":" + lockKey();
-  if (cache.has(key)) return cache.get(key);
   if (exactMode()) {
+    const key = i + ":exact";
+    if (analyses.has(key)) return analyses.get(key);
     const e = EX.teams[i];
     const path = e.best ? { mask: e.best.mask >>> 0, prob: e.best.prob } : null;
     const res = {
@@ -396,29 +420,14 @@ function teamAnalysis(i) {
       imp: { p: e.p, hits: Infinity, games: e.games }, path, ex: path ? B12.explain(ctx, path.mask) : null,
     };
     // older data (or a run out of time) has no guaranteed path: keep the likeliest finish
-    if (e.need) Object.assign(res, withNeed(res, i, { ...e.need, exact: true }));
-    cache.set(key, res);
+    if (e.need) Object.assign(res, B12.withNeed(ctx, res, i, { ...e.need, exact: true }, locks));
+    analyses.set(key, res);
     return res;
   }
-  const mi = B12.impact(ctx, main, i);
-  let imp = mi, explore = null, approx = false;
-  if (mi.hits < 1500) {
-    explore = uniform;
-    const ei = B12.impact(ctx, explore, i);
-    if (ei.hits > mi.hits) { imp = ei; approx = true; }
-  }
-  const fw = B12.simulate(ctx, 15000, locks, 3, { forceTeam: i });
-  const pWinOut = fw.appear[i] / fw.nSims;
-  let fwu = null;
-  if (mi.hits < 1500) fwu = B12.simulate(ctx, N_EXPLORE, locks, 4, { uniform: true, forceTeam: i });
-  const path = B12.bestPath(ctx, [main, explore, fw, fwu], i, locks);
-  const ex = path ? B12.explain(ctx, path.mask) : null;
-  const pMain = mi.p;
-  const p = mi.hits >= 50 ? pMain : imp.p;
-  let res = { p, approx: mi.hits < 50 && approx, first: main.first[i] / main.nSims, pWinOut, hasOwnGames: remaining[i] > 0, imp, path, ex };
-  if (path && p >= NEED_MIN) res = withNeed(res, i, B12.guaranteedPathSim(ctx, i, [main, uniform, fw, fwu], locks));
-  cache.set(key, res);
-  return res;
+  const a = analyses.get(i + ":" + lockKey());
+  // precomputed analyses leave out the explanation; it is rebuilt from the path's finish
+  if (a && a.path && !a.ex) a.ex = B12.explain(ctx, a.path.mask);
+  return a;
 }
 
 // Each league's rulebook, in plain words. Step text is keyed by the engine's step ids; a league
@@ -562,11 +571,11 @@ function renderRules() {
 function renderPicker() {
   const order = T.map((_, i) => i).sort((a, b) => odds(b).p - odds(a).p || curW[b] - curW[a]);
   $("picker").innerHTML = order.map((i) => {
-    const p = odds(i).p;
+    const o = odds(i), p = o.p;
     const fill = p > 0 ? Math.max(p * 100, 3) : 0; // keep a sliver visible for long shots
     const label = !P.length ? (finalSeeds().includes(i) ? "#" + (finalSeeds().indexOf(i) + 1) : "Out") : pct(p);
     return `<button class="pick${p === 0 ? " out" : ""}" style="--team:${safeColor(T[i].color)}" aria-pressed="${i === sel}" data-t="${i}" id="pick-${esc(T[i].abbr)}">
-      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span></button>`;
+      ${logo(i)}<span class="ab">${esc(T[i].abbr)}</span><span class="rec">${curW[i]}-${curL[i]}</span><span class="odds${p >= 0.1 ? " hot" : ""}${o.est ? " est" : ""}"><i style="width:${fill.toFixed(1)}%"></i><b>${label}</b></span></button>`;
   }).join("");
 }
 
@@ -776,7 +785,7 @@ function renderTeam() {
   if (!A.path) {
     pathHTML = A.exact
       ? `<div class="panel"><header><h3>Eliminated</h3><p>None of the ${(2 ** P.length).toLocaleString("en-US")} possible combinations of the remaining results puts ${esc(t.short)} in the title game.</p></header></div>`
-      : `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + 15000).toLocaleString("en-US")} simulated finishes${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. A very unlikely path may still exist; simulation can't prove it doesn't.</p></header></div>`;
+      : `<div class="panel"><header><h3>No path found</h3><p>None of ${(N_MAIN + 2 * N_EXPLORE + N_FORCED).toLocaleString("en-US")} simulated finishes${locks.some((l) => l !== undefined) ? " under your what-ifs" : ""}, including ones where ${esc(t.short)} wins every remaining game and the rest are coin flips, puts them in the title game. A very unlikely path may still exist; simulation can't prove it doesn't.</p></header></div>`;
   } else {
     const m = A.path.mask;
     const pd = pathDetails(i, A);
@@ -952,27 +961,183 @@ function writeHash() {
   try { history.replaceState(null, "", h); } catch (e) { location.hash = h; }
 }
 
-// Responsiveness (INP): after a pick, the simulations and the path search take a few hundred ms
-// (well over a second on a phone). Run inside the click, that work held the next frame and the
-// button looked dead. So a click updates the state and the button at once, and the recompute runs
-// after that frame is painted; clicks made meanwhile fold into the one recompute.
-let refreshQueued = false, refreshSim = false;
-function refresh(sim) {
-  refreshSim = refreshSim || sim;
-  if (typeof requestAnimationFrame !== "function") return runRefresh(); // no frames to wait for
-  if (refreshQueued) return;
-  refreshQueued = true;
-  for (const id of ["picker", "team"]) $(id).setAttribute("aria-busy", "true");
-  requestAnimationFrame(() => setTimeout(runRefresh)); // a timeout set in rAF runs after the paint
+// Responsiveness (INP): a click changes the state, the button and the link at once and returns.
+// Whatever the new view needs is computed after that (in the worker), and the view is rendered
+// when it is all in. Meanwhile the stale view is dimmed, a status line says what is running, and
+// a single new pick shows estimated odds straight away (see estimate).
+
+// The worker: engine.js (already on the page) plus workerMain, as a blob. Pages that can't start
+// one (or a worker that fails) compute here instead, after the click's frame is painted.
+function workerMain() {
+  let wctx = null;
+  const sims = new Map(); // key -> mainSims, the last few
+  const simsFor = (key, lk) => {
+    let s = sims.get(key);
+    if (s) sims.delete(key);
+    else s = B12.mainSims(wctx, lk);
+    sims.set(key, s);
+    if (sims.size > 3) sims.delete(sims.keys().next().value);
+    return s;
+  };
+  self.onmessage = (e) => {
+    const m = e.data;
+    if (m.type === "init") { wctx = B12.build(m.data); return; }
+    try {
+      const s = simsFor(m.key, m.locks);
+      self.postMessage({ id: m.id, out: m.kind === "totals" ? B12.totals(wctx, s) : B12.analyze(wctx, s, m.team, m.locks) });
+    } catch (err) {
+      self.postMessage({ id: m.id, error: String((err && err.message) || err) });
+    }
+  };
 }
-function runRefresh() {
-  refreshQueued = false;
-  const sim = refreshSim;
-  if (sim) runMain();
-  refreshSim = false;
+let worker = null, inFlight = null, jobSeq = 0;
+function startWorker() {
+  if (typeof Worker !== "function" || typeof Blob !== "function" || typeof URL === "undefined" || !document.scripts) return;
+  const src = [...document.scripts].find((x) => !x.src && x.textContent.includes("root.B12 = api"));
+  if (!src) return;
+  try {
+    const url = URL.createObjectURL(new Blob([src.textContent, "\n;(" + workerMain + ")();\n"], { type: "text/javascript" }));
+    worker = new Worker(url);
+    worker.onmessage = onResult;
+    worker.onerror = (e) => { if (e && e.preventDefault) e.preventDefault(); workerFailed(); };
+    worker.postMessage({ type: "init", data: DATA });
+  } catch (e) { worker = null; }
+}
+function workerFailed() {
+  if (worker) worker.terminate();
+  worker = null; inFlight = null;
+  refresh();
+}
+// The one thing the current view still needs, most urgent first; null when it has everything.
+function nextJob() {
+  if (exactMode()) return null;
+  const key = lockKey();
+  if (!totals.has(key)) return { kind: "totals", key, locks: locks.slice() };
+  if (sel != null && !analyses.has(sel + ":" + key)) return { kind: "team", key, locks: locks.slice(), team: sel };
+  return null;
+}
+function store(job, out) {
+  if (job.kind === "totals") totals.set(job.key, out);
+  else analyses.set(job.team + ":" + job.key, out);
+  remember(job.key);
+}
+// one job at a time: the next is chosen when it is done, so it is always for the latest view (a job
+// for a view already left still finishes, and is kept in case the visitor comes back to it)
+function pump() {
+  if (!worker || inFlight) return;
+  const job = nextJob();
+  if (!job) return;
+  inFlight = { ...job, id: ++jobSeq };
+  worker.postMessage(inFlight);
+}
+function onResult(e) {
+  const job = inFlight;
+  if (!job || e.data.id !== job.id) return;
+  inFlight = null;
+  if (e.data.error) return workerFailed();
+  store(job, e.data.out);
+  settle();
+}
+// without a worker: same jobs, on this thread
+const simsHere = new Map();
+function runHere(job) {
+  let s = simsHere.get(job.key);
+  if (!s) { simsHere.clear(); s = B12.mainSims(ctx, job.locks); simsHere.set(job.key, s); }
+  store(job, job.kind === "totals" ? B12.totals(ctx, s) : B12.analyze(ctx, s, job.team, job.locks));
+}
+
+let shownKey = null;    // the what-ifs the rendered view was computed for
+let pendingHere = false; // a no-worker compute is waiting for the next frame
+// no team named in the link: the leader, once the odds to break its ties are in
+function pickDefault() {
+  if (sel == null && (exactMode() || totals.has(lockKey()))) sel = defaultTeam();
+}
+function refresh() {
+  pickDefault();
+  if (ready()) return settle();
+  showPending();
+  if (worker) return pump();
+  if (typeof requestAnimationFrame !== "function") { for (let j; (j = nextJob());) runHere(j); return settle(); }
+  if (pendingHere) return;
+  pendingHere = true;
+  // a timeout set in rAF runs after the paint, so the click's own frame shows first
+  requestAnimationFrame(() => setTimeout(() => {
+    pendingHere = false;
+    for (let j; (j = nextJob());) runHere(j);
+    settle();
+  }));
+}
+// Render the view if everything for it is in; otherwise keep waiting (and keep the worker busy).
+function settle() {
+  pickDefault();
+  if (!ready()) { showPending(); return pump(); }
+  estimate = null;
+  const key = exactMode() ? "exact" : lockKey(), picksChanged = shownKey !== null && key !== shownKey;
+  shownKey = key;
+  shownSel = sel;
   renderAll();
-  if (sim) announce();
-  if (typeof requestAnimationFrame === "function") for (const id of ["picker", "team"]) $(id).removeAttribute("aria-busy");
+  setBusy(false);
+  setStatus("");
+  if (picksChanged) announce(); // screen readers hear the new odds once they're in
+  if (firstRender) {
+    // tidy a shared link: an unknown team becomes the one shown, picks for games played since drop out
+    if (location.hash) writeHash();
+    firstRender(); firstRender = null;
+  }
+}
+let firstRender;
+const rendered = new Promise((r) => { firstRender = r; });
+
+// The estimate: exactly one more result picked than the shown view, which has its run's split by
+// game. Only from a decent sample; otherwise the picker just waits.
+function makeEstimate() {
+  const key = lockKey();
+  if (totals.has(key) || (estimate && estimate.key === key)) return;
+  estimate = null;
+  const base = shownKey && shownKey !== "exact" ? totals.get(shownKey) : null;
+  if (!base || !base.cond) return;
+  let k = -1;
+  for (let j = 0; j < P.length; j++) {
+    const was = shownKey[j], now = locks[j] === undefined ? "." : String(locks[j]);
+    if (was === now) continue;
+    if (was !== "." || k >= 0) return; // a pick undone, or more than one new pick
+    k = j;
+  }
+  if (k < 0) return;
+  const c = k * 2 + locks[k], n = base.cond.n[c], N = T.length;
+  if (n < 2000) return;
+  estimate = { key, nSims: n, appear: Array.from(base.cond.appear.slice(c * N, c * N + N)), first: Array.from(base.cond.first.slice(c * N, c * N + N)) };
+}
+// What the visitor sees while waiting. Nothing moves: the picker's pills and the big number take
+// estimated values in place (same widths), the rest of the view dims, and the status line (its
+// space always kept) says what is running.
+function showPending() {
+  makeEstimate();
+  const est = estimate && estimate.key === lockKey();
+  if (est) {
+    renderPicker();
+    const pctEl = document.getElementById("heroPct");
+    if (pctEl && sel === shownSel) { pctEl.innerHTML = pct(odds(sel).p); if (pctEl.classList) pctEl.classList.add("est"); heroSaved = null; }
+  }
+  setBusy(true, est);
+  const key = lockKey();
+  setStatus(exactMode() ? "" : !totals.has(key)
+    ? (est ? "Estimate shown, refining…" : `Simulating ${N_MAIN.toLocaleString("en-US")} seasons…`)
+    : `Finding ${sel == null ? "the leader" : T[sel].short}'s likeliest path…`);
+}
+let shownSel = null; // the team the rendered view is about
+function setBusy(on, pickerFresh) {
+  for (const id of ["picker", "team"]) {
+    const el = $(id);
+    if (!el.setAttribute) continue;
+    if (on && !(id === "picker" && pickerFresh)) el.setAttribute("aria-busy", "true");
+    else el.removeAttribute("aria-busy");
+  }
+}
+function setStatus(msg) {
+  const el = $("calc");
+  el.textContent = msg;
+  if (el.classList) el.classList.toggle("on", !!msg);
 }
 // A pick re-renders the big number out of a screen reader's sight: read the new odds out politely.
 function announce() {
@@ -991,7 +1156,7 @@ function press(btn, group) {
 function select(i, push) {
   sel = i;
   if (push) writeHash();
-  refresh(false);
+  refresh();
 }
 
 document.addEventListener("click", (e) => {
@@ -1002,7 +1167,7 @@ document.addEventListener("click", (e) => {
     const k = +seg.dataset.k, v = seg.dataset.v;
     locks[k] = v === "" ? undefined : +v;
     press(seg, ".seg");
-    writeHash(); refresh(true);
+    writeHash(); refresh();
     return;
   }
   const sort = e.target.closest(".rg-sort button");
@@ -1011,17 +1176,17 @@ document.addEventListener("click", (e) => {
     try { localStorage.setItem("rgSort", rgSort); } catch (e) {}
     // through refresh, not straight to renderTeam: a pick's recompute may still be queued, and
     // rendering before it would cache this team's analysis against the old simulations
-    press(sort, ".rg-sort"); writeHash(); refresh(false);
+    press(sort, ".rg-sort"); writeHash(); refresh();
     return;
   }
-  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); writeHash(); refresh(true); return; }
+  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); writeHash(); refresh(); return; }
   const wo = e.target.closest("#winOut");
   if (wo) {
     // set (or undo) every remaining game of this team as a win; other picks are left alone
     const team = +wo.dataset.team, on = winsOutLocked(team);
     for (const [g, k] of ownGames(team)) locks[k] = on ? undefined : g.h === team ? 1 : 0;
     wo.setAttribute && wo.setAttribute("aria-pressed", String(!on));
-    writeHash(); refresh(true);
+    writeHash(); refresh();
   }
 });
 // hovering a result, or tabbing to it, previews the selected team's odds under it in the big number
@@ -1050,12 +1215,17 @@ window.addEventListener("hashchange", () => {
   if (h.team >= 0) sel = h.team;
   if (h.sort) rgSort = h.sort;
   const next = h.locks || new Array(P.length).fill(undefined);
-  const changed = next.join() !== locks.join();
   locks = next;
   // tidy what it couldn't use (an unknown team like "#zzz", stale picks) out of the address bar
   writeHash();
-  refresh(changed);
+  refresh();
 });
+
+// open on the conference leader: best conference win percentage, ties broken by title-game odds
+function defaultTeam() {
+  const pctOf = (k) => (curW[k] + curL[k] ? curW[k] / (curW[k] + curL[k]) : 0);
+  return T.map((_, k) => k).sort((a, b) => pctOf(b) - pctOf(a) || odds(b).p - odds(a).p)[0];
+}
 
 // boot
 (function () {
@@ -1083,18 +1253,11 @@ window.addEventListener("hashchange", () => {
   const h = parseHash();
   if (h.locks) locks = h.locks;
   if (h.sort) rgSort = h.sort; // for this view only; the visitor's own choice stays saved
-  runMain();
-  let i = h.team;
-  if (i < 0) {
-    // open on the conference leader: best conference win percentage, ties broken by title-game odds
-    const pctOf = (k) => (curW[k] + curL[k] ? curW[k] / (curW[k] + curL[k]) : 0);
-    i = T.map((_, k) => k).sort((a, b) => pctOf(b) - pctOf(a) || odds(b).p - odds(a).p)[0];
-  }
-  sel = i;
-  renderAll();
-  // tidy a shared link: an unknown team becomes the one shown, picks for games played since drop out
-  if (location.hash) writeHash();
+  sel = h.team >= 0 ? h.team : null; // none named: the leader, once its odds are in (settle)
+  startWorker();
+  refresh();
 })();
+return rendered;
 }
 
 // Show the page once it is whole: rendered, and its fonts in (swapping a font in later reflows the
@@ -1104,10 +1267,13 @@ function reveal() {
   const show = () => document.getElementById("page").removeAttribute("aria-busy");
   Promise.race([fonts, new Promise((r) => setTimeout(r, 500))].filter(Boolean)).then(show, show);
 }
-if (EMBEDDED) { try { app(EMBEDDED); } finally { reveal(); } }
+// app() resolves once the first view is rendered (simulated odds may still be computing); the
+// page shows by then, or after 10 s in case the computing never comes back.
+const firstView = (rendered) => Promise.race([rendered, new Promise((r) => setTimeout(r, 10000))]);
+if (EMBEDDED) Promise.resolve().then(() => firstView(app(EMBEDDED))).finally(reveal);
 else fetch("page-data.json", { cache: "no-cache" })
   .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then(app)
+  .then((d) => firstView(app(d)))
   .catch((e) => { document.getElementById("lede").textContent = `Couldn't load the standings data (${e.message}). Reload the page to try again.`; })
   .finally(reveal);
 </script>
