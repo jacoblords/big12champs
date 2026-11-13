@@ -14,16 +14,19 @@
 //     a tie for first place, but two teams are tied for second place, the two-team tiebreaker
 //     policy will apply". The numbered list goes on: standings walk (tied groups counted together),
 //     common conference opponents, CFP ranking on the Tuesday before week 13, SportSource Team
-//     Rating Score, coin toss. It doesn't list head-to-head for a tie for second; every reporter
-//     covering the race uses it (MWC Connection, Fresno Bee), and in a round robin the listed steps
-//     would favor the team that lost the game. The engine applies head-to-head first.
+//     Rating Score, coin toss. It doesn't list head-to-head for a tie for second; the conference's own
+//     Nov. 11 scenarios (below) need it: all nine of its statements hold with head-to-head first,
+//     and six fail without it (73 of the 256 finishes change, checked with a patched engine).
+//     Reporters use it too (MWC Connection, Fresno Bee). The engine applies head-to-head first.
 //   Three or more: 1. head-to-head ("If every tied team has not played one another, the process
 //     moves to the next criterion"); 2. common conference opponents; 3. standings walk, tied groups
 //     counted together; 4. "Combined Conference winning percentage of Conference opponents";
 //     5. SportSource Team Rating Score (private: FPI stands in); 6. coin toss. "Once one team gains
 //     an advantage and is seeded, the remaining teams will restart ... If the process reduces the
 //     tie to two teams, the two-team procedure will then be applied."
-//   Scenarios: MWC Connection, "Stats Corner: PAC-12 Title Race Four Teams, One Trip to Boise"
+//   The conference's own scenarios: "This Week in Pac-12 Football - Week 11" (pac-12.com, Nov. 11,
+//     2026, "Chase for the Champ Game"), written with the same eight games left.
+//   Press scenarios: MWC Connection, "Stats Corner: PAC-12 Title Race Four Teams, One Trip to Boise"
 //     (Nov. 12, 2026, before week 11); Fresno Bee, "Little room for error" (Nov. 9, 2026). Both
 //     were written with the same eight games left as the Nov. 13 snapshot.
 "use strict";
@@ -124,6 +127,7 @@ test("a step that drops one of three sends the other two back to head-to-head", 
 // the two rule sets. (Outside a canceled game, a full round robin never reaches the first two.)
 
 test("not everyone played (a canceled game): a team that lost to all the others stays in (unlike the SEC)", () => {
+  // (Head-to-head is skipped altogether, so nobody comes out at step 1 either way.)
   const table = (rules) => standingsTable(4, {
     records: [[7, 0], [5, 1], [5, 1], [5, 1]],
     beat: [[1, 3], [2, 3]],
@@ -132,6 +136,36 @@ test("not everyone played (a canceled game): a team that lost to all the others 
   });
   assert.deepEqual(seeds(table(P12)), { seeds: ["A", "D"], steps: ["BCD>D:d"] });
   assert.deepEqual(seeds(table(B.RULES.sec)), { seeds: ["A", "B"], steps: ["BCD-D:a", "BC>B:d"] });
+});
+
+test("not everyone played (a canceled game): head-to-head is skipped, even for a team that beat all the others (unlike the Big 12)", () => {
+  // "If every tied team has not played one another, the process moves to the next criterion."
+  // A, B, C 5-1; B-C was canceled; A beat B and C; D beat A and lost to B and C. Step 2: against D,
+  // A is 0-1, B and C 1-0, so A drops out. The Big 12 seeds A at head-to-head first.
+  const table = (rules) => standingsTable(4, {
+    records: [[5, 1], [5, 1], [5, 1], [3, 3]],
+    beat: [[0, 1], [0, 2], [3, 0], [1, 3], [2, 3]],
+    fpi: { 1: 5, 2: 3 },
+    rules,
+  });
+  assert.equal(P12.h2hAllPlayedOnly, true);
+  const p12 = seeds(table(P12));
+  assert.deepEqual(p12.seeds.slice().sort(), ["B", "C"]);
+  assert.equal(p12.steps[0], "ABC-A:b");
+  assert.deepEqual(seeds(table(B.RULES.big12)), { seeds: ["A", "B"], steps: ["ABC>A:a", "BC>B:f"] });
+});
+
+test("the conference's own scenarios rule out the other readings of the gaps in the text", () => {
+  // Checked with a patched engine (see the header): without head-to-head for a tie for second, six
+  // of the nine Nov. 11 statements fail; if nobody dropped out of a tie when a step leaves several
+  // level at the top, two fail (finish 69 is one where it matters). Here, finish 69 as the engine
+  // runs it: Boise State 6-1; Texas State, Oregon State, San Diego State and Utah State 4-3, with
+  // Texas State and San Diego State 2-1 among them. Oregon State and Utah State drop out, and San
+  // Diego State beat Texas State.
+  const ex = B.explain(ctx, 69);
+  assert.deepEqual(ex.seeds.map(ab), ["BOIS", "SDSU"]);
+  assert.deepEqual(ex.trace.map((t) => [t.step, t.winner != null ? ab(t.winner) : "-" + t.cut.map(ab).sort().join()]),
+    [["a", "-ORST,USU"], ["a", "SDSU"]]);
 });
 
 test("the walk counts a tied group of opponents together (unlike the SEC)", () => {
@@ -161,7 +195,10 @@ test("seeds go in the order teams come out: no re-seeding of the two who get in 
 test("after a cut, three still level start over at head-to-head (unlike the Big Ten)", () => {
   const table = (rules) => standingsTable(7, {
     records: [[7, 0], [5, 2], [5, 2], [5, 2], [5, 2], [2, 5], [1, 6]],
-    beat: [[1, 2], [1, 3], [1, 5], [2, 5], [3, 5], [5, 4]],
+    // B, C, D all met (B 2-0, C 1-1); E never met B, so step 1 doesn't apply to all four. E lost
+    // to F, so step 2 drops E. Restarted, B, C, D all played: B is in on head-to-head. The Big Ten
+    // goes on instead (step 3 even: F only), and step 4 picks C.
+    beat: [[1, 2], [1, 3], [2, 3], [1, 5], [2, 5], [3, 5], [5, 4]],
     sos: { 1: [20, 42], 2: [24, 42], 3: [22, 42], 4: [25, 42] },
     rules,
   });
@@ -216,4 +253,54 @@ test("head-to-head settles a two-team tie for #2 either way: San Diego State ove
   };
   check("SDSU and TXST tied for #2", (f) => tiedForSecond(f, "SDSU", "TXST"), (f) => f.pair.has("SDSU"));
   check("ORST and SDSU tied for #2", (f) => tiedForSecond(f, "ORST", "SDSU"), (f) => f.pair.has("ORST"));
+});
+
+// ---- the Pac-12's own scenarios, "This Week in Pac-12 Football - Week 11" (Nov. 11, 2026) ----
+
+test("Pac-12, Nov. 11: six of the eight teams are still in contention", () => {
+  const alive = ctx.teams.map((t) => t.abbr).filter((t) => finishes.some((f) => f.pair.has(t)));
+  assert.deepEqual(alive.sort(), ["BOIS", "FRES", "ORST", "SDSU", "TXST", "USU"]);
+});
+
+test("Pac-12, Nov. 11: a Boise State win this weekend clinches a spot and the home game", () => {
+  // "1 win away from clinching not only a spot ... a win this weekend would also mean the
+  // Broncos would be hosting the game"
+  check("BOIS wins week 11", (f) => f.won("BOIS", 11), (f) => f.first === "BOIS");
+});
+
+test("Pac-12, Nov. 11: if Boise State loses both, Oregon State or San Diego State at 5-2 can host", () => {
+  // "the Beavers and Aztecs would also be in contention to host ... should they get to 5 conference wins"
+  for (const t of ["ORST", "SDSU"]) {
+    assert.ok(finishes.some((f) => f.wins("BOIS") === 0 && f.rec(t) === "5-2" && f.first === t), t);
+  }
+});
+
+test("Pac-12, Nov. 11: of the four teams at 3-2, only San Diego State is guaranteed a spot at 5-2", () => {
+  check("SDSU 5-2", (f) => f.rec("SDSU") === "5-2", (f) => f.pair.has("SDSU"));
+  for (const t of ["TXST", "ORST", "USU"]) {
+    assert.ok(finishes.some((f) => f.rec(t) === "5-2" && !f.pair.has(t)), t + " can miss at 5-2");
+  }
+});
+
+test("Pac-12, Nov. 11: Oregon State over Boise State and Utah State over San Diego State clinch Boise State a spot, not the home game", () => {
+  const n = check("ORST and USU win", (f) => f.beat("ORST", "BOIS") && f.beat("USU", "SDSU"), (f) => f.pair.has("BOIS"));
+  assert.equal(n, 64);
+  const hosts = new Set(finishes.filter((f) => f.beat("ORST", "BOIS") && f.beat("USU", "SDSU")).map((f) => f.first));
+  assert.ok(hosts.has("BOIS") && hosts.size > 1, "host still undecided");
+});
+
+test("Pac-12, Nov. 11: Utah State must win this week", () => {
+  check("USU loses week 11", (f) => f.lost("USU", 11), (f) => !f.pair.has("USU"));
+});
+
+test("Pac-12, Nov. 11: Texas State is out with a loss AND an Oregon State win, but not with either alone", () => {
+  check("TXST loses and ORST wins", (f) => f.lost("TXST", 11) && f.beat("ORST", "BOIS"), (f) => !f.pair.has("TXST"));
+  assert.ok(finishes.some((f) => f.lost("TXST", 11) && !f.beat("ORST", "BOIS") && f.pair.has("TXST")), "a loss alone");
+  assert.ok(finishes.some((f) => f.won("TXST", 11) && f.beat("ORST", "BOIS") && f.pair.has("TXST")), "an Oregon State win alone");
+});
+
+test("Pac-12, Nov. 11: Fresno State is out with a loss, or an Oregon State or San Diego State win", () => {
+  check("FRES loses", (f) => f.lost("FRES", 11), (f) => !f.pair.has("FRES"));
+  check("ORST beats BOIS", (f) => f.beat("ORST", "BOIS"), (f) => !f.pair.has("FRES"));
+  check("SDSU beats USU", (f) => f.beat("SDSU", "USU"), (f) => !f.pair.has("FRES"));
 });

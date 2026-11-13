@@ -75,8 +75,8 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   three-team steps are the Big 12's minus total wins, with SportSource's Team Rating Score (FPI
   stands in), nobody dropped for losing to all the others, tied opponents in the walk counted
   together, and seeds in the order they come out. Its two-team list leaves head-to-head out for a
-  tie for second; the site uses it, as reporters do, since in a round robin the listed steps would
-  favor the team that lost the game. In a round robin, common opponents and strength of schedule
+  tie for second; the site uses it, as the conference does: all nine statements in its own Nov. 11,
+  2026 scenarios hold with it, and six fail without it. In a round robin, common opponents and strength of schedule
   can never split a tie that head-to-head didn't, so the walk or the rating decides the rest. No
   past seasons exist to replay; the tests check each clause and reporters' November 2026 scenarios
   over every finish. With 8 games left it is the smallest enumeration (256 finishes).
@@ -165,7 +165,8 @@ python3 -m unittest discover -s tests       # fetcher caching rules against a fa
   finishes where step 4 is an exact tie, which the sheet didn't consider.
 - `tests/pac12.test.js`: the Pac-12's 2026 procedure clause by clause on hand-built tables and
   on real finishes from the Nov. 13 snapshot, each place it differs from another league, and the
-  MWC Connection and Fresno Bee scenarios from Nov. 9-12, 2026 over all 256 finishes.
+  conference's own Nov. 11, 2026 scenarios and the MWC Connection and Fresno Bee ones from Nov. 9-12,
+  over all 256 finishes.
 - `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
   hand-built standings table for each rule and corner case (sweep rule, restart after a
   seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
