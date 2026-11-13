@@ -85,8 +85,10 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     shows ESPN's clock, score and in-game win-probability chart. Links go to ESPN Gamecast,
     r/CFB and X; nothing is embedded. r/CFB's game threads are posted by u/CFB_Referee as
     "[Game Thread] BYU @ Utah (12:00 PM ET)", with full school names where ESPN's short names
-    abbreviate, so the link searches this past week's posts by that account with "Game Thread"
-    and the title words both names share (dropping "St"/"State").
+    abbreviate, so the link searches that account's posts for "Game Thread" AND the title words
+    both names share (dropping "St"/"State"), newest first. Reddit ignores the time limit on such
+    a query, so the link shows only from two hours before kickoff, once the newest match is this
+    year's thread rather than last year's.
 
   Nothing on it is live to the second. It updates with the 15-minute fetch on game days.
 - **Adding a league:** see [docs/adding-a-league.md](docs/adding-a-league.md): the rules

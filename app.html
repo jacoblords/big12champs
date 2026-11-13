@@ -770,12 +770,15 @@ function wpChart(g, a, h) {
 }
 // r/CFB's game threads are posted by u/CFB_Referee as "[Game Thread] BYU @ Utah (12:00 PM ET)"
 // with full school names, while ESPN's short names abbreviate ("Kansas St"). So the search asks for
-// that author's "Game Thread" titles (search drops the brackets; "Postgame Thread" doesn't match)
-// with the title words the two names agree on (dropping "St"/"State"), posted this past week.
+// that author's "Game Thread" titles with the title words the two names agree on (dropping
+// "St"/"State"). Every term is joined with AND: without it Reddit matches any one of them. Reddit
+// ignores the time limit on such a query, so it's sorted newest first, and the card offers the link
+// only from two hours before kickoff (threads go up about an hour before), when the newest match
+// is this year's game rather than last year's.
 function threadQuery(a, h) {
   const words = (side) => side.i === undefined ? []
     : T[side.i].short.split(/\s+/).filter((w) => w && !/^(st\.?|state)$/i.test(w) && /^[\p{L}\p{N}&'.-]+$/u.test(w));
-  return ['author:CFB_Referee', 'title:"Game Thread"', ...[...words(a), ...words(h)].map((w) => "title:" + w)].join(" ");
+  return ['author:CFB_Referee', 'title:"Game Thread"', ...[...words(a), ...words(h)].map((w) => "title:" + w)].join(" AND ");
 }
 let focusTeam = null; // the team clicked in the race: highlighted through the games
 function gameCard(g, top, dim) {
@@ -808,9 +811,10 @@ function gameCard(g, top, dim) {
     </div>`;
   } else if (S) stakes = `<p class="gc-quiet">Neither result moves anyone's title-game odds by a point.</p>`;
   const q = `${a.name} ${h.name}`;
+  const threadOpen = g.timeValid !== false && !g.canceled && Date.now() >= new Date(g.date).getTime() - 2 * 3600e3;
   const links = `<div class="gc-links">
     <a href="https://www.espn.com/college-football/game/_/gameId/${encodeURIComponent(g.id)}" target="_blank" rel="noopener" title="ESPN Gamecast">ESPN</a>
-    <a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent(threadQuery(a, h))}&amp;restrict_sr=1&amp;sort=new&amp;t=week" target="_blank" rel="noopener" title="The r/CFB game thread">r/CFB</a>
+    ${threadOpen ? `<a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent(threadQuery(a, h))}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener" title="The r/CFB game thread">r/CFB</a>` : ""}
     <a href="https://x.com/search?q=${encodeURIComponent(q)}&amp;f=live" target="_blank" rel="noopener" title="Live posts on X">X</a></div>`;
   const mine = focusTeam != null && (a.i === focusTeam || h.i === focusTeam);
   return `<article data-gid="${esc(g.id)}" class="gc${top ? " top" : ""}${mine ? " mine" : ""}${dim ? " dim" : ""}"${mine ? ` style="--team:${safeColor(T[focusTeam].color)}"` : ""}>${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;

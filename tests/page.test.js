@@ -986,11 +986,9 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(gd, /Sat · time TBD · FOX/, "an unset kickoff shows its day in Eastern time, not 5 hours early");
   assert.equal((els.gameday.innerHTML.match(/Biggest stakes/g) || []).length, 1);
   assert.match(gd, /Title-game odds If UTAH If TCU/);
-  // r/CFB: title words, this past week ("Kansas St" searches as Kansas, matching "Kansas State")
-  assert.match(els.gameday.innerHTML, /reddit\.com\/r\/CFB\/search\/\?q=author%3ACFB_Referee%20title%3A%22Game%20Thread%22%20title%3AUtah%20title%3ATCU&amp;restrict_sr=1&amp;sort=new&amp;t=week" target="_blank" rel="noopener" title="The r\/CFB game thread">r\/CFB<\/a>/);
-  const ksu = gameday().games.find((g) => g.week === 12 && [g.home, g.away].includes(data.teams.find((t) => t.abbr === "KSU").id));
-  if (ksu) assert.match(els.gameday.innerHTML, /q=author%3ACFB_Referee%20title%3A%22Game%20Thread%22[^"]*title%3AKansas(?!%20St)/);
-  assert.match(text(els.gameday.innerHTML), /ESPN r\/CFB X/);
+  // r/CFB: not offered yet, more than two hours before kickoff (Friday 23:00Z; it's 18:00Z)
+  assert.doesNotMatch(els.gameday.innerHTML, /reddit\.com/);
+  assert.match(text(els.gameday.innerHTML), /ESPN X/);
   const order = [...els.gameday.innerHTML.matchAll(/gameId\/(\d+)/g)].map((m) => m[1]);
   assert.equal(order[0], gameday().games.filter((g) => g.week === 12)[0].id, "kickoff order");
   // the league switch goes to the other leagues' gameday pages
@@ -1178,11 +1176,19 @@ test("gameday: a team with no game this week gets the games that move it first, 
   assert.match(els.gameday.innerHTML, /<p class="gd-focus" role="status">Utah doesn't play this week(\. The \d+ games? that move its odds come first, biggest first|, and no game moves its odds by a point)\.<\/p>/);
 });
 
-test("gameday: the r/CFB search keeps accented school names whole", async () => {
+test("gameday: the r/CFB link: that account's game threads, every word required, from two hours before kickoff", async () => {
   const wk = gameday();
   const g = wk.games.find((x) => x.week === 12), t = wk.teams.find((x) => x.id === g.home);
+  const at = async (iso) => { const r = renderGameday(wk, { Date: clockAt(iso) }); await settle(); return r.els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${g.id}"`)); };
+  assert.doesNotMatch(await at("2026-11-20T20:59Z"), /reddit/, "more than two hours out");
+  const card = await at("2026-11-20T21:00Z");
+  // Iowa State at UCF: "Iowa State" searches as Iowa, matching r/CFB's full name
+  assert.match(card, /href="https:\/\/www\.reddit\.com\/r\/CFB\/search\/\?q=author%3ACFB_Referee%20AND%20title%3A%22Game%20Thread%22%20AND%20title%3AIowa%20AND%20title%3AUCF&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener" title="The r\/CFB game thread">r\/CFB<\/a>/);
+  assert.match(text(card), /ESPN r\/CFB X/);
+  // accented names stay whole
   t.short = "San José St";
-  const { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
-  await settle();
-  assert.match(els.gameday.innerHTML, new RegExp("title%3ASan%20title%3AJos%C3%A9&amp;"));
+  assert.match(await at("2026-11-20T21:00Z"), /title%3ASan%20AND%20title%3AJos%C3%A9&amp;/);
+  // an unset kickoff time: not offered
+  g.timeValid = false;
+  assert.doesNotMatch(await at("2026-11-21T04:00Z"), /reddit/);
 });
