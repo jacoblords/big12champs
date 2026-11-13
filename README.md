@@ -17,7 +17,7 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   ([Big 12 PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf),
   [SEC](https://www.secsports.com/news/2024/08/sec-announces-football-tie-breaking-process),
   [ACC PDF](https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf),
-  [Big Ten PDF, archived](https://web.archive.org/web/20240826184525/https://assets.contentstack.io/v3/assets/bltca750cef518bc6e4/blt2bf0c27b5714240c/66cc95d319b683cdf2088edf/2024_Big_Ten_Football_Tiebreaker_-_FINAL[10][72].pdf)).
+  [Big Ten](https://bigten.org/sports/2026/11/10/FB_1110261447.aspx)).
   The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
   in" and "must" are only shown when proven over every finish.
 - **Paths:** a team's path is the likeliest set of results that *guarantees* it a title-game

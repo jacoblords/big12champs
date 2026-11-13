@@ -15,7 +15,7 @@ Usage:
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
-import argparse, base64, datetime as dt, hashlib, json, os, re, subprocess, sys, time, urllib.error, urllib.request
+import argparse, base64, datetime as dt, hashlib, html, json, os, re, subprocess, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -239,6 +239,23 @@ def fetch_prediction(gid):
 ANALYTICS = ("<script defer src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
              "data-cf-beacon='{\"token\": \"b61d792272ac4a3599d794ab83c99af7\"}'></script>")
 
+# The deployed site's address: Open Graph wants absolute URLs for a shared link's preview.
+SITE_URL = "https://titlepaths.com/"
+
+
+def head_meta(league):
+    """Search and link-preview tags for a league's page: what it is, by the league's own name."""
+    name = league["name"]
+    title = f"{name} Title Paths"
+    desc = (f"Every {name} team's odds of reaching the {name} Championship Game, its likeliest path in, "
+            "who to root for, and how the official tiebreakers settle each finish.")
+    tags = [("name", "description", desc), ("property", "og:type", "website"),
+            ("property", "og:site_name", "Title Paths"), ("property", "og:title", title),
+            ("property", "og:description", desc), ("property", "og:url", SITE_URL + league["path"]),
+            ("name", "twitter:card", "summary")]
+    return "".join(f'<meta {k}="{html.escape(v)}" content="{html.escape(c)}">' for k, v, c in tags) \
+        + f'<link rel="canonical" href="{html.escape(SITE_URL + league["path"])}">'
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--league", choices=sorted(LEAGUES), default="big12")
@@ -399,6 +416,7 @@ def main():
         (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
                                          "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
                                          f"<link rel=\"icon\" href=\"{up}favicon.svg\" type=\"image/svg+xml\">"
+                                         + head_meta(league)
                                          + ANALYTICS + "</head><body>\n" + tpl + "\n</body></html>\n")
         print(f"wrote {site}/index.html + data.json + page-data.json")
     if build and args.artifact:

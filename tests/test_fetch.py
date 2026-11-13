@@ -205,6 +205,22 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(fake2.urls, [])
 
 
+    def test_each_league_page_has_its_own_description_and_link_preview(self):
+        now = first_kickoff()
+        for lid, name, path in (("big12", "Big 12", ""), ("big10", "Big Ten", "big10/")):
+            prev = copy.deepcopy(FIXTURE)
+            prev["league"] = lid
+            _, site = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build", "--league", lid,
+                                     league_path=path.rstrip("/"))
+            head = site.split("</head>")[0]
+            desc = f"Every {name} team&#x27;s odds of reaching the {name} Championship Game"
+            self.assertIn(f'<meta name="description" content="{desc}', head)
+            self.assertIn(f'<meta property="og:description" content="{desc}', head)
+            self.assertIn(f'<meta property="og:title" content="{name} Title Paths">', head)
+            self.assertIn(f'<meta property="og:url" content="https://titlepaths.com/{path}">', head)
+            self.assertIn(f'<link rel="canonical" href="https://titlepaths.com/{path}">', head)
+            self.assertEqual(head.count('name="description"'), 1)
+
     def test_sec_page_lives_under_its_path_with_every_league_in_the_nav(self):
         now = first_kickoff()
         prev = copy.deepcopy(FIXTURE)

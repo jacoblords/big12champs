@@ -652,7 +652,7 @@ test("Big Ten page: its own name, six numbered steps, the rating stand-in, the B
   assert.match(rules, /go on to the next step, not back to step 1/);
   assert.match(rules, /seeded by the two-team steps/);
   assert.doesNotMatch(rules, /Total wins/);
-  assert.match(els.foot.innerHTML, /2024_Big_Ten_Football_Tiebreaker/);
+  assert.match(els.foot.innerHTML, /href="https:\/\/bigten\.org\/sports\/2026\/11\/10\/FB_1110261447\.aspx"/);
   assert.match(els.foot.innerHTML, /groups=5/);
   assert.doesNotMatch(els.foot.innerHTML + rules, /Big 12|SEC|ACC/);
 });
@@ -710,4 +710,94 @@ test("an old team-only link still works, and a new link pasted into an open page
   handlers["window:hashchange"]();
   assert.match(text(els.team.innerHTML), /Utah Utes/);
   assert.equal(els.locks.hidden, false);
+});
+
+test("a malformed link falls back to the default team, and the address bar says so", async () => {
+  const { els, handlers, sandbox } = render(data, "#zzz");
+  await settle();
+  assert.match(text(els.team.innerHTML), /Utah Utes 7-0 Big 12/);
+  assert.equal(sandbox.location.hash, "#utah");
+  // typed into the address bar of the open page: the team shown stays, and so does the tidy link
+  handlers.click({ target: { id: "", closest: (sel) => (sel === "[data-t]" ? { dataset: { t: String(data.teams.findIndex((t) => t.abbr === "TTU")) } } : null) } });
+  await settle();
+  assert.equal(sandbox.location.hash, "#ttu");
+  sandbox.location.hash = "#zzz";
+  handlers["window:hashchange"]();
+  await settle();
+  assert.equal(sandbox.location.hash, "#ttu");
+  assert.match(text(els.team.innerHTML), /Texas Tech/);
+});
+
+test("a pick reads the selected team's new odds out to screen readers", async () => {
+  const html = fs.readFileSync(path.join(root, "app.html"), "utf8");
+  assert.match(html, /<p class="vh" id="announce" aria-live="polite"><\/p>/, "a polite live region outside the re-rendered parts");
+  const { els, handlers, sandbox } = render(data, "#ttu");
+  await settle();
+  sandbox.document.getElementById("announce");
+  assert.equal(els.announce.textContent, "", "nothing read out on load");
+  const pick = (k, v) => handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: String(k), v } } : null) } });
+  pick(0, "1");
+  await settle();
+  const hero = /id="heroPct">([^<]+)</.exec(els.team.innerHTML)[1].replace("&lt;", "<");
+  assert.equal(els.announce.textContent, `Texas Tech: ${hero} to reach the title game, with 1 result set by you.`);
+  handlers.click({ target: { id: "clearLocks", closest: () => null } });
+  await settle();
+  assert.match(els.announce.textContent, /^Texas Tech: .+ to reach the title game, with no results set\.$/);
+  // re-sorting changes no odds, so it says nothing new
+  const said = els.announce.textContent;
+  els.announce.textContent = "";
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".rg-sort button" ? { dataset: { sort: "swing" } } : null) } });
+  await settle();
+  assert.equal(els.announce.textContent, "");
+  assert.ok(said);
+});
+
+test("the odds preview on a result's button works from the keyboard as well as on hover", async () => {
+  const { els, handlers, sandbox } = render(data, "#utah");
+  await settle();
+  for (const id of ["heroPct", "heroLbl"]) sandbox.document.getElementById(id);
+  assert.match(els.team.innerHTML, /<button [^>]*data-odds="[^"]+"/, "rooting guide buttons carry their odds");
+  const btn = (odds, who) => { const b = { dataset: { odds, if: who } }; b.closest = (sel) => (sel === ".seg button[data-odds]" ? b : null); return b; };
+  const a = btn("80%", "Utah"), b = btn("41%", "BYU"), other = { closest: () => null };
+  els.heroPct.innerHTML = "61%";
+  els.heroLbl.textContent = "to reach the title game";
+  handlers.focusin({ target: a });
+  assert.equal(els.heroPct.textContent, "80%");
+  assert.equal(els.heroLbl.textContent, "if Utah wins");
+  handlers.focusout({ target: a, relatedTarget: b }); // tabbing on to the other result
+  handlers.focusin({ target: b });
+  assert.equal(els.heroPct.textContent, "41%");
+  assert.equal(els.heroLbl.textContent, "if BYU wins");
+  els.heroPct.innerHTML = "";
+  handlers.focusout({ target: b, relatedTarget: other });
+  assert.equal(els.heroPct.innerHTML, "61%", "leaving the buttons puts the real odds back");
+  assert.equal(els.heroLbl.textContent, "to reach the title game");
+  handlers.focusin({ target: a });
+  handlers.focusout({ target: a, relatedTarget: null }); // focus leaves the page
+  assert.equal(els.heroPct.innerHTML, "61%");
+  // hover still works the same way
+  handlers.mouseover({ target: b });
+  assert.equal(els.heroPct.textContent, "41%");
+  handlers.mouseover({ target: other });
+  assert.equal(els.heroLbl.textContent, "to reach the title game");
+});
+
+test("light-mode text meets WCAG AA (4.5:1) on the upset odds and the odds pill; dark mode unchanged", () => {
+  const css = fs.readFileSync(path.join(root, "app.html"), "utf8").split("</style>")[0];
+  const block = (re) => Object.fromEntries([...re.exec(css)[1].matchAll(/(--[\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
+  const light = block(/:root \{([\s\S]*?)\n\}/);
+  const dark = block(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/);
+  const lum = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+    .reduce((s, v, k) => s + v * [0.2126, 0.7152, 0.0722][k], 0);
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  for (const [fg, bg] of [["--warn", "--sunk"], ["--warn", "--warn-soft"], ["--bar-ink", "--bar"], ["--bar-ink", "--sunk"], ["--accent", "--bar"]]) {
+    assert.ok(ratio(light[fg], light[bg]) >= 4.5, `light ${fg} on ${bg}: ${ratio(light[fg], light[bg]).toFixed(2)}:1`);
+  }
+  assert.match(css, /\.pick \.odds b \{[^}]*color: var\(--bar-ink\)/, "the pill's text uses its own token");
+  // dark mode keeps its colors: the pill text is the same gray as before
+  assert.equal(dark["--bar-ink"], dark["--muted"]);
+  assert.equal(dark["--warn"], "#e2b553");
+  const media = block(/:root:not\(\[data-theme="light"\]\) \{([\s\S]*?)\n  \}/);
+  assert.deepEqual(media, dark, "system dark mode and the explicit dark theme agree");
 });
