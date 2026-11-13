@@ -1489,16 +1489,29 @@ function slideCards(before) {
     c.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: 260, easing: "cubic-bezier(.2, .7, .2, 1)" });
   }
 }
+function fadeCards() {
+  if (reduceMotion()) return;
+  for (const c of document.querySelectorAll(".gc[data-gid]")) if (c.animate) c.animate([{ opacity: 0, offset: 0 }], { duration: 180, easing: "ease-out" }); // to its own opacity, dimmed or not
+}
 document.addEventListener("click", (e) => {
   const rt = e.target.closest("[data-rt]");
   if (rt) {
     focusTeam = focusTeam === +rt.dataset.rt ? null : +rt.dataset.rt;
-    // the cards slide to their new places (FLIP: measure, re-render, play the difference back)
+    // Desktop: the cards slide to their new places (FLIP: measure, re-render, play the difference
+    // back). Phones, where the slate scrolls sideways: back to the first card, which is the picked
+    // team's game, and the cards fade in. Sliding them there would move snap areas mid-snap, and
+    // the browser could re-snap a few cards in, onto dimmed games.
     const before = cardRects();
     renderGameday();
     const strip = document.querySelector && document.querySelector(".games");
-    if (strip) strip.scrollLeft = 0; // phones: the picked team's game is the first card in view
-    slideCards(before);
+    const sideways = !!strip && typeof getComputedStyle === "function" && getComputedStyle(strip).gridAutoFlow.startsWith("column");
+    if (sideways) {
+      strip.style.scrollSnapType = "none";
+      strip.scrollLeft = 0;
+      const back = () => { strip.scrollLeft = 0; strip.style.scrollSnapType = ""; strip.scrollLeft = 0; };
+      setTimeout(back, 50); // after a layout at 0 (a timer, not rAF: rAF can wait while the page isn't painting)
+      fadeCards();
+    } else slideCards(before);
     return;
   }
   const pick = e.target.closest("[data-t]");

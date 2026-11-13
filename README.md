@@ -77,7 +77,9 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     and the change. Picking a team reorders the games: its own first, then the games that move
     its odds by a point or more (biggest swing first, its row highlighted, added when below a
     card's top five), then the rest dimmed in kickoff order. The cards slide to their new places
-    (not with reduced motion), and on phones the slate scrolls back to its first card. The starting odds are `data.baseline`: the odds
+    (not with reduced motion). On phones, where the slate scrolls sideways, it jumps back to its
+    first card with snapping paused and the cards fade in instead: sliding them moved snap areas
+    mid-snap, and the browser could re-snap a few cards in, onto dimmed games. The starting odds are `data.baseline`: the odds
     already published when the fetcher first runs in a new week, kept until the next week.
   - *The games:* kickoff, TV, ESPN's line and venue, and ESPN's win odds, plus how each result
     would move every team's title-game odds (the same exact or simulated splits as the rooting
