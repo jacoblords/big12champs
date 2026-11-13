@@ -81,7 +81,9 @@ Visitors never call ESPN. A GitHub Action runs every 15 minutes Thursday through
 ([`trigger/`](trigger/README.md)) because GitHub's own schedule fired only every few hours;
 an hourly GitHub schedule stays on as a backup. It starts
 from the `data.json` currently published on Pages and calls ESPN only for what can have
-changed. A game that isn't final yet is simply asked about again on the next run:
+changed. (`data.json` keeps every logo inlined so the next run has them; the page itself loads
+`page-data.json`, the same data with team logos moved to content-named files under `logos/`.)
+A game that isn't final yet is simply asked about again on the next run:
 
 | Data | When it is fetched | Calls |
 |---|---|---|

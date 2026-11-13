@@ -54,6 +54,14 @@ jobs:
               if (scripts.length !== 2) throw new Error(dir + ": expected 2 scripts, found " + scripts.length);
               scripts.forEach((s) => new vm.Script(s));
               const d = JSON.parse(fs.readFileSync(dir + "/data.json", "utf8"));
+              // the page loads page-data.json: data.json with each team logo as a file that exists
+              const pd = JSON.parse(fs.readFileSync(dir + "/page-data.json", "utf8"));
+              if (pd.teams.length !== d.teams.length) throw new Error(dir + ": page-data.json teams differ");
+              for (const t of pd.teams) for (const u of [t.logo, t.logoDark]) {
+                if (u == null) continue;
+                if (!/^(\.\.\/)*logos\/[0-9a-f]{16}\.png$/.test(u)) throw new Error(dir + ": team logo not a file: " + u.slice(0, 40));
+                if (!fs.existsSync(dir + "/" + u)) throw new Error(dir + ": missing " + u);
+              }
               if (dir === "site/big10") {
                 if (!d.exact || !/over the 180s budget/.test(d.exact.skipped || "")) throw new Error(dir + ": expected simulated odds, got " + JSON.stringify(d.exact));
                 console.log("ok:", dir, "simulated:", d.exact.skipped);

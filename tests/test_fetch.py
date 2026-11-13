@@ -3,6 +3,7 @@ fake ESPN that records every request. Run: python3 -m unittest discover -s tests
 import copy
 import datetime as dt
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -82,6 +83,8 @@ class FetchTests(unittest.TestCase):
                 self.assertTrue((Path(tmp) / "site" / "favicon.svg").exists(), "favicon shipped with the site")
                 self.assertIn("static.cloudflareinsights.com/beacon.min.js", site.split("</head>")[0], "analytics beacon in the head")
                 self.site_data = json.loads((index.parent / "data.json").read_text())
+                self.page_data = json.loads((index.parent / "page-data.json").read_text())
+                self.logo_files = {p.name: p.read_bytes() for p in (Path(tmp) / "site" / "logos").glob("*.png")}
         return written, site
 
     def fresh_prev(self, now):
@@ -214,6 +217,31 @@ class FetchTests(unittest.TestCase):
         self.assertEqual([(l["id"], l["name"], l["path"]) for l in self.site_data["leagues"]],
                          [("big12", "Big 12", ""), ("sec", "SEC", "sec/"), ("acc", "ACC", "acc/"),
                           ("big10", "Big Ten", "big10/")])
+
+    def test_page_data_moves_team_logos_to_files_and_data_json_keeps_them(self):
+        now = first_kickoff()
+        for league, path, up in (("big12", "", ""), ("sec", "sec", "../")):
+            prev = copy.deepcopy(FIXTURE)
+            prev["league"] = league
+            prev["leagues"] = [{**l, "logo": PNG, "logoDark": PNG} for l in F.LEAGUES.values()]
+            light, dark = b"\x89PNG light", b"\x89PNG dark"
+            for t in prev["teams"]:
+                t["logo"], t["logoDark"] = F.png_uri(light), F.png_uri(dark)
+            prev["teams"][1]["logoDark"] = None
+            written, site = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build", "--league", league, league_path=path)
+            # data.json is the next run's starting point: still self-contained
+            self.assertTrue(all(t["logo"].startswith("data:image/png;base64,") for t in self.site_data["teams"]))
+            # the page's copy names files, each written once under the site root
+            names = {t["logo"] for t in self.page_data["teams"]} | {t["logoDark"] for t in self.page_data["teams"]}
+            self.assertEqual(len(names - {None}), 2, "one file per distinct image")
+            self.assertIsNone(self.page_data["teams"][1]["logoDark"])
+            for n in names - {None}:
+                self.assertRegex(n, r"^" + re.escape(up) + r"logos/[0-9a-f]{16}\.png$")
+                self.assertIn(self.logo_files[n.split("/")[-1]], (light, dark))
+            # header logos are sized by their shape, so they stay inline (no shift when they load)
+            self.assertEqual(self.page_data["leagues"], self.site_data["leagues"])
+            self.assertEqual({k: v for k, v in self.page_data.items() if k != "teams"},
+                             {k: v for k, v in self.site_data.items() if k != "teams"})
 
     def test_acc_page_lives_under_acc(self):
         now = first_kickoff()

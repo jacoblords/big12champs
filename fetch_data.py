@@ -15,7 +15,7 @@ Usage:
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
-import argparse, base64, datetime as dt, json, os, re, subprocess, sys, time, urllib.error, urllib.request
+import argparse, base64, datetime as dt, hashlib, json, os, re, subprocess, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -110,6 +110,27 @@ def load_prev(src):
 
 def png_uri(png):
     return "data:image/png;base64," + base64.b64encode(png).decode()
+
+
+def page_data(data, root, up):
+    """The page's copy of the data: each team logo written once to <root>/logos/<hash>.png and
+    referenced by path. data.json keeps them inlined, because the next run starts from the
+    published data.json and a fresh runner has no other copy of them. The page loads this instead:
+    the team logos are most of data.json's size and, named by their content, are fetched once and
+    then only revalidated. League and sponsor logos stay inlined: the header sizes them by their
+    shape (width: auto), so loading them later would shift the headline."""
+    out = root / "logos"; out.mkdir(exist_ok=True)
+
+    def to_file(uri):
+        if not isinstance(uri, str) or not uri.startswith("data:image/png;base64,"):
+            return uri
+        png = base64.b64decode(uri.split(",", 1)[1])
+        name = hashlib.sha256(png).hexdigest()[:16] + ".png"
+        if not (out / name).exists():
+            (out / name).write_bytes(png)
+        return f"{up}logos/{name}"
+    teams = [{**t, "logo": to_file(t.get("logo")), "logoDark": to_file(t.get("logoDark"))} for t in data["teams"]]
+    return json.dumps({**data, "teams": teams}, separators=(",", ":"))
 
 
 def fetch_logo(tid, dark=False, kind="ncaa"):
@@ -373,12 +394,13 @@ def main():
         site = root / league["path"]; site.mkdir(parents=True, exist_ok=True)
         up = "../" * league["path"].count("/")
         (site / "data.json").write_text(payload)
+        (site / "page-data.json").write_text(page_data(data, root, up))
         (root / "favicon.svg").write_text((HERE / "favicon.svg").read_text())
         (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
                                          "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
                                          f"<link rel=\"icon\" href=\"{up}favicon.svg\" type=\"image/svg+xml\">"
                                          + ANALYTICS + "</head><body>\n" + tpl + "\n</body></html>\n")
-        print(f"wrote {site}/index.html + data.json")
+        print(f"wrote {site}/index.html + data.json + page-data.json")
     if build and args.artifact:
         Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", script_safe(payload)))
         print(f"wrote {args.artifact}")
