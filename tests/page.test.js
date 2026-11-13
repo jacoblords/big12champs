@@ -365,6 +365,15 @@ test("dark-background logos are included and swapped by theme", async () => {
   const r2 = render(withLogos, "#utah");
   await settle();
   assert.doesNotMatch(r2.els.picker.innerHTML, /javascript:/);
+  // the hosted page's logo files (page-data.json), from the root or a league folder; nothing else
+  const files = JSON.parse(JSON.stringify(data));
+  files.teams.forEach((t, k) => { t.logo = "logos/0123456789abcdef.png"; t.logoDark = "../logos/fedcba9876543210.png"; });
+  files.teams[0].logo = "https://evil.example/logos/0123456789abcdef.png";
+  files.teams[0].logoDark = "logos/x.png";
+  const r3 = render(files, "#utah");
+  await settle();
+  assert.match(r3.els.picker.innerHTML, /<img class="logo-light" src="logos\/0123456789abcdef\.png" alt=""><img class="logo-dark" src="\.\.\/logos\/fedcba9876543210\.png"/);
+  assert.doesNotMatch(r3.els.picker.innerHTML, /evil\.example|logos\/x\.png/);
 });
 
 test("ESPN-supplied text is escaped", async () => {
