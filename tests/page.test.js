@@ -942,3 +942,190 @@ test("light-mode text meets WCAG AA (4.5:1) on the upset odds and the odds pill;
   const media = block(/:root:not\(\[data-theme="light"\]\) \{([\s\S]*?)\n  \}/);
   assert.deepEqual(media, dark, "system dark mode and the explicit dark theme agree");
 });
+
+// ---- Gameday page ----
+// The same template built as a league's gameday page (fetch_data.py sets GAMEDAY).
+const gamedayScripts = pageScripts.map((src) => src.replace("/*__GAMEDAY__*/false", "true"));
+function renderGameday(d, extra) {
+  const saved = pageScripts.slice();
+  pageScripts.splice(0, pageScripts.length, ...gamedayScripts);
+  try { return render(d, "", extra); } finally { pageScripts.splice(0, pageScripts.length, ...saved); }
+}
+// The page's clock, fixed: new Date() and Date.now() read `iso`; dates given explicitly are untouched.
+const clockAt = (iso) => {
+  const t = Date.parse(iso);
+  return class extends Date { constructor(...a) { if (a.length) super(...a); else super(t); } static now() { return t; } };
+};
+const FRIDAY_WK12 = "2026-11-20T18:00Z"; // the fixture's week 12, before its first kickoff
+function gameday(d = data) {
+  const wk = JSON.parse(JSON.stringify(d));
+  const byId = Object.fromEntries(wk.teams.map((t, i) => [t.id, i]));
+  const utah = wk.teams.find((t) => t.abbr === "UTAH").id, tcu = wk.teams.find((t) => t.abbr === "TCU").id;
+  // the week began with Utah 20 points lower and TCU 3 higher than now
+  const now = d.exact && d.exact.teams ? d.exact.teams.map((t) => t.p) : null;
+  wk.baseline = { week: 12, at: "2026-11-16T09:00Z", odds: Object.fromEntries(wk.teams.map((t, i) => [t.id, now ? now[i] : 0.1])) };
+  if (now) { wk.baseline.odds[utah] = now[byId[utah]] - 0.2; wk.baseline.odds[tcu] = now[byId[tcu]] + 0.03; }
+  wk.leagues = [{ id: "big12", name: "Big 12", path: "", group: 4 }, { id: "sec", name: "SEC", path: "sec/", group: 8 }];
+  const w12 = wk.games.filter((g) => g.week === 12);
+  Object.assign(w12[0], { tv: "FS1", spread: "UCF -6.5", overUnder: 52.5, venue: "Acrisure Bounce House", timeValid: true });
+  Object.assign(w12[1], { tv: "FOX", spread: "TCU -3", timeValid: false });
+  return wk;
+}
+
+test("gameday: the slate with kickoff, TV, line and what each game does to the race", async () => {
+  const { els } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.equal(els.gameday.hidden, false);
+  for (const id of ["picker", "team", "method", "rules"]) assert.equal(els[id].hidden, true, id + " hidden");
+  assert.equal(els.title.textContent, "Big 12 Gameday");
+  assert.match(text(els.lede.innerHTML), /^Week 12: 8 games\. What each result does to the title race, and how it has moved this week\.$/);
+  assert.match(els.gameday.innerHTML, /Live odds of reaching the title game, updated every 15 minutes on game days\./);
+  const gd = text(els.gameday.innerHTML);
+  assert.match(gd, /FS1/);
+  assert.match(gd, /UCF -6\.5 · O\/U 52\.5 · Acrisure Bounce House/);
+  assert.match(gd, /Sat · time TBD · FOX/, "an unset kickoff shows its day in Eastern time, not 5 hours early");
+  assert.equal((els.gameday.innerHTML.match(/Biggest stakes/g) || []).length, 1);
+  assert.match(gd, /Title-game odds If UTAH If TCU/);
+  assert.match(els.gameday.innerHTML, /reddit\.com\/r\/CFB\/search\/\?q=%22Game%20Thread%22%20Utah%20TCU/);
+  const order = [...els.gameday.innerHTML.matchAll(/gameId\/(\d+)/g)].map((m) => m[1]);
+  assert.equal(order[0], gameday().games.filter((g) => g.week === 12)[0].id, "kickoff order");
+  // the league switch goes to the other leagues' gameday pages
+  assert.match(els.leagues.innerHTML, /href="\.\.\/sec\/gameday\/"/);
+  assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
+});
+
+test("gameday: the race lists every team by its odds now, with the week's start and the change", async () => {
+  const wk = gameday();
+  const { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const race = els.gameday.innerHTML.split('<div class="race">')[1].split("</section>")[0];
+  assert.doesNotMatch(race, /<a /, "rows stay on this page");
+  const rows = [...race.matchAll(/<button type="button" data-rt="(\d+)".*?<\/button>/g)];
+  assert.equal(rows.length, data.teams.length);
+  const p = rows.map((r) => wk.exact.teams[+r[1]].p);
+  assert.deepEqual(p, [...p].sort((x, y) => y - x), "highest odds first");
+  const row = (abbr) => rows.find((r) => r[0].includes(`<b>${abbr}</b>`))[0];
+  assert.match(row("UTAH"), /&#9650;20<\/span><span class="vh">up 20 points this week/);
+  assert.match(row("TCU"), /&#9660;3/);
+  assert.match(row("BYU"), /class="delta"><span aria-hidden="true">&ndash;/);
+});
+
+test("gameday: picking a team in the race highlights its games and its row in every game; again clears it", async () => {
+  const wk = gameday();
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const utah = wk.teams.findIndex((t) => t.abbr === "UTAH");
+  const click = () => handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(utah) } } : null) } });
+  click();
+  const html = els.gameday.innerHTML;
+  assert.match(html, new RegExp(`data-rt="${utah}" aria-pressed="true"`));
+  const cards = html.split("<article").slice(1);
+  const mine = cards.filter((c) => /^ class="gc[^"]* mine"/.test(c));
+  assert.equal(mine.length, 1, "Utah's one game this week");
+  assert.match(mine[0], /Utah/);
+  const rowsMe = (html.match(/<span class="t me" role="cell">[^]*?UTAH<\/span>/g) || []).length;
+  const listed = cards.filter((c) => /role="cell">(?:<img[^>]*>)*UTAH<\/span>/.test(c)).length;
+  assert.ok(rowsMe > 0 && rowsMe === listed, "every listed Utah row is highlighted");
+  assert.equal((html.match(/class="v[^"]* me"/g) || []).length, rowsMe * 2, "both odds cells too");
+  click();
+  assert.doesNotMatch(els.gameday.innerHTML, / mine"| me"|aria-pressed="true"/);
+});
+
+test("gameday: a picked team's row shows in a game even when it's not among the five it moves most", async () => {
+  const wk = gameday();
+  // the first game of the week moves every team, the last team least (2 points)
+  const g = wk.games.filter((x) => x.week === 12)[0], k = wk.exact.gameIds.indexOf(g.id), n = wk.teams.length;
+  wk.exact.teams.forEach((t, i) => { t.games[k] = { ...t.games[k], pA: 0.4, pH: 0.4 + 0.01 * (n - i + 1) }; });
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const card = () => els.gameday.innerHTML.split("<article").slice(1).find((c) => c.includes("gameId/" + g.id));
+  const listed = () => [...card().matchAll(/class="t( me)?" role="cell">(?:<img[^>]*>)*([^<]+)</g)].map((m) => m[2] + (m[1] ? "*" : ""));
+  assert.equal(listed().length, 5);
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(n - 1) } } : null) } });
+  assert.deepEqual(listed(), [...wk.teams.slice(0, 5).map((t) => t.abbr), wk.teams[n - 1].abbr + "*"]);
+});
+
+test("gameday: no changes without the week's own starting odds; nothing outside the season", async () => {
+  const wk = gameday();
+  wk.baseline.week = 11;
+  let r = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.match(r.els.gameday.innerHTML, /Biggest stakes/, "the games still show");
+  assert.doesNotMatch(r.els.gameday.innerHTML, /&#9650;|&#9660;|&rarr; /);
+  r = renderGameday(gameday(), { Date: clockAt("2027-01-10T18:00Z") });
+  await settle();
+  assert.equal(r.els.gameday.innerHTML, "");
+  assert.match(r.els.lede.innerHTML, /No Big 12 games to show this week/);
+});
+
+test("gameday: a simulated league shows stakes, precomputed or simulated on the page", async () => {
+  const { presim, inputsKey } = require("../exact.js");
+  const noExact = { ...data, exact: { skipped: "too many" } };
+  const withSim = { ...noExact, sim: JSON.parse(JSON.stringify(presim(noExact, inputsKey(noExact)))) };
+  for (const d of [withSim, noExact]) {
+    const { els } = renderGameday(gameday(d), { Date: clockAt(FRIDAY_WK12) });
+    await settle();
+    assert.match(text(els.gameday.innerHTML), /Title-game odds If UTAH If TCU/);
+    assert.equal((els.gameday.innerHTML.match(/Biggest stakes/g) || []).length, 1);
+  }
+});
+
+test("gameday: ESPN's TV, line and venue text is escaped", async () => {
+  const wk = gameday();
+  const g = wk.games.find((x) => x.week === 12);
+  Object.assign(g, { tv: '<img src=x onerror="alert(1)">', spread: "<b>X</b>", venue: "A&B" });
+  const { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.doesNotMatch(els.gameday.innerHTML, /<img src=x|<b>X/);
+  assert.match(els.gameday.innerHTML, /&lt;b&gt;X&lt;\/b&gt; · O\/U 52\.5 · A&amp;B/);
+});
+
+test("top bar: a Paths | Gameday switch while the week has games, the current view marked", async () => {
+  let r = render(gameday(), "#utah", { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.ok(!r.els.gameday || r.els.gameday.innerHTML === "", "the league page doesn't render the gameday view");
+  assert.equal(r.els.modes.hidden, false);
+  assert.equal(r.els.modes.innerHTML, '<a href="./" aria-current="page">Paths</a><a href="gameday/">Gameday</a>');
+  assert.doesNotMatch(r.els.picker.innerHTML, /delta|&#9650;/);
+  r = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.equal(r.els.modes.innerHTML, '<a href="../">Paths</a><a href="./" aria-current="page">Gameday</a>');
+  // outside the season: no switch on the league page; the gameday page keeps it, to get back
+  r = render(gameday(), "#utah", { Date: clockAt("2027-01-10T18:00Z") });
+  await settle();
+  assert.equal(r.els.modes.hidden, true);
+  r = renderGameday(gameday(), { Date: clockAt("2027-01-10T18:00Z") });
+  await settle();
+  assert.equal(r.els.modes.hidden, false);
+});
+
+test("top bar: Gameday carries a live marker while a game is under way, and not after", async () => {
+  const wk = gameday();
+  const g = wk.games.filter((x) => x.week === 12)[0]; // Friday 23:00Z
+  const at = async (iso, extra = {}) => { Object.assign(g, extra); const r = render(wk, "#utah", { Date: clockAt(iso) }); await settle(); return r.els.modes.innerHTML; };
+  assert.doesNotMatch(await at(FRIDAY_WK12), /dot/, "before kickoff");
+  assert.match(await at("2026-11-21T00:30Z"), /<span class="dot" aria-hidden="true"><\/span>Gameday<span class="vh">, games under way<\/span>/);
+  assert.doesNotMatch(await at("2026-11-21T00:30Z", { wp: { pts: [], final: true } }), /dot/, "ESPN called it final");
+  assert.doesNotMatch(await at("2026-11-21T04:30Z", { wp: null }), /dot/, "more than 5 hours on (and before the next kickoff), never live");
+});
+
+test("gameday: a game under way shows ESPN's clock, the score and its win-probability chart; a final one, the result", async () => {
+  const wk = gameday();
+  const [g0, g1] = wk.games.filter((g) => g.week === 12);
+  g0.wp = { pts: [[0, 600], [1200, 350], [2000, 820]], final: false, detail: "3rd 4:12", homeScore: 21, awayScore: 14 };
+  g1.wp = { pts: [[0, 300], [3600, 0], [3840, 0]], final: true, detail: "Final/OT", homeScore: 20, awayScore: 27 };
+  g1.timeValid = true;
+  const { els } = renderGameday(wk, { Date: clockAt("2026-11-21T08:00Z") });
+  await settle();
+  const cards = els.gameday.innerHTML.split("<article").slice(1);
+  const live = cards.find((c) => c.includes("gameId/" + g0.id)), fin = cards.find((c) => c.includes("gameId/" + g1.id));
+  assert.match(live, /<span class="live">3rd 4:12<\/span>/);
+  assert.match(text(live), /Iowa State 14 UCF 21/);
+  assert.match(live, /role="img" aria-label="ESPN win probability: ISU 18%, UCF 82%"/);
+  assert.match(live, /<polyline points="0\.0,48\.0 100\.0,28\.0 166\.7,65\.6"/, "home odds downward, a 60-minute axis");
+  assert.match(live, /Title-game odds/, "stakes stay up while it's being played");
+  assert.match(fin, /Final/);
+  assert.match(fin, /class="gc-team won">.*Utah.*27/);
+  assert.match(fin, />OT</, "overtime gets its own stretch of the axis");
+  assert.doesNotMatch(fin, /Title-game odds/);
+});

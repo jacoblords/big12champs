@@ -35,6 +35,9 @@ LEAGUES = {
 SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h
 SCHEDULE_TTL = dt.timedelta(hours=24)
+# Bumped when fetch_week starts keeping more of the scoreboard: the next run re-reads every week
+# with unplayed games instead of waiting up to SCHEDULE_TTL. 2: TV, spread, venue, TBD times.
+SCHEDULE_FIELDS = 2
 FPI_TTL = dt.timedelta(hours=6)
 HERE = Path(__file__).resolve().parent
 
@@ -193,6 +196,10 @@ def fetch_week(league, season, week):
         if done:
             winner = h["team"]["id"] if h.get("winner") else a["team"]["id"] if a.get("winner") else None
         sc = lambda x: int(float(x["score"])) if done and x.get("score") not in (None, "") else None
+        odds = (c.get("odds") or [{}])[0] or {}
+        venue = c.get("venue") or {}
+        addr = venue.get("address") or {}
+        tv = c.get("broadcast") or ", ".join(dict.fromkeys(n for b in c.get("broadcasts") or [] for n in b.get("names") or []))
         out.append({
             "id": e["id"], "week": week, "date": e["date"],
             "home": h["team"]["id"], "away": a["team"]["id"],
@@ -203,8 +210,88 @@ def fetch_week(league, season, week):
             "confFlag": c.get("conferenceCompetition"),
             "completed": done or canceled, "canceled": canceled, "postponed": stype.get("name") == "STATUS_POSTPONED",
             "winner": winner, "homeScore": sc(h), "awayScore": sc(a),
+            # for the page's game cards: ESPN's text, escaped by the page. timeValid false: the
+            # kickoff time isn't set yet (ESPN parks those at midnight Eastern).
+            "timeValid": c.get("timeValid", True) is not False,
+            "tv": tv or None, "spread": odds.get("details") or None, "overUnder": odds.get("overUnder"),
+            "venue": venue.get("fullName"), "city": ", ".join(x for x in (addr.get("city"), addr.get("state")) if x) or None,
         })
     return out
+
+
+WP_POINTS = 120  # win-probability points kept per game: plenty for a 300px chart, small in the data
+
+
+def play_seconds(play):
+    """Game time at a play, in seconds from kickoff: 15-minute quarters; overtime (no clock in
+    college) gets two minutes a period after regulation."""
+    period = ((play.get("period") or {}).get("number")) or 1
+    if period > 4:
+        return 3600 + (period - 4) * 120
+    m, _, sec = ((play.get("clock") or {}).get("displayValue") or "15:00").partition(":")
+    try:
+        left = int(m) * 60 + int(sec or 0)
+    except ValueError:
+        left = 900
+    return (period - 1) * 900 + max(0, 900 - left)
+
+
+def fetch_winprob(gid):
+    """ESPN's in-game win probability for one game, thinned to WP_POINTS (time, home win odds in
+    thousandths) points, plus the game's live score and clock. final: ESPN says the game is over,
+    so it needn't be asked again."""
+    try:
+        d = get(f"{SITE}/summary?event={gid}")
+    except Exception as e:
+        print(f"  win probability {gid} unavailable: {e}")
+        return gid, None
+    drives = d.get("drives") or {}
+    plays = {}
+    for dr in (drives.get("previous") or []) + ([drives["current"]] if drives.get("current") else []):
+        for pl in dr.get("plays") or []:
+            plays[pl.get("id")] = pl
+    pts, last = [], 0
+    for w in d.get("winprobability") or []:
+        pl = plays.get(w.get("playId"))
+        if pl is None or w.get("homeWinPercentage") is None:
+            continue
+        last = max(last, play_seconds(pl))
+        pts.append([last, round(w["homeWinPercentage"] * 1000)])
+    if len(pts) > WP_POINTS:
+        keep = sorted({round(k * (len(pts) - 1) / (WP_POINTS - 1)) for k in range(WP_POINTS)})
+        pts = [pts[k] for k in keep]
+    comp = ((d.get("header") or {}).get("competitions") or [{}])[0]
+    stype = (comp.get("status") or {}).get("type") or {}
+    score = {c.get("homeAway"): c.get("score") for c in comp.get("competitors") or []}
+    num = lambda v: int(float(v)) if v not in (None, "") else None
+    return gid, {"pts": pts, "final": bool(stype.get("completed")), "detail": stype.get("shortDetail"),
+                 "homeScore": num(score.get("home")), "awayScore": num(score.get("away"))}
+
+
+def current_week(calendar, now):
+    """The regular-season week (ESPN's calendar, Monday to Monday) that now falls in, if any."""
+    for c in calendar or []:
+        if parse(c["start"]) <= now < parse(c["end"]):
+            return c["week"]
+    return None
+
+
+def sig4(p):
+    return float(f"{p:.4g}")
+
+
+def odds_snapshot(d):
+    """Each team's title-game odds in a data file, by team id, to 4 significant figures: a long
+    shot keeps its tiny odds rather than rounding to 0, which the page shows as eliminated. the exact odds when it has them,
+    else its precomputed simulation. None when it has neither."""
+    e = d.get("exact") or {}
+    if e.get("teams") and not e.get("skipped"):
+        return {t["id"]: sig4(t["p"]) for t in e["teams"]}
+    s = d.get("sim") or {}
+    tot = s.get("totals") or {}
+    if tot.get("nSims") and s.get("teamIds"):
+        return {tid: sig4(tot["appear"][k] / tot["nSims"]) for k, tid in enumerate(s["teamIds"])}
+    return None
 
 
 def fetch_calendar(league, season):
@@ -243,18 +330,32 @@ ANALYTICS = ("<script defer src=\"https://static.cloudflareinsights.com/beacon.m
 SITE_URL = "https://titlepaths.com/"
 
 
-def head_meta(league):
-    """Search and link-preview tags for a league's page: what it is, by the league's own name."""
+def head_meta(league, gameday=False):
+    """Search and link-preview tags for a league's page (or its gameday page): what it is, by the
+    league's own name."""
     name = league["name"]
-    title = f"{name} Title Paths"
-    desc = (f"Every {name} team's odds of reaching the {name} Championship Game, its likeliest path in, "
-            "who to root for, and how the official tiebreakers settle each finish.")
+    if gameday:
+        title, path = f"{name} Gameday", league["path"] + "gameday/"
+        desc = (f"This week's {name} games: kickoff, TV, the line, and what each result does to every "
+                f"team's odds of reaching the {name} Championship Game.")
+    else:
+        title, path = f"{name} Title Paths", league["path"]
+        desc = (f"Every {name} team's odds of reaching the {name} Championship Game, its likeliest path in, "
+                "who to root for, and how the official tiebreakers settle each finish.")
     tags = [("name", "description", desc), ("property", "og:type", "website"),
             ("property", "og:site_name", "Title Paths"), ("property", "og:title", title),
-            ("property", "og:description", desc), ("property", "og:url", SITE_URL + league["path"]),
+            ("property", "og:description", desc), ("property", "og:url", SITE_URL + path),
             ("name", "twitter:card", "summary")]
     return "".join(f'<meta {k}="{html.escape(v)}" content="{html.escape(c)}">' for k, v, c in tags) \
-        + f'<link rel="canonical" href="{html.escape(SITE_URL + league["path"])}">'
+        + f'<link rel="canonical" href="{html.escape(SITE_URL + path)}">'
+
+
+def page_html(league, tpl, up, gameday=False):
+    """A complete page around the template: head tags, favicon and analytics."""
+    return ("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
+            f"<link rel=\"icon\" href=\"{up}favicon.svg\" type=\"image/svg+xml\">"
+            + head_meta(league, gameday) + ANALYTICS + "</head><body>\n" + tpl + "\n</body></html>\n")
 
 def main():
     ap = argparse.ArgumentParser()
@@ -318,9 +419,10 @@ def main():
             if parse(g["date"]) + RESULT_DELAY <= now:
                 weeks.add(g["week"])  # should be final by now
         sched_at = parse(meta.get("scheduleCheckedAt"))
-        if not sched_at or now - sched_at >= SCHEDULE_TTL:
+        if not sched_at or now - sched_at >= SCHEDULE_TTL or meta.get("scheduleFields") != SCHEDULE_FIELDS:
             weeks |= {g["week"] for g in games.values() if not g["completed"]}
             meta["scheduleCheckedAt"] = iso(now)
+            meta["scheduleFields"] = SCHEDULE_FIELDS
     if weeks:
         print(f"scoreboards for weeks {sorted(weeks)}")
         for wk_games in pmap(lambda w: fetch_week(league, args.season, w), sorted(weeks)):
@@ -328,11 +430,13 @@ def main():
                 old = games.get(ng["id"])
                 ng["pHome"] = None if ng["completed"] else (old or {}).get("pHome")
                 ng["predAt"] = (old or {}).get("predAt")
-                keys = ("date", "completed", "winner", "homeScore", "awayScore", "canceled", "postponed")
+                keys = ("date", "completed", "winner", "homeScore", "awayScore", "canceled", "postponed",
+                        "timeValid", "tv", "spread", "overUnder")
                 if not old or any(old.get(k) != ng.get(k) for k in keys):
                     changed.append(f"game {ng['awayName']}@{ng['homeName']}")
                 games[ng["id"]] = {**(old or {}), **ng}
         meta.setdefault("scheduleCheckedAt", iso(now))
+        meta.setdefault("scheduleFields", SCHEDULE_FIELDS)
 
     # FPI: tiebreaker f stand-in, FBS membership, and the clock for ESPN's prediction model.
     fpi_stale = False
@@ -361,6 +465,29 @@ def main():
             games[gid]["pHome"] = p if p is not None else games[gid].get("pHome")
             games[gid]["predAt"] = iso(now)
 
+    # The week's starting odds, for the page's "since" changes: the odds published when a new
+    # week began, i.e. the previous data's, before this run adds anything. Kept until the next week.
+    baseline = prev.get("baseline") if prev else None
+    week = None if args.offline else current_week(calendar, now)
+    if week is not None and prev and (baseline or {}).get("week") != week:
+        snap = odds_snapshot(prev)
+        if snap:
+            baseline = {"week": week, "at": prev["meta"].get("checkedAt") or prev.get("fetchedAt"), "odds": snap}
+            changed.append(f"week {week} starting odds")
+
+    # In-game win probability for this week's games once they kick off, re-read every run until
+    # ESPN calls them final. One summary call per game being played.
+    if week is not None:
+        live = [g["id"] for g in games.values() if g["week"] == week and g.get("timeValid") is not False
+                and not g.get("canceled") and not g.get("postponed") and parse(g["date"]) <= now
+                and not (g.get("wp") or {}).get("final")]
+        if live:
+            print(f"win probability for {len(live)} games")
+            for gid, wp in pmap(fetch_winprob, live):
+                if wp is not None and games[gid].get("wp") != wp:
+                    games[gid]["wp"] = wp
+                    changed.append(f"win probability {gid}")
+
     team_ids = {t["id"] for t in teams}
     for t in teams:
         t["fpi"] = fpi.get(t["id"])
@@ -380,6 +507,8 @@ def main():
 
     data = {"schema": SCHEMA, "league": league["id"], "leagues": leagues, "season": args.season, "fetchedAt": meta.get("updatedAt", iso(now)), "meta": meta,
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
+    if baseline:
+        data["baseline"] = baseline
     if prev and prev.get("exact"):
         data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
     print(f"{calls} ESPN calls; {len(changed)} changes" + (f": {', '.join(changed[:8])}{' …' if len(changed) > 8 else ''}" if changed else ""))
@@ -413,12 +542,14 @@ def main():
         (site / "data.json").write_text(payload)
         (site / "page-data.json").write_text(page_data(data, root, up))
         (root / "favicon.svg").write_text((HERE / "favicon.svg").read_text())
-        (site / "index.html").write_text("<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
-                                         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">"
-                                         f"<link rel=\"icon\" href=\"{up}favicon.svg\" type=\"image/svg+xml\">"
-                                         + head_meta(league)
-                                         + ANALYTICS + "</head><body>\n" + tpl + "\n</body></html>\n")
-        print(f"wrote {site}/index.html + data.json + page-data.json")
+        (site / "index.html").write_text(page_html(league, tpl, up))
+        # the league's gameday page: the same template and data, one folder down
+        gd = site / "gameday"; gd.mkdir(exist_ok=True)
+        (gd / "page-data.json").write_text(page_data(data, root, up + "../"))
+        gd_tpl = (tpl.replace("/*__GAMEDAY__*/false", "true", 1)
+                  .replace(f"<title>{league['name']} Title Paths</title>", f"<title>{league['name']} Gameday</title>", 1))
+        (gd / "index.html").write_text(page_html(league, gd_tpl, up + "../", gameday=True))
+        print(f"wrote {site}/index.html + data.json + page-data.json, and gameday/")
     if build and args.artifact:
         Path(args.artifact).write_text(tpl.replace("/*__DATA__*/null", script_safe(payload)))
         print(f"wrote {args.artifact}")

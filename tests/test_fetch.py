@@ -15,6 +15,10 @@ sys.path.insert(0, str(ROOT))
 import fetch_data as F  # noqa: E402
 
 FIXTURE = json.loads((ROOT / "tests" / "fixtures" / "season-2026-11-09.json").read_text())
+# Saved before the scoreboard kept TV and spreads; tests start from data that already has them.
+FIXTURE["meta"]["scheduleFields"] = F.SCHEDULE_FIELDS
+for _g in FIXTURE["games"]:
+    _g.update(timeValid=True, tv=None, spread=None, overUnder=None, venue=None, city=None)
 
 
 def scoreboard(games, final=True, extra_events=()):
@@ -33,13 +37,29 @@ def scoreboard(games, final=True, extra_events=()):
     return {"events": events + list(extra_events)}
 
 
+def summary(final, home_pct=(0.6, 0.7, 0.9)):
+    """ESPN's game summary: a win-probability point per play, and the score and clock."""
+    plays = [{"id": f"p{k}", "period": {"number": k + 1}, "clock": {"displayValue": "7:30"}} for k in range(len(home_pct))]
+    return {"drives": {"previous": [{"plays": plays}]},
+            "winprobability": [{"playId": f"p{k}", "homeWinPercentage": p} for k, p in enumerate(home_pct)],
+            "header": {"competitions": [{"status": {"type": {"completed": final, "shortDetail": "Final" if final else "3rd 7:30"}},
+                                         "competitors": [{"homeAway": "home", "score": "24"}, {"homeAway": "away", "score": "10"}]}]}}
+
+
 class FakeESPN:
-    def __init__(self, fpi_run="2026-11-09T09:00Z", final=True):
+    """Records every call. Game summaries (in-game win probability) go in .summaries, so the
+    caching tests can count the rest on their own."""
+    def __init__(self, fpi_run="2026-11-09T09:00Z", final=True, summary_final=None):
         self.urls = []
+        self.summaries = []
         self.fpi_run = fpi_run
         self.final = final
+        self.summary_final = final if summary_final is None else summary_final
 
     def __call__(self, url, raw=False):
+        if "/summary?event=" in url:
+            self.summaries.append(url.split("event=")[1])
+            return summary(self.summary_final)
         self.urls.append(url)
         if "/scoreboard" in url:
             week = int(url.split("week=")[1].split("&")[0])
@@ -127,8 +147,9 @@ class FetchTests(unittest.TestCase):
         fake = FakeESPN(final=False)
         written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
         self.assertEqual(len(fake.urls), 1)
-        # nothing changed, so nothing is written; the next run asks again
-        self.assertIsNone(written)
+        # no result yet (only the live win probability is new); the next run asks again
+        self.assertTrue(all(not g["completed"] for g in written["games"] if g["week"] == 11))
+        self.assertTrue(all(g.get("wp") for g in written["games"] if g["week"] == 11 and F.parse(g["date"]) <= now))
 
     def test_new_fpi_run_refetches_every_prediction(self):
         now = first_kickoff() - dt.timedelta(hours=1)
@@ -327,6 +348,122 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(fake2.urls, [], "kept from the previous data")
 
 
+    def test_data_from_before_tv_and_spreads_rereads_every_unplayed_week_once(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        del prev["meta"]["scheduleFields"]
+        fake = FakeESPN(final=False)
+        written, _ = self.run_fetch(prev, now, fake)
+        weeks = sorted({g["week"] for g in FIXTURE["games"] if not g["completed"]})
+        self.assertEqual(sorted(int(u.split("week=")[1].split("&")[0]) for u in fake.urls if "/scoreboard" in u), weeks)
+        self.assertEqual(written["meta"]["scheduleFields"], F.SCHEDULE_FIELDS)
+        fake = FakeESPN(final=False)
+        self.run_fetch(written, now, fake)
+        self.assertEqual(fake.urls, [], "and not again on the next run")
+
+    def with_odds(self, prev, p):
+        prev["exact"] = {"teams": [{"id": t["id"], "p": p} for t in prev["teams"]]}
+        return prev
+
+    def test_a_new_week_starts_from_the_odds_published_before_it(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.with_odds(self.fresh_prev(now), 0.25)
+        fake = FakeESPN()
+        written, _ = self.run_fetch(prev, now, fake)
+        self.assertEqual(fake.urls, [])
+        self.assertEqual(self.changed, "changed=true")
+        self.assertEqual(written["baseline"], {"week": F.current_week(FIXTURE["calendar"], now),
+                                               "at": prev["meta"]["checkedAt"],
+                                               "odds": {t["id"]: 0.25 for t in prev["teams"]}})
+        self.assertEqual(self.page_data["baseline"], written["baseline"], "the page gets it")
+
+    def test_the_week_keeps_its_starting_odds_as_the_odds_move(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.with_odds(self.fresh_prev(now), 0.4)
+        start = {"week": F.current_week(FIXTURE["calendar"], now), "at": "2026-11-09T21:15Z", "odds": {"x": 0.25}}
+        prev["baseline"] = start
+        written, _ = self.run_fetch(prev, now, FakeESPN())
+        self.assertIsNone(written, "nothing new to save")
+        self.assertEqual(self.site_data["baseline"], start)
+        # the next week replaces it
+        later = now + dt.timedelta(days=7)
+        prev = self.with_odds(self.fresh_prev(later), 0.4)
+        prev["baseline"] = start
+        prev["meta"]["nextResultCheck"] = None
+        for g in prev["games"]:
+            if F.parse(g["date"]) < later:
+                g.update(completed=True, winner=g["home"], pHome=None)
+        written, _ = self.run_fetch(prev, later, FakeESPN())
+        self.assertEqual(written["baseline"]["week"], start["week"] + 1)
+        self.assertEqual(set(written["baseline"]["odds"].values()), {0.4})
+
+    def test_a_simulated_league_starts_the_week_from_its_precomputed_odds(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        ids = [t["id"] for t in prev["teams"]]
+        prev["exact"] = {"skipped": "too many"}
+        prev["sim"] = {"teamIds": ids, "totals": {"nSims": 4, "appear": [k % 5 for k in range(len(ids))]}}
+        written, _ = self.run_fetch(prev, now, FakeESPN())
+        self.assertEqual(written["baseline"]["odds"], {tid: (k % 5) / 4 for k, tid in enumerate(ids)})
+
+    def test_a_long_shot_starts_the_week_with_its_tiny_odds_not_zero(self):
+        prev = {"exact": {"teams": [{"id": "asu", "p": 4.1548e-05}, {"id": "wvu", "p": 7.152043e-09},
+                                    {"id": "ku", "p": 0.0}, {"id": "utah", "p": 0.92213456}]}}
+        self.assertEqual(F.odds_snapshot(prev), {"asu": 4.155e-05, "wvu": 7.152e-09, "ku": 0.0, "utah": 0.9221})
+
+    def test_offline_builds_keep_the_week_start_as_it_is(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.with_odds(self.fresh_prev(now), 0.25)
+        written, _ = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build")
+        self.assertNotIn("baseline", written)
+
+    def test_win_probability_for_this_weeks_games_once_they_kick_off_until_final(self):
+        kick = first_kickoff()
+        week11 = [g for g in FIXTURE["games"] if g["week"] == 11 and not g["completed"]]
+        started = lambda now: {g["id"] for g in week11 if F.parse(g["date"]) <= now}
+        # before kickoff: nothing
+        fake = FakeESPN()
+        self.run_fetch(self.fresh_prev(kick - dt.timedelta(minutes=5)), kick - dt.timedelta(minutes=5), fake)
+        self.assertEqual(fake.summaries, [])
+        # under way: the games that have kicked off, and the series is saved
+        now = kick + dt.timedelta(hours=1)
+        fake = FakeESPN(final=False)
+        written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
+        self.assertEqual(set(fake.summaries), started(now))
+        self.assertEqual(self.changed, "changed=true")
+        g = next(x for x in written["games"] if x["id"] == fake.summaries[0])
+        self.assertEqual(g["wp"], {"pts": [[450, 600], [1350, 700], [2250, 900]], "final": False,
+                                   "detail": "3rd 7:30", "homeScore": 24, "awayScore": 10})
+        # asked again next run while it's on; once ESPN says final, never again
+        fake = FakeESPN(final=False, summary_final=True)
+        written, _ = self.run_fetch(written, now, fake)
+        self.assertEqual(set(fake.summaries), started(now))
+        fake = FakeESPN(final=False)
+        self.run_fetch(written, now, fake)
+        self.assertEqual(fake.summaries, [])
+
+    def test_win_probability_skips_unset_kickoffs_and_other_weeks(self):
+        now = first_kickoff() + dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        for g in prev["games"]:
+            if g["week"] == 11:
+                g["timeValid"] = False
+        fake = FakeESPN(final=False)
+        self.run_fetch(prev, now, fake)
+        self.assertEqual(fake.summaries, [])
+
+    def test_play_times_and_thinning(self):
+        self.assertEqual(F.play_seconds({"period": {"number": 2}, "clock": {"displayValue": "10:00"}}), 1200)
+        self.assertEqual(F.play_seconds({"period": {"number": 6}}), 3600 + 240)
+        many = summary(True, [k / 500 for k in range(500)])
+        for k, pl in enumerate(many["drives"]["previous"][0]["plays"]):
+            pl["period"] = {"number": 1}
+        with mock.patch.object(F, "get", lambda url, raw=False: many):
+            _, wp = F.fetch_winprob("1")
+        self.assertEqual(len(wp["pts"]), F.WP_POINTS)
+        self.assertEqual(wp["pts"][0][1], 0)
+        self.assertEqual(wp["pts"][-1][1], 998)
+
 class ScoreboardParsing(unittest.TestCase):
     def test_title_game_and_non_conference_flag(self):
         games = [g for g in FIXTURE["games"] if g["week"] == 11][:2]
@@ -361,6 +498,21 @@ class ScoreboardParsing(unittest.TestCase):
         with mock.patch.object(F, "get", lambda url, raw=False: sb):
             parsed = F.fetch_week(F.LEAGUES["acc"], 2025, 15)
         self.assertNotIn("title", [g["id"] for g in parsed])
+
+    def test_tv_spread_venue_and_unset_kickoff_times(self):
+        games = [g for g in FIXTURE["games"] if g["week"] == 11][:2]
+        sb = scoreboard(games, final=False)
+        c = sb["events"][0]["competitions"][0]
+        c.update(broadcast="FOX", odds=[{"details": "TCU -10.5", "overUnder": 44.5}],
+                 venue={"fullName": "Amon G. Carter Stadium", "address": {"city": "Fort Worth", "state": "TX"}})
+        c2 = sb["events"][1]["competitions"][0]
+        c2.update(timeValid=False, broadcasts=[{"names": ["ESPN+"]}, {"names": ["ESPN+", "Big 12 Now"]}])
+        with mock.patch.object(F, "get", lambda url, raw=False: sb):
+            a, b = F.fetch_week(F.LEAGUES["big12"], 2026, 11)
+        self.assertEqual((a["tv"], a["spread"], a["overUnder"], a["venue"], a["city"], a["timeValid"]),
+                         ("FOX", "TCU -10.5", 44.5, "Amon G. Carter Stadium", "Fort Worth, TX", True))
+        self.assertEqual((b["tv"], b["spread"], b["overUnder"], b["venue"], b["city"], b["timeValid"]),
+                         ("ESPN+, Big 12 Now", None, None, None, None, False))
 
     def test_canceled_game_is_completed_without_a_winner(self):
         sb = scoreboard([g for g in FIXTURE["games"] if g["week"] == 11][:1], final=False)
