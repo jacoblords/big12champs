@@ -474,6 +474,47 @@ test("one more pick shows estimated odds at once, then the full run's", async ()
   assert.equal(els.picker.attrs["aria-busy"], "true");
 });
 
+test("from exact odds, the first pick shows each team's exact odds given that result at once", async () => {
+  const frames = [];
+  const { els, handlers, sandbox } = render(data, "#ttu", { requestAnimationFrame: (fn) => frames.push(fn) });
+  await settle();
+  while (frames.length) frames.shift()();
+  await settle();
+  const pills = () => Object.fromEntries([...els.picker.innerHTML.matchAll(/id="pick-(\w+)"[\s\S]*?<span class="odds([^"]*)"><i[^>]*><\/i><b>([^<]+)<\/b>/g)].map((m) => [m[1], { est: / est/.test(m[2]), label: m[3] }]));
+  const k = 2;
+  handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: String(k), v: "0" } } : null) } });
+  const est = pills();
+  assert.equal(Object.keys(est).length, data.teams.length);
+  data.teams.forEach((t, i) => {
+    assert.ok(est[t.abbr].est, t.abbr + " marked as an estimate");
+    // the label the picker would print for the exact conditional odds
+    const p = data.exact.teams[i].games[k].pA;
+    const want = p <= 0 ? "0%" : p >= 1 ? "100%" : p < 0.001 ? "&lt;0.1%" : p > 0.999 ? ">99.9%" : (p * 100).toFixed(p < 0.1 || p > 0.9 ? 1 : 0) + "%";
+    assert.equal(est[t.abbr].label, want, t.abbr);
+  });
+  assert.match(els.calc.textContent, /Estimate shown, refining/);
+  assert.equal(els.picker.attrs["aria-busy"], undefined, "fresh numbers aren't dimmed");
+  while (frames.length) frames.shift()();
+  await settle();
+  const full = pills();
+  for (const t of data.teams) {
+    assert.ok(!full[t.abbr].est);
+    const n = (x) => (x === "0%" ? 0 : /^\d/.test(x) ? parseFloat(x) : null);
+    if (n(est[t.abbr].label) != null && n(full[t.abbr].label) != null)
+      assert.ok(Math.abs(n(est[t.abbr].label) - n(full[t.abbr].label)) <= 2, `${t.abbr}: exact ${est[t.abbr].label} vs simulated ${full[t.abbr].label}`);
+  }
+  // exact data from before per-game odds existed: no estimate, the picker dims instead
+  const old = JSON.parse(JSON.stringify(data));
+  old.exact.teams.forEach((t) => { delete t.games; });
+  const frames2 = [];
+  const r = render(old, "#ttu", { requestAnimationFrame: (fn) => frames2.push(fn) });
+  await settle();
+  while (frames2.length) frames2.shift()();
+  await settle();
+  r.handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "2", v: "0" } } : null) } });
+  assert.equal(r.els.picker.attrs["aria-busy"], "true");
+});
+
 test("a simulated league's no-pick view is precomputed with the data, and matches the page's own", async () => {
   const { presim, inputsKey } = require("../exact.js");
   const noExact = { ...data, exact: { skipped: "too many" } };
