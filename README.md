@@ -1,8 +1,8 @@
 # Title Paths
 
-Pick a Big 12, SEC, ACC or Big Ten team and see its likeliest path to the conference championship game:
+Pick a Big 12, SEC, ACC, Big Ten or Pac-12 team and see its likeliest path to the conference championship game:
 which results it needs, who to root for, and how the official tiebreakers settle the standings.
-The Big 12 page is the site root, the SEC's is `/sec/`, the ACC's `/acc/` and the Big Ten's `/big10/`; the header links them with each
+The Big 12 page is the site root, the SEC's is `/sec/`, the ACC's `/acc/`, the Big Ten's `/big10/` and the Pac-12's `/pac12/`; the header links them with each
 conference's ESPN logo, and Monster Energy's claw in front of the Big 12 (its title sponsor
 since July 2026; [`monster-claw.png`](monster-claw.png) is cropped from the public-domain logo on Wikimedia Commons).
 
@@ -17,7 +17,8 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   ([Big 12 PDF](https://s3.amazonaws.com/big12sports.com/documents/2025/11/4/Big_12_Football_2024_Tiebreaker_Policy.pdf),
   [SEC](https://www.secsports.com/news/2024/08/sec-announces-football-tie-breaking-process),
   [ACC PDF](https://s3.amazonaws.com/sidearm.sites/acc.sidearmsports.com/documents/2026/7/15/ACC_Football_Tiebreaker_Policy_Jully_2026.pdf),
-  [Big Ten](https://bigten.org/sports/2026/11/10/FB_1110261447.aspx)).
+  [Big Ten](https://bigten.org/sports/2026/11/10/FB_1110261447.aspx),
+  [Pac-12](https://pac-12.com/news/2026/9/3/pac-12-announces-commercial-and-operational-updates-ahead-of-its-2026-football-season-kickoff.aspx)).
   The odds are exact for those inputs, and "clinched", "eliminated", "win out and they're
   in" and "must" are only shown when proven over every finish.
 - **Paths:** a team's path is the likeliest set of results that *guarantees* it a title-game
@@ -67,6 +68,18 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   2024 and 2025 title games and all seventeen scenarios the conference published for them.
   With 27 conference games left (Nov. 10, 2026) it is past the exact-odds budget and the page
   simulates; exact odds return once two weeks remain.
+- **The Pac-12** (rebuilt for 2026: Boise State, Colorado State, Fresno State, Oregon State, San
+  Diego State, Texas State, Utah State, Washington State) plays a seven-game round robin, weeks 5
+  to 12. Week 13's "flex" games pair two of its teams and ESPN flags them as conference games, but
+  they don't count in the standings, so `LEAGUES.pac12.lastConfWeek` (12) leaves them out. Its
+  three-team steps are the Big 12's minus total wins, with SportSource's Team Rating Score (FPI
+  stands in), nobody dropped for losing to all the others, tied opponents in the walk counted
+  together, and seeds in the order they come out. Its two-team list leaves head-to-head out for a
+  tie for second; the site uses it, as reporters do, since in a round robin the listed steps would
+  favor the team that lost the game. In a round robin, common opponents and strength of schedule
+  can never split a tie that head-to-head didn't, so the walk or the rating decides the rest. No
+  past seasons exist to replay; the tests check each clause and reporters' November 2026 scenarios
+  over every finish. With 8 games left it is the smallest enumeration (256 finishes).
 - **Gameday:** each league has a gameday page (`/gameday/`, `/sec/gameday/`, …). A Paths |
   Gameday switch in the top bar moves between a league's two views during a regular-season
   week (ESPN's calendar, Monday to Monday), with a live marker on Gameday while one of its
@@ -150,6 +163,9 @@ python3 -m unittest discover -s tests       # fetcher caching rules against a fa
 - `tests/big10-scenarios.test.js`: the Big Ten's own scenarios before the last two weeks of 2024
   (ten) and the last week of 2025 (seven), over every finish; two 2024 scenarios pin the
   finishes where step 4 is an exact tie, which the sheet didn't consider.
+- `tests/pac12.test.js`: the Pac-12's 2026 procedure clause by clause on hand-built tables and
+  on real finishes from the Nov. 13 snapshot, each place it differs from another league, and the
+  MWC Connection and Fresno Bee scenarios from Nov. 9-12, 2026 over all 256 finishes.
 - `tests/engine.test.js`: 2024 and 2025 final standings reproduce the real title games, plus a
   hand-built standings table for each rule and corner case (sweep rule, restart after a
   seed, standings walk with tied groups, steps d to g, FCS cap, canceled games).
@@ -169,9 +185,10 @@ python3 fetch_data.py --site site               # Big 12; incremental, reuses ./
 python3 fetch_data.py --league sec --site site  # SEC; reuses ./data-sec.json, writes site/sec/
 python3 fetch_data.py --league acc --site site  # ACC; reuses ./data-acc.json, writes site/acc/
 python3 fetch_data.py --league big10 --site site  # Big Ten; ./data-big10.json, site/big10/
+python3 fetch_data.py --league pac12 --site site  # Pac-12; ./data-pac12.json, site/pac12/
 python3 -m http.server -d site                  # then open http://localhost:8000
 ```
 
 `fetch_data.py` also writes `<league>-path.html`, a single self-contained page with the data
 embedded. Set `SEASON` (or `--season`) for another year. The deploy workflow runs one step per
-league; each writes its page every run, so a deploy for one league's change carries all four.
+league; each writes its page every run, so a deploy for one league's change carries all five.
