@@ -120,9 +120,14 @@ button { font: inherit; color: inherit; }
 .pick .odds.hot b { color: var(--accent); }
 .pick.out { opacity: 0.55; }
 /* the league page's link to its gameday page */
-.top-right { display: flex; align-items: center; gap: 14px; }
-.gdlink { font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; text-decoration: none; padding: 2px 11px; border: 1px solid var(--accent); border-radius: 999px; }
-.gdlink:hover { background: var(--accent-soft); }
+/* the two views of a league: its teams' paths, and this week's games */
+.modes { display: inline-flex; margin-left: auto; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.modes a { display: inline-flex; align-items: center; gap: 6px; padding: 3px 14px; color: var(--muted); text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 0.92rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.modes a + a { border-left: 1px solid var(--line); }
+.modes a:hover { color: var(--ink); }
+.modes a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.modes .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--loss); animation: calcpulse 1s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .modes .dot { animation: none; } }
 
 /* gameday page: how the race has moved this week, and the slate with what each game does to it */
 .gd { display: grid; gap: 26px; padding-bottom: 10px; }
@@ -131,7 +136,7 @@ button { font: inherit; color: inherit; }
 .gd-sec > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; border-top: 3px solid var(--ink); padding-top: 14px; }
 .gd-sec > header p { margin: 0; color: var(--muted); font-size: 0.88rem; }
 .race { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 10px; }
-.race > button { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 5px 9px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); text-align: left; cursor: pointer; font-variant-numeric: tabular-nums; font-size: 0.88rem; }
+.race > button { display: grid; grid-template-columns: 20px auto minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 5px 9px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); text-align: left; cursor: pointer; font-variant-numeric: tabular-nums; font-size: 0.88rem; }
 .race > button:hover { border-color: var(--muted); }
 .race > button.out { opacity: 0.55; }
 .race > button[aria-pressed="true"] { opacity: 1; border-color: var(--ink); box-shadow: inset 3px 0 0 var(--team, var(--accent)); }
@@ -142,6 +147,8 @@ button { font: inherit; color: inherit; }
 .race .delta { min-width: 2.6em; text-align: right; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
 /* phones: two to a row; the starting odds stay in the row's label */
 @media (max-width: 640px) { .race { grid-template-columns: 1fr 1fr; gap: 5px 6px; } .race > button { gap: 6px; padding: 5px 7px; } .race .was { display: none; } }
+/* the smallest phones: two to a row would run the name into the odds */
+@media (max-width: 379px) { .race { grid-template-columns: minmax(0, 1fr); } .race .was { display: inline; } }
 .delta.up { color: var(--win); }
 .delta.down { color: var(--loss); }
 .gd-none { margin: 0; color: var(--muted); }
@@ -334,7 +341,8 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 
 <div class="wrap" id="page" aria-busy="true">
   <header class="top">
-    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><div class="top-right"><a class="gdlink" id="gdlink" href="gameday/" hidden></a><span class="eyebrow" id="season"></span></div></div>
+    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><nav class="modes" id="modes" aria-label="View" hidden></nav></div>
+    <span class="eyebrow" id="season"></span>
     <div class="titlerow"><div class="lockup" id="lockup" hidden></div><h1 id="title">Title Paths</h1></div>
     <p id="lede"></p>
   </header>
@@ -616,9 +624,14 @@ function renderHeader() {
   const title = `${LG.name} ${GAMEDAY ? "Gameday" : "Title Paths"}`;
   $("title").textContent = title;
   document.title = title;
-  const link = $("gdlink");
-  link.hidden = GAMEDAY || !WEEK || !weekGames().length;
-  if (!link.hidden) link.textContent = `Week ${WEEK.week} gameday`;
+  // Paths | Gameday: only while the week has games (always on the gameday page, to get back)
+  const modes = $("modes");
+  modes.hidden = !GAMEDAY && (!WEEK || !weekGames().length);
+  if (!modes.hidden) {
+    const live = weekGames().some(underWay);
+    modes.innerHTML = `<a href="${GAMEDAY ? "../" : "./"}"${GAMEDAY ? "" : ' aria-current="page"'}>Paths</a>`
+      + `<a href="${GAMEDAY ? "./" : "gameday/"}"${GAMEDAY ? ' aria-current="page"' : ""}>${live ? `<span class="dot" aria-hidden="true"></span>` : ""}Gameday${live ? `<span class="vh">, games under way</span>` : ""}</a>`;
+  }
 }
 
 function renderRules() {
@@ -689,6 +702,12 @@ const ET_MS = 5 * 3600e3;
 const kickKey = (g) => new Date(g.date).getTime() + (g.timeValid === false ? 24 * 3600e3 - 1 : 0);
 const weekGames = () => (WEEK ? DATA.games.filter((g) => g.week === WEEK.week && (g.conf || confMatters)
   && (ctx.idx[g.home] !== undefined || ctx.idx[g.away] !== undefined)).sort((a, b) => kickKey(a) - kickKey(b)) : []);
+// kicked off, not over: no final from the scoreboard or ESPN's summary (and at most 5 hours in,
+// so a result that never lands doesn't leave it live)
+function underWay(g) {
+  const t = new Date(g.date).getTime(), now = Date.now();
+  return !g.completed && !g.canceled && !g.postponed && g.timeValid !== false && !(g.wp && g.wp.final) && now >= t && now < t + 5 * 3600e3;
+}
 function kickoff(g) {
   const d = new Date(g.date);
   if (g.timeValid === false) return new Date(d.getTime() - ET_MS).toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" }) + " · time TBD";
@@ -793,8 +812,8 @@ function renderGameday() {
   const games = weekGames(), W = weekOdds();
   const left = games.filter((g) => !g.completed).length;
   $("lede").innerHTML = WEEK && games.length
-    ? `Week ${WEEK.week}: ${games.length} game${games.length === 1 ? "" : "s"}${left < games.length ? `, ${left} still to play` : ""}. What each result does to the title race, and how it has moved this week. <a href="../">Every team's path &rarr;</a>`
-    : `No ${esc(LG.name)} games to show this week. <a href="../">Every team's path &rarr;</a>`;
+    ? `Week ${WEEK.week}: ${games.length} game${games.length === 1 ? "" : "s"}${left < games.length ? `, ${left} still to play` : ""}. What each result does to the title race, and how it has moved this week.`
+    : `No ${esc(LG.name)} games to show this week.`;
   const el = $("gameday");
   if (!WEEK || !games.length || !W) { el.innerHTML = ""; return; }
   const rows = T.map((_, i) => ({ i, d: weekDelta(i), p: W.p[i] }))

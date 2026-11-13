@@ -67,8 +67,10 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   2024 and 2025 title games and all seventeen scenarios the conference published for them.
   With 27 conference games left (Nov. 10, 2026) it is past the exact-odds budget and the page
   simulates; exact odds return once two weeks remain.
-- **Gameday:** each league has a gameday page (`/gameday/`, `/sec/gameday/`, …), linked from
-  its page's header during a regular-season week (ESPN's calendar, Monday to Monday). It is the
+- **Gameday:** each league has a gameday page (`/gameday/`, `/sec/gameday/`, …). A Paths |
+  Gameday switch in the top bar moves between a league's two views during a regular-season
+  week (ESPN's calendar, Monday to Monday), with a live marker on Gameday while one of its
+  games is under way; league links keep the view. It is the
   same template with `GAMEDAY` set by `fetch_data.py`, with its own copy of the page data one
   folder down. Two sections:
   - *The race:* every team's title-game odds now, highest first, with the week's starting odds

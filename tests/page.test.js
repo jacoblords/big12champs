@@ -978,7 +978,7 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.equal(els.gameday.hidden, false);
   for (const id of ["picker", "team", "method", "rules"]) assert.equal(els[id].hidden, true, id + " hidden");
   assert.equal(els.title.textContent, "Big 12 Gameday");
-  assert.match(text(els.lede.innerHTML), /^Week 12: 8 games\. What each result does to the title race, and how it has moved this week\. Every team's path/);
+  assert.match(text(els.lede.innerHTML), /^Week 12: 8 games\. What each result does to the title race, and how it has moved this week\.$/);
   assert.match(els.gameday.innerHTML, /Live odds of reaching the title game, updated every 15 minutes on game days\./);
   const gd = text(els.gameday.innerHTML);
   assert.match(gd, /FS1/);
@@ -1080,16 +1080,33 @@ test("gameday: ESPN's TV, line and venue text is escaped", async () => {
   assert.match(els.gameday.innerHTML, /&lt;b&gt;X&lt;\/b&gt; · O\/U 52\.5 · A&amp;B/);
 });
 
-test("league page: no gameday content, just a link to it during the week", async () => {
+test("top bar: a Paths | Gameday switch while the week has games, the current view marked", async () => {
   let r = render(gameday(), "#utah", { Date: clockAt(FRIDAY_WK12) });
   await settle();
-  assert.ok(!r.els.gameday || r.els.gameday.innerHTML === "", "the gameday view isn't rendered");
-  assert.equal(r.els.gdlink.hidden, false);
-  assert.equal(r.els.gdlink.textContent, "Week 12 gameday");
+  assert.ok(!r.els.gameday || r.els.gameday.innerHTML === "", "the league page doesn't render the gameday view");
+  assert.equal(r.els.modes.hidden, false);
+  assert.equal(r.els.modes.innerHTML, '<a href="./" aria-current="page">Paths</a><a href="gameday/">Gameday</a>');
   assert.doesNotMatch(r.els.picker.innerHTML, /delta|&#9650;/);
+  r = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.equal(r.els.modes.innerHTML, '<a href="../">Paths</a><a href="./" aria-current="page">Gameday</a>');
+  // outside the season: no switch on the league page; the gameday page keeps it, to get back
   r = render(gameday(), "#utah", { Date: clockAt("2027-01-10T18:00Z") });
   await settle();
-  assert.equal(r.els.gdlink.hidden, true);
+  assert.equal(r.els.modes.hidden, true);
+  r = renderGameday(gameday(), { Date: clockAt("2027-01-10T18:00Z") });
+  await settle();
+  assert.equal(r.els.modes.hidden, false);
+});
+
+test("top bar: Gameday carries a live marker while a game is under way, and not after", async () => {
+  const wk = gameday();
+  const g = wk.games.filter((x) => x.week === 12)[0]; // Friday 23:00Z
+  const at = async (iso, extra = {}) => { Object.assign(g, extra); const r = render(wk, "#utah", { Date: clockAt(iso) }); await settle(); return r.els.modes.innerHTML; };
+  assert.doesNotMatch(await at(FRIDAY_WK12), /dot/, "before kickoff");
+  assert.match(await at("2026-11-21T00:30Z"), /<span class="dot" aria-hidden="true"><\/span>Gameday<span class="vh">, games under way<\/span>/);
+  assert.doesNotMatch(await at("2026-11-21T00:30Z", { wp: { pts: [], final: true } }), /dot/, "ESPN called it final");
+  assert.doesNotMatch(await at("2026-11-21T04:30Z", { wp: null }), /dot/, "more than 5 hours on (and before the next kickoff), never live");
 });
 
 test("gameday: a game under way shows ESPN's clock, the score and its win-probability chart; a final one, the result", async () => {
