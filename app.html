@@ -52,6 +52,13 @@ img { max-width: 100%; }
 :root[data-theme="dark"] .logo-dark { display: inline; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
 .wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+/* Layout shift (CLS): the page is an empty shell until data.json arrives and fills it in, which moved
+   everything already on screen. It stays invisible (still laid out, so its fonts load) until the first
+   full render. The reserved gutter keeps a scrollbar appearing from nudging the centered column. */
+html { scrollbar-gutter: stable; }
+.wrap[aria-busy="true"] { visibility: hidden; }
+/* odds being recomputed after a pick: dim the stale numbers, but only if it takes a moment */
+#picker[aria-busy="true"], #team[aria-busy="true"] { opacity: 0.55; cursor: progress; transition: opacity 0.15s 0.12s; }
 h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
 h2 { font-size: 1.7rem; text-transform: uppercase; }
 h3 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -61,6 +68,8 @@ h3 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.04em; }
 a { color: var(--accent); }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* segmented controls clip their children (overflow: hidden), so their focus ring goes inside */
+.seg button:focus-visible, .rg-sort button:focus-visible { outline-offset: -3px; }
 
 /* header */
 .top { padding-block: 28px 18px; display: grid; gap: 8px; }
@@ -241,7 +250,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
-<div class="wrap">
+<div class="wrap" id="page" aria-busy="true">
   <header class="top">
     <div class="topbar"><nav class="leagues" id="leagues" aria-label="League"></nav><span class="eyebrow" id="season"></span></div>
     <div class="titlerow"><div class="lockup" id="lockup" hidden></div><h1 id="title">Title Paths</h1></div>
@@ -909,7 +918,10 @@ function renderAll() {
 function parseHash() {
   const out = { team: -1, locks: null, sort: null };
   const parts = location.hash.slice(1).toLowerCase().split("&");
-  out.team = T.findIndex((t) => t.abbr.toLowerCase() === decodeURIComponent(parts[0] || ""));
+  // a link cut short mid-escape ("#utah%") must not take the page down: it just names no team
+  let name = parts[0] || "";
+  try { name = decodeURIComponent(name); } catch (e) { name = ""; }
+  out.team = T.findIndex((t) => t.abbr.toLowerCase() === name);
   for (const part of parts.slice(1)) {
     const [key, val = ""] = part.split("=");
     if (key === "picks") {
@@ -936,36 +948,66 @@ function writeHash() {
   try { history.replaceState(null, "", h); } catch (e) { location.hash = h; }
 }
 
+// Responsiveness (INP): after a pick, the simulations and the path search take a few hundred ms
+// (well over a second on a phone). Run inside the click, that work held the next frame and the
+// button looked dead. So a click updates the state and the button at once, and the recompute runs
+// after that frame is painted; clicks made meanwhile fold into the one recompute.
+let refreshQueued = false, refreshSim = false;
+function refresh(sim) {
+  refreshSim = refreshSim || sim;
+  if (typeof requestAnimationFrame !== "function") return runRefresh(); // no frames to wait for
+  if (refreshQueued) return;
+  refreshQueued = true;
+  for (const id of ["picker", "team"]) $(id).setAttribute("aria-busy", "true");
+  requestAnimationFrame(() => setTimeout(runRefresh)); // a timeout set in rAF runs after the paint
+}
+function runRefresh() {
+  refreshQueued = false;
+  if (refreshSim) runMain();
+  refreshSim = false;
+  renderAll();
+  if (typeof requestAnimationFrame === "function") for (const id of ["picker", "team"]) $(id).removeAttribute("aria-busy");
+}
+// the pressed look for a button in a group, ahead of the full re-render
+function press(btn, group) {
+  const box = btn.closest && btn.closest(group);
+  if (box) for (const b of box.querySelectorAll("button")) b.setAttribute("aria-pressed", String(b === btn));
+}
+
 function select(i, push) {
   sel = i;
   if (push) writeHash();
-  renderPicker(); renderTeam();
+  refresh(false);
 }
 
 document.addEventListener("click", (e) => {
   const pick = e.target.closest("[data-t]");
-  if (pick) { select(+pick.dataset.t, true); return; }
+  if (pick) { press(pick, ".picker"); select(+pick.dataset.t, true); return; }
   const seg = e.target.closest(".seg button");
   if (seg) {
     const k = +seg.dataset.k, v = seg.dataset.v;
     locks[k] = v === "" ? undefined : +v;
-    runMain(); renderAll(); writeHash();
+    press(seg, ".seg");
+    writeHash(); refresh(true);
     return;
   }
   const sort = e.target.closest(".rg-sort button");
   if (sort) {
     rgSort = sort.dataset.sort;
     try { localStorage.setItem("rgSort", rgSort); } catch (e) {}
-    renderTeam(); writeHash();
+    // through refresh, not straight to renderTeam: a pick's recompute may still be queued, and
+    // rendering before it would cache this team's analysis against the old simulations
+    press(sort, ".rg-sort"); writeHash(); refresh(false);
     return;
   }
-  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); runMain(); renderAll(); writeHash(); return; }
+  if (e.target.id === "clearLocks") { locks = new Array(P.length).fill(undefined); writeHash(); refresh(true); return; }
   const wo = e.target.closest("#winOut");
   if (wo) {
     // set (or undo) every remaining game of this team as a win; other picks are left alone
     const team = +wo.dataset.team, on = winsOutLocked(team);
     for (const [g, k] of ownGames(team)) locks[k] = on ? undefined : g.h === team ? 1 : 0;
-    runMain(); renderAll(); writeHash();
+    wo.setAttribute && wo.setAttribute("aria-pressed", String(!on));
+    writeHash(); refresh(true);
   }
 });
 // hovering a result previews the selected team's odds under it in the big number
@@ -989,8 +1031,9 @@ window.addEventListener("hashchange", () => {
   if (h.team >= 0) sel = h.team;
   if (h.sort) rgSort = h.sort;
   const next = h.locks || new Array(P.length).fill(undefined);
-  if (next.join() !== locks.join()) { locks = next; runMain(); }
-  renderAll();
+  const changed = next.join() !== locks.join();
+  locks = next;
+  refresh(changed);
 });
 
 // boot
@@ -1033,9 +1076,17 @@ window.addEventListener("hashchange", () => {
 })();
 }
 
-if (EMBEDDED) app(EMBEDDED);
+// Show the page once it is whole: rendered, and its fonts in (swapping a font in later reflows the
+// text). The font wait is capped so a slow font server can't hold the page back.
+function reveal() {
+  const fonts = document.fonts ? document.fonts.ready : null;
+  const show = () => document.getElementById("page").removeAttribute("aria-busy");
+  Promise.race([fonts, new Promise((r) => setTimeout(r, 500))].filter(Boolean)).then(show, show);
+}
+if (EMBEDDED) { try { app(EMBEDDED); } finally { reveal(); } }
 else fetch("data.json", { cache: "no-cache" })
   .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
   .then(app)
-  .catch((e) => { document.getElementById("lede").textContent = `Couldn't load the standings data (${e.message}). Reload the page to try again.`; });
+  .catch((e) => { document.getElementById("lede").textContent = `Couldn't load the standings data (${e.message}). Reload the page to try again.`; })
+  .finally(reveal);
 </script>
