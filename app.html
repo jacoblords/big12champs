@@ -167,6 +167,10 @@ button { font: inherit; color: inherit; }
 .gc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 9px; align-content: start; min-width: 0; }
 .gc.top { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
 /* the team picked in the race: its games, and its row in every game it's moved by */
+.gc { transition: opacity .2s; }
+.gc.dim { opacity: 0.45; }
+.gc.dim:hover, .gc.dim:focus-within { opacity: 0.85; }
+.gd-focus { font-weight: 600; color: var(--ink) !important; }
 .gc.mine { border-color: var(--ink); box-shadow: inset 0 3px 0 var(--team, var(--accent)); }
 .gc-stakes .me { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 .gc-when { display: flex; justify-content: space-between; gap: 8px; font-size: 0.8rem; color: var(--muted); }
@@ -764,8 +768,20 @@ function wpChart(g, a, h) {
     <div class="wp-q" aria-hidden="true">${labels}</div>
     ${lab(h, now)}</div>`;
 }
+// r/CFB's game threads are posted by u/CFB_Referee as "[Game Thread] BYU @ Utah (12:00 PM ET)"
+// with full school names, while ESPN's short names abbreviate ("Kansas St"). So the search asks for
+// that author's "Game Thread" titles with the title words the two names agree on (dropping
+// "St"/"State"). Every term is joined with AND: without it Reddit matches any one of them. Reddit
+// ignores the time limit on such a query, so it's sorted newest first, and the card offers the link
+// only from two hours before kickoff (threads go up about an hour before), when the newest match
+// is this year's game rather than last year's.
+function threadQuery(a, h) {
+  const words = (side) => side.i === undefined ? []
+    : T[side.i].short.split(/\s+/).filter((w) => w && !/^(st\.?|state)$/i.test(w) && /^[\p{L}\p{N}&'.-]+$/u.test(w));
+  return ['author:CFB_Referee', 'title:"Game Thread"', ...[...words(a), ...words(h)].map((w) => "title:" + w)].join(" AND ");
+}
 let focusTeam = null; // the team clicked in the race: highlighted through the games
-function gameCard(g, top) {
+function gameCard(g, top, dim) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
   // ESPN's summary can call a game final a few minutes before our results check does
@@ -795,12 +811,13 @@ function gameCard(g, top) {
     </div>`;
   } else if (S) stakes = `<p class="gc-quiet">Neither result moves anyone's title-game odds by a point.</p>`;
   const q = `${a.name} ${h.name}`;
+  const threadOpen = g.timeValid !== false && !g.canceled && Date.now() >= new Date(g.date).getTime() - 2 * 3600e3;
   const links = `<div class="gc-links">
-    <a href="https://www.espn.com/college-football/game/_/gameId/${encodeURIComponent(g.id)}" target="_blank" rel="noopener">ESPN Gamecast</a>
-    <a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent('"Game Thread" ' + q)}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener">r/CFB threads</a>
-    <a href="https://x.com/search?q=${encodeURIComponent(q)}&amp;f=live" target="_blank" rel="noopener">On X</a></div>`;
+    <a href="https://www.espn.com/college-football/game/_/gameId/${encodeURIComponent(g.id)}" target="_blank" rel="noopener" title="ESPN Gamecast">ESPN</a>
+    ${threadOpen ? `<a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent(threadQuery(a, h))}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener" title="The r/CFB game thread">r/CFB</a>` : ""}
+    <a href="https://x.com/search?q=${encodeURIComponent(q)}&amp;f=live" target="_blank" rel="noopener" title="Live posts on X">X</a></div>`;
   const mine = focusTeam != null && (a.i === focusTeam || h.i === focusTeam);
-  return `<article class="gc${top ? " top" : ""}${mine ? " mine" : ""}"${mine ? ` style="--team:${safeColor(T[focusTeam].color)}"` : ""}>${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;
+  return `<article data-gid="${esc(g.id)}" class="gc${top ? " top" : ""}${mine ? " mine" : ""}${dim ? " dim" : ""}"${mine ? ` style="--team:${safeColor(T[focusTeam].color)}"` : ""}>${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;
 }
 // a card lists the five teams a game moves most, plus the picked team when it's further down
 const shownRows = (rows) => {
@@ -808,6 +825,25 @@ const shownRows = (rows) => {
   const me = focusTeam != null && !top.some((r) => r.i === focusTeam) ? rows.find((r) => r.i === focusTeam) : null;
   return me ? top.concat(me) : top;
 };
+// The slate for a picked team: its own game, then the games that move its odds by a point or
+// more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game has no
+// stakes left, so it joins the rest. With no team picked: kickoff order, nothing dimmed.
+function slateFor(games) {
+  if (focusTeam == null) return { order: games.map((g) => ({ g, dim: false })), note: "" };
+  const own = [], moving = [], rest = [];
+  for (const g of games) {
+    if (ctx.idx[g.home] === focusTeam || ctx.idx[g.away] === focusTeam) { own.push(g); continue; }
+    const S = !g.completed && !(g.wp && g.wp.final) ? stakesOf(pendingAt.get(g.id)) : null;
+    const r = S && S.rows.find((x) => x.i === focusTeam);
+    if (r) moving.push({ g, sw: r.sw }); else rest.push(g);
+  }
+  moving.sort((a, b) => b.sw - a.sw);
+  const name = esc(T[focusTeam].short), n = moving.length, more = `${n} game${n === 1 ? "" : "s"}`;
+  const note = own.length
+    ? (n ? `${name}: its game first, then the ${more} that move its odds most, biggest first.` : `${name}: its game first. No other game moves its odds by a point.`)
+    : (n ? `${name} doesn't play this week. The ${more} that move its odds come first, biggest first.` : `${name} doesn't play this week, and no game moves its odds by a point.`);
+  return { order: [...own.map((g) => ({ g, dim: false })), ...moving.map(({ g }) => ({ g, dim: false })), ...rest.map((g) => ({ g, dim: true }))], note };
+}
 function renderGameday() {
   const games = weekGames(), W = weekOdds();
   const left = games.filter((g) => !g.completed).length;
@@ -827,10 +863,11 @@ function renderGameday() {
     const S = !g.completed ? stakesOf(pendingAt.get(g.id)) : null;
     if (S && S.total > topStake) { topStake = S.total; topId = g.id; }
   }
+  const slate = slateFor(games);
   el.innerHTML = `<section class="gd-sec" aria-labelledby="gd-race"><header><h2 id="gd-race">The race</h2><p>Live odds of reaching the title game, updated every 15 minutes on game days. Pick a team to follow it through the games.</p></header>
       <div class="race">${race}</div></section>
-    <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>Each team's title-game odds under either result, for the teams it moves by a point or more.</p></header>
-      <div class="games">${games.map((g) => gameCard(g, g.id === topId)).join("")}</div></section>`;
+    <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>Each team's title-game odds under either result, for the teams it moves by a point or more.</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
+      <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim)).join("")}</div></section>`;
 }
 
 function renderPicker() {
@@ -1435,9 +1472,35 @@ function select(i, push) {
   refresh();
 }
 
+const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function cardRects() {
+  const out = new Map();
+  if (!document.querySelectorAll || reduceMotion()) return out;
+  for (const c of document.querySelectorAll(".gc[data-gid]")) out.set(c.dataset.gid, c.getBoundingClientRect());
+  return out;
+}
+function slideCards(before) {
+  if (!before.size) return;
+  for (const c of document.querySelectorAll(".gc[data-gid]")) {
+    const was = before.get(c.dataset.gid);
+    if (!was || !c.animate) continue;
+    const now = c.getBoundingClientRect(), dx = was.left - now.left, dy = was.top - now.top;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) continue;
+    c.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: 260, easing: "cubic-bezier(.2, .7, .2, 1)" });
+  }
+}
 document.addEventListener("click", (e) => {
   const rt = e.target.closest("[data-rt]");
-  if (rt) { focusTeam = focusTeam === +rt.dataset.rt ? null : +rt.dataset.rt; renderGameday(); return; }
+  if (rt) {
+    focusTeam = focusTeam === +rt.dataset.rt ? null : +rt.dataset.rt;
+    // the cards slide to their new places (FLIP: measure, re-render, play the difference back)
+    const before = cardRects();
+    renderGameday();
+    const strip = document.querySelector && document.querySelector(".games");
+    if (strip) strip.scrollLeft = 0; // phones: the picked team's game is the first card in view
+    slideCards(before);
+    return;
+  }
   const pick = e.target.closest("[data-t]");
   if (pick) { press(pick, ".picker"); select(+pick.dataset.t, true); return; }
   const seg = e.target.closest(".seg button");
@@ -1524,7 +1587,7 @@ function defaultTeam() {
     : "These odds are only as good as ESPN's game predictions, which update about once a day. They also treat each game as independent, which can make them a bit too confident with much of the season left.";
   const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   const meta = DATA.meta || {};
-  $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${meta.nextResultCheck ? ` The next result can't land before ${when(meta.nextResultCheck)} (kickoff + 3 hours); until then only ESPN's odds can move.` : ""} Times are in your time zone.</div>
+  $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${P.length ? ` A result counts once ESPN calls the game final, checked every 15 minutes Thursday to Sunday${GAMEDAY ? ", when live scores and win probability refresh too" : ""}; between results, only ESPN's pregame odds move the title odds.` : ""} Times are in your time zone.</div>
   <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>). A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
   ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
   <div>Tiebreakers: <a href="${TEXT.policy.url}" target="_blank" rel="noopener">${TEXT.policy.title}</a>. Not affiliated with the ${esc(LG.name)} or ESPN.</div>`;

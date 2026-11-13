@@ -423,7 +423,7 @@ def main():
             weeks |= {g["week"] for g in games.values() if not g["completed"]}
             meta["scheduleCheckedAt"] = iso(now)
             meta["scheduleFields"] = SCHEDULE_FIELDS
-    if weeks:
+    def read_weeks(weeks):
         print(f"scoreboards for weeks {sorted(weeks)}")
         for wk_games in pmap(lambda w: fetch_week(league, args.season, w), sorted(weeks)):
             for ng in wk_games:
@@ -435,6 +435,9 @@ def main():
                 if not old or any(old.get(k) != ng.get(k) for k in keys):
                     changed.append(f"game {ng['awayName']}@{ng['homeName']}")
                 games[ng["id"]] = {**(old or {}), **ng}
+
+    if weeks:
+        read_weeks(weeks)
         meta.setdefault("scheduleCheckedAt", iso(now))
         meta.setdefault("scheduleFields", SCHEDULE_FIELDS)
 
@@ -487,6 +490,12 @@ def main():
                 if wp is not None and games[gid].get("wp") != wp:
                     games[gid]["wp"] = wp
                     changed.append(f"win probability {gid}")
+            # ESPN called a game final: read its result now rather than waiting for kickoff + 3h
+            # (the scoreboard is the source of results; if it lags, the usual rule asks again)
+            ended = {games[gid]["week"] for gid in live if (games[gid].get("wp") or {}).get("final")
+                     and not games[gid]["completed"] and games[gid]["week"] not in weeks}
+            if ended:
+                read_weeks(ended)
 
     team_ids = {t["id"] for t in teams}
     for t in teams:

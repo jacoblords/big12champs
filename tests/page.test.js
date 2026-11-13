@@ -986,7 +986,9 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(gd, /Sat · time TBD · FOX/, "an unset kickoff shows its day in Eastern time, not 5 hours early");
   assert.equal((els.gameday.innerHTML.match(/Biggest stakes/g) || []).length, 1);
   assert.match(gd, /Title-game odds If UTAH If TCU/);
-  assert.match(els.gameday.innerHTML, /reddit\.com\/r\/CFB\/search\/\?q=%22Game%20Thread%22%20Utah%20TCU/);
+  // r/CFB: not offered yet, more than two hours before kickoff (Friday 23:00Z; it's 18:00Z)
+  assert.doesNotMatch(els.gameday.innerHTML, /reddit\.com/);
+  assert.match(text(els.gameday.innerHTML), /ESPN X/);
   const order = [...els.gameday.innerHTML.matchAll(/gameId\/(\d+)/g)].map((m) => m[1]);
   assert.equal(order[0], gameday().games.filter((g) => g.week === 12)[0].id, "kickoff order");
   // the league switch goes to the other leagues' gameday pages
@@ -1020,7 +1022,7 @@ test("gameday: picking a team in the race highlights its games and its row in ev
   const html = els.gameday.innerHTML;
   assert.match(html, new RegExp(`data-rt="${utah}" aria-pressed="true"`));
   const cards = html.split("<article").slice(1);
-  const mine = cards.filter((c) => /^ class="gc[^"]* mine"/.test(c));
+  const mine = cards.filter((c) => /^ data-gid="\d+" class="gc[^"]* mine/.test(c));
   assert.equal(mine.length, 1, "Utah's one game this week");
   assert.match(mine[0], /Utah/);
   const rowsMe = (html.match(/<span class="t me" role="cell">[^]*?UTAH<\/span>/g) || []).length;
@@ -1128,4 +1130,65 @@ test("gameday: a game under way shows ESPN's clock, the score and its win-probab
   assert.match(fin, /class="gc-team won">.*Utah.*27/);
   assert.match(fin, />OT</, "overtime gets its own stretch of the axis");
   assert.doesNotMatch(fin, /Title-game odds/);
+});
+
+test("gameday: a picked team's game comes first, then the games that move it, biggest first; the rest dimmed", async () => {
+  const wk = gameday();
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const order = () => [...els.gameday.innerHTML.matchAll(/<article data-gid="(\d+)" class="gc([^"]*)"/g)].map((m) => ({ id: m[1], dim: / dim/.test(m[2]) }));
+  const kickoffOrder = order().map((c) => c.id);
+  assert.ok(order().every((c) => !c.dim), "nothing dimmed until a team is picked");
+  const byu = wk.teams.findIndex((t) => t.abbr === "BYU");
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(byu) } } : null) } });
+  const cards = order(), games = wk.games.filter((g) => g.week === 12);
+  const own = games.find((g) => g.home === wk.teams[byu].id || g.away === wk.teams[byu].id);
+  assert.equal(cards[0].id, own.id, "BYU's own game first");
+  // the cards after it: the ones listing a BYU row, by BYU's swing, then the dimmed rest in kickoff order
+  const html = els.gameday.innerHTML.split("<article").slice(1);
+  const swing = (id) => {
+    const c = html.find((x) => x.includes(`data-gid="${id}"`));
+    const m = c.match(/BYU<\/span><span class="v[^"]*" role="cell">([\d.]+)%<\/span><span class="v[^"]*" role="cell">([\d.]+)%/);
+    return m ? Math.abs(+m[1] - +m[2]) : null;
+  };
+  const moving = cards.slice(1).filter((c) => !c.dim), rest = cards.filter((c) => c.dim);
+  assert.ok(moving.length > 0 && rest.length > 0);
+  assert.ok(moving.every((c) => swing(c.id) != null), "every undimmed game lists BYU");
+  assert.ok(rest.every((c) => swing(c.id) == null), "no dimmed game lists BYU");
+  const sw = moving.map((c) => swing(c.id));
+  assert.deepEqual(sw, [...sw].sort((x, y) => y - x), "biggest swing first (to the shown rounding)");
+  assert.deepEqual(rest.map((c) => c.id), kickoffOrder.filter((id) => rest.some((c) => c.id === id)), "the rest keep kickoff order");
+  assert.match(els.gameday.innerHTML, new RegExp(`<p class="gd-focus" role="status">BYU: its game first, then the ${moving.length} games? that move its odds most, biggest first\\.</p>`));
+  // again: back to kickoff order, nothing dimmed, no note
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(byu) } } : null) } });
+  assert.deepEqual(order().map((c) => c.id), kickoffOrder);
+  assert.doesNotMatch(els.gameday.innerHTML, / dim"|gd-focus/);
+});
+
+test("gameday: a team with no game this week gets the games that move it first, and says so", async () => {
+  const wk = gameday();
+  const utah = wk.teams.find((t) => t.abbr === "UTAH").id;
+  wk.games = wk.games.filter((g) => !(g.week === 12 && (g.home === utah || g.away === utah)));
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const i = wk.teams.findIndex((t) => t.id === utah);
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(i) } } : null) } });
+  assert.match(els.gameday.innerHTML, /<p class="gd-focus" role="status">Utah doesn't play this week(\. The \d+ games? that move its odds come first, biggest first|, and no game moves its odds by a point)\.<\/p>/);
+});
+
+test("gameday: the r/CFB link: that account's game threads, every word required, from two hours before kickoff", async () => {
+  const wk = gameday();
+  const g = wk.games.find((x) => x.week === 12), t = wk.teams.find((x) => x.id === g.home);
+  const at = async (iso) => { const r = renderGameday(wk, { Date: clockAt(iso) }); await settle(); return r.els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${g.id}"`)); };
+  assert.doesNotMatch(await at("2026-11-20T20:59Z"), /reddit/, "more than two hours out");
+  const card = await at("2026-11-20T21:00Z");
+  // Iowa State at UCF: "Iowa State" searches as Iowa, matching r/CFB's full name
+  assert.match(card, /href="https:\/\/www\.reddit\.com\/r\/CFB\/search\/\?q=author%3ACFB_Referee%20AND%20title%3A%22Game%20Thread%22%20AND%20title%3AIowa%20AND%20title%3AUCF&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener" title="The r\/CFB game thread">r\/CFB<\/a>/);
+  assert.match(text(card), /ESPN r\/CFB X/);
+  // accented names stay whole
+  t.short = "San José St";
+  assert.match(await at("2026-11-20T21:00Z"), /title%3ASan%20AND%20title%3AJos%C3%A9&amp;/);
+  // an unset kickoff time: not offered
+  g.timeValid = false;
+  assert.doesNotMatch(await at("2026-11-21T04:00Z"), /reddit/);
 });
