@@ -1041,6 +1041,47 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
 });
 
+// The CFP committee's ranking (DATA.cfp): a small rank before a ranked team's name, on both pages.
+function ranked(d) {
+  const r = JSON.parse(JSON.stringify(d));
+  const id = (ab) => r.teams.find((t) => t.abbr === ab).id;
+  r.cfp = { date: "2026-11-10T08:00Z", week: 11, ranks: { [id("UTAH")]: 2, [id("TCU")]: 23, [id("BYU")]: "<b>9</b>" } };
+  return r;
+}
+
+test("CFP rankings: the rank before a ranked team's name in the picker, header, path and standings; the source in the footer", async () => {
+  const { els } = render(ranked(data), "#utah");
+  await settle();
+  const rk = (n) => new RegExp(`<span class="rk" title="CFP ranking, Nov 10"><span class="vh">CFP No\\. </span>${n}</span>`);
+  assert.match(els.picker.innerHTML, new RegExp(rk(2).source + "UTAH"));
+  assert.match(els.picker.innerHTML, new RegExp(rk(23).source + "TCU"));
+  assert.match(els.team.innerHTML, new RegExp("<h2>" + rk(2).source + "Utah Utes</h2>"));
+  const say = text(els.team.innerHTML);
+  assert.match(say, /^\s*CFP No\. 2 Utah Utes 7-0 Big 12/);
+  assert.match(say, /CFP No\. 2 Utah W at CFP No\. 23 TCU 74%/, "path games");
+  assert.match(say, /#1 CFP No\. 2 Utah Utes 9-0 #2 Houston Cougars/, "standings");
+  assert.match(say, /CFP No\. 2 UTAH at CFP No\. 23 TCU ESPN: UTAH 74%/, "rooting guide");
+  // a rank that isn't a whole number is dropped, not rendered
+  assert.doesNotMatch(els.picker.innerHTML + els.team.innerHTML, /<b>9<\/b>|CFP No\. <b>/);
+  assert.match(els.foot.innerHTML, /the CFP committee's rankings of Nov 10/);
+  // nobody else gets a number
+  assert.equal((els.picker.innerHTML.match(/class="rk"/g) || []).length, 2);
+});
+
+test("CFP rankings: none in the data, no badges and no mention", async () => {
+  const { els } = render(data, "#utah");
+  await settle();
+  assert.doesNotMatch(els.picker.innerHTML + els.team.innerHTML + els.foot.innerHTML, /class="rk"|CFP committee/);
+});
+
+test("gameday: ranked teams carry their CFP rank in the race and on the game cards", async () => {
+  const { els } = renderGameday(ranked(gameday()), { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const html = els.gameday.innerHTML;
+  assert.match(html, /<b><span class="rk"[^>]*><span class="vh">CFP No\. <\/span>2<\/span>UTAH<\/b>/);
+  assert.match(html, /<span><span class="rk"[^>]*><span class="vh">CFP No\. <\/span>23<\/span>TCU<\/span>/);
+});
+
 test("gameday: the race lists every team by its odds now, with the week's start and the change", async () => {
   const wk = gameday();
   const { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });

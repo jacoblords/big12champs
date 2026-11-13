@@ -55,6 +55,13 @@ class FakeESPN:
         self.fpi_run = fpi_run
         self.final = final
         self.summary_final = final if summary_final is None else summary_final
+        self.rank_calls = 0
+        # ESPN's rankings: the AP poll, then the CFP committee's, ranking the fixture's first two teams
+        t = FIXTURE["teams"]
+        self.rankings = {"rankings": [
+            {"name": "AP Top 25", "type": "ap", "ranks": [{"current": 1, "team": {"id": t[2]["id"]}}]},
+            {"name": "Playoff Committee Rankings", "type": "cfp", "date": "2026-11-10T08:00Z", "occurrence": {"number": 11},
+             "ranks": [{"current": 7, "team": {"id": t[0]["id"]}}, {"current": 19, "team": {"id": t[1]["id"]}}]}]}
 
     def __call__(self, url, raw=False):
         if "/summary?event=" in url:
@@ -67,6 +74,9 @@ class FakeESPN:
         if "/powerindex" in url:
             return {"items": [{"team": {"$ref": f".../teams/{t['id']}?lang=en"}, "lastUpdated": self.fpi_run,
                                "predictives": [{"name": "fpi", "value": t["fpi"]}]} for t in FIXTURE["teams"]]}
+        if "/rankings" in url:
+            self.rank_calls += 1
+            return self.rankings
         if "/predictor" in url:
             return {"homeTeam": {"statistics": [{"name": "gameProjection", "value": 61.0}]}}
         if "/combiner/" in url and raw:
@@ -112,6 +122,7 @@ class FetchTests(unittest.TestCase):
         prev["leagues"] = [{**l, "logo": PNG, "logoDark": PNG} for l in F.LEAGUES.values()]
         prev["meta"]["scheduleCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
         prev["meta"]["fpiCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
+        prev["meta"]["cfpCheckedAt"] = F.iso(now - dt.timedelta(hours=1))
         return prev
 
     def test_nothing_due_means_no_calls_and_no_deploy(self):
@@ -181,7 +192,8 @@ class FetchTests(unittest.TestCase):
         now = last + dt.timedelta(days=4)
         prev["leagues"] = [{**l, "logo": PNG, "logoDark": PNG} for l in F.LEAGUES.values()]
         prev["meta"].update(scheduleCheckedAt=F.iso(now - dt.timedelta(hours=1)),
-                            fpiCheckedAt=F.iso(now - dt.timedelta(hours=7)), fpiRun=F.iso(fpi_run(last)))
+                            fpiCheckedAt=F.iso(now - dt.timedelta(hours=7)), fpiRun=F.iso(fpi_run(last)),
+                            cfpCheckedAt=F.iso(now - dt.timedelta(hours=1)))
         return prev, now
 
     def test_fpi_frozen_once_it_has_run_after_the_last_game(self):
@@ -316,6 +328,55 @@ class FetchTests(unittest.TestCase):
         self.run_fetch(prev, now, fake, "--league", "big10", league_path="big10")
         self.assertEqual(len(fake.urls), 1)
         self.assertIn("groups=5&", fake.urls[0])
+
+    def test_cfp_rankings_are_fetched_every_six_hours_and_kept_between(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        prev["meta"]["cfpCheckedAt"] = F.iso(now - F.CFP_TTL)
+        fake = FakeESPN()
+        written, _ = self.run_fetch(prev, now, fake)
+        self.assertEqual(fake.rank_calls, 1)
+        t = FIXTURE["teams"]
+        # the committee's ranking, not the AP poll's
+        self.assertEqual(written["cfp"], {"date": "2026-11-10T08:00Z", "week": 11, "ranks": {t[0]["id"]: 7, t[1]["id"]: 19}})
+        self.assertEqual(self.changed, "changed=true")
+        # within six hours: no call, and the rankings carry over
+        later = now + dt.timedelta(hours=1)
+        fake2 = FakeESPN()
+        again, _ = self.run_fetch(written, later, fake2, "--force-build")
+        self.assertEqual(fake2.rank_calls, 0)
+        self.assertEqual(again["cfp"], written["cfp"])
+        # the same ranking again changes nothing
+        fake3 = FakeESPN()
+        self.run_fetch(written, now + F.CFP_TTL, fake3)
+        self.assertEqual(fake3.rank_calls, 1)
+        self.assertNotIn("CFP", self.changed)
+
+    def test_cfp_rankings_frozen_once_the_selection_day_ranking_is_in(self):
+        # Every game final: checks go on until a ranking dated a week after the last regular-season
+        # game (selection day, after the title games), then stop.
+        prev, now = self.finished_season(lambda last: last + dt.timedelta(hours=28))
+        last = max(F.parse(g["date"]) for g in prev["games"])
+        prev["meta"]["cfpCheckedAt"] = F.iso(now - F.CFP_TTL)
+        prev["cfp"] = {"date": F.iso(last + dt.timedelta(days=3)), "week": 14, "ranks": {"1": 1}}
+        fake = FakeESPN()
+        self.run_fetch(copy.deepcopy(prev), now, fake)
+        self.assertEqual(fake.rank_calls, 1)
+        prev["cfp"]["date"] = F.iso(last + dt.timedelta(days=8))
+        fake = FakeESPN()
+        self.run_fetch(prev, now + dt.timedelta(days=10), fake)
+        self.assertEqual(fake.rank_calls, 0)
+
+    def test_no_cfp_ranking_yet_means_no_cfp_field(self):
+        now = first_kickoff() - dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        del prev["meta"]["cfpCheckedAt"]
+        fake = FakeESPN()
+        fake.rankings = {"rankings": [{"name": "AP Top 25", "type": "ap", "ranks": [{"current": 1, "team": {"id": "1"}}]}]}
+        written, _ = self.run_fetch(prev, now, fake)
+        self.assertEqual(fake.rank_calls, 1)
+        self.assertNotIn("cfp", written)
+        self.assertIn("cfpCheckedAt", written["meta"])
 
     def test_pac12_flex_week_games_are_not_conference_games(self):
         # The Pac-12's week-13 flex games pair two of its teams, and ESPN flags them as conference
