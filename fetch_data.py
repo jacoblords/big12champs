@@ -276,16 +276,21 @@ def current_week(calendar, now):
     return None
 
 
+def sig4(p):
+    return float(f"{p:.4g}")
+
+
 def odds_snapshot(d):
-    """Each team's title-game odds in a data file, by team id (to 6 places, so a long shot isn't 0): the exact odds when it has them,
+    """Each team's title-game odds in a data file, by team id, to 4 significant figures: a long
+    shot keeps its tiny odds rather than rounding to 0, which the page shows as eliminated. the exact odds when it has them,
     else its precomputed simulation. None when it has neither."""
     e = d.get("exact") or {}
     if e.get("teams") and not e.get("skipped"):
-        return {t["id"]: round(t["p"], 6) for t in e["teams"]}
+        return {t["id"]: sig4(t["p"]) for t in e["teams"]}
     s = d.get("sim") or {}
     tot = s.get("totals") or {}
     if tot.get("nSims") and s.get("teamIds"):
-        return {tid: round(tot["appear"][k] / tot["nSims"], 6) for k, tid in enumerate(s["teamIds"])}
+        return {tid: sig4(tot["appear"][k] / tot["nSims"]) for k, tid in enumerate(s["teamIds"])}
     return None
 
 

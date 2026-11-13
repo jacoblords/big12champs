@@ -404,7 +404,12 @@ class FetchTests(unittest.TestCase):
         prev["exact"] = {"skipped": "too many"}
         prev["sim"] = {"teamIds": ids, "totals": {"nSims": 4, "appear": [k % 5 for k in range(len(ids))]}}
         written, _ = self.run_fetch(prev, now, FakeESPN())
-        self.assertEqual(written["baseline"]["odds"], {tid: round((k % 5) / 4, 6) for k, tid in enumerate(ids)})
+        self.assertEqual(written["baseline"]["odds"], {tid: (k % 5) / 4 for k, tid in enumerate(ids)})
+
+    def test_a_long_shot_starts_the_week_with_its_tiny_odds_not_zero(self):
+        prev = {"exact": {"teams": [{"id": "asu", "p": 4.1548e-05}, {"id": "wvu", "p": 7.152043e-09},
+                                    {"id": "ku", "p": 0.0}, {"id": "utah", "p": 0.92213456}]}}
+        self.assertEqual(F.odds_snapshot(prev), {"asu": 4.155e-05, "wvu": 7.152e-09, "ku": 0.0, "utah": 0.9221})
 
     def test_offline_builds_keep_the_week_start_as_it_is(self):
         now = first_kickoff() - dt.timedelta(hours=1)
