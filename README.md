@@ -71,10 +71,10 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   its page's header during a regular-season week (ESPN's calendar, Monday to Monday). It is the
   same template with `GAMEDAY` set by `fetch_data.py`, with its own copy of the page data one
   folder down. Two sections:
-  - *The race:* every team's title-game odds now against the start of the week, biggest gain
-    first by current odds; picking one highlights its game and its row in every game that moves
-    it (shown even when outside a card's top five). The starting odds are `data.baseline`: the odds already
-    published when the fetcher first runs in a new week, kept until the next week.
+  - *The race:* every team's title-game odds now, highest first, with the week's starting odds
+    and the change. Picking a team highlights its game and its row in every game that moves it
+    (added when it's below a card's top five). The starting odds are `data.baseline`: the odds
+    already published when the fetcher first runs in a new week, kept until the next week.
   - *The games:* kickoff, TV, ESPN's line and venue, and ESPN's win odds, plus how each result
     would move every team's title-game odds (the same exact or simulated splits as the rooting
     guide). The game moving the most is marked "Biggest stakes". Once a game kicks off, its card
