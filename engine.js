@@ -41,7 +41,9 @@
   // Labels are the leagues' own: the Big 12 letters its steps; the SEC letters them too (A-F) but
   // numbers its procedures, so the page uses numbers to keep the two apart. The ACC numbers its
   // three-team steps 1-3 (and its two-team steps i-iii).
-  const NONE = { reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, redefine: false, cutContinues: false };
+  // h2hAllPlayedOnly (Pac-12): when not all tied teams played each other, head-to-head is skipped
+  // entirely; elsewhere a team that beat all the others is still pulled out at step a.
+  const NONE = { reseedTop2: false, h2hLoserOut: false, walkSplitsTies: false, redefine: false, cutContinues: false, h2hAllPlayedOnly: false };
   // ACC 2024-2025 (policy of Aug. 2024, reworded Sept. 2025 without changing a step): the SEC's
   // steps with SportSource's Team Rating Score, and the first team out of the tiebreaker is #1.
   // Its standings walk orders tied opponents "with ties broken"; the SEC's head-to-head split
@@ -62,7 +64,7 @@
     // ("the collective tied group"); seeds in the order they come out. Its two-team list walks the
     // standings before common opponents and puts the CFP ranking ahead of SportSource, but in a
     // round robin head-to-head settles every two-team tie unless a game is canceled.
-    pac12: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, rating: "fpi" },
+    pac12: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, h2hAllPlayedOnly: true, rating: "fpi" },
   };
   function rulesFor(league, season) {
     const r = RULES[league || "big12"];
@@ -320,7 +322,9 @@
       } else {
         // not everyone played: a team that beat all the others comes out. In the SEC a team that
         // lost to all the others is eliminated and the rest start over; in the Big 12 it stays in.
-        for (const x of T) {
+        // The Pac-12 skips this: "If every tied team has not played one another, the process moves
+        // to the next criterion" (h2hAllPlayedOnly).
+        if (!st.rules.h2hAllPlayedOnly) for (const x of T) {
           if (T.every((y) => y === x || st.H2H[x * st.N + y] > 0)) { push({ step: "a", winner: x, detail: trace && names[x] + " beat every other tied team" }); return x; }
         }
         if (st.rules.h2hLoserOut) {

@@ -79,6 +79,7 @@ Go through these questions; they are where the Big 12 and the SEC differ:
 | Do teams play different numbers of conference games, with "tied" redefined for it? | `redefine` | no | no | no | yes |
 | Did the procedure change between seasons? | `before` | no | no | | 2024-25 rules kept |
 | After a cut, do three or more still level go on to the next step (not back to a)? | `cutContinues` | no | no | no | n/a |
+| Not all tied teams played: is a team that beat all the others still pulled out at step a? | `h2hAllPlayedOnly` (off = yes) | yes | yes | yes | yes |
 
 The Big Ten (2024 procedure, still in force in 2026) answers: steps a-d, f, g numbered 1-6;
 no non-conference games; `h2hLoserOut` no; `walkSplitsTies` no ("order of finish", nothing
@@ -266,6 +267,12 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
   second. Work out what each reading does before choosing: in a round robin, the listed steps would
   rank the loser of the tied teams' game first, which is why the site (and every reporter) keeps
   head-to-head.
+- **The conference's own scenarios can settle gaps in its text.** Its weekly release ("This Week in
+  Pac-12 Football", "Chase for the Champ Game") states who clinches and who is out. Run each
+  reading of an unclear clause against those statements: head-to-head for a tie for second, and
+  dropping the teams below a level top, were each the only readings under which every statement
+  held. An independent audit (November 2026) found the canceled-game rule wrong: the Pac-12 skips
+  head-to-head entirely when not all tied teams met (`h2hAllPlayedOnly`).
 - **A round robin makes steps redundant.** With everyone playing everyone, common opponents and
   strength of schedule can't split a tie that head-to-head didn't. A test enumerates every finish
   and checks that only head-to-head, the walk and the rating ever decide.
