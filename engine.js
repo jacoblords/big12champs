@@ -718,7 +718,76 @@
     return null;
   }
 
-  const api = { STEP, RULES, rulesFor, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups, guaranteedPathSim };
+  // ---- The page's simulated analysis (when exact odds don't apply: what-ifs set, or no exact
+  // data). Here rather than in the page so the page's background worker runs the same code. ----
+  const N_MAIN = 40000, N_EXPLORE = 30000, N_FORCED = 15000;
+  // Below these odds a team's guaranteed path isn't searched from simulations: its winning finishes
+  // are too rare for the samples to settle one (tested against exact answers), so it falls back to
+  // the likeliest finish found.
+  const NEED_MIN = 0.005;
+  // The main run, and one with every result a coin flip: it reaches the rare finishes the main run
+  // misses (shared by all teams).
+  function mainSims(ctx, locks) {
+    return { main: simulate(ctx, N_MAIN, locks, 1), uniform: simulate(ctx, N_EXPLORE, locks, 2, { uniform: true }) };
+  }
+  // The path the page shows for a guaranteed set of results: those results, the visitor's picks,
+  // and the favorite in every other game (the likeliest way the rest goes; any way works).
+  function needMask(ctx, need, locks) {
+    let m = 0;
+    ctx.pending.forEach((g, k) => {
+      const l = locks && locks[k];
+      const v = l === 0 || l === 1 ? l : (need.games >>> k) & 1 ? (need.homeWins >>> k) & 1 : g.pHome >= 0.5 ? 1 : 0;
+      if (v) m |= 1 << k;
+    });
+    return m >>> 0;
+  }
+  function withNeed(ctx, res, team, need, locks) {
+    if (!need) return res;
+    const mask = needMask(ctx, need, locks);
+    if (!qualifies(ctx, mask, team)) return res; // only a coin toss could do this; show the plain path
+    return { ...res, need, path: { mask, prob: need.prob }, ex: explain(ctx, mask) };
+  }
+  // What the picker needs from a set of what-ifs: each team's title-game and #1-seed counts in the
+  // main run, and the same counts split by each pending game's result (cond, flat: entry
+  // (k * 2 + homeWon) * N + team; n[k * 2 + homeWon] runs). The split is what lets the page show
+  // an estimate the moment a visitor picks one more result: the runs where that game already went
+  // that way are a sample of the new what-ifs.
+  function totals(ctx, sims) {
+    const { main } = sims, P = ctx.pending.length, N = ctx.N;
+    const n = new Float64Array(P * 2), appear = new Float64Array(P * 2 * N), first = new Float64Array(P * 2 * N);
+    for (let s = 0; s < main.nSims; s++) {
+      const m = main.masks[s], a = main.s1[s], b = main.s2[s];
+      for (let k = 0; k < P; k++) {
+        const c = k * 2 + ((m >>> k) & 1), o = c * N;
+        n[c]++; appear[o + a]++; appear[o + b]++; first[o + a]++;
+      }
+    }
+    return { nSims: main.nSims, appear: main.appear, first: main.first, cond: { n, appear, first } };
+  }
+  // One team under one set of what-ifs, from that set's mainSims. Plain data (it crosses to and
+  // from the worker).
+  function analyze(ctx, sims, team, locks) {
+    const { main, uniform } = sims;
+    const mi = impact(ctx, main, team);
+    let imp = mi, explore = null, approx = false;
+    if (mi.hits < 1500) {
+      explore = uniform;
+      const ei = impact(ctx, explore, team);
+      if (ei.hits > mi.hits) { imp = ei; approx = true; }
+    }
+    const fw = simulate(ctx, N_FORCED, locks, 3, { forceTeam: team });
+    const pWinOut = fw.appear[team] / fw.nSims;
+    const fwu = mi.hits < 1500 ? simulate(ctx, N_EXPLORE, locks, 4, { uniform: true, forceTeam: team }) : null;
+    const path = bestPath(ctx, [main, explore, fw, fwu], team, locks);
+    const ex = path ? explain(ctx, path.mask) : null;
+    const p = mi.hits >= 50 ? mi.p : imp.p;
+    const hasOwnGames = ctx.pending.some((g) => g.h === team || g.a === team);
+    const res = { p, approx: mi.hits < 50 && approx, first: main.first[team] / main.nSims, pWinOut, hasOwnGames, imp, path, ex };
+    return path && p >= NEED_MIN ? withNeed(ctx, res, team, guaranteedPathSim(ctx, team, [main, uniform, fw, fwu], locks), locks) : res;
+  }
+
+  const api = { STEP, RULES, rulesFor, gameMargin, build, standings, titleGame, simulate, bestPath, impact, explain, qualifies, logLik, confGroups, guaranteedPathSim,
+    N_MAIN, N_EXPLORE, N_FORCED, NEED_MIN, mainSims, totals, withNeed, analyze };
   root.B12 = api;
   if (typeof module !== "undefined") module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

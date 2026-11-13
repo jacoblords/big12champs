@@ -250,17 +250,46 @@ function guaranteedPath(inBits, pH, startMask, stop = () => false) {
 
 module.exports = { solve, inputsKey, guaranteedPath, MAX_GAMES, DEFAULT_BUDGET_SEC };
 
+// Simulated leagues (exact odds skipped): the page's no-what-ifs view, computed once here instead
+// of in every visitor's browser. The same seeded runs the page would make, so the same numbers.
+// Each team's explain() is left out (the page rebuilds it from the path's mask in a millisecond).
+function presim(data, key) {
+  const B12 = require("./engine.js");
+  const ctx = B12.build(data);
+  const locks = new Array(ctx.pending.length).fill(undefined);
+  const sims = B12.mainSims(ctx, locks);
+  const plain = (o) => JSON.parse(JSON.stringify(o, (k, v) => (ArrayBuffer.isView(v) ? Array.from(v) : v)));
+  return {
+    key, gameIds: ctx.pending.map((g) => g.id), teamIds: ctx.teams.map((t) => t.id),
+    totals: plain(B12.totals(ctx, sims)),
+    teams: ctx.teams.map((_, i) => { const a = B12.analyze(ctx, sims, i, locks); delete a.ex; return plain(a); }),
+  };
+}
+
+module.exports.presim = presim;
+
 if (require.main === module) {
   const file = process.argv[2];
   if (!file) { console.error("usage: node exact.js data.json"); process.exit(2); }
   const data = JSON.parse(fs.readFileSync(file, "utf8"));
   const key = inputsKey(data);
-  if (data.exact && data.exact.key === key) { console.log(`exact odds already current (${key})`); process.exit(0); }
-  const t0 = Date.now();
-  const budgetSec = Number(process.env.EXACT_BUDGET_SECONDS) || DEFAULT_BUDGET_SEC;
-  data.exact = solve(data, { budgetSec });
-  data.exact.computedAt = new Date().toISOString().slice(0, 16) + "Z";
-  fs.writeFileSync(file, JSON.stringify(data, null, 1));
-  console.log(data.exact.skipped ? `exact odds skipped: ${data.exact.skipped}` :
-    `exact odds over ${data.exact.finishes.toLocaleString("en-US")} finishes in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  let changed = false;
+  if (data.exact && data.exact.key === key) console.log(`exact odds already current (${key})`);
+  else {
+    const t0 = Date.now();
+    const budgetSec = Number(process.env.EXACT_BUDGET_SECONDS) || DEFAULT_BUDGET_SEC;
+    data.exact = solve(data, { budgetSec });
+    data.exact.computedAt = new Date().toISOString().slice(0, 16) + "Z";
+    changed = true;
+    console.log(data.exact.skipped ? `exact odds skipped: ${data.exact.skipped}` :
+      `exact odds over ${data.exact.finishes.toLocaleString("en-US")} finishes in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  }
+  const pending = require("./engine.js").build(data).pending.length > 0;
+  if (data.exact.skipped && pending && !(data.sim && data.sim.key === key)) {
+    const t0 = Date.now();
+    data.sim = presim(data, key);
+    changed = true;
+    console.log(`simulated odds for ${data.sim.teams.length} teams in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  } else if ((!data.exact.skipped || !pending) && data.sim) { delete data.sim; changed = true; }
+  if (changed) fs.writeFileSync(file, JSON.stringify(data, null, 1));
 }
