@@ -10,7 +10,10 @@
 //     conference moved to Sidearm in 2026; the Wayback copies remain. No 2025 or 2026 football
 //     revision exists: the 2026 Sidearm site's only "2026_Tiebreakers.pdf" is for Olympic sports, and
 //     its 2026 title-game page says "Tiebreakers will be applied, if necessary. Each team plays nine
-//     conference games". So the 2024 procedure is taken as the 2026 one.
+//     conference games". On Nov. 10, 2026 the conference posted the procedure as a page,
+//     bigten.org/sports/2026/11/10/FB_1110261447.aspx ("Big Ten Football Championship Game
+//     Tiebreakers"), with the same steps and the same "move to next step in tiebreaker with
+//     remaining tied teams" wording; the page links it now.
 //   What it says, step by step (three or more teams; two teams use the same steps):
 //     1. head-to-head among the tied teams; if not all played, a team that beat all the others is
 //        in, and otherwise go on (nobody is dropped for losing to all the others);

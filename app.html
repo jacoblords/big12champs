@@ -16,11 +16,12 @@
   --accent: #1c48c9;
   --accent-soft: #e3e9fb;
   --bar: #c4d3f8; /* odds fill on picker cards: clearly darker than the track (--sunk) */
+  --bar-ink: #4f5767; /* odds-pill text: 4.5:1 or better over both the fill and the track (WCAG AA) */
   --win: #11795a;
   --win-soft: #dcf1e9;
   --loss: #b8322a;
   --loss-soft: #f8e1df;
-  --warn: #9a6a12;
+  --warn: #865b0e; /* 4.5:1 or better on --sunk (upset odds) and --warn-soft (tags) */
   --warn-soft: #f6ecd6;
   --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
   --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -29,13 +30,13 @@
   :root:not([data-theme="light"]) {
     --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
     --accent: #85a6ff; --accent-soft: #1d2846; --bar: #2b3f78; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
-    --warn: #e2b553; --warn-soft: #362a12; color-scheme: dark;
+    --warn: #e2b553; --warn-soft: #362a12; --bar-ink: #97a0b1; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
   --accent: #85a6ff; --accent-soft: #1d2846; --bar: #2b3f78; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --loss-soft: #3a1c1b;
-  --warn: #e2b553; --warn-soft: #362a12; color-scheme: dark;
+  --warn: #e2b553; --warn-soft: #362a12; --bar-ink: #97a0b1; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 /* The page hides things with the hidden attribute; keep that working over display rules like .locks { display: flex }.
@@ -102,7 +103,7 @@ button { font: inherit; color: inherit; }
 /* odds pill that fills in proportion to the odds */
 .pick .odds { position: relative; width: 100%; max-width: 74px; height: 20px; margin-top: 4px; border-radius: 999px; background: var(--sunk); overflow: hidden; display: grid; place-items: center; }
 .pick .odds i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bar); }
-.pick .odds b { position: relative; font-size: 0.75rem; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pick .odds b { position: relative; font-size: 0.75rem; font-weight: 600; color: var(--bar-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pick .odds.hot b { color: var(--accent); }
 .pick.out { opacity: 0.55; }
 
@@ -258,6 +259,7 @@ footer code { font-size: 0.8rem; word-break: break-all; }
   </header>
   <nav class="picker" id="picker" aria-label="Choose a team"></nav>
   <div class="locks" id="locks" hidden></div>
+  <p class="vh" id="announce" aria-live="polite"></p>
   <main id="team"></main>
 
   <section class="block" id="method">
@@ -508,11 +510,11 @@ const LEAGUE_TEXT = {
       `Step ${s("f")} uses ESPN's FPI because the SportSource rating is not public: the current one during the season, and the first run after the last regular-season weekend once it's over. It only decides a tie that is exact on every step before it.`,
       `Step ${s("c")}: the procedure walks common opponents "based on their order of finish" without saying how opponents tied in the standings are ordered. The site counts such a group together, against the members every tied team played.`,
       `When a step knocks some teams out of a tie of three or more and three or more are still level, the site follows the procedure's wording, "move to next step in tiebreaker with remaining tied teams", and doesn't go back to head-to-head. The other leagues start over, and no published Big Ten case has settled which the conference means. It matters rarely: in a few finishes in a thousand, a team that beat the others head-to-head is passed over.`,
-      "The procedure is the Big Ten's 2024 document. The conference has published no newer football version, and its 2026 title-game page refers to the same tiebreakers.",
+      "The procedure is the one the Big Ten published for 2026 on its own site in November 2026. Its steps and wording are the same as the 2024 document the site followed before.",
       "No step looks at non-conference games, so they are left out of the odds, the paths and the rooting guide.",
       `Run against final results, the engine reproduces both Big Ten title games: 2024 (Oregon 9-0; Penn State over Indiana at 8-1 on opponents' winning percentage, .407 to .346) and 2025 (Ohio State and Indiana both 9-0; Ohio State #1 on opponents' winning percentage, .395 to .358). It agrees with all seventeen scenarios the conference published before the last two weeks of 2024 and the last week of 2025, except where the conference's sheet missed that two teams could finish exactly level on step ${s("d")}.`,
     ],
-    policy: { url: "https://web.archive.org/web/20240826184525/https://assets.contentstack.io/v3/assets/bltca750cef518bc6e4/blt2bf0c27b5714240c/66cc95d319b683cdf2088edf/2024_Big_Ten_Football_Tiebreaker_-_FINAL[10][72].pdf", title: "2024 Big Ten Football Championship Game Tiebreaker (official PDF, archived copy)" },
+    policy: { url: "https://bigten.org/sports/2026/11/10/FB_1110261447.aspx", title: "Big Ten Football Championship Game Tiebreakers (bigten.org)" },
   },
 };
 const TEXT = LEAGUE_TEXT[LEAGUE_ID];
@@ -965,10 +967,20 @@ function refresh(sim) {
 }
 function runRefresh() {
   refreshQueued = false;
-  if (refreshSim) runMain();
+  const sim = refreshSim;
+  if (sim) runMain();
   refreshSim = false;
   renderAll();
+  if (sim) announce();
   if (typeof requestAnimationFrame === "function") for (const id of ["picker", "team"]) $(id).removeAttribute("aria-busy");
+}
+// A pick re-renders the big number out of a screen reader's sight: read the new odds out politely.
+function announce() {
+  if (!P.length) return;
+  const A = teamAnalysis(sel); // cached by the render just done
+  const n = locks.filter((l) => l !== undefined).length;
+  const shown = (A.p === 0 && A.path ? "&lt;0.1%" : pct(A.p)).replace("&lt;", "<");
+  $("announce").textContent = `${T[sel].short}: ${shown} to reach the title game, ${n ? `with ${n} result${n > 1 ? "s" : ""} set by you` : "with no results set"}.`;
 }
 // the pressed look for a button in a group, ahead of the full re-render
 function press(btn, group) {
@@ -1012,9 +1024,9 @@ document.addEventListener("click", (e) => {
     writeHash(); refresh(true);
   }
 });
-// hovering a result previews the selected team's odds under it in the big number
-document.addEventListener("mouseover", (e) => {
-  const b = e.target.closest(".seg button[data-odds]");
+// hovering a result, or tabbing to it, previews the selected team's odds under it in the big number
+const ODDS_BTN = ".seg button[data-odds]";
+function preview(b) {
   const pctEl = document.getElementById("heroPct"), lbl = document.getElementById("heroLbl");
   if (!pctEl || !lbl) return;
   if (b) {
@@ -1025,7 +1037,12 @@ document.addEventListener("mouseover", (e) => {
     [pctEl.innerHTML, lbl.textContent] = heroSaved;
     heroSaved = null;
   }
-});
+}
+const oddsBtn = (el) => (el && el.closest ? el.closest(ODDS_BTN) : null);
+document.addEventListener("mouseover", (e) => preview(oddsBtn(e.target)));
+document.addEventListener("focusin", (e) => preview(oddsBtn(e.target)));
+// leaving for another result is handled by its focusin; leaving the page or the buttons restores
+document.addEventListener("focusout", (e) => { if (!oddsBtn(e.relatedTarget)) preview(null); });
 // a link pasted into the address bar of an open page: take everything it sets
 window.addEventListener("hashchange", () => {
   if (location.hash === hashFor()) return;
@@ -1035,6 +1052,8 @@ window.addEventListener("hashchange", () => {
   const next = h.locks || new Array(P.length).fill(undefined);
   const changed = next.join() !== locks.join();
   locks = next;
+  // tidy what it couldn't use (an unknown team like "#zzz", stale picks) out of the address bar
+  writeHash();
   refresh(changed);
 });
 
@@ -1073,7 +1092,7 @@ window.addEventListener("hashchange", () => {
   }
   sel = i;
   renderAll();
-  // tidy a shared link: drop picks for games played since, keep the rest
+  // tidy a shared link: an unknown team becomes the one shown, picks for games played since drop out
   if (location.hash) writeHash();
 })();
 }
