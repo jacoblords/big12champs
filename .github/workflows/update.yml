@@ -1,7 +1,9 @@
 name: Update data and deploy
 
 # Runs every 15 minutes Thursday through Sunday (UTC, which covers Thursday evening
-# through late Saturday night in US time) and every 30 minutes Monday-Wednesday.
+# through late Saturday night in US time) and every 30 minutes Monday-Wednesday, started by
+# the Cloudflare Worker in trigger/ with force=false. GitHub's own schedule fires only every
+# few hours for this repo, so it is kept hourly as a backup in case the worker stops.
 # fetch_data.py only calls ESPN when something can have changed (a game passed
 # kickoff + 3h, the daily schedule check, the 6-hourly FPI check), so a run with
 # nothing due makes no ESPN calls and deploys nothing. When data changes, exact.js
@@ -9,9 +11,13 @@ name: Update data and deploy
 # Minutes are offset from :00 because GitHub delays scheduled jobs most at the top of the hour.
 on:
   schedule:
-    - cron: "7,22,37,52 * * * 0,4,5,6"
-    - cron: "7,37 * * * 1,2,3"
+    - cron: "37 * * * *"
   workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild and deploy even if no data changed
+        type: boolean
+        default: true
   push:
     branches: [main]
 
@@ -34,7 +40,9 @@ jobs:
       # exact.js skips (and the page uses simulation) when enumerating would take longer
       EXACT_BUDGET_SECONDS: "180"
       PUBLISHED: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
-      FORCE: ${{ github.event_name != 'schedule' && '--force-build' || '' }}
+      # Pushes and "Run workflow" clicks rebuild; schedules and the trigger worker
+      # (force=false) deploy only on changed data. Dispatch inputs arrive as strings.
+      FORCE: ${{ github.event_name != 'schedule' && github.event.inputs.force != 'false' && '--force-build' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

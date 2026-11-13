@@ -6,3 +6,6 @@ __pycache__/
 .DS_Store
 data-*.json
 *-path.html
+# Cloudflare Worker local state (trigger/)
+.wrangler/
+.dev.vars

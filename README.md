@@ -77,7 +77,9 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
 ## Data and caching
 
 Visitors never call ESPN. A GitHub Action runs every 15 minutes Thursday through Sunday
-(UTC) and every 30 minutes Monday to Wednesday, at minutes offset from the hour. It starts
+(UTC) and every 30 minutes Monday to Wednesday, started by a Cloudflare Worker
+([`trigger/`](trigger/README.md)) because GitHub's own schedule fired only every few hours;
+an hourly GitHub schedule stays on as a backup. It starts
 from the `data.json` currently published on Pages and calls ESPN only for what can have
 changed. A game that isn't final yet is simply asked about again on the next run:
 
