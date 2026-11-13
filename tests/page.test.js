@@ -994,18 +994,55 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
 });
 
-test("gameday: the race lists every team, biggest gain first, with the week's start and now", async () => {
-  const { els } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) });
+test("gameday: the race lists every team by its odds now, with the week's start and the change", async () => {
+  const wk = gameday();
+  const { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
   await settle();
   const race = els.gameday.innerHTML.split('<div class="race">')[1].split("</section>")[0];
   assert.doesNotMatch(race, /<a /, "rows stay on this page");
-  const rows = [...race.matchAll(/<div(?: class="out")?>.*?<b>([^<]+)<\/b>.*?<\/span><\/span><\/div>/g)];
+  const rows = [...race.matchAll(/<button type="button" data-rt="(\d+)".*?<\/button>/g)];
   assert.equal(rows.length, data.teams.length);
-  assert.equal(rows[0][1], "UTAH");
-  assert.match(rows[0][0], /&#9650;20<\/span><span class="vh">up 20 points this week/);
-  assert.equal(rows[rows.length - 1][1], "TCU", "the biggest drop last");
-  assert.match(rows[rows.length - 1][0], /&#9660;3/);
-  assert.match(rows[1][0], /class="delta"><span aria-hidden="true">&ndash;/);
+  const p = rows.map((r) => wk.exact.teams[+r[1]].p);
+  assert.deepEqual(p, [...p].sort((x, y) => y - x), "highest odds first");
+  const row = (abbr) => rows.find((r) => r[0].includes(`<b>${abbr}</b>`))[0];
+  assert.match(row("UTAH"), /&#9650;20<\/span><span class="vh">up 20 points this week/);
+  assert.match(row("TCU"), /&#9660;3/);
+  assert.match(row("BYU"), /class="delta"><span aria-hidden="true">&ndash;/);
+});
+
+test("gameday: picking a team in the race highlights its games and its row in every game; again clears it", async () => {
+  const wk = gameday();
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const utah = wk.teams.findIndex((t) => t.abbr === "UTAH");
+  const click = () => handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(utah) } } : null) } });
+  click();
+  const html = els.gameday.innerHTML;
+  assert.match(html, new RegExp(`data-rt="${utah}" aria-pressed="true"`));
+  const cards = html.split("<article").slice(1);
+  const mine = cards.filter((c) => /^ class="gc[^"]* mine"/.test(c));
+  assert.equal(mine.length, 1, "Utah's one game this week");
+  assert.match(mine[0], /Utah/);
+  const rowsMe = (html.match(/<span class="t me" role="cell">[^]*?UTAH<\/span>/g) || []).length;
+  const listed = cards.filter((c) => /role="cell">(?:<img[^>]*>)*UTAH<\/span>/.test(c)).length;
+  assert.ok(rowsMe > 0 && rowsMe === listed, "every listed Utah row is highlighted");
+  assert.equal((html.match(/class="v[^"]* me"/g) || []).length, rowsMe * 2, "both odds cells too");
+  click();
+  assert.doesNotMatch(els.gameday.innerHTML, / mine"| me"|aria-pressed="true"/);
+});
+
+test("gameday: a picked team's row shows in a game even when it's not among the five it moves most", async () => {
+  const wk = gameday();
+  // the first game of the week moves every team, the last team least (2 points)
+  const g = wk.games.filter((x) => x.week === 12)[0], k = wk.exact.gameIds.indexOf(g.id), n = wk.teams.length;
+  wk.exact.teams.forEach((t, i) => { t.games[k] = { ...t.games[k], pA: 0.4, pH: 0.4 + 0.01 * (n - i + 1) }; });
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const card = () => els.gameday.innerHTML.split("<article").slice(1).find((c) => c.includes("gameId/" + g.id));
+  const listed = () => [...card().matchAll(/class="t( me)?" role="cell">(?:<img[^>]*>)*([^<]+)</g)].map((m) => m[2] + (m[1] ? "*" : ""));
+  assert.equal(listed().length, 5);
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(n - 1) } } : null) } });
+  assert.deepEqual(listed(), [...wk.teams.slice(0, 5).map((t) => t.abbr), wk.teams[n - 1].abbr + "*"]);
 });
 
 test("gameday: no changes without the week's own starting odds; nothing outside the season", async () => {

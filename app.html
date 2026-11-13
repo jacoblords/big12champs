@@ -131,15 +131,17 @@ button { font: inherit; color: inherit; }
 .gd-sec > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; border-top: 3px solid var(--ink); padding-top: 14px; }
 .gd-sec > header p { margin: 0; color: var(--muted); font-size: 0.88rem; }
 .race { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 10px; }
-.race > div { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 5px 9px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); color: inherit; text-decoration: none; font-variant-numeric: tabular-nums; font-size: 0.88rem; }
-.race > div.out { opacity: 0.55; }
+.race > button { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 5px 9px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); text-align: left; cursor: pointer; font-variant-numeric: tabular-nums; font-size: 0.88rem; }
+.race > button:hover { border-color: var(--muted); }
+.race > button.out { opacity: 0.55; }
+.race > button[aria-pressed="true"] { opacity: 1; border-color: var(--ink); box-shadow: inset 3px 0 0 var(--team, var(--accent)); }
 .race img { width: 20px; height: 20px; object-fit: contain; }
 .race b { font-family: var(--display); font-weight: 700; letter-spacing: 0.04em; font-size: 0.98rem; }
 .race .was { font-size: 0.78rem; color: var(--muted); font-weight: 400; }
 .race .now { font-weight: 600; text-align: right; white-space: nowrap; }
 .race .delta { min-width: 2.6em; text-align: right; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
 /* phones: two to a row; the starting odds stay in the row's label */
-@media (max-width: 640px) { .race { grid-template-columns: 1fr 1fr; gap: 5px 6px; } .race > div { gap: 6px; padding: 5px 7px; } .race .was { display: none; } }
+@media (max-width: 640px) { .race { grid-template-columns: 1fr 1fr; gap: 5px 6px; } .race > button { gap: 6px; padding: 5px 7px; } .race .was { display: none; } }
 .delta.up { color: var(--win); }
 .delta.down { color: var(--loss); }
 .gd-none { margin: 0; color: var(--muted); }
@@ -157,6 +159,9 @@ button { font: inherit; color: inherit; }
 .games { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
 .gc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 9px; align-content: start; min-width: 0; }
 .gc.top { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
+/* the team picked in the race: its games, and its row in every game it's moved by */
+.gc.mine { border-color: var(--ink); box-shadow: inset 0 3px 0 var(--team, var(--accent)); }
+.gc-stakes .me { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 .gc-when { display: flex; justify-content: space-between; gap: 8px; font-size: 0.8rem; color: var(--muted); }
 .gc-when .live { color: var(--loss); font-weight: 600; }
 .gc-when .tag { background: var(--accent-soft); color: var(--accent); }
@@ -167,7 +172,8 @@ button { font: inherit; color: inherit; }
 .gc-team.lost { color: var(--muted); }
 .gc-team.lost img { opacity: 0.6; }
 .gc-line { font-size: 0.8rem; color: var(--muted); }
-.gc-stakes { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 3px 14px; font-size: 0.85rem; font-variant-numeric: tabular-nums; border-top: 1px solid var(--line); padding-top: 8px; }
+.gc-stakes { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 1px 0; font-size: 0.85rem; font-variant-numeric: tabular-nums; border-top: 1px solid var(--line); padding-top: 8px; }
+.gc-stakes > span { padding: 1px 6px; }
 .gc-stakes .h { font-family: var(--display); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-align: right; }
 .gc-stakes .h:first-child { text-align: left; }
 .gc-stakes .t { display: flex; align-items: center; gap: 5px; min-width: 0; }
@@ -739,6 +745,7 @@ function wpChart(g, a, h) {
     <div class="wp-q" aria-hidden="true">${labels}</div>
     ${lab(h, now)}</div>`;
 }
+let focusTeam = null; // the team clicked in the race: highlighted through the games
 function gameCard(g, top) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
@@ -762,10 +769,10 @@ function gameCard(g, top) {
   let stakes = "";
   const S = !done && !g.canceled && !g.completed ? stakesOf(k) : null;
   if (S && S.rows.length) {
-    const cell = (p, better) => `<span class="v${better ? " up" : ""}">${pct(p)}</span>`;
+    const cell = (p, better, me) => `<span class="v${better ? " up" : ""}${me}" role="cell">${pct(p)}</span>`;
     stakes = `<div class="gc-stakes" role="table" aria-label="Title-game odds by result">
       <span class="h" role="columnheader">Title-game odds</span><span class="h" role="columnheader">If ${esc(a.abbr)}</span><span class="h" role="columnheader">If ${esc(h.abbr)}</span>
-      ${S.rows.slice(0, 5).map((r) => `<span class="t" role="cell">${logo(r.i)}${esc(T[r.i].abbr)}</span>${cell(r.pA, r.pA > r.pH)}${cell(r.pH, r.pH > r.pA)}`).join("")}
+      ${shownRows(S.rows).map((r) => { const me = r.i === focusTeam ? " me" : ""; return `<span class="t${me}" role="cell">${logo(r.i)}${esc(T[r.i].abbr)}</span>${cell(r.pA, r.pA > r.pH, me)}${cell(r.pH, r.pH > r.pA, me)}`; }).join("")}
     </div>`;
   } else if (S) stakes = `<p class="gc-quiet">Neither result moves anyone's title-game odds by a point.</p>`;
   const q = `${a.name} ${h.name}`;
@@ -773,8 +780,15 @@ function gameCard(g, top) {
     <a href="https://www.espn.com/college-football/game/_/gameId/${encodeURIComponent(g.id)}" target="_blank" rel="noopener">ESPN Gamecast</a>
     <a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent('"Game Thread" ' + q)}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener">r/CFB threads</a>
     <a href="https://x.com/search?q=${encodeURIComponent(q)}&amp;f=live" target="_blank" rel="noopener">On X</a></div>`;
-  return `<article class="gc${top ? " top" : ""}">${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;
+  const mine = focusTeam != null && (a.i === focusTeam || h.i === focusTeam);
+  return `<article class="gc${top ? " top" : ""}${mine ? " mine" : ""}"${mine ? ` style="--team:${safeColor(T[focusTeam].color)}"` : ""}>${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;
 }
+// a card lists the five teams a game moves most, plus the picked team when it's further down
+const shownRows = (rows) => {
+  const top = rows.slice(0, 5);
+  const me = focusTeam != null && !top.some((r) => r.i === focusTeam) ? rows.find((r) => r.i === focusTeam) : null;
+  return me ? top.concat(me) : top;
+};
 function renderGameday() {
   const games = weekGames(), W = weekOdds();
   const left = games.filter((g) => !g.completed).length;
@@ -784,17 +798,17 @@ function renderGameday() {
   const el = $("gameday");
   if (!WEEK || !games.length || !W) { el.innerHTML = ""; return; }
   const rows = T.map((_, i) => ({ i, d: weekDelta(i), p: W.p[i] }))
-    .sort((x, y) => (y.d || 0) - (x.d || 0) || y.p - x.p || curW[y.i] - curW[x.i]);
+    .sort((x, y) => y.p - x.p || curW[y.i] - curW[x.i] || (y.d || 0) - (x.d || 0));
   const race = rows.map(({ i, d, p }) => {
     const delta = d == null ? "" : `<span class="delta${d > 0 ? " up" : d < 0 ? " down" : ""}">${d ? `<span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh">${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"} this week</span>` : `<span aria-hidden="true">&ndash;</span><span class="vh">no change this week</span>`}</span>`;
-    return `<div${p === 0 ? ' class="out"' : ""}>${logo(i) || "<span></span>"}<b>${esc(T[i].abbr)}</b><span class="now">${BASE && BASE[i] != null ? `<span class="was">${pct(BASE[i])} &rarr; </span>` : ""}${pct(p)}</span>${delta}</div>`;
+    return `<button type="button" data-rt="${i}" aria-pressed="${i === focusTeam}"${p === 0 ? ' class="out"' : ""} style="--team:${safeColor(T[i].color)}" title="Highlight ${esc(T[i].short)} in the games">${logo(i) || "<span></span>"}<b>${esc(T[i].abbr)}</b><span class="now">${BASE && BASE[i] != null ? `<span class="was">${pct(BASE[i])} &rarr; </span>` : ""}${pct(p)}</span>${delta}</button>`;
   }).join("");
   let topId = null, topStake = 0.02; // a "biggest" game has to move at least a little
   for (const g of games) {
     const S = !g.completed ? stakesOf(pendingAt.get(g.id)) : null;
     if (S && S.total > topStake) { topStake = S.total; topId = g.id; }
   }
-  el.innerHTML = `<section class="gd-sec" aria-labelledby="gd-race"><header><h2 id="gd-race">The race</h2><p>Live odds of reaching the title game, updated every 15 minutes on game days.</p></header>
+  el.innerHTML = `<section class="gd-sec" aria-labelledby="gd-race"><header><h2 id="gd-race">The race</h2><p>Live odds of reaching the title game, updated every 15 minutes on game days. Pick a team to follow it through the games.</p></header>
       <div class="race">${race}</div></section>
     <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>Each team's title-game odds under either result, for the teams it moves by a point or more.</p></header>
       <div class="games">${games.map((g) => gameCard(g, g.id === topId)).join("")}</div></section>`;
@@ -1403,6 +1417,8 @@ function select(i, push) {
 }
 
 document.addEventListener("click", (e) => {
+  const rt = e.target.closest("[data-rt]");
+  if (rt) { focusTeam = focusTeam === +rt.dataset.rt ? null : +rt.dataset.rt; renderGameday(); return; }
   const pick = e.target.closest("[data-t]");
   if (pick) { press(pick, ".picker"); select(+pick.dataset.t, true); return; }
   const seg = e.target.closest(".seg button");
