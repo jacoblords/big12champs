@@ -16,18 +16,22 @@ const pageScripts = (() => {
   return [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
 })();
 
-function render(data, hash) {
+function render(data, hash, extra) {
   const els = {};
   const handlers = {};
   const document = {
-    getElementById: (id) => (els[id] ||= { id, innerHTML: "", textContent: "", hidden: false, scrollIntoView() {} }),
+    getElementById: (id) => (els[id] ||= {
+      id, innerHTML: "", textContent: "", hidden: false, attrs: id === "page" ? { "aria-busy": "true" } : {}, scrollIntoView() {},
+      setAttribute(k, v) { this.attrs[k] = String(v); }, removeAttribute(k) { delete this.attrs[k]; },
+    }),
     addEventListener: (type, fn) => { handlers[type] = fn; },
   };
   const location = { hash: hash || "" };
   const sandbox = {
     document, window: { addEventListener: (type, fn) => { handlers["window:" + type] = fn; } }, location,
     history: { replaceState: (_, __, url) => { location.hash = url; } },
-    fetch: async () => ({ ok: true, json: async () => data }), console, Math, Date, JSON,
+    fetch: async () => ({ ok: true, json: async () => data }), console, Math, Date, JSON, setTimeout, Promise,
+    ...extra,
   };
   vm.createContext(sandbox);
   for (const src of pageScripts) vm.runInContext(src, sandbox);
@@ -344,6 +348,67 @@ test("what-if banner is hidden until a what-if is set, and the CSS honors hidden
   await settle();
   assert.equal(els.locks.hidden, true);
   assert.equal(els.locks.innerHTML, "");
+});
+
+test("the page stays hidden until it is rendered, and shows even when the data fails to load", async () => {
+  const css = fs.readFileSync(path.join(root, "app.html"), "utf8");
+  assert.match(css, /<div class="wrap" id="page" aria-busy="true">/);
+  assert.match(css, /\.wrap\[aria-busy="true"\] \{ visibility: hidden; \}/, "hidden but laid out, so its fonts load");
+  const { els, sandbox } = render(data, "#utah");
+  assert.equal(sandbox.document.getElementById("page").attrs["aria-busy"], "true", "as the HTML starts");
+  await new Promise((r) => setTimeout(r, 600)); // no document.fonts here: the capped wait
+  assert.match(text(els.team.innerHTML), /Utah/);
+  assert.equal(els.page.attrs["aria-busy"], undefined);
+  const broken = render(data, "#utah", { fetch: async () => ({ ok: false, status: 503 }) });
+  await new Promise((r) => setTimeout(r, 600));
+  assert.match(broken.els.lede.textContent, /Couldn't load the standings data \(HTTP 503\)/);
+  assert.equal(broken.els.page.attrs["aria-busy"], undefined);
+});
+
+test("a pick answers at once and recomputes after the frame, folding quick clicks into one", async () => {
+  const frames = [];
+  const { els, handlers, sandbox } = render(data, "#ttu", { requestAnimationFrame: (fn) => frames.push(fn) });
+  await settle();
+  let sims = 0;
+  const simulate = sandbox.B12.simulate;
+  sandbox.B12.simulate = (...a) => { sims++; return simulate(...a); };
+  const btn = (k, v) => ({ dataset: { k: String(k), v }, setAttribute(a, x) { this[a] = x; } });
+  const pressed = btn(0, "1"), other = btn(0, "0");
+  const seg = { querySelectorAll: () => [pressed, other] };
+  pressed.closest = other.closest = (sel) => (sel === ".seg" ? seg : null);
+  const click = (b) => handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? b : null) } });
+  const before = els.team.innerHTML;
+  click(pressed);
+  click(btn(1, "0"));
+  assert.equal(sims, 0, "no simulation inside the click");
+  assert.equal(els.team.innerHTML, before, "the full render waits for the frame");
+  assert.equal(pressed["aria-pressed"], "true");
+  assert.equal(other["aria-pressed"], "false");
+  assert.equal(els.team.attrs["aria-busy"], "true");
+  assert.match(sandbox.location.hash, /&picks=\w+\.\w+/, "the link updates at once");
+  assert.equal(frames.length, 1, "one frame requested for both clicks");
+  frames[0]();
+  await settle();
+  // what one pick costs when it runs straight through (no frames to wait for)
+  const direct = render(data, "#ttu");
+  await settle();
+  let once = 0;
+  const sim1 = direct.sandbox.B12.simulate;
+  direct.sandbox.B12.simulate = (...a) => { once++; return sim1(...a); };
+  direct.handlers.click({ target: { id: "", closest: (sel) => (sel === ".seg button" ? { dataset: { k: "0", v: "1" } } : null) } });
+  assert.ok(once > 0);
+  assert.equal(sims, once, "two clicks, one recompute");
+  assert.equal(els.team.attrs["aria-busy"], undefined);
+  assert.match(els.team.innerHTML, /class="rg-picks"/);
+});
+
+test("a link cut short mid-escape opens the page on the default team", async () => {
+  const { els, handlers, sandbox } = render(data, "#utah%");
+  await settle();
+  assert.doesNotMatch(els.lede.textContent, /Couldn't load/);
+  assert.match(text(els.team.innerHTML), /Utah Utes 7-0 Big 12/, "the conference leader, as with no team");
+  sandbox.location.hash = "#ttu%E";
+  assert.doesNotThrow(() => handlers["window:hashchange"]());
 });
 
 test("dark-background logos are included and swapped by theme", async () => {
