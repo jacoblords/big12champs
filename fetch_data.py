@@ -11,7 +11,7 @@ previously published data.json, and only calls ESPN for things that can have cha
   teams/logos  fetched once
 
 Usage:
-  python3 fetch_data.py [--league big12|sec|acc] [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
+  python3 fetch_data.py [--league big12|sec|acc|big10|pac12] [--season 2026] [--prev PATH_OR_URL] [--data-out FILE] [--site DIR] [--artifact FILE]
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
@@ -31,6 +31,9 @@ LEAGUES = {
     "sec": {"id": "sec", "name": "SEC", "path": "sec/", "group": 8},
     "acc": {"id": "acc", "name": "ACC", "path": "acc/", "group": 1},
     "big10": {"id": "big10", "name": "Big Ten", "path": "big10/", "group": 5},
+    # lastConfWeek: the Pac-12's week-13 "flex" games pair two of its teams but don't count in
+    # the standings (2026 policy), and ESPN flags them as conference games all the same.
+    "pac12": {"id": "pac12", "name": "Pac-12", "path": "pac12/", "group": 9, "lastConfWeek": 12},
 }
 SCHEMA = 3  # 3: games carry ESPN's conference flag
 RESULT_DELAY = dt.timedelta(hours=3)      # don't look for a final score before kickoff + 3h
@@ -502,7 +505,8 @@ def main():
         t["fpi"] = fpi.get(t["id"])
     for g in games.values():
         both_in = g["home"] in team_ids and g["away"] in team_ids
-        g["conf"] = both_in and (g.get("confFlag") if g.get("confFlag") is not None else True)
+        g["conf"] = both_in and (g.get("confFlag") if g.get("confFlag") is not None else True) \
+            and g["week"] <= league.get("lastConfWeek", 99)
         g["homeFBS"] = g["home"] in fpi
         g["awayFBS"] = g["away"] in fpi
 

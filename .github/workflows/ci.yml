@@ -43,12 +43,14 @@ jobs:
           # production budget, so it builds the way production does, with simulated odds.
           EXACT_BUDGET_SECONDS=180 python fetch_data.py --league big10 --offline --force-build \
             --prev tests/fixtures/big10-season-2026-11-10.json --data-out "$RUNNER_TEMP/data-big10.json" --site site --artifact ''
+          python fetch_data.py --league pac12 --offline --force-build --prev tests/fixtures/pac12-season-2026-11-13.json \
+            --data-out "$RUNNER_TEMP/data-pac12.json" --site site --artifact ''
 
       - name: Built pages parse and carry exact odds
         run: |
           node -e '
             const fs = require("fs"), vm = require("vm");
-            for (const dir of ["site", "site/sec", "site/acc", "site/big10"]) {
+            for (const dir of ["site", "site/sec", "site/acc", "site/big10", "site/pac12"]) {
               const html = fs.readFileSync(dir + "/index.html", "utf8");
               const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
               if (scripts.length !== 2) throw new Error(dir + ": expected 2 scripts, found " + scripts.length);

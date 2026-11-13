@@ -1,6 +1,6 @@
 # Adding a league
 
-How the SEC, the ACC and the Big Ten were added, written down so the next league goes faster. The order
+How the SEC, the ACC, the Big Ten and the Pac-12 were added, written down so the next league goes faster. The order
 matters: **rules first, then tests, then code.** Tiebreak procedures are long, and summaries of
 them are often wrong. The SEC was first built from press summaries and got three rules wrong;
 the official document caught all three. The ACC rewrote its procedure for 2026, so the seasons
@@ -10,7 +10,7 @@ A league touches these places, and nothing else:
 
 | Where | What |
 |---|---|
-| `fetch_data.py` → `LEAGUES` | id, name, URL path, ESPN group id, optional title sponsor |
+| `fetch_data.py` → `LEAGUES` | id, name, URL path, ESPN group id, optional title sponsor, optional `lastConfWeek` |
 | `engine.js` → `RULES` | which tiebreak steps it uses, its step labels, and rule switches |
 | `app.html` → `LEAGUE_TEXT` | the rulebook in plain words, the gray areas, and the policy link |
 | `.github/workflows/update.yml` | one fetch step per league |
@@ -234,7 +234,8 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
   conference games were left: 134 million finishes, estimated at 442 s against the 180 s budget,
   so the page simulated. With 18 left it takes under a second. CI builds the 27-game snapshot
   under the production budget and checks that it falls back to simulation.
-- **Four leagues in the header** need a tighter gap below 380 px to stay on one line at 320 px.
+- **Five leagues in the header** need a tighter gap below 440 px and smaller type below 360 px to
+  stay on one line at 320 px. A sixth will need another look.
 - The conference's site is its own best source for scenarios: it published them for the last two
   weeks of 2024 (a PDF) and the last week of 2025 (an article), each with the deciding steps.
 
@@ -249,3 +250,22 @@ Run `node --test tests/*.test.js` and `python3 -m unittest discover -s tests`.
   `final_fixture.py`, and games per team in the live data (2026: five teams at 8, twelve at 9).
 - Notre Dame plays a partial ACC schedule but isn't in ESPN's group 1 standings, so its games
   count as non-conference, which matches the ACC's standings.
+
+## What the Pac-12 taught
+
+- **A new league has no history to replay.** The rebuilt Pac-12's first season is 2026, so there
+  are no title games to reproduce. The tests lean on the procedure's clauses, real finishes from
+  the live snapshot where the walk or the rating decides, and reporters' scenarios over every
+  finish. ESPN's group 9 standings hold only the eight current members.
+- **Not every conference game counts.** ESPN flags the week-13 "flex" games as conference games
+  (with TBD opponents until the pairings are set), but the Pac-12 leaves them out of the
+  standings. `lastConfWeek` in `LEAGUES` cuts them off by ESPN's week number.
+- **Procedures can be published as a section of a press release**, not a PDF: the Pac-12's is in its
+  Sept. 3, 2026 operational-updates release. Read the raw HTML: the two-team list's first `<li>`
+  is the "tied for first" sentence, so head-to-head isn't one of the numbered steps for a tie for
+  second. Work out what each reading does before choosing: in a round robin, the listed steps would
+  rank the loser of the tied teams' game first, which is why the site (and every reporter) keeps
+  head-to-head.
+- **A round robin makes steps redundant.** With everyone playing everyone, common opponents and
+  strength of schedule can't split a tie that head-to-head didn't. A test enumerates every finish
+  and checks that only head-to-head, the walk and the rating ever decide.

@@ -1,5 +1,5 @@
 // Conference championship-game tiebreaker engine + Monte Carlo simulator.
-// Implements the official Big 12, SEC, ACC and Big Ten football tiebreaking procedures (no-division
+// Implements the official Big 12, SEC, ACC, Big Ten and Pac-12 football tiebreaking procedures (no-division
 // formats, 2024-). All share one set of steps; a league picks which it uses, in order.
 (function (root) {
   "use strict";
@@ -11,7 +11,7 @@
     c: "Record vs. next-highest common opponent (standings walk)",
     d: "Strength of conference schedule",
     e: "Total wins (12-game season, max 1 FCS win)",
-    f: "Rating (Big 12, ACC, Big Ten: SportSource rating, FPI as stand-in; SEC: capped relative scoring margin)",
+    f: "Rating (Big 12, ACC, Big Ten, Pac-12: SportSource rating, FPI as stand-in; SEC: capped relative scoring margin)",
     g: "Coin toss",
   };
 
@@ -56,6 +56,13 @@
     // walk count together ("their order of finish"); the two teams who get in are seeded by the
     // two-team steps (the conference's 2024 scenarios 6, 8 and 9).
     big10: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, reseedTop2: true, cutContinues: true, rating: "fpi" },
+    // Pac-12 (2026 policy, its first season rebuilt): eight teams in a full round robin of seven
+    // games. Multiple-team steps 1-6 are the Big 12's a-d, f, g; a team that lost to every other
+    // tied team stays in ("moves to the next criterion"); tied opponents in the walk count together
+    // ("the collective tied group"); seeds in the order they come out. Its two-team list walks the
+    // standings before common opponents and puts the CFP ranking ahead of SportSource, but in a
+    // round robin head-to-head settles every two-team tie unless a game is canceled.
+    pac12: { ...NONE, steps: ["a", "b", "c", "d", "f", "g"], label: { a: "1", b: "2", c: "3", d: "4", f: "5", g: "6" }, rating: "fpi" },
   };
   function rulesFor(league, season) {
     const r = RULES[league || "big12"];

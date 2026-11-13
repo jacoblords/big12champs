@@ -98,8 +98,9 @@ button { font: inherit; color: inherit; }
 .leagues a img { height: 18px; width: auto; max-width: 30px; object-fit: contain; }
 .leagues a:not([aria-current="page"]) img { filter: grayscale(1); opacity: 0.55; }
 .leagues a:hover img { filter: none; opacity: 1; }
-/* four leagues on one line down to a 320px phone */
-@media (max-width: 380px) { .leagues { column-gap: 12px; } .leagues a { gap: 5px; letter-spacing: 0.04em; } }
+/* five leagues on one line down to a 320px phone: 377px of nav at full spacing, 328 tighter, 284 smallest */
+@media (max-width: 440px) { .leagues { column-gap: 12px; } .leagues a { gap: 5px; letter-spacing: 0.04em; } }
+@media (max-width: 359px) { .leagues { column-gap: 10px; } .leagues a { gap: 4px; font-size: 0.85rem; letter-spacing: 0.03em; } .leagues a img { height: 16px; max-width: 26px; } }
 /* the league's logo (and title sponsor's) leads the headline */
 .titlerow { display: flex; align-items: center; gap: 16px; }
 .lockup { display: flex; flex: none; align-items: center; gap: 10px; padding-right: 16px; border-right: 3px solid var(--ink); align-self: stretch; }
@@ -607,6 +608,26 @@ const LEAGUE_TEXT = {
       `Run against final results, the engine reproduces both Big Ten title games: 2024 (Oregon 9-0; Penn State over Indiana at 8-1 on opponents' winning percentage, .407 to .346) and 2025 (Ohio State and Indiana both 9-0; Ohio State #1 on opponents' winning percentage, .395 to .358). It agrees with all seventeen scenarios the conference published before the last two weeks of 2024 and the last week of 2025, except where the conference's sheet missed that two teams could finish exactly level on step ${s("d")}.`,
     ],
     policy: { url: "https://bigten.org/sports/2026/11/10/FB_1110261447.aspx", title: "Big Ten Football Championship Game Tiebreakers (bigten.org)" },
+  },
+  pac12: {
+    steps: {
+      a: "<b>Head-to-head.</b> Two teams: the winner of their game. Three or more: winning percentage in games among the tied teams.",
+      d: "<b>Strength of conference schedule.</b> Combined conference winning percentage of each team's conference opponents.",
+    },
+    stepOn: {},
+    col: {},
+    h2h: `<b>Head-to-head when not all tied teams played each other:</b> only after a canceled game, since everyone plays everyone. The tie goes on to step ${s("b")}; losing to everyone does not knock a team out.`,
+    threeWay: `<b>Three or more tie for first:</b> run the steps until one team has an advantage. That team is #1. Everyone left starts over at step ${s("a")}, using the two-team steps once only two remain, to find #2.`,
+    schedules: "<b>Schedules:</b> eight teams play a full round robin of seven conference games, weeks 5 to 12. Week 13's \"flex\" games pair Pac-12 teams but don't count in the standings, so the site leaves them out.",
+    gray: [
+      `Everyone plays everyone, so head-to-head settles every two-team tie, and the later steps only matter for three or more teams who split their games against each other. Then step ${s("b")} (common opponents) can't separate them either, and nor can step ${s("d")}: with equal records, their opponents' combined records are equal too. Those ties come down to the walk (step ${s("c")}) or the rating.`,
+      "The two-team list in the Pac-12's announcement names the head-to-head winner only for a tie for first, and starts its numbered steps for a tie for second with the standings walk. The site uses head-to-head for every two-team tie, as reporters covering the race do: in a round robin the other steps would favor the team that lost the game.",
+      `The two-team steps also put the walk before common opponents, and the CFP ranking from the Tuesday before week 13 ahead of the SportSource rating. Both differences only matter after a canceled game, so the site uses the order above.`,
+      `Step ${s("f")} uses ESPN's FPI because the SportSource rating is not public: the current one during the season, and the first run after the last regular-season weekend once it's over. Read a path decided there as "needs the better rating".`,
+      "No step looks at non-conference games, so they are left out of the odds, the paths and the rooting guide.",
+      "2026 is the rebuilt Pac-12's first season, so there are no past title games to test the engine against. The tests check the procedure clause by clause and reporters' scenarios from November 2026.",
+    ],
+    policy: { url: "https://pac-12.com/news/2026/9/3/pac-12-announces-commercial-and-operational-updates-ahead-of-its-2026-football-season-kickoff.aspx", title: "Pac-12 Football Championship Game Tiebreakers, Sept. 3, 2026 (pac-12.com)" },
   },
 };
 const TEXT = LEAGUE_TEXT[LEAGUE_ID];

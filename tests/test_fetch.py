@@ -253,7 +253,7 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(written["league"], "sec")
         self.assertEqual([(l["id"], l["name"], l["path"]) for l in self.site_data["leagues"]],
                          [("big12", "Big 12", ""), ("sec", "SEC", "sec/"), ("acc", "ACC", "acc/"),
-                          ("big10", "Big Ten", "big10/")])
+                          ("big10", "Big Ten", "big10/"), ("pac12", "Pac-12", "pac12/")])
 
     def test_page_data_moves_team_logos_to_files_and_data_json_keeps_them(self):
         now = first_kickoff()
@@ -316,6 +316,27 @@ class FetchTests(unittest.TestCase):
         self.run_fetch(prev, now, fake, "--league", "big10", league_path="big10")
         self.assertEqual(len(fake.urls), 1)
         self.assertIn("groups=5&", fake.urls[0])
+
+    def test_pac12_flex_week_games_are_not_conference_games(self):
+        # The Pac-12's week-13 flex games pair two of its teams, and ESPN flags them as conference
+        # games, but they don't count in the standings (lastConfWeek 12). Earlier weeks still count.
+        now = first_kickoff()
+        prev = copy.deepcopy(FIXTURE)
+        prev["league"] = "pac12"
+        last = max(g["week"] for g in prev["games"] if g["confFlag"])
+        written, site = self.run_fetch(prev, now, FakeESPN(), "--offline", "--force-build", "--league", "pac12", league_path="pac12")
+        self.assertIn("<title>Pac-12 Title Paths</title>", site)
+        late = [g for g in written["games"] if g["week"] > 12 and g["confFlag"]]
+        early = [g for g in written["games"] if g["week"] <= 12 and g["confFlag"]]
+        self.assertTrue(late and early, f"fixture has flagged games on both sides of week 12 (last {last})")
+        self.assertFalse(any(g["conf"] for g in late))
+        self.assertTrue(all(g["conf"] for g in early))
+        now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
+        prev = self.fresh_prev(now)
+        prev["league"] = "pac12"
+        fake = FakeESPN()
+        self.run_fetch(prev, now, fake, "--league", "pac12", league_path="pac12")
+        self.assertIn("groups=9&", fake.urls[0])
 
     def test_sec_calls_use_the_sec_group(self):
         now = first_kickoff() + dt.timedelta(hours=3, minutes=5)

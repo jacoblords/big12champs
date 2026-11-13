@@ -598,6 +598,7 @@ const LEAGUES = [
   { id: "sec", name: "SEC", path: "sec/", group: 8, logo: PNG, logoDark: PNG },
   { id: "acc", name: "ACC", path: "acc/", group: 1, logo: PNG, logoDark: PNG },
   { id: "big10", name: "Big Ten", path: "big10/", group: 5, logo: PNG, logoDark: PNG },
+  { id: "pac12", name: "Pac-12", path: "pac12/", group: 9, logo: PNG, logoDark: PNG },
 ];
 // 2025 SEC with its final week of conference games left to play: a small exact enumeration
 function secFinalWeek() {
@@ -612,19 +613,21 @@ test("header: a quiet league switch and the season above, the league's logo lead
   const { els } = render({ ...data, leagues: LEAGUES }, "");
   await settle();
   const nav = els.leagues.innerHTML;
-  assert.match(text(nav), /^\s*Big 12 SEC ACC Big Ten\s*$/);
+  assert.match(text(nav), /^\s*Big 12 SEC ACC Big Ten Pac-12\s*$/);
   assert.equal(els.season.textContent, "2026 season");
   const link = (re) => nav.match(re)[0];
   const big12 = link(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/);
   const sec = link(/<a href="sec\/"[^>]*>[\s\S]*?<\/a>/);
   const acc = link(/<a href="acc\/"[^>]*>[\s\S]*?<\/a>/);
   const big10 = link(/<a href="big10\/"[^>]*>[\s\S]*?<\/a>/);
+  const pac12 = link(/<a href="pac12\/"[^>]*>[\s\S]*?<\/a>/);
   assert.match(text(big12), /Big 12/);
   assert.match(text(sec), /SEC/);
   assert.match(text(acc), /ACC/);
   assert.match(text(big10), /Big Ten/);
+  assert.match(text(pac12), /Pac-12/);
   // each league's logo (light and dark) in the switch; no sponsor there
-  for (const a of [big12, sec, acc, big10]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
+  for (const a of [big12, sec, acc, big10, pac12]) assert.equal((a.match(/class="logo-(light|dark)"/g) || []).length, 2);
   assert.doesNotMatch(nav, /sponsor/);
   // the title: Monster's claw, then the Big 12 logo, then the name
   const lockup = els.lockup.innerHTML;
@@ -809,6 +812,48 @@ test("Big Ten tiebreaks show the league's step numbers", async () => {
     if (/Step [1-6]</.test(html)) sawNumber = true;
   }
   assert.ok(sawNumber, "some path shows a numbered step");
+});
+
+// The 2026 Pac-12 snapshot (Nov. 13): eight teams in a round robin, eight conference games left,
+// so exact odds always; week 13's flex games are in the data but not conference games.
+function pac12Season() {
+  const d = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "pac12-season-2026-11-13.json"), "utf8"));
+  d.leagues = LEAGUES;
+  d.exact = solve(d);
+  return d;
+}
+
+test("Pac-12 page: its own name, six numbered steps, the round robin, the flex week, the Pac-12's policy", async () => {
+  const p12 = pac12Season();
+  assert.equal(p12.exact.games, 8);
+  const { els } = render(p12, "#bois");
+  await settle();
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/"[^>]*>[\s\S]*?<\/a>/)[0]), /Big 12/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\.\/big10\/"[^>]*>[\s\S]*?<\/a>/)[0]), /Big Ten/);
+  assert.match(text(els.leagues.innerHTML.match(/<a href="\.\/" aria-current="page"[^>]*>[\s\S]*?<\/a>/)[0]), /Pac-12/);
+  assert.equal(els.title.textContent, "Pac-12 Title Paths");
+  assert.doesNotMatch(els.lockup.innerHTML, /sponsor/);
+  assert.match(text(els.team.innerHTML), /Boise State Broncos \d+-\d+ Pac-12/);
+  assert.match(els.methodText.textContent, /official Pac-12 tiebreakers/);
+  const rules = text(els.rules.innerHTML);
+  assert.match(rules, /The six steps/);
+  assert.match(rules, /full round robin of seven conference games/);
+  assert.match(rules, /flex/);
+  assert.match(rules, /head-to-head for every two-team tie/);
+  assert.match(rules, /SportSource Analytics Team Rating Score/);
+  assert.doesNotMatch(rules, /Total wins|seeded by the two-team steps/);
+  assert.match(els.foot.innerHTML, /href="https:\/\/pac-12\.com\/news\/2026\/9\/3\//);
+  assert.match(els.foot.innerHTML, /groups=9/);
+  assert.doesNotMatch(els.foot.innerHTML + rules, /Big 12|SEC|ACC|Big Ten/);
+});
+
+test("Pac-12 tiebreaks show the league's step numbers", async () => {
+  const p12 = pac12Season();
+  for (const t of p12.teams) {
+    const { els } = render(p12, "#" + t.abbr.toLowerCase());
+    await settle();
+    assert.doesNotMatch(els.team.innerHTML, /Step [a-g7-9]</, t.abbr);
+  }
 });
 
 test("the link carries the team, what-if picks and order, and opening it restores them", async () => {
