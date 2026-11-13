@@ -74,14 +74,18 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   same template with `GAMEDAY` set by `fetch_data.py`, with its own copy of the page data one
   folder down. Two sections:
   - *The race:* every team's title-game odds now, highest first, with the week's starting odds
-    and the change. Picking a team highlights its game and its row in every game that moves it
-    (added when it's below a card's top five). The starting odds are `data.baseline`: the odds
+    and the change. Picking a team reorders the games: its own first, then the games that move
+    its odds by a point or more (biggest swing first, its row highlighted, added when below a
+    card's top five), then the rest dimmed in kickoff order. The cards slide to their new places
+    (not with reduced motion), and on phones the slate scrolls back to its first card. The starting odds are `data.baseline`: the odds
     already published when the fetcher first runs in a new week, kept until the next week.
   - *The games:* kickoff, TV, ESPN's line and venue, and ESPN's win odds, plus how each result
     would move every team's title-game odds (the same exact or simulated splits as the rooting
     guide). The game moving the most is marked "Biggest stakes". Once a game kicks off, its card
     shows ESPN's clock, score and in-game win-probability chart. Links go to ESPN Gamecast,
-    r/CFB game threads and X search; nothing is embedded.
+    r/CFB and X; nothing is embedded. r/CFB's game threads (posted as "[Game Thread] Kansas State
+    @ TCU (2:00 PM ET)") use full school names where ESPN's short names abbreviate, so the link
+    searches this past week's thread titles for the words both share, dropping "St"/"State".
 
   Nothing on it is live to the second. It updates with the 15-minute fetch on game days.
 - **Adding a league:** see [docs/adding-a-league.md](docs/adding-a-league.md): the rules
@@ -108,7 +112,7 @@ A game that isn't final yet is simply asked about again on the next run:
 | Schedule, TV, lines | weeks with unplayed games, once a day (kickoff times move), and once more when `SCHEDULE_FIELDS` changes | ≤ 3 |
 | FPI | every 6 hours, until it has run once after the last regular-season game (then frozen: the tiebreak uses it as of that weekend) | 1 |
 | Predictions | when ESPN's FPI run changes, or a game has none yet | 1 per unplayed game |
-| Win probability, live score | this week's games from kickoff until ESPN calls them final, every run | 1 per game under way |
+| Win probability, live score | this week's games from kickoff until ESPN calls them final, every run; a game ESPN calls final has its week's scoreboard read in the same run, so its result lands then instead of at kickoff + 3h | 1 per game under way |
 | Teams, logos, calendar | once | ~34 |
 
 A cold start is about 75 calls. Most scheduled runs make none and deploy nothing. On a

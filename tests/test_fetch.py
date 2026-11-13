@@ -126,7 +126,7 @@ class FetchTests(unittest.TestCase):
 
     def test_result_not_looked_for_before_kickoff_plus_3h(self):
         now = first_kickoff() + dt.timedelta(hours=2, minutes=50)
-        fake = FakeESPN()
+        fake = FakeESPN(summary_final=False)  # ESPN hasn't called it final either
         self.run_fetch(self.fresh_prev(now), now, fake)
         self.assertEqual(fake.urls, [])
 
@@ -441,6 +441,18 @@ class FetchTests(unittest.TestCase):
         fake = FakeESPN(final=False)
         self.run_fetch(written, now, fake)
         self.assertEqual(fake.summaries, [])
+
+    def test_a_game_espn_calls_final_has_its_result_read_at_once(self):
+        now = first_kickoff() + dt.timedelta(hours=1)  # well before kickoff + 3h
+        fake = FakeESPN(final=True, summary_final=True)
+        written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
+        self.assertEqual([u for u in fake.urls if "/scoreboard" in u and "week=11" in u].__len__(), 1)
+        done = [g for g in written["games"] if g["week"] == 11 and F.parse(g["date"]) <= now]
+        self.assertTrue(done and all(g["completed"] and g["winner"] == g["home"] for g in done))
+        # still being played (ESPN hasn't called it): no scoreboard call before kickoff + 3h
+        fake = FakeESPN(final=False, summary_final=False)
+        self.run_fetch(self.fresh_prev(now), now, fake)
+        self.assertEqual([u for u in fake.urls if "/scoreboard" in u], [])
 
     def test_win_probability_skips_unset_kickoffs_and_other_weeks(self):
         now = first_kickoff() + dt.timedelta(hours=1)
