@@ -404,7 +404,7 @@ function odds(i) {
   if (exactMode()) return { p: EX.teams[i].p, first: EX.teams[i].first };
   const key = lockKey();
   const t = totals.get(key) || (estimate && estimate.key === key ? estimate : null);
-  return { p: t.appear[i] / t.nSims, first: t.first[i] / t.nSims, est: t === estimate };
+  return { p: t.appear[i] / t.nSims, first: t.first ? t.first[i] / t.nSims : null, est: t === estimate };
 }
 const ready = () => sel != null && (exactMode() || (totals.has(lockKey()) && analyses.has(sel + ":" + lockKey())));
 
@@ -1088,22 +1088,33 @@ function settle() {
 let firstRender;
 const rendered = new Promise((r) => { firstRender = r; });
 
-// The estimate: exactly one more result picked than the shown view, which has its run's split by
-// game. Only from a decent sample; otherwise the picker just waits.
+// The estimate: exactly one more result picked than the shown view. From exact odds (no what-ifs
+// yet) it is each team's exact odds given that result, which the exact data carries for the
+// rooting guide; after that, the shown run's runs where that game already went that way (only
+// from a decent sample; otherwise the picker just waits). Either way it is marked as an estimate:
+// the full view that replaces it is simulated.
 function makeEstimate() {
   const key = lockKey();
   if (totals.has(key) || (estimate && estimate.key === key)) return;
   estimate = null;
-  const base = shownKey && shownKey !== "exact" ? totals.get(shownKey) : null;
-  if (!base || !base.cond) return;
+  const fromExact = shownKey === "exact";
+  const base = fromExact ? null : shownKey ? totals.get(shownKey) : null;
+  if (!fromExact && (!base || !base.cond)) return;
+  const wasKey = fromExact ? ".".repeat(P.length) : shownKey;
   let k = -1;
   for (let j = 0; j < P.length; j++) {
-    const was = shownKey[j], now = locks[j] === undefined ? "." : String(locks[j]);
+    const was = wasKey[j], now = locks[j] === undefined ? "." : String(locks[j]);
     if (was === now) continue;
     if (was !== "." || k >= 0) return; // a pick undone, or more than one new pick
     k = j;
   }
   if (k < 0) return;
+  if (fromExact) {
+    const g = EX.teams.map((t) => t.games && t.games[k]);
+    if (g.some((x) => !x || x.pH == null || x.pA == null)) return; // older exact data
+    estimate = { key, nSims: 1, appear: g.map((x) => (locks[k] ? x.pH : x.pA)), first: null };
+    return;
+  }
   const c = k * 2 + locks[k], n = base.cond.n[c], N = T.length;
   if (n < 2000) return;
   estimate = { key, nSims: n, appear: Array.from(base.cond.appear.slice(c * N, c * N + N)), first: Array.from(base.cond.first.slice(c * N, c * N + N)) };
