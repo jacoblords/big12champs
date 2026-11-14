@@ -581,6 +581,19 @@ def main():
             if ended:
                 read_weeks(ended)
 
+    # ESPN's game summary calls a game final a minute or more before its scoreboard does (seen from
+    # GitHub's runners for 7+ minutes on 2026-11-14). The page shows "Final" from the summary, so
+    # take the result from it too rather than show a finished game with the odds not yet moved,
+    # or wait for kickoff + 3h when the summary went final in a run before that.
+    for g in games.values():
+        wp = g.get("wp") or {}
+        hs, as_ = wp.get("homeScore"), wp.get("awayScore")
+        if g["completed"] or g.get("canceled") or g.get("postponed") or not wp.get("final") \
+                or hs is None or as_ is None or hs == as_:
+            continue
+        g.update(completed=True, winner=g["home"] if hs > as_ else g["away"], homeScore=hs, awayScore=as_, pHome=None)
+        changed.append(f"game {g.get('awayName')}@{g.get('homeName')} final from its summary")
+
     # What a result just did to the race: for a game first final this run, each team's odds just
     # before it and given that result, both from the data published before this run, so games
     # finishing in the same run don't blur together. Kept with the game for good.
