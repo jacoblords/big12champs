@@ -194,6 +194,24 @@ button { font: inherit; color: inherit; }
 .gc-stakes .v.up { color: var(--win); font-weight: 600; }
 .gc-quiet { margin: 0; border-top: 1px solid var(--line); padding-top: 8px; font-size: 0.82rem; color: var(--muted); }
 .gc-links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8rem; }
+/* a finished game: what its result did to each team's title-game odds, one line; a ticker when it
+   doesn't fit (a scroll strip with reduced motion) */
+.gc-moved { display: flex; gap: 8px; align-items: baseline; font-size: 0.8rem; font-variant-numeric: tabular-nums; min-width: 0; }
+.gc-moved .lbl { color: var(--muted); white-space: nowrap; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.mv-track { overflow: hidden; min-width: 0; flex: 1; }
+.mv-belt { display: inline-flex; white-space: nowrap; }
+.mv-run { display: inline-flex; gap: 12px; padding-right: 12px; }
+.mv b { font-family: var(--display); font-weight: 700; letter-spacing: 0.04em; margin-right: 3px; color: var(--ink); }
+.mv.me b { text-decoration: underline; text-decoration-color: var(--team, var(--accent)); text-underline-offset: 3px; }
+.mv-track.tick { mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent); }
+.mv-track.tick .mv-belt { animation: mv-tick var(--dur, 12s) linear infinite; }
+.mv-track.tick:hover .mv-belt, .mv-track.tick:focus-within .mv-belt { animation-play-state: paused; }
+@keyframes mv-tick { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .mv-track.tick { overflow-x: auto; scrollbar-width: none; }
+  .mv-track.tick .mv-belt { animation: none; }
+  .mv-track.tick .mv-run[aria-hidden] { display: none; }
+}
 /* phones: the slate scrolls sideways, so the team view isn't pushed a screen further down */
 @media (max-width: 640px) {
   .games { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(84%, 300px); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; margin-inline: -16px; padding-inline: 16px; scroll-padding-inline: 16px; }
@@ -840,6 +858,32 @@ live.applyLive = (byId) => {
   if (n) { renderHeader(); renderGameday(); }
   return n;
 };
+// What a finished game's result did to the race (DATA game .moved, recorded by fetch_data.py when
+// it went final): each team it moved by a point or more, biggest first, rounded as the race does.
+function movedLine(g) {
+  const m = g.moved;
+  if (!m || typeof m !== "object") return "";
+  const rows = Object.entries(m)
+    .map(([id, v]) => ({ i: ctx.idx[id], d: Array.isArray(v) && v.length === 2 && v.every(Number.isFinite) ? Math.round((v[1] - v[0]) * 100) : 0 }))
+    .filter((r) => r.i !== undefined && r.d !== 0)
+    .sort((x, y) => Math.abs(y.d) - Math.abs(x.d) || y.d - x.d);
+  if (!rows.length) return "";
+  const run = rows.map(({ i, d }) => `<span class="mv${i === focusTeam ? " me" : ""}"><b>${esc(T[i].abbr)}</b><span class="delta ${d > 0 ? "up" : "down"}"><span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh"> ${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"}</span></span></span>`).join("");
+  return `<div class="gc-moved"><span class="lbl">Title odds</span><div class="mv-track"><div class="mv-belt"><span class="mv-run">${run}</span></div></div></div>`;
+}
+// a moved line too long for its card scrolls as a ticker: the run twice over, sliding by one copy
+function tickers() {
+  if (!document.querySelectorAll) return;
+  for (const t of document.querySelectorAll(".mv-track")) {
+    const belt = t.firstElementChild, run = belt && belt.firstElementChild;
+    if (!run || run.scrollWidth <= t.clientWidth + 1) continue;
+    const copy = run.cloneNode(true);
+    copy.setAttribute("aria-hidden", "true");
+    belt.appendChild(copy);
+    t.classList.add("tick");
+    t.style.setProperty("--dur", `${Math.max(8, run.scrollWidth / 30).toFixed(1)}s`); // ~30px a second
+  }
+}
 function gameCard(g, top, dim) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
@@ -876,7 +920,8 @@ function gameCard(g, top, dim) {
     ${threadOpen ? `<a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent(threadQuery(a, h))}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener" title="The r/CFB game thread">r/CFB</a>` : ""}
     <a href="https://x.com/search?q=${encodeURIComponent(q)}&amp;f=live" target="_blank" rel="noopener" title="Live posts on X">X</a></div>`;
   const mine = focusTeam != null && (a.i === focusTeam || h.i === focusTeam);
-  return `<article data-gid="${esc(g.id)}" class="gc${top ? " top" : ""}${mine ? " mine" : ""}${dim ? " dim" : ""}"${mine ? ` style="--team:${safeColor(T[focusTeam].color)}"` : ""}>${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${stakes}${links}</article>`;
+  const moved = done ? movedLine(g) : "";
+  return `<article data-gid="${esc(g.id)}" class="gc${top ? " top" : ""}${mine ? " mine" : ""}${dim ? " dim" : ""}"${mine ? ` style="--team:${safeColor(T[focusTeam].color)}"` : ""}>${when}<div>${line(a, false)}${line(h, true)}</div>${extra ? `<div class="gc-line">${extra}</div>` : ""}${wpChart(g, a, h)}${moved}${stakes}${links}</article>`;
 }
 // a card lists the five teams a game moves most, plus the picked team when it's further down
 const shownRows = (rows) => {
@@ -927,6 +972,7 @@ function renderGameday() {
       <div class="race">${race}</div></section>
     <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>Each team's title-game odds under either result, for the teams it moves by a point or more.</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
       <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim)).join("")}</div></section>`;
+  tickers();
 }
 
 function renderPicker() {
