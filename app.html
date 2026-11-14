@@ -688,7 +688,7 @@ function renderHeader() {
   const modes = $("modes");
   modes.hidden = !GAMEDAY && (!WEEK || !weekGames().length);
   if (!modes.hidden) {
-    const live = weekGames().some(underWay);
+    const live = weekGames().some(liveNow);
     modes.innerHTML = `<a href="${GAMEDAY ? "../" : "./"}"${GAMEDAY ? "" : ' aria-current="page"'}>Paths</a>`
       + `<a href="${GAMEDAY ? "./" : "gameday/"}"${GAMEDAY ? ' aria-current="page"' : ""}>${live ? `<span class="dot" aria-hidden="true"></span>` : ""}Gameday${live ? `<span class="vh">, games under way</span>` : ""}</a>`;
   }
@@ -764,6 +764,17 @@ const weekGames = () => (WEEK ? DATA.games.filter((g) => g.week === WEEK.week &&
   && (ctx.idx[g.home] !== undefined || ctx.idx[g.away] !== undefined)).sort((a, b) => kickKey(a) - kickKey(b)) : []);
 // kicked off, not over: no final from the scoreboard or ESPN's summary (and at most 5 hours in,
 // so a result that never lands doesn't leave it live)
+// ESPN hasn't started it yet, though its kickoff time has passed (a TV delay): its card keeps
+// showing the kickoff. Older data has no state: no plays and no score then means the same.
+function pregame(g) {
+  const w = g.wp;
+  if (!w || w.final) return false;
+  if (w.state) return w.state === "pre";
+  return !(w.pts && w.pts.length) && w.homeScore == null && w.awayScore == null;
+}
+// under way and ESPN says so: the live marker. (underWay alone is what the live poll asks about,
+// so that it sees a delayed game start.)
+const liveNow = (g) => underWay(g) && !pregame(g);
 function underWay(g) {
   const t = new Date(g.date).getTime(), now = Date.now();
   return !g.completed && !g.canceled && !g.postponed && g.timeValid !== false && !(g.wp && g.wp.final) && now >= t && now < t + 5 * 3600e3;
@@ -847,7 +858,8 @@ live.liveIds = () => (GAMEDAY ? weekGames().filter(underWay).map((g) => g.id) : 
 const isWp = (w) => !!w && typeof w === "object" && Array.isArray(w.pts) && w.pts.length <= 500
   && w.pts.every((p) => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite))
   && ["homeScore", "awayScore"].every((k) => w[k] === null || Number.isInteger(w[k]))
-  && (w.detail === null || typeof w.detail === "string") && typeof w.final === "boolean";
+  && (w.detail === null || typeof w.detail === "string") && typeof w.final === "boolean"
+  && (w.state == null || ["pre", "in", "post"].includes(w.state));
 live.applyLive = (byId) => {
   let n = 0;
   for (const g of DATA.games) {
@@ -890,7 +902,7 @@ function gameCard(g, top, dim) {
   // ESPN's summary can call a game final a few minutes before our results check does
   const wp = g.wp && !g.canceled ? g.wp : null;
   const done = (g.completed && !g.canceled) || !!(wp && wp.final);
-  const started = !done && !g.completed && g.timeValid !== false && Date.now() >= new Date(g.date).getTime();
+  const started = !done && !g.completed && g.timeValid !== false && Date.now() >= new Date(g.date).getTime() && !pregame(g);
   const hs = g.completed ? g.homeScore : wp ? wp.homeScore : null, as = g.completed ? g.awayScore : wp ? wp.awayScore : null;
   const winner = g.completed ? g.winner : done && hs != null && as != null && hs !== as ? (hs > as ? g.home : g.away) : null;
   const status = g.canceled ? "Canceled" : g.postponed ? "Postponed" : done ? "Final"

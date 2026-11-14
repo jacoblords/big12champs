@@ -41,7 +41,8 @@ export function slim(d) {
   const stype = (comp.status || {}).type || {};
   const score = Object.fromEntries((comp.competitors || []).map((c) => [c.homeAway, c.score]));
   const num = (v) => (v == null || v === "" || !Number.isFinite(parseFloat(v)) ? null : Math.trunc(parseFloat(v)));
-  return { pts, final: !!stype.completed, detail: stype.shortDetail || null, homeScore: num(score.home), awayScore: num(score.away) };
+  return { pts, final: !!stype.completed, detail: stype.shortDetail || null, homeScore: num(score.home), awayScore: num(score.away),
+    state: stype.state || null }; // ESPN's "pre", "in" or "post": a game can sit at "pre" past its kickoff time
 }
 
 export const parseIds = (s) => {
