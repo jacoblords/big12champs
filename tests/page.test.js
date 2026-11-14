@@ -30,7 +30,9 @@ function render(data, hash, extra) {
   const sandbox = {
     document, window: { addEventListener: (type, fn) => { handlers["window:" + type] = fn; } }, location,
     history: { replaceState: (_, __, url) => { location.hash = url; } },
-    fetch: async () => ({ ok: true, json: async () => data }), console, Math, Date, JSON, setTimeout, Promise,
+    fetch: async () => ({ ok: true, json: async () => data }), console, Math, Date, JSON, Promise,
+    // unref'd, so a page's own timers (the gameday page's minute check) don't hold the test run open
+    setTimeout: (fn, ms) => { const t = setTimeout(fn, ms); if (t.unref) t.unref(); return t; }, clearTimeout,
     ...extra,
   };
   vm.createContext(sandbox);
@@ -1039,6 +1041,45 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   // the league switch goes to the other leagues' gameday pages
   assert.match(els.leagues.innerHTML, /href="\.\.\/sec\/gameday\/"/);
   assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
+});
+
+test("gameday: an open page checks for new data every minute and redraws with it, keeping the followed team", async () => {
+  const wk = gameday();
+  let served = wk, fetches = 0;
+  const timers = [];
+  const { els, handlers } = renderGameday(wk, {
+    Date: clockAt(FRIDAY_WK12),
+    fetch: async () => { fetches++; return { ok: true, json: async () => JSON.parse(JSON.stringify(served)) }; },
+    setTimeout: (fn, ms) => { if (ms === 60e3) { timers.push(fn); return timers.length; } const t = setTimeout(fn, ms); t.unref(); return t; },
+  });
+  await settle();
+  assert.equal(fetches, 1);
+  assert.equal(timers.length, 1, "a check is scheduled a minute out");
+  const utah = wk.teams.findIndex((t) => t.abbr === "UTAH");
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(utah) } } : null) } });
+  const before = els.gameday.innerHTML;
+  // nothing new published: the check changes nothing and schedules the next one
+  timers.shift()();
+  await settle();
+  assert.equal(fetches, 2);
+  assert.equal(els.gameday.innerHTML, before);
+  assert.equal(timers.length, 1);
+  // a new build: week 12's first game is under way with a score
+  served = JSON.parse(JSON.stringify(wk));
+  served.fetchedAt = "2026-11-20T18:15:00Z";
+  const g = served.games.filter((x) => x.week === 12)[0];
+  g.date = "2026-11-20T17:00Z";
+  g.wp = { pts: [[0, 500], [900, 640]], homeScore: 14, awayScore: 3, clock: "0:00", period: 1 };
+  timers.shift()();
+  await settle();
+  assert.equal(fetches, 3);
+  assert.notEqual(els.gameday.innerHTML, before, "redrawn with the new data");
+  assert.match(els.gameday.innerHTML, new RegExp(`data-rt="${utah}" aria-pressed="true"`), "still following Utah");
+  assert.match(text(els.foot.innerHTML), /picks up each update on its own/);
+  assert.equal(timers.length, 1, "and keeps checking");
+  // the click handler now belongs to the new page; clicking Utah again stops following it
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(utah) } } : null) } });
+  assert.match(els.gameday.innerHTML, new RegExp(`data-rt="${utah}" aria-pressed="false"`));
 });
 
 // The CFP committee's ranking (DATA.cfp): a small rank before a ranked team's name, on both pages.

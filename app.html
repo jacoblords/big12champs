@@ -379,7 +379,10 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 const EMBEDDED = /*__DATA__*/null;
 // fetch_data.py builds each league's gameday page (<league>/gameday/) from this same template with this set
 const GAMEDAY = /*__GAMEDAY__*/false;
-function app(DATA) {
+// live: what a redraw with newer data carries over (gameday; see follow() below). Its signal removes
+// this app's listeners once a newer one has taken over the page.
+function app(DATA, live = {}) {
+const on = (target, type, fn, capture) => target.addEventListener(type, fn, { capture: !!capture, signal: live.signal });
 const ctx = B12.build(DATA);
 const T = ctx.teams;
 // The CFP committee's latest Top 25 (DATA.cfp, by ESPN team id): a rank in front of a ranked
@@ -430,7 +433,7 @@ function pct(p, digits) {
 const logit = (p) => { p = Math.min(Math.max(p, 1e-12), 1 - 1e-12); return Math.log(p / (1 - p)); };
 const matters = (c) => c.pH != null && c.pA != null && Math.abs(logit(c.pH) - logit(c.pA)) >= 0.3;
 const openState = {};
-document.addEventListener("toggle", (e) => { if (e.target.id) openState[e.target.id] = e.target.open; }, true);
+on(document, "toggle", (e) => { if (e.target.id) openState[e.target.id] = e.target.open; }, true);
 function oneIn(p) {
   const n = 1 / p;
   if (n < 10) return "1 in " + n.toFixed(1);
@@ -814,7 +817,9 @@ function threadQuery(a, h) {
     : T[side.i].short.split(/\s+/).filter((w) => w && !/^(st\.?|state)$/i.test(w) && /^[\p{L}\p{N}&'.-]+$/u.test(w));
   return ['author:CFB_Referee', 'title:"Game Thread"', ...[...words(a), ...words(h)].map((w) => "title:" + w)].join(" AND ");
 }
-let focusTeam = null; // the team clicked in the race: highlighted through the games
+// the team clicked in the race: highlighted through the games (kept, by id, across a redraw)
+let focusTeam = (() => { const i = T.findIndex((t) => t.id === live.focusId); return i < 0 ? null : i; })();
+live.followed = () => (focusTeam == null ? null : T[focusTeam].id);
 function gameCard(g, top, dim) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
@@ -1527,7 +1532,7 @@ function fadeCards() {
   if (reduceMotion()) return;
   for (const c of document.querySelectorAll(".gc[data-gid]")) if (c.animate) c.animate([{ opacity: 0, offset: 0 }], { duration: 180, easing: "ease-out" }); // to its own opacity, dimmed or not
 }
-document.addEventListener("click", (e) => {
+on(document, "click", (e) => {
   const rt = e.target.closest("[data-rt]");
   if (rt) {
     focusTeam = focusTeam === +rt.dataset.rt ? null : +rt.dataset.rt;
@@ -1592,12 +1597,12 @@ function preview(b) {
   }
 }
 const oddsBtn = (el) => (el && el.closest ? el.closest(ODDS_BTN) : null);
-document.addEventListener("mouseover", (e) => preview(oddsBtn(e.target)));
-document.addEventListener("focusin", (e) => preview(oddsBtn(e.target)));
+on(document, "mouseover", (e) => preview(oddsBtn(e.target)));
+on(document, "focusin", (e) => preview(oddsBtn(e.target)));
 // leaving for another result is handled by its focusin; leaving the page or the buttons restores
-document.addEventListener("focusout", (e) => { if (!oddsBtn(e.relatedTarget)) preview(null); });
+on(document, "focusout", (e) => { if (!oddsBtn(e.relatedTarget)) preview(null); });
 // a link pasted into the address bar of an open page: take everything it sets
-window.addEventListener("hashchange", () => {
+on(window, "hashchange", () => {
   if (location.hash === hashFor()) return;
   const h = parseHash();
   if (h.team >= 0) sel = h.team;
@@ -1634,7 +1639,7 @@ function defaultTeam() {
     : "These odds are only as good as ESPN's game predictions, which update about once a day. They also treat each game as independent, which can make them a bit too confident with much of the season left.";
   const when = (s) => new Date(s).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   const meta = DATA.meta || {};
-  $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${P.length ? ` A result counts once ESPN calls the game final, checked every 15 minutes Thursday to Sunday${GAMEDAY ? ", when live scores and win probability refresh too" : ""}; between results, only ESPN's pregame odds move the title odds.` : ""} Times are in your time zone.</div>
+  $("foot").innerHTML = `<div><b>Data last changed ${when(DATA.fetchedAt)}</b>${meta.checkedAt ? `, last checked ${when(meta.checkedAt)}` : ""}.${P.length ? ` A result counts once ESPN calls the game final, checked every 15 minutes Thursday to Sunday${GAMEDAY ? ", when live scores and win probability refresh too; this page picks up each update on its own while it's open" : ""}; between results, only ESPN's pregame odds move the title odds.` : ""} Times are in your time zone.</div>
   <div>Sources, all from ESPN: results and schedules (<code>site.api.espn.com/…/scoreboard?groups=${LG.group}&amp;week=N</code>), Matchup Predictor win odds (<code>sports.core.api.espn.com/…/competitions/{id}/predictor</code>) and FPI (<code>…/seasons/{year}/powerindex</code>)${CFP_DAY ? `, and the CFP committee's rankings of ${CFP_DAY} (<code>…/rankings</code>), shown as the small number before a team's name` : ""}. A scheduled job fetches them and everyone shares the copy; your browser never calls ESPN.</div>
   ${DATA.exact && DATA.exact.skipped ? `<div>Exact odds were skipped for this data: ${esc(DATA.exact.skipped)}. The odds shown are from ${N_MAIN.toLocaleString("en-US")} simulations, typically within half a point.</div>` : ""}
   <div>Tiebreakers: <a href="${TEXT.policy.url}" target="_blank" rel="noopener">${TEXT.policy.title}</a>. Not affiliated with the ${esc(LG.name)} or ESPN.</div>`;
@@ -1667,10 +1672,54 @@ function reveal() {
 // app() resolves once the first view is rendered (simulated odds may still be computing); the
 // page shows by then, or after 10 s in case the computing never comes back.
 const firstView = (rendered) => Promise.race([rendered, new Promise((r) => setTimeout(r, 10000))]);
-if (EMBEDDED) Promise.resolve().then(() => firstView(app(EMBEDDED))).finally(reveal);
-else fetch("page-data.json", { cache: "no-cache" })
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((d) => firstView(app(d)))
+const getData = () => fetch("page-data.json", { cache: "no-cache" })
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+// a build of the data: changes whenever a scheduled fetch publishes
+const stamp = (d) => `${d.fetchedAt}|${(d.meta && d.meta.checkedAt) || ""}`;
+const newLive = () => {
+  const ctl = typeof AbortController === "function" ? new AbortController() : null;
+  return { ctl, signal: ctl ? ctl.signal : undefined };
+};
+let live = newLive(), shown = null;
+if (EMBEDDED) Promise.resolve().then(() => firstView(app(EMBEDDED, live))).finally(reveal);
+else getData()
+  .then((d) => { shown = stamp(d); return firstView(app(d, live)); })
   .catch((e) => { document.getElementById("lede").textContent = `Couldn't load the standings data (${e.message}). Reload the page to try again.`; })
-  .finally(reveal);
+  .finally(() => { reveal(); if (GAMEDAY && shown) follow(); });
+
+// The gameday page follows the games: while it is on screen it checks for newly published data
+// every minute (a revalidation, so usually a 304) and redraws with it in place, keeping the team
+// being followed, the slate's sideways scroll and keyboard focus on the race. A hidden tab doesn't
+// check, and checks at once when it comes back if a minute has passed.
+const FOLLOW_MS = 60e3;
+function follow() {
+  let timer = null, busy = false, last = Date.now();
+  const schedule = () => { clearTimeout(timer); timer = document.hidden ? null : setTimeout(check, FOLLOW_MS); };
+  function check() {
+    timer = null;
+    if (document.hidden || busy) return;
+    busy = true; last = Date.now();
+    getData()
+      .then((d) => { if (stamp(d) !== shown) { redraw(d); shown = stamp(d); } })
+      .catch(() => {}) // offline or mid-deploy: try again next time
+      .finally(() => { busy = false; schedule(); });
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { clearTimeout(timer); timer = null; } else if (!busy) (Date.now() - last >= FOLLOW_MS ? check() : schedule());
+  });
+  schedule();
+}
+const q1 = (sel) => (document.querySelector ? document.querySelector(sel) : null);
+function redraw(d) {
+  const strip = q1(".games"), x = strip ? strip.scrollLeft : 0;
+  const a = document.activeElement, rt = a && a.dataset ? a.dataset.rt : undefined;
+  const next = newLive();
+  next.focusId = live.followed ? live.followed() : null;
+  try { app(d, next); } catch (e) { if (next.ctl) next.ctl.abort(); throw e; }
+  if (live.ctl) live.ctl.abort(); // the old app's listeners
+  live = next;
+  const s = q1(".games");
+  if (s && x) s.scrollLeft = x;
+  if (rt !== undefined) { const b = q1(`[data-rt="${rt}"]`); if (b && b.focus) b.focus({ preventScroll: true }); }
+}
 </script>
