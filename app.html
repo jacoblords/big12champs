@@ -379,6 +379,8 @@ footer code { font-size: 0.8rem; word-break: break-all; }
 const EMBEDDED = /*__DATA__*/null;
 // fetch_data.py builds each league's gameday page (<league>/gameday/) from this same template with this set
 const GAMEDAY = /*__GAMEDAY__*/false;
+// the live-scores worker (trigger/worker.mjs), from the LIVE_URL build setting; "" means none
+const LIVE_URL = /*__LIVE__*/"";
 // live: what a redraw with newer data carries over (gameday; see follow() below). Its signal removes
 // this app's listeners once a newer one has taken over the page.
 function app(DATA, live = {}) {
@@ -820,6 +822,24 @@ function threadQuery(a, h) {
 // the team clicked in the race: highlighted through the games (kept, by id, across a redraw)
 let focusTeam = (() => { const i = T.findIndex((t) => t.id === live.focusId); return i < 0 ? null : i; })();
 live.followed = () => (focusTeam == null ? null : T[focusTeam].id);
+// Live scores between data builds (see followLive below): the games to ask about, and taking in
+// what came back. A reply only replaces a game's chart with one at least as long, and never
+// touches a game whose result is already in the data.
+live.liveIds = () => (GAMEDAY ? weekGames().filter(underWay).map((g) => g.id) : []);
+const isWp = (w) => !!w && typeof w === "object" && Array.isArray(w.pts) && w.pts.length <= 500
+  && w.pts.every((p) => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite))
+  && ["homeScore", "awayScore"].every((k) => w[k] === null || Number.isInteger(w[k]))
+  && (w.detail === null || typeof w.detail === "string") && typeof w.final === "boolean";
+live.applyLive = (byId) => {
+  let n = 0;
+  for (const g of DATA.games) {
+    const w = byId[g.id];
+    if (!isWp(w) || g.completed || g.canceled || (g.wp && (g.wp.final || g.wp.pts.length > w.pts.length))) continue;
+    g.wp = w; n++;
+  }
+  if (n) { renderHeader(); renderGameday(); }
+  return n;
+};
 function gameCard(g, top, dim) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
@@ -1687,39 +1707,60 @@ else getData()
   .catch((e) => { document.getElementById("lede").textContent = `Couldn't load the standings data (${e.message}). Reload the page to try again.`; })
   .finally(() => { reveal(); if (GAMEDAY && shown) follow(); });
 
-// The gameday page follows the games: while it is on screen it checks for newly published data
-// every minute (a revalidation, so usually a 304) and redraws with it in place, keeping the team
-// being followed, the slate's sideways scroll and keyboard focus on the race. A hidden tab doesn't
-// check, and checks at once when it comes back if a minute has passed.
-const FOLLOW_MS = 60e3;
-function follow() {
-  let timer = null, busy = false, last = Date.now();
-  const schedule = () => { clearTimeout(timer); timer = document.hidden ? null : setTimeout(check, FOLLOW_MS); };
-  function check() {
+// The gameday page follows the games, on two clocks, both only while the page is on screen (a
+// hidden tab waits, and catches up at once when it comes back):
+// - every minute it revalidates page-data.json (usually a 304) and, when a new build has been
+//   published, redraws with it: results, odds and the race;
+// - every 30 seconds, while games are under way, it asks the live worker for their scores,
+//   clocks and win-probability charts and redraws those cards. The worker keeps one shared copy
+//   per game, so ESPN hears from it once per game per 30 seconds however many people watch.
+// Redraws keep the team being followed, the slate's sideways scroll and keyboard focus.
+const FOLLOW_MS = 60e3, LIVE_MS = 30e3;
+function every(ms, job, now) {
+  let timer = null, busy = false, last = 0;
+  const schedule = () => { clearTimeout(timer); timer = document.hidden ? null : setTimeout(run, ms); };
+  function run() {
     timer = null;
     if (document.hidden || busy) return;
     busy = true; last = Date.now();
-    getData()
-      .then((d) => { if (stamp(d) !== shown) { redraw(d); shown = stamp(d); } })
-      .catch(() => {}) // offline or mid-deploy: try again next time
+    Promise.resolve().then(job).catch(() => {}) // offline or mid-deploy: try again next time
       .finally(() => { busy = false; schedule(); });
   }
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) { clearTimeout(timer); timer = null; } else if (!busy) (Date.now() - last >= FOLLOW_MS ? check() : schedule());
+    if (document.hidden) { clearTimeout(timer); timer = null; } else if (!busy) (Date.now() - last >= ms ? run() : schedule());
   });
-  schedule();
+  if (now) run(); else { last = Date.now(); schedule(); }
 }
 const q1 = (sel) => (document.querySelector ? document.querySelector(sel) : null);
-function redraw(d) {
+function keepPlace(draw) {
   const strip = q1(".games"), x = strip ? strip.scrollLeft : 0;
   const a = document.activeElement, rt = a && a.dataset ? a.dataset.rt : undefined;
+  draw();
+  const s = q1(".games");
+  if (s && x) s.scrollLeft = x;
+  if (rt !== undefined) { const b = q1(`[data-rt="${rt}"]`); if (b && b.focus && b !== document.activeElement) b.focus({ preventScroll: true }); }
+}
+let lastLive = {}; // the latest live reply: put back after a new build, until the build catches up
+function follow() {
+  every(FOLLOW_MS, () => getData().then((d) => {
+    if (stamp(d) === shown) return;
+    keepPlace(() => redraw(d));
+    shown = stamp(d);
+  }));
+  if (LIVE_URL) every(LIVE_MS, () => {
+    const ids = live.liveIds ? live.liveIds() : [];
+    if (!ids.length) return;
+    return fetch(`${LIVE_URL}live?ids=${ids.join(",")}`, { cache: "no-store" })
+      .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then((m) => { lastLive = m; keepPlace(() => live.applyLive(m)); });
+  }, true);
+}
+function redraw(d) {
   const next = newLive();
   next.focusId = live.followed ? live.followed() : null;
   try { app(d, next); } catch (e) { if (next.ctl) next.ctl.abort(); throw e; }
   if (live.ctl) live.ctl.abort(); // the old app's listeners
   live = next;
-  const s = q1(".games");
-  if (s && x) s.scrollLeft = x;
-  if (rt !== undefined) { const b = q1(`[data-rt="${rt}"]`); if (b && b.focus) b.focus({ preventScroll: true }); }
+  live.applyLive(lastLive);
 }
 </script>

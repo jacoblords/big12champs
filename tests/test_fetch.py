@@ -536,6 +536,15 @@ class FetchTests(unittest.TestCase):
         self.run_fetch(self.fresh_prev(now), now, fake)
         self.assertEqual([u for u in fake.urls if "/scoreboard" in u], [])
 
+    def test_live_url_reaches_the_pages_only_as_an_https_origin(self):
+        now = first_kickoff() - dt.timedelta(minutes=5)
+        cases = [("https://titlepaths-trigger.example.workers.dev", '"https://titlepaths-trigger.example.workers.dev/"'),
+                 ("", '""'), ("http://plain.example/", '""'), ('https://x.example/";alert(1);//', '""')]
+        for value, expect in cases:
+            with mock.patch.dict("os.environ", {"LIVE_URL": value}):
+                _, site = self.run_fetch(self.fresh_prev(now), now, FakeESPN())
+            self.assertIn(f"const LIVE_URL = {expect};", site, value)
+
     def test_win_probability_skips_unset_kickoffs_and_other_weeks(self):
         now = first_kickoff() + dt.timedelta(hours=1)
         prev = self.fresh_prev(now)

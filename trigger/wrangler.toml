@@ -1,16 +1,19 @@
-# Cloudflare Worker that starts update.yml on time. See trigger/README.md.
+# Cloudflare Worker that starts update.yml on time and serves the gameday pages' live scores.
+# See trigger/README.md.
 name = "titlepaths-trigger"
 main = "worker.mjs"
 compatibility_date = "2026-11-01"
 
-# No HTTP endpoint: the worker only runs on its cron triggers.
-workers_dev = false
+# HTTP: GET /live on the workers.dev address (titlepaths.com's DNS isn't on Cloudflare).
+workers_dev = true
 preview_urls = false
 
 [vars]
 REPO = "jacoblords/big12champs"
 WORKFLOW = "update.yml"
 REF = "main"
+# pages allowed to read /live from a browser (localhost is allowed too, for local builds)
+ORIGINS = "https://titlepaths.com,https://www.titlepaths.com"
 
 # UTC, like GitHub's. Every 15 minutes Thursday through Sunday (Thursday evening through late
 # Saturday night in US time) and every 30 minutes Monday to Wednesday. A run with nothing due
@@ -20,3 +23,13 @@ crons = ["*/15 * * * THU,FRI,SAT,SUN", "*/30 * * * MON,TUE,WED"]
 
 [observability]
 enabled = true
+
+# The shared copy of each live game: one instance, so ESPN is asked once per game per 30s
+# however many people are watching. SQLite-backed, which the free plan includes.
+[[durable_objects.bindings]]
+name = "LIVE"
+class_name = "LiveCache"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LiveCache"]

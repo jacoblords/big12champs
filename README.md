@@ -105,10 +105,14 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     a query, so the link shows only from two hours before kickoff, once the newest match is this
     year's thread rather than last year's.
 
-  Nothing on it is live to the second. It updates with the 15-minute fetch on game days, and an
-  open page follows along: it revalidates `page-data.json` every minute while it is on screen
-  (not in a hidden tab, and at once on coming back) and, when a new build is published, redraws
-  in place with the followed team, the slate's scroll and keyboard focus kept.
+  Results and odds update with the 15-minute fetch on game days, and an open page follows
+  along: it revalidates `page-data.json` every minute while it is on screen (not in a hidden tab,
+  and at once on coming back) and, when a new build is published, redraws in place with the
+  followed team, the slate's scroll and keyboard focus kept. Scores, clocks and win-probability
+  charts of games under way refresh every 30 seconds from the live-scores worker
+  ([`trigger/`](trigger/README.md)), which keeps one shared copy per game, so ESPN is asked once
+  per game per 30 seconds however many people are watching. When the worker sees a game go final
+  it starts the update workflow, so the result and the odds land a minute or two later.
 - **CFP rankings:** the committee's latest Top 25 (ESPN's `rankings`, the `cfp` entry, not the AP
   poll) goes in `data.cfp` by ESPN team id, and the page puts the rank before a ranked team's
   name: picker, team header, path, standings, rooting guide, and gameday's race and game cards
@@ -122,7 +126,7 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
 
 ## Data and caching
 
-Visitors never call ESPN. A GitHub Action runs every 15 minutes Thursday through Sunday
+Visitors never call ESPN: the data is fetched on a schedule, and live scores come through one shared worker. A GitHub Action runs every 15 minutes Thursday through Sunday
 (UTC) and every 30 minutes Monday to Wednesday, started by a Cloudflare Worker
 ([`trigger/`](trigger/README.md)) because GitHub's own schedule fired only every few hours;
 an hourly GitHub schedule stays on as a backup. It starts
