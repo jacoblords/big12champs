@@ -141,7 +141,7 @@ A game that isn't final yet is simply asked about again on the next run:
 | Schedule, TV, lines | weeks with unplayed games, once a day (kickoff times move), and once more when `SCHEDULE_FIELDS` changes | ≤ 3 |
 | FPI | every 6 hours, until it has run once after the last regular-season game (then frozen: the tiebreak uses it as of that weekend) | 1 |
 | Predictions | when ESPN's FPI run changes, or a game has none yet | 1 per unplayed game |
-| Win probability, live score | this week's games from kickoff until ESPN calls them final, every run; a game ESPN calls final has its week's scoreboard read in the same run, so its result lands then instead of at kickoff + 3h | 1 per game under way |
+| Win probability, live score | this week's games from kickoff until ESPN calls them final, every run; a game ESPN calls final has its week's scoreboard read in the same run, so its result lands then instead of at kickoff + 3h; if the scoreboard hasn't caught up yet (it can lag the game summary by minutes), the result is taken from the summary's final score | 1 per game under way |
 | CFP rankings | every 6 hours, until the season is over and the selection-day ranking is in | 1 |
 | Teams, logos, calendar | once | ~34 |
 

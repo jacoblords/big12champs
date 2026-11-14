@@ -545,6 +545,33 @@ class FetchTests(unittest.TestCase):
                 _, site = self.run_fetch(self.fresh_prev(now), now, FakeESPN())
             self.assertIn(f"const LIVE_URL = {expect};", site, value)
 
+    def test_a_final_game_takes_its_result_from_the_summary_when_the_scoreboard_lags(self):
+        # 2026-11-14: Colorado's summary said final while the scoreboard still had it under way
+        now = first_kickoff() + dt.timedelta(hours=1)
+        fake = FakeESPN(final=False, summary_final=True)
+        written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
+        done = [g for g in written["games"] if g["week"] == 11 and F.parse(g["date"]) <= now]
+        self.assertTrue(done)
+        for g in done:  # the summary's score: home 24, away 10
+            self.assertEqual((g["completed"], g["winner"], g["homeScore"], g["awayScore"], g["pHome"]),
+                             (True, g["home"], 24, 10, None))
+        self.assertEqual(self.changed, "changed=true")
+        # the result stays, and nobody asks about the game again
+        fake = FakeESPN(final=False, summary_final=False)
+        again, _ = self.run_fetch(written, now, fake)
+        self.assertEqual(fake.summaries, [])
+        self.assertTrue(all(g["completed"] for g in (again or written)["games"] if g["id"] in {x["id"] for x in done}))
+
+    def test_a_summary_without_a_decided_score_is_not_a_result(self):
+        now = first_kickoff() + dt.timedelta(hours=1)
+        tied = summary(True)
+        tied["header"]["competitions"][0]["competitors"][1]["score"] = "24"
+        fake = FakeESPN(final=False)
+        fake_call = fake.__call__
+        written, _ = self.run_fetch(self.fresh_prev(now), now,
+                                    lambda url, raw=False: tied if "/summary?event=" in url else fake_call(url, raw))
+        self.assertFalse(any(g["completed"] for g in written["games"] if g["week"] == 11 and F.parse(g["date"]) <= now))
+
     def test_win_probability_skips_unset_kickoffs_and_other_weeks(self):
         now = first_kickoff() + dt.timedelta(hours=1)
         prev = self.fresh_prev(now)
