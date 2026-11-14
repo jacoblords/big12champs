@@ -313,6 +313,40 @@ def odds_snapshot(d):
     return None
 
 
+MOVED_MIN = 0.005  # half a point: a smaller move isn't kept with the game
+
+
+def game_moves(prev, gid, home_won):
+    """{team id: [odds before, odds given the result]} for the teams game gid moved by
+    MOVED_MIN or more, from the data published before it was final: the exact splits, else the
+    precomputed simulation's (each result needs 500 runs, as on the page). None when that data
+    had no view of the game."""
+    out = {}
+    e = prev.get("exact") or {}
+    if e.get("teams") and not e.get("skipped") and gid in (e.get("gameIds") or []):
+        k = e["gameIds"].index(gid)
+        for t in e["teams"]:
+            c = (t.get("games") or [None] * (k + 1))[k] or {}
+            after = c.get("pH" if home_won else "pA")
+            if after is not None and abs(after - t["p"]) >= MOVED_MIN:
+                out[t["id"]] = [sig4(t["p"]), sig4(after)]
+        return out
+    s = prev.get("sim") or {}
+    tot, ids = s.get("totals") or {}, s.get("teamIds") or []
+    cond = tot.get("cond") or {}
+    if tot.get("nSims") and ids and gid in (s.get("gameIds") or []) and cond.get("n"):
+        k, n_teams = s["gameIds"].index(gid), len(ids)
+        side = k * 2 + (1 if home_won else 0)
+        if cond["n"][side] < 500:
+            return None
+        for i, tid in enumerate(ids):
+            before, after = tot["appear"][i] / tot["nSims"], cond["appear"][side * n_teams + i] / cond["n"][side]
+            if abs(after - before) >= MOVED_MIN:
+                out[tid] = [sig4(before), sig4(after)]
+        return out
+    return None
+
+
 def fetch_calendar(league, season):
     d = get(f"{SITE}/scoreboard?groups={league['group']}&seasontype=2&week=1&dates={season}&limit=1")
     reg = [c for c in d["leagues"][0]["calendar"] if str(c.get("value")) == "2"][0]
@@ -414,6 +448,7 @@ def main():
     meta = dict(prev["meta"]) if prev else {}
     teams = prev["teams"] if prev else None
     games = {g["id"]: g for g in prev["games"]} if prev else {}
+    was_done = {gid for gid, g in games.items() if g["completed"]}  # before this run's results
     fpi = prev.get("fpi", {}) if prev else {}
     calendar = prev.get("calendar") if prev else None
     cfp = prev.get("cfp") if prev else None
@@ -461,6 +496,11 @@ def main():
                 old = games.get(ng["id"])
                 ng["pHome"] = None if ng["completed"] else (old or {}).get("pHome")
                 ng["predAt"] = (old or {}).get("predAt")
+                # ESPN drops a game's line once it's over: a finished game keeps the last one given
+                if ng["completed"] and old:
+                    for k in ("spread", "overUnder"):
+                        if ng.get(k) is None:
+                            ng[k] = old.get(k)
                 keys = ("date", "completed", "winner", "homeScore", "awayScore", "canceled", "postponed",
                         "timeValid", "tv", "spread", "overUnder")
                 if not old or any(old.get(k) != ng.get(k) for k in keys):
@@ -553,6 +593,17 @@ def main():
             continue
         g.update(completed=True, winner=g["home"] if hs > as_ else g["away"], homeScore=hs, awayScore=as_, pHome=None)
         changed.append(f"game {g.get('awayName')}@{g.get('homeName')} final from its summary")
+
+    # What a result just did to the race: for a game first final this run, each team's odds just
+    # before it and given that result, both from the data published before this run, so games
+    # finishing in the same run don't blur together. Kept with the game for good.
+    if prev:
+        for gid, g in games.items():
+            if gid in was_done or not g["completed"] or g.get("canceled") or g.get("moved") is not None or not g.get("winner"):
+                continue
+            moved = game_moves(prev, gid, g["winner"] == g["home"])
+            if moved is not None:
+                g["moved"] = moved
 
     team_ids = {t["id"] for t in teams}
     for t in teams:

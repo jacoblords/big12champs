@@ -1043,6 +1043,27 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
 });
 
+test("gameday: a finished game keeps what its result did to the race, biggest first, in a line under its chart", async () => {
+  const wk = gameday();
+  const id = (ab) => wk.teams.find((t) => t.abbr === ab).id;
+  const [g, other] = wk.games.filter((x) => x.week === 12);
+  Object.assign(g, { completed: true, winner: g.home, homeScore: 42, awayScore: 32,
+    moved: { [id("HOU")]: [0.2147, 0.01764], [id("BYU")]: [0.1935, 0.3004], [id("ARIZ")]: [0.09481, 0.08811],
+      [id("UTAH")]: [0.922, 0.9246], "999": [0.1, 0.5], [id("TCU")]: ["x", 1] } });
+  other.moved = { [id("BYU")]: [0.1, 0.3] }; // not played yet: not shown
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const card = (gid) => els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${gid}"`));
+  const line = card(g.id).match(/<div class="gc-moved">.*?<\/div><\/div><\/div>/);
+  assert.ok(line, "the line is on the finished card");
+  // HOU -20, BYU +11, ARIZ -1; Utah's 0.3 point rounds to nothing; unknown teams and bad values dropped
+  assert.match(text(line[0]), /^ Title odds HOU &#9660;20 down 20 points BYU &#9650;11 up 11 points ARIZ &#9660;1 down 1 point $/);
+  assert.doesNotMatch(card(other.id), /gc-moved/);
+  // following BYU marks it in the line
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(wk.teams.findIndex((t) => t.abbr === "BYU")) } } : null) } });
+  assert.match(card(g.id), /<span class="mv me"><b>BYU<\/b>/);
+});
+
 test("gameday: live scores every 30 seconds from the live worker while games are under way", async () => {
   const wk = gameday();
   const g = wk.games.filter((x) => x.week === 12)[0];

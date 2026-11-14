@@ -153,6 +153,49 @@ class FetchTests(unittest.TestCase):
         self.assertTrue(site)
         self.assertEqual(self.changed, "changed=true")
 
+    def test_a_game_first_final_keeps_what_its_result_did_to_the_race(self):
+        now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
+        prev = self.fresh_prev(now)
+        pending = [g["id"] for g in prev["games"] if not g["completed"]]
+        g0 = next(g for g in prev["games"] if g["id"] == pending[0])
+        teams = [t["id"] for t in prev["teams"]]
+        # exact odds before the run: the first team 40%, 60% if g0's home team wins, 10% if not;
+        # the second moves a third of a point (not kept); the rest don't move
+        def team(i, tid):
+            p = 0.4 if i == 0 else 0.2
+            games = [{"pH": 0.6, "pA": 0.1} if (i == 0 and k == 0) else {"pH": p + (0.003 if i == 1 else 0), "pA": p} for k in range(len(pending))]
+            return {"id": tid, "p": p, "games": games}
+        prev["exact"] = {"gameIds": pending, "teams": [team(i, tid) for i, tid in enumerate(teams)]}
+        written, _ = self.run_fetch(prev, now, FakeESPN())  # every home team wins
+        g = next(x for x in written["games"] if x["id"] == g0["id"])
+        self.assertTrue(g["completed"])
+        self.assertEqual(g["moved"], {teams[0]: [0.4, 0.6]})
+        # kept as is on later runs, and nothing for a game that was already final
+        again, _ = self.run_fetch(written, now + dt.timedelta(minutes=15), FakeESPN())
+        self.assertEqual(next(x for x in (again or written)["games"] if x["id"] == g0["id"])["moved"], {teams[0]: [0.4, 0.6]})
+        self.assertFalse(any("moved" in x for x in prev["games"] if x["completed"] and x["id"] not in pending))
+
+    def test_game_moves_from_a_simulated_league_and_none_without_a_view(self):
+        prev = {"sim": {"gameIds": ["g1", "g2"], "teamIds": ["a", "b"],
+                        "totals": {"nSims": 1000, "appear": [500, 300],
+                                   # cond: per game, [away wins, home wins] runs, then appearances by team
+                                   "cond": {"n": [600, 400, 300, 700], "appear": [420, 150, 80, 150, 0, 0, 0, 0]}}}}
+        self.assertEqual(F.game_moves(prev, "g1", False), {"a": [0.5, 0.7], "b": [0.3, 0.25]})
+        self.assertIsNone(F.game_moves(prev, "g1", True), "under 500 runs for that result")
+        self.assertIsNone(F.game_moves(prev, "g9", True))
+        self.assertIsNone(F.game_moves({}, "g1", True))
+
+    def test_a_finished_game_keeps_its_last_line(self):
+        # ESPN's scoreboard has no odds for a game that's over
+        now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
+        prev = self.fresh_prev(now)
+        g0 = next(g for g in prev["games"] if g["week"] == 11 and not g["completed"])
+        g0.update(spread="COLO -3.5", overUnder=58.5)
+        written, _ = self.run_fetch(prev, now, FakeESPN())
+        g = next(x for x in written["games"] if x["id"] == g0["id"])
+        self.assertTrue(g["completed"])
+        self.assertEqual((g["spread"], g["overUnder"]), ("COLO -3.5", 58.5))
+
     def test_game_still_in_progress_is_retried_next_run(self):
         now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
         fake = FakeESPN(final=False)
@@ -561,6 +604,19 @@ class FetchTests(unittest.TestCase):
         again, _ = self.run_fetch(written, now, fake)
         self.assertEqual(fake.summaries, [])
         self.assertTrue(all(g["completed"] for g in (again or written)["games"] if g["id"] in {x["id"] for x in done}))
+
+    def test_a_result_from_the_summary_keeps_its_moves_too(self):
+        now = first_kickoff() + dt.timedelta(hours=1)
+        prev = self.fresh_prev(now)
+        pending = [g["id"] for g in prev["games"] if not g["completed"]]
+        teams = [t["id"] for t in prev["teams"]]
+        prev["exact"] = {"gameIds": pending, "teams": [
+            {"id": tid, "p": 0.4 if i == 0 else 0.2, "games": [{"pH": 0.6 if i == 0 else 0.2, "pA": 0.1 if i == 0 else 0.2} for _ in pending]}
+            for i, tid in enumerate(teams)]}
+        written, _ = self.run_fetch(prev, now, FakeESPN(final=False, summary_final=True))
+        done = [g for g in written["games"] if g["id"] in pending and g["completed"]]
+        self.assertTrue(done)
+        self.assertTrue(all(g["moved"] == {teams[0]: [0.4, 0.6]} for g in done))
 
     def test_a_summary_without_a_decided_score_is_not_a_result(self):
         now = first_kickoff() + dt.timedelta(hours=1)
