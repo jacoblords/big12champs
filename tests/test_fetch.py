@@ -598,7 +598,7 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(self.changed, "changed=true")
         g = next(x for x in written["games"] if x["id"] == fake.summaries[0])
         self.assertEqual(g["wp"], {"pts": [[450, 600], [1350, 700], [2250, 900]], "final": False,
-                                   "detail": "3rd 7:30", "homeScore": 24, "awayScore": 10})
+                                   "detail": "3rd 7:30", "homeScore": 24, "awayScore": 10, "state": None})
         # asked again next run while it's on; once ESPN says final, never again
         fake = FakeESPN(final=False, summary_final=True)
         written, _ = self.run_fetch(written, now, fake)

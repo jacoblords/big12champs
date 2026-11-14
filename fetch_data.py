@@ -271,7 +271,9 @@ def fetch_winprob(gid):
     score = {c.get("homeAway"): c.get("score") for c in comp.get("competitors") or []}
     num = lambda v: int(float(v)) if v not in (None, "") else None
     return gid, {"pts": pts, "final": bool(stype.get("completed")), "detail": stype.get("shortDetail"),
-                 "homeScore": num(score.get("home")), "awayScore": num(score.get("away"))}
+                 "homeScore": num(score.get("home")), "awayScore": num(score.get("away")),
+                 # ESPN's "pre", "in" or "post": a game can sit at "pre" past its kickoff time
+                 "state": stype.get("state") or None}
 
 
 def live_url():

@@ -48,7 +48,7 @@ const lib = () => Promise.all([import("../trigger/worker.mjs"), import("../trigg
 const espnSummary = ({ final = false, kick = "2026-11-14T03:15Z", home = "35", away = "26", n = 3 } = {}) => ({
   drives: { previous: [{ plays: Array.from({ length: n }, (_, k) => ({ id: "p" + k, period: { number: 1 + (k % 4) }, clock: { displayValue: "7:30" } })) }] },
   winprobability: Array.from({ length: n }, (_, k) => ({ playId: "p" + k, homeWinPercentage: 0.5 + k / (2 * n) })),
-  header: { competitions: [{ date: kick, status: { type: { completed: final, shortDetail: final ? "Final" : "10:00 - 4th" } },
+  header: { competitions: [{ date: kick, status: { type: { completed: final, state: final ? "post" : "in", shortDetail: final ? "Final" : "10:00 - 4th" } },
     competitors: [{ homeAway: "home", score: home }, { homeAway: "away", score: away }] }] },
 });
 function liveCache({ replies, now }) {
@@ -67,10 +67,10 @@ const ask = (cache, ids) => cache.fetch(new Request("https://live/?ids=" + ids))
 test("slim: ESPN's summary cut to a game card's chart, score and clock, as fetch_data.py stores it", async () => {
   const { slim, WP_POINTS } = await lib();
   assert.deepStrictEqual(slim(espnSummary()), {
-    pts: [[450, 500], [1350, 667], [2250, 833]], final: false, detail: "10:00 - 4th", homeScore: 35, awayScore: 26,
+    pts: [[450, 500], [1350, 667], [2250, 833]], final: false, detail: "10:00 - 4th", homeScore: 35, awayScore: 26, state: "in",
   });
   assert.strictEqual(slim(espnSummary({ n: 500 })).pts.length, WP_POINTS);
-  assert.deepStrictEqual(slim({}), { pts: [], final: false, detail: null, homeScore: null, awayScore: null });
+  assert.deepStrictEqual(slim({}), { pts: [], final: false, detail: null, homeScore: null, awayScore: null, state: null });
 });
 
 test("live ids: only ESPN game ids, at most 24", async () => {

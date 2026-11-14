@@ -1064,6 +1064,27 @@ test("gameday: a finished game keeps what its result did to the race, biggest fi
   assert.match(card(g.id), /<span class="mv me"><b>BYU<\/b>/);
 });
 
+test("gameday: a game past its kickoff time that ESPN hasn't started shows its kickoff, not ESPN's schedule text", async () => {
+  const at = async (wp) => {
+    const wk = gameday();
+    const g = wk.games.filter((x) => x.week === 12)[0];
+    Object.assign(g, { date: "2026-11-20T17:00Z", timeValid: true, wp });
+    const { els } = renderGameday(wk, { Date: clockAt("2026-11-20T17:05Z") });
+    await settle();
+    return { card: els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${g.id}"`)), modes: els.modes.innerHTML };
+  };
+  const pre = { pts: [], final: false, detail: "11/20 - 12:00 PM EST", homeScore: null, awayScore: null, state: "pre" };
+  for (const wp of [pre, { ...pre, state: undefined }]) { // with ESPN's state, and older data without it
+    const { card, modes } = await at(wp);
+    assert.doesNotMatch(card, /class="live"|12:00 PM EST/);
+    assert.match(text(card), /Fri \d+:00 [AP]M/, "its kickoff, in the reader's time");
+    assert.doesNotMatch(modes, /dot/, "nothing is live yet");
+  }
+  const { card, modes } = await at({ ...pre, detail: "14:55 - 1st", homeScore: 0, awayScore: 0, state: "in" });
+  assert.match(card, /<span class="live">14:55 - 1st<\/span>/);
+  assert.match(modes, /dot/);
+});
+
 test("gameday: live scores every 30 seconds from the live worker while games are under way", async () => {
   const wk = gameday();
   const g = wk.games.filter((x) => x.week === 12)[0];
