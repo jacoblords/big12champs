@@ -105,7 +105,10 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     a query, so the link shows only from two hours before kickoff, once the newest match is this
     year's thread rather than last year's.
 
-  Nothing on it is live to the second. It updates with the 15-minute fetch on game days.
+  Nothing on it is live to the second. It updates with the 15-minute fetch on game days, and an
+  open page follows along: it revalidates `page-data.json` every minute while it is on screen
+  (not in a hidden tab, and at once on coming back) and, when a new build is published, redraws
+  in place with the followed team, the slate's scroll and keyboard focus kept.
 - **CFP rankings:** the committee's latest Top 25 (ESPN's `rankings`, the `cfp` entry, not the AP
   poll) goes in `data.cfp` by ESPN team id, and the page puts the rank before a ranked team's
   name: picker, team header, path, standings, rooting guide, and gameday's race and game cards
