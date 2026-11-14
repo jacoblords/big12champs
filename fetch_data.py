@@ -313,6 +313,8 @@ def odds_snapshot(d):
     return None
 
 
+# {game id: {"moved", "spread", "overUnder"}} for games that finished without them (see main)
+BACKFILL = json.loads((HERE / "moves-backfill.json").read_text()) if (HERE / "moves-backfill.json").exists() else {}
 MOVED_MIN = 0.005  # half a point: a smaller move isn't kept with the game
 
 
@@ -496,8 +498,9 @@ def main():
                 old = games.get(ng["id"])
                 ng["pHome"] = None if ng["completed"] else (old or {}).get("pHome")
                 ng["predAt"] = (old or {}).get("predAt")
-                # ESPN drops a game's line once it's over: a finished game keeps the last one given
-                if ng["completed"] and old:
+                # ESPN drops a game's line at kickoff (seen the first time a game is read while it's
+                # still on, at kickoff + 3h): a game under way or over keeps the last one given
+                if old and (ng["completed"] or parse(ng["date"]) <= now):
                     for k in ("spread", "overUnder"):
                         if ng.get(k) is None:
                             ng[k] = old.get(k)
@@ -604,6 +607,18 @@ def main():
             moved = game_moves(prev, gid, g["winner"] == g["home"])
             if moved is not None:
                 g["moved"] = moved
+    # Games that went final before the above existed (or lost their line before it was kept),
+    # recovered from earlier deploys' Pages artifacts into moves-backfill.json. Filled in once;
+    # the published data keeps them from then on.
+    for gid, fix in BACKFILL.items():
+        g = games.get(gid)
+        if not g or not g["completed"] or g.get("canceled"):
+            continue
+        filled = [k for k in ("moved", "spread", "overUnder") if g.get(k) is None and fix.get(k) is not None]
+        for k in filled:
+            g[k] = fix[k]
+        if filled:
+            changed.append(f"game {g.get('awayName')}@{g.get('homeName')}: {', '.join(filled)} from moves-backfill.json")
 
     team_ids = {t["id"] for t in teams}
     for t in teams:

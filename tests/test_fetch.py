@@ -92,6 +92,12 @@ def first_kickoff():
 
 
 class FetchTests(unittest.TestCase):
+    def setUp(self):
+        # the committed moves-backfill.json names real games, which the fixtures hold too
+        patcher = mock.patch.object(F, "BACKFILL", {})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     def run_fetch(self, prev, now, fake, *extra, league_path=""):
         """Returns (data written, or None) and the league's page in the site (always written)."""
         with tempfile.TemporaryDirectory() as tmp:
@@ -185,6 +191,32 @@ class FetchTests(unittest.TestCase):
         self.assertIsNone(F.game_moves(prev, "g9", True))
         self.assertIsNone(F.game_moves({}, "g1", True))
 
+    def test_backfill_fills_a_finished_game_once_and_leaves_the_rest(self):
+        now = first_kickoff() - dt.timedelta(minutes=5)  # nothing due: only the backfill changes
+        prev = self.fresh_prev(now)
+        done = [g for g in prev["games"] if g["completed"]][:3]
+        pending = next(g for g in prev["games"] if not g["completed"])
+        done[1].update(moved={"x": [0.1, 0.2]}, spread="KEEP -1")
+        fix = {"moved": {"t": [0.3, 0.5]}, "spread": "COLO -3.5", "overUnder": 51.5}
+        backfill = {done[0]["id"]: fix, done[1]["id"]: fix, pending["id"]: fix, "nope": fix}
+        with mock.patch.object(F, "BACKFILL", backfill):
+            written, _ = self.run_fetch(prev, now, FakeESPN())
+        by = {g["id"]: g for g in written["games"]}
+        self.assertEqual({k: by[done[0]["id"]].get(k) for k in fix}, fix)
+        self.assertEqual((by[done[1]["id"]]["moved"], by[done[1]["id"]]["spread"], by[done[1]["id"]]["overUnder"]), ({"x": [0.1, 0.2]}, "KEEP -1", 51.5))
+        self.assertNotIn("moved", by[pending["id"]], "not final yet")
+        self.assertEqual(self.changed, "changed=true")
+        # applied: the next run has nothing to fill
+        with mock.patch.object(F, "BACKFILL", backfill):
+            again, _ = self.run_fetch(written, now, FakeESPN())
+        self.assertIsNone(again)
+
+    def test_the_committed_backfill_is_well_formed(self):
+        for gid, fix in json.loads((ROOT / "moves-backfill.json").read_text()).items():
+            self.assertRegex(gid, r"^\d+$")
+            for tid, (before, after) in fix["moved"].items():
+                self.assertTrue(0 <= before <= 1 and 0 <= after <= 1 and abs(after - before) >= F.MOVED_MIN, (gid, tid))
+
     def test_a_finished_game_keeps_its_last_line(self):
         # ESPN's scoreboard has no odds for a game that's over
         now = first_kickoff() + dt.timedelta(hours=3, minutes=5)
@@ -194,6 +226,14 @@ class FetchTests(unittest.TestCase):
         written, _ = self.run_fetch(prev, now, FakeESPN())
         g = next(x for x in written["games"] if x["id"] == g0["id"])
         self.assertTrue(g["completed"])
+        self.assertEqual((g["spread"], g["overUnder"]), ("COLO -3.5", 58.5))
+        # still being played at kickoff + 3h: the scoreboard has no line by then either
+        prev = self.fresh_prev(now)
+        g0 = next(g for g in prev["games"] if g["id"] == g0["id"])
+        g0.update(spread="COLO -3.5", overUnder=58.5)
+        written, _ = self.run_fetch(prev, now, FakeESPN(final=False))
+        g = next(x for x in written["games"] if x["id"] == g0["id"])
+        self.assertFalse(g["completed"])
         self.assertEqual((g["spread"], g["overUnder"]), ("COLO -3.5", 58.5))
 
     def test_game_still_in_progress_is_retried_next_run(self):

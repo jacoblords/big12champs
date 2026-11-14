@@ -100,7 +100,9 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     under its chart with each team it moved by a point or more ("BYU ▲11 · HOU ▼20"), measured when
     it went final as the odds given that result minus the odds just before, from the data published
     before it, so games ending together don't blur; a ticker when the line doesn't fit. It also keeps
-    its last spread and over/under, which ESPN drops once a game is over. Once a game kicks off, its card
+    its last spread and over/under, which ESPN drops at kickoff. Games that finished before this
+    existed were filled in from earlier deploys' Pages artifacts through
+    [`moves-backfill.json`](moves-backfill.json), applied once by the fetcher. Once a game kicks off, its card
     shows ESPN's clock, score and in-game win-probability chart. Links go to ESPN Gamecast,
     r/CFB and X; nothing is embedded. r/CFB's game threads are posted by u/CFB_Referee as
     "[Game Thread] BYU @ Utah (12:00 PM ET)", with full school names where ESPN's short names
