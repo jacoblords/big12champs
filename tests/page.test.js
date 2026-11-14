@@ -1043,6 +1043,49 @@ test("gameday: the slate with kickoff, TV, line and what each game does to the r
   assert.match(els.leagues.innerHTML, /href="\.\/" aria-current="page"/);
 });
 
+test("gameday: live scores every 30 seconds from the live worker while games are under way", async () => {
+  const wk = gameday();
+  const g = wk.games.filter((x) => x.week === 12)[0];
+  Object.assign(g, { date: "2026-11-20T17:00Z", timeValid: true });
+  const asked = [], timers = [];
+  let reply = { [g.id]: { pts: [[0, 500], [900, 700]], final: false, detail: "0:00 - 1st", homeScore: 14, awayScore: 3 } };
+  const saved = gamedayScripts.slice();
+  gamedayScripts.splice(0, gamedayScripts.length, ...saved.map((src) => src.replace('/*__LIVE__*/""', '"https://live.example/"')));
+  let r;
+  try {
+    r = renderGameday(wk, {
+      Date: clockAt(FRIDAY_WK12),
+      fetch: async (url) => {
+        if (url.startsWith("https://live.example/")) { asked.push(url); return { ok: true, json: async () => JSON.parse(JSON.stringify(reply)) }; }
+        return { ok: true, json: async () => JSON.parse(JSON.stringify(wk)) };
+      },
+      setTimeout: (fn, ms) => { if (ms === 30e3 || ms === 60e3) { timers.push({ fn, ms }); return timers.length; } const t = setTimeout(fn, ms); t.unref(); return t; },
+    });
+  } finally { gamedayScripts.splice(0, gamedayScripts.length, ...saved); }
+  const { els } = r;
+  await settle();
+  // asked at once, for the one game under way, and its card shows the score and clock
+  assert.deepStrictEqual(asked, [`https://live.example/live?ids=${g.id}`]);
+  const card = () => els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${g.id}"`));
+  assert.match(card(), /0:00 - 1st/);
+  assert.match(text(card()), /14/);
+  // the next ask in 30 seconds; a malformed reply is ignored
+  const next = () => { const i = timers.findIndex((x) => x.ms === 30e3); return timers.splice(i, 1)[0].fn; };
+  reply = { [g.id]: { pts: "<b>", final: false, detail: "<script>", homeScore: 99, awayScore: 0 } };
+  next()();
+  await settle();
+  assert.strictEqual(asked.length, 2);
+  assert.doesNotMatch(card(), /99|script/);
+  // ESPN calls it final: the card says so, and the game isn't asked about again
+  reply = { [g.id]: { pts: [[0, 500], [900, 700], [3600, 1000]], final: true, detail: "Final", homeScore: 28, awayScore: 10 } };
+  next()();
+  await settle();
+  assert.match(card(), /Final/);
+  next()();
+  await settle();
+  assert.strictEqual(asked.length, 3, "nothing under way: no ask");
+});
+
 test("gameday: an open page checks for new data every minute and redraws with it, keeping the followed team", async () => {
   const wk = gameday();
   let served = wk, fetches = 0;

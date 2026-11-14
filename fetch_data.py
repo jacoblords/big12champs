@@ -274,6 +274,19 @@ def fetch_winprob(gid):
                  "homeScore": num(score.get("home")), "awayScore": num(score.get("away"))}
 
 
+def live_url():
+    """The live-scores worker the gameday pages poll (trigger/worker.mjs), from LIVE_URL: an https
+    origin such as https://titlepaths-trigger.example.workers.dev/. Unset or malformed: none."""
+    url = (os.environ.get("LIVE_URL") or "").strip()
+    if not url:
+        return ""
+    url = url.rstrip("/") + "/"
+    if not re.fullmatch(r"https://[a-z0-9][a-z0-9.-]*[a-z0-9](:\d+)?/", url):
+        print(f"LIVE_URL {url!r} isn't an https origin; live scores are off")
+        return ""
+    return url
+
+
 def current_week(calendar, now):
     """The regular-season week (ESPN's calendar, Monday to Monday) that now falls in, if any."""
     for c in calendar or []:
@@ -575,6 +588,7 @@ def main():
                 data.pop("exact", None)
     payload = json.dumps(data, separators=(",", ":"))
     tpl = ((HERE / "app.html").read_text().replace("/*__ENGINE__*/", (HERE / "engine.js").read_text())
+           .replace('/*__LIVE__*/""', json.dumps(live_url()), 1)
            .replace("<title>Title Paths</title>", f"<title>{league['name']} Title Paths</title>", 1))
     # Written every run, changed or not: one deploy carries every league's page, so a run that
     # only changed the SEC still has to put the Big 12 page in the site.

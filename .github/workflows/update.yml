@@ -39,6 +39,8 @@ jobs:
     env:
       # exact.js skips (and the page uses simulation) when enumerating would take longer
       EXACT_BUDGET_SECONDS: "180"
+      # the live-scores worker the gameday pages poll (trigger/README.md); unset: no live scores
+      LIVE_URL: ${{ vars.LIVE_URL }}
       PUBLISHED: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
       # Pushes and "Run workflow" clicks rebuild; schedules and the trigger worker
       # (force=false) deploy only on changed data. Dispatch inputs arrive as strings.
