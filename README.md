@@ -168,6 +168,14 @@ to `logos/<hash>.png` so a deploy adds tens of KB, not hundreds, and `odds.jsonl
 title-game odds change, for trending a team across the season. Each deploy's Pages artifact is
 also kept 90 days as a second copy.
 
+The team page charts that trend. Before each deploy the update job reads `odds.jsonl` from
+`data-history`, adds the odds it's about to publish (the archive job records them only after the
+deploy), and writes each league's `trend.json` beside its `data.json` (`archive.py trend`). Each
+file is one league only, a few KB by season's end: a time for every change, each team's odds in
+tenths of a point, and no team that was at 0 throughout. The week's starting odds (`baseline`) go
+first when they're older than the log. The log began on 2026-11-15, partway through week 11, so the
+stretch from week 11's start to then is marked unrecorded, and the chart draws it dashed.
+
 To undo a bad deploy, find the last good commit on `data-history` and run the workflow by hand
 with that commit in **restore**: every league starts from that copy instead of the published one
 and is redeployed. Or locally:
