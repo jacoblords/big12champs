@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-15T04:16Z",
+ "fetchedAt": "2026-11-15T04:31Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-14T19:01Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-15T01:01Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T04:16Z",
+  "checkedAt": "2026-11-15T04:31Z",
   "nextResultCheck": "2026-11-15T05:30Z",
-  "updatedAt": "2026-11-15T04:16Z",
+  "updatedAt": "2026-11-15T04:31Z",
   "espnCalls": 6,
   "cfpCheckedAt": "2026-11-15T01:31Z"
  },
@@ -3428,11 +3428,51 @@
      [
       831,
       818
+     ],
+     [
+      845,
+      910
+     ],
+     [
+      845,
+      908
+     ],
+     [
+      854,
+      939
+     ],
+     [
+      862,
+      940
+     ],
+     [
+      900,
+      940
+     ],
+     [
+      919,
+      936
+     ],
+     [
+      944,
+      946
+     ],
+     [
+      979,
+      953
+     ],
+     [
+      1021,
+      955
+     ],
+     [
+      1053,
+      965
      ]
     ],
     "final": false,
-    "detail": "1:09 - 1st",
-    "homeScore": 7,
+    "detail": "12:27 - 2nd",
+    "homeScore": 21,
     "awayScore": 0,
     "state": "in"
    }
@@ -3572,7 +3612,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-15T04:16Z",
+   "predAt": "2026-11-15T04:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3600,7 +3640,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-15T04:16Z",
+   "predAt": "2026-11-15T04:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3628,7 +3668,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-15T04:16Z",
+   "predAt": "2026-11-15T04:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3656,7 +3696,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-15T04:16Z",
+   "predAt": "2026-11-15T04:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
