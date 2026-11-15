@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-15T03:27Z",
+ "fetchedAt": "2026-11-15T03:31Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-14T19:01Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-15T01:01Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T03:27Z",
+  "checkedAt": "2026-11-15T03:31Z",
   "nextResultCheck": "2026-11-15T05:30Z",
-  "updatedAt": "2026-11-15T03:27Z",
+  "updatedAt": "2026-11-15T03:31Z",
   "espnCalls": 5,
   "cfpCheckedAt": "2026-11-15T01:31Z"
  },
@@ -3087,10 +3087,30 @@
      [
       938,
       352
+     ],
+     [
+      957,
+      365
+     ],
+     [
+      965,
+      367
+     ],
+     [
+      972,
+      354
+     ],
+     [
+      1012,
+      376
+     ],
+     [
+      1021,
+      392
      ]
     ],
     "final": false,
-    "detail": "14:21 - 2nd",
+    "detail": "12:59 - 2nd",
     "homeScore": 3,
     "awayScore": 7,
     "state": "in"
@@ -3259,7 +3279,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-15T03:27Z",
+   "predAt": "2026-11-15T03:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3287,7 +3307,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-15T03:27Z",
+   "predAt": "2026-11-15T03:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3315,7 +3335,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-15T03:27Z",
+   "predAt": "2026-11-15T03:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3343,7 +3363,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-15T03:27Z",
+   "predAt": "2026-11-15T03:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
