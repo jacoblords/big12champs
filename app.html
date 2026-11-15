@@ -1002,9 +1002,9 @@ const shownRows = (rows) => {
   return me ? top.concat(me) : top;
 };
 // The slate for a picked team: its own game, then the games that move its odds by a point or
-// more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game has no
-// stakes left, so it joins the rest. With no team picked: kickoff order, nothing dimmed.
-// In a past week the finished games that moved it (their recorded result) count as moving it.
+// more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game counts by
+// what its result did (its recorded .moved), or joins the rest when that wasn't recorded. With no
+// team picked: kickoff order, nothing dimmed.
 function slateFor(games, mode) {
   if (focusTeam == null) return { order: games.map((g) => ({ g, dim: false })), note: "" };
   const own = [], moving = [], rest = [];
@@ -1013,18 +1013,19 @@ function slateFor(games, mode) {
     const done = g.completed || (g.wp && g.wp.final);
     const S = !done ? stakesOf(pendingAt.get(g.id)) : null;
     const r = S && S.rows.find((x) => x.i === focusTeam);
-    const m = done && mode === "past" ? movedFor(g, focusTeam) : null;
+    const m = done ? movedFor(g, focusTeam) : null;
     if (r) moving.push({ g, sw: r.sw });
     else if (m && Math.round(Math.abs(m[1] - m[0]) * 100) >= 1) moving.push({ g, sw: Math.abs(m[1] - m[0]) });
     else rest.push(g);
   }
   moving.sort((a, b) => b.sw - a.sw);
   const name = esc(T[focusTeam].short), n = moving.length, more = `${n} game${n === 1 ? "" : "s"}`;
-  const was = mode === "past", wk = mode === "now" ? "this week" : "that week";
+  // in the past tense once every game in the week is over
+  const was = mode === "past" || games.every((g) => g.completed || g.canceled || (g.wp && g.wp.final)), wk = mode === "now" ? "this week" : "that week";
   const move = was ? "moved" : "move";
   const note = own.length
     ? (n ? `${name}: its game first, then the ${more} that ${move} its odds most, biggest first.` : `${name}: its game first. No other game ${move}${was ? "" : "s"} its odds by a point.`)
-    : (n ? `${name} ${was ? "didn't" : "doesn't"} play ${wk}. The ${more} that ${move} its odds come first, biggest first.` : `${name} ${was ? "didn't" : "doesn't"} play ${wk}, and no game ${move}${was ? "" : "s"} its odds by a point.`);
+    : (n ? `${name} ${mode === "past" ? "didn't" : "doesn't"} play ${wk}. The ${more} that ${move} its odds come first, biggest first.` : `${name} ${mode === "past" ? "didn't" : "doesn't"} play ${wk}, and no game ${move}${was ? "" : "s"} its odds by a point.`);
   return { order: [...own.map((g) => ({ g, dim: false })), ...moving.map(({ g }) => ({ g, dim: false })), ...rest.map((g) => ({ g, dim: true }))], note };
 }
 // the week strip: every week with league games, the shown one marked, this week flagged

@@ -1059,9 +1059,11 @@ test("gameday: a finished game keeps what its result did to the race, biggest fi
   // HOU -20, BYU +11, ARIZ -1; Utah's 0.3 point rounds to nothing; unknown teams and bad values dropped
   assert.match(text(line[0]), /^ Title odds HOU &#9660;20 down 20 points BYU &#9650;11 up 11 points ARIZ &#9660;1 down 1 point $/);
   assert.doesNotMatch(card(other.id), /gc-moved/);
-  // following BYU marks it in the line
+  // following BYU marks it in the line, and the game its result moved it by 11 points counts as moving it
   handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(wk.teams.findIndex((t) => t.abbr === "BYU")) } } : null) } });
   assert.match(card(g.id), /<span class="mv me"><b>BYU<\/b>/);
+  assert.doesNotMatch(card(g.id), /class="gc[^"]* dim"/);
+  assert.doesNotMatch(els.gameday.innerHTML, /No other game moves its odds|no game moves its odds/);
 });
 
 test("gameday: a game past its kickoff time that ESPN hasn't started shows its kickoff, not ESPN's schedule text", async () => {
