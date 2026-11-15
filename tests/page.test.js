@@ -1344,6 +1344,23 @@ test("gameday: a game under way shows ESPN's clock, the score and its win-probab
   assert.doesNotMatch(fin, /Title-game odds/);
 });
 
+test("gameday: a live game is never 0% or 100% — ESPN's 999-in-1000 is 99.9%, as on Gamecast; a final shows the result", async () => {
+  const wk = gameday();
+  const [g0, g1] = wk.games.filter((g) => g.week === 12);
+  g0.wp = { pts: [[0, 500], [3000, 999]], final: false, detail: "4th 13:09", homeScore: 42, awayScore: 20 };
+  g1.wp = { pts: [[0, 500], [3000, 1000]], final: false, detail: "4th 0:40", homeScore: 35, awayScore: 3 };
+  const { els } = renderGameday(wk, { Date: clockAt("2026-11-21T08:00Z") });
+  await settle();
+  const card = (g) => els.gameday.innerHTML.split("<article").find((c) => c.includes("gameId/" + g.id));
+  assert.match(card(g0), /ESPN win probability: \w+ 0\.1%, \w+ 99\.9%"/);
+  assert.match(card(g1), /ESPN win probability: \w+ 0\.1%, \w+ 99\.9%"/, "ESPN's own 100% too, until it's over");
+  assert.doesNotMatch(card(g0) + card(g1), /<b>(100|0)%<\/b>/);
+  g1.wp.final = true;
+  const after = renderGameday(wk, { Date: clockAt("2026-11-21T08:00Z") });
+  await settle();
+  assert.match(after.els.gameday.innerHTML.split("<article").find((c) => c.includes("gameId/" + g1.id)), /ESPN win probability: \w+ 0%, \w+ 100%"/);
+});
+
 test("gameday: a picked team's game comes first, then the games that move it, biggest first; the rest dimmed", async () => {
   const wk = gameday();
   const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
