@@ -55,7 +55,7 @@
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-15T07:01Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T07:46Z",
+  "checkedAt": "2026-11-15T07:48Z",
   "nextResultCheck": "2026-11-22T02:00Z",
   "updatedAt": "2026-11-15T07:01Z",
   "espnCalls": 4,
@@ -4079,7 +4079,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-15T07:46Z",
+   "predAt": "2026-11-15T07:48Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4107,7 +4107,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-15T07:46Z",
+   "predAt": "2026-11-15T07:48Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4135,7 +4135,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-15T07:46Z",
+   "predAt": "2026-11-15T07:48Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4163,7 +4163,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-15T07:46Z",
+   "predAt": "2026-11-15T07:48Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4215,7 +4215,7 @@
   }
  },
  "exact": {
-  "key": "ffe4e77208215f5d",
+  "key": "1952f6298a7c4ba9",
   "gameIds": [
    "401860920",
    "401860918",
@@ -4247,12 +4247,6 @@
     },
     "games": [
      {
-      "pH": 1.0000000000000002,
-      "pA": 0.9999999999999991,
-      "needH": false,
-      "needA": false
-     },
-     {
       "pH": 1,
       "pA": 1,
       "needH": false,
@@ -4265,8 +4259,14 @@
       "needA": false
      },
      {
-      "pH": 1.0000000000000002,
-      "pA": 0.9999999999999996,
+      "pH": 1,
+      "pA": 1,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1,
+      "pA": 1,
       "needH": false,
       "needA": false
      }
@@ -4422,7 +4422,7 @@
      },
      {
       "pH": 0.11072969844699998,
-      "pA": 1.0000000000000002,
+      "pA": 1,
       "needH": false,
       "needA": false
      },
@@ -4546,6 +4546,6 @@
     ]
    }
   ],
-  "computedAt": "2026-11-15T07:01Z"
+  "computedAt": "2026-11-15T07:48Z"
  }
 }

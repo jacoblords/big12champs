@@ -54,7 +54,7 @@
   "scheduleCheckedAt": "2026-11-14T16:01Z",
   "fpiCheckedAt": "2026-11-15T04:31Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T07:46Z",
+  "checkedAt": "2026-11-15T07:48Z",
   "nextResultCheck": "2026-11-15T21:00Z",
   "updatedAt": "2026-11-15T04:31Z",
   "espnCalls": 0,
@@ -6844,7 +6844,7 @@
   }
  },
  "exact": {
-  "key": "86f89a705f7176d1",
+  "key": "72f70a73dc8df91e",
   "gameIds": [
    "401856887",
    "401856748",
@@ -6904,19 +6904,19 @@
      },
      {
       "pH": 0.9879018091943882,
-      "pA": 1.0000000000000338,
+      "pA": 1,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.9744596724307171,
-      "pA": 1.0000000000000124,
+      "pA": 1,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.9427780167151394,
-      "pA": 1.0000000000000053,
+      "pA": 1,
       "needH": false,
       "needA": false
      },
@@ -6933,19 +6933,19 @@
       "needA": false
      },
      {
-      "pH": 0.999999999999998,
+      "pH": 1,
       "pA": 0.984647946224326,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.9873957911668085,
-      "pA": 1.0000000000000158,
+      "pA": 1,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 1.0000000000000002,
+      "pH": 1,
       "pA": 0.9868320889577271,
       "needH": false,
       "needA": false
@@ -8365,6 +8365,6 @@
     ]
    }
   ],
-  "computedAt": "2026-11-15T04:31Z"
+  "computedAt": "2026-11-15T07:48Z"
  }
 }
