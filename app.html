@@ -448,6 +448,14 @@ function pct(p, digits) {
   if (p > 0.999) return ">99.9%";
   return (p * 100).toFixed(digits == null ? (p < 0.1 || p > 0.9 ? 1 : 0) : digits) + "%";
 }
+// A team's odds of winning one game, as ESPN's Gamecast shows them: whole percents, one decimal
+// at the ends, and never 0% or 100% until the game is over (a 999-in-1000 favorite is 99.9%,
+// where rounding to whole percents said 100% with half a quarter left). A final shows the result.
+function winPct(p, final) {
+  if (final) return pct(p, 0);
+  p = Math.min(Math.max(p, 0.001), 0.999);
+  return (p * 100).toFixed(p < 0.01 || p > 0.99 ? 1 : 0) + "%";
+}
 // A game "matters" when the two results put the team's odds at least 0.3 apart in log-odds
 // (about 1.5 points for a 93% team, a 35% relative change for a long shot).
 const logit = (p) => { p = Math.min(Math.max(p, 1e-12), 1 - 1e-12); return Math.log(p / (1 - p)); };
@@ -822,9 +830,9 @@ function wpChart(g, a, h) {
   const quarters = [900, 1800, 2700].map((t) => `<line x1="${X(t)}" x2="${X(t)}" y1="0" y2="${H}" class="q"/>`).join("");
   const labels = ["1st", "2nd", "3rd", "4th"].map((q, n) => `<span style="left:${((n * 900 + 450) / tMax * 100).toFixed(1)}%">${q}</span>`).join("")
     + (tMax > 3600 ? `<span style="left:${((3600 + tMax) / 2 / tMax * 100).toFixed(1)}%">OT</span>` : "");
-  const now = pts[pts.length - 1][1] / 1000;
-  const lab = (side, p) => `<div class="wp-lab"><span>${esc(side.abbr)}</span><b>${pct(p, 0)}</b></div>`;
-  return `<div class="wp" role="img" aria-label="ESPN win probability: ${esc(a.abbr)} ${pct(1 - now, 0)}, ${esc(h.abbr)} ${pct(now, 0)}">
+  const now = pts[pts.length - 1][1] / 1000, final = !!(g.completed || g.wp.final);
+  const lab = (side, p) => `<div class="wp-lab"><span>${esc(side.abbr)}</span><b>${winPct(p, final)}</b></div>`;
+  return `<div class="wp" role="img" aria-label="ESPN win probability: ${esc(a.abbr)} ${winPct(1 - now, final)}, ${esc(h.abbr)} ${winPct(now, final)}">
     ${lab(a, 1 - now)}
     <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
       <defs><clipPath id="${id}a"><rect x="0" y="0" width="${W}" height="${mid}"/></clipPath><clipPath id="${id}h"><rect x="0" y="${mid}" width="${W}" height="${mid}"/></clipPath></defs>
@@ -912,7 +920,7 @@ function gameCard(g, top, dim) {
     const won = done && winner === (home ? g.home : g.away), lost = done && winner && !won;
     const score = home ? hs : as;
     const right = (done || started) && score != null ? String(score)
-      : pg && pg.pKnown ? `<span title="ESPN's odds of winning">${pct(home ? pg.pHome : 1 - pg.pHome, 0)}</span>` : "";
+      : pg && pg.pKnown ? `<span title="ESPN's odds of winning">${winPct(home ? pg.pHome : 1 - pg.pHome, false)}</span>` : "";
     return `<div class="gc-team${won ? " won" : lost ? " lost" : ""}">${side.i === undefined ? "<span></span>" : logo(side.i) || "<span></span>"}<span>${rk(side.id)}${esc(side.name)}</span><span class="r">${right}</span></div>`;
   };
   const extra = [g.spread, g.overUnder != null ? "O/U " + g.overUnder : "", g.venue].filter(Boolean).map(esc).join(" · ");
