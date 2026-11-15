@@ -46,7 +46,7 @@ test("the workflow accepts the force input the worker sends", () => {
 // ---- /live: the gameday pages' live scores, one shared copy per game ----
 const lib = () => Promise.all([import("../trigger/worker.mjs"), import("../trigger/live.mjs")]).then(([w, l]) => ({ ...l, LiveCache: w.LiveCache, default: w.default }));
 const espnSummary = ({ final = false, kick = "2026-11-14T03:15Z", home = "35", away = "26", n = 3 } = {}) => ({
-  drives: { previous: [{ plays: Array.from({ length: n }, (_, k) => ({ id: "p" + k, period: { number: 1 + (k % 4) }, clock: { displayValue: "7:30" } })) }] },
+  drives: { previous: [{ plays: Array.from({ length: n }, (_, k) => ({ id: "p" + k, period: { number: 1 + Math.floor((4 * k) / n) }, clock: { displayValue: "7:30" } })) }] },
   winprobability: Array.from({ length: n }, (_, k) => ({ playId: "p" + k, homeWinPercentage: 0.5 + k / (2 * n) })),
   header: { competitions: [{ date: kick, status: { type: { completed: final, state: final ? "post" : "in", shortDetail: final ? "Final" : "10:00 - 4th" } },
     competitors: [{ homeAway: "home", score: home }, { homeAway: "away", score: away }] }] },
@@ -71,6 +71,14 @@ test("slim: ESPN's summary cut to a game card's chart, score and clock, as fetch
   });
   assert.strictEqual(slim(espnSummary({ n: 500 })).pts.length, WP_POINTS);
   assert.deepStrictEqual(slim({}), { pts: [], final: false, detail: null, homeScore: null, awayScore: null, state: null });
+});
+
+test("slim: plays ESPN files out of place are dropped, the same ones fetch_data.py drops", async () => {
+  const { slim, inOrder } = await lib();
+  const games = JSON.parse(require("fs").readFileSync(require("path").join(__dirname, "fixtures/wp-out-of-order.json"), "utf8"));
+  for (const [gid, g] of Object.entries(games)) assert.deepStrictEqual(slim(g.summary).pts, g.pts, gid);
+  assert.deepStrictEqual(inOrder([]), []);
+  assert.deepStrictEqual(inOrder([[0, 1], [900, 2], [3720, 3], [950, 4], [950, 5], [1000, 6]]), [[0, 1], [900, 2], [950, 4], [950, 5], [1000, 6]]);
 });
 
 test("live ids: only ESPN game ids, at most 24", async () => {

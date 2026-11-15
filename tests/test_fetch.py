@@ -690,6 +690,30 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(wp["pts"][0][1], 0)
         self.assertEqual(wp["pts"][-1][1], 998)
 
+    def test_out_of_order_plays_are_dropped(self):
+        """Three real ESPN feeds with plays filed out of place (tests/fixtures/wp-out-of-order.json):
+        the chart keeps the plays in game-time order, drops only the strays, and so doesn't pin
+        a stretch of the game to one stray's time."""
+        games = json.loads((ROOT / "tests" / "fixtures" / "wp-out-of-order.json").read_text())
+        dropped = {}
+        for gid, g in games.items():
+            plays = {p["id"]: p for p in g["summary"]["drives"]["previous"][0]["plays"]}
+            raw = [[F.play_seconds(plays[w["playId"]]), 0] for w in g["summary"]["winprobability"] if w["playId"] in plays]
+            kept = F.in_order(raw)
+            dropped[gid] = len(raw) - len(kept)
+            self.assertEqual([t for t, _ in kept], sorted(t for t, _ in kept), gid)
+            with mock.patch.object(F, "get", lambda url, raw=False, s=g["summary"]: s):
+                _, wp = F.fetch_winprob(gid)
+            self.assertEqual(wp["pts"], g["pts"], gid)
+        self.assertEqual(dropped, {"401856864": 1, "401858224": 6, "401858433": 12})
+        # Utah at Arizona: a 1:52 timeout filed after the 8:06 kickoff once stacked every play
+        # between them at 1:52; now Utah's comeback and Arizona's late lead are spread over the 4th
+        utah = games["401856864"]["pts"]
+        self.assertGreaterEqual(sum(1 for t, _ in utah if 3054 < t < 3488), 10)
+        self.assertEqual(F.in_order([]), [])
+        self.assertEqual(F.in_order([[0, 1], [900, 2], [3720, 3], [950, 4], [950, 5], [1000, 6]]),
+                         [[0, 1], [900, 2], [950, 4], [950, 5], [1000, 6]])
+
 class ScoreboardParsing(unittest.TestCase):
     def test_title_game_and_non_conference_flag(self):
         games = [g for g in FIXTURE["games"] if g["week"] == 11][:2]

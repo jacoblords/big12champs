@@ -15,7 +15,7 @@ Usage:
                         [--force-build] [--github-output]
 Exits 0 either way; writes changed=true|false to $GITHUB_OUTPUT with --github-output.
 """
-import argparse, base64, datetime as dt, hashlib, html, json, os, re, subprocess, sys, time, urllib.error, urllib.request
+import argparse, base64, bisect, datetime as dt, hashlib, html, json, os, re, subprocess, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -242,6 +242,29 @@ def play_seconds(play):
     return (period - 1) * 900 + max(0, 900 - left)
 
 
+def in_order(pts):
+    """The points on the longest run of plays whose game time never goes back. ESPN's feed files
+    a play out of place now and then: a timeout minutes from where it was called, an "End of OT"
+    row in the 1st quarter, a kickoff with the wrong period. Across 449 games of 2026 that was 855
+    of 79,653 plays, 1 to 12 a game, and the longest in-order run left out exactly those. Each
+    one's odds belong to some other moment, and taking the latest time so far instead (as this
+    once did) pinned every play after a stray late one to its time: Utah's comeback at Arizona
+    drew as one vertical line at 1:52. Dropping a stray play loses nothing the chart shows, since
+    the next play carries the game's state on. trigger/live.mjs's inOrder matches this exactly."""
+    tails, ends, prev = [], [], []
+    for i, (t, _) in enumerate(pts):
+        k = bisect.bisect_right(tails, t)
+        prev.append(ends[k - 1] if k else -1)
+        if k == len(tails):
+            tails.append(t); ends.append(i)
+        else:
+            tails[k], ends[k] = t, i
+    keep, i = [], ends[-1] if ends else -1
+    while i >= 0:
+        keep.append(i); i = prev[i]
+    return [pts[i] for i in reversed(keep)]
+
+
 def fetch_winprob(gid):
     """ESPN's in-game win probability for one game, thinned to WP_POINTS (time, home win odds in
     thousandths) points, plus the game's live score and clock. final: ESPN says the game is over,
@@ -256,13 +279,13 @@ def fetch_winprob(gid):
     for dr in (drives.get("previous") or []) + ([drives["current"]] if drives.get("current") else []):
         for pl in dr.get("plays") or []:
             plays[pl.get("id")] = pl
-    pts, last = [], 0
+    pts = []
     for w in d.get("winprobability") or []:
         pl = plays.get(w.get("playId"))
         if pl is None or w.get("homeWinPercentage") is None:
             continue
-        last = max(last, play_seconds(pl))
-        pts.append([last, round(w["homeWinPercentage"] * 1000)])
+        pts.append([play_seconds(pl), round(w["homeWinPercentage"] * 1000)])
+    pts = in_order(pts)
     if len(pts) > WP_POINTS:
         keep = sorted({round(k * (len(pts) - 1) / (WP_POINTS - 1)) for k in range(WP_POINTS)})
         pts = [pts[k] for k in keep]
