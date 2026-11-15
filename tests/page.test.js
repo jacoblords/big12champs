@@ -1344,8 +1344,18 @@ test("gameday: a past week shows its results, its start-to-end odds and the game
 });
 
 test("gameday: a past week without its recorded odds shows just the games", async () => {
-  const { els } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) }, "#week=10");
+  const { els, handlers } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) }, "#week=10");
   await settle();
+  // a team followed in another week: no race here to unpick it in, so it doesn't apply here
+  const utah = data.teams.findIndex((t) => t.abbr === "UTAH");
+  pickWeek(handlers, 12);
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(utah) } } : null) } });
+  assert.match(els.gameday.innerHTML, /gd-focus/);
+  pickWeek(handlers, 10);
+  assert.doesNotMatch(els.gameday.innerHTML, /gd-focus| mine"| dim"| me"/);
+  pickWeek(handlers, 12);
+  assert.match(els.gameday.innerHTML, new RegExp(`data-rt="${utah}" aria-pressed="true"`), "still followed where there's a race");
+  pickWeek(handlers, 10);
   assert.match(els.lede.innerHTML, /^Week 10: 8 games, all final\. What each result did to the title race\.$/);
   assert.doesNotMatch(els.gameday.innerHTML, /The race|data-rt=/);
   assert.match(els.gameday.innerHTML, /The games/);

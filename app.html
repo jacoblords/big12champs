@@ -1053,6 +1053,11 @@ function renderGameday() {
   // the race: odds now (with this week's start), or a past week's start and end
   const p = mode === "past" ? (PO ? PO.end : null) : W.p, base = mode === "now" ? BASE : mode === "past" && PO ? PO.start : null;
   const wk = mode === "now" ? "this week" : "that week";
+  // A week with no race (a past week whose odds weren't recorded) has nothing to pick a team in,
+  // so nothing to undo a pick with: it shows unfollowed. The pick is kept for the other weeks.
+  const followed = focusTeam;
+  if (!p) focusTeam = null;
+  try {
   let raceSec = "";
   if (p) {
     const rows = T.map((_, i) => ({ i, d: base && base[i] != null ? Math.round((p[i] - base[i]) * 100) : null, p: p[i] }))
@@ -1081,6 +1086,7 @@ function renderGameday() {
   el.innerHTML = `${weekStrip()}${raceSec}
     <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>${gamesIntro}</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
       <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim, mode === "past" && g.completed)).join("")}</div></section>`;
+  } finally { focusTeam = followed; }
   tickers();
   // the shown week's chip in view in the strip
   // (by its own scroll, not scrollIntoView, which would also scroll the page on a redraw)
