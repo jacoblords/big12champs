@@ -158,6 +158,25 @@ unlimited Actions minutes.
 Requests run at most 4 at a time and back off on 429/5xx. ESPN's API is undocumented and
 public; it publishes no rate limits and sends `Cache-Control: max-age=1`, so caching is ours.
 
+## Data history and restoring
+
+The published `data.json` files are the only copy of what ESPN can't give again: each finished
+game's `moved` odds and last line, the week's starting odds, FPI as of each run. So after every
+deploy the workflow's `archive` job commits all five to the `data-history` branch
+([`archive.py`](archive.py)): `<league>/data.json` one key per line, with the inlined logos moved
+to `logos/<hash>.png` so a deploy adds tens of KB, not hundreds, and `odds.jsonl`, a line per league each time its
+title-game odds change, for trending a team across the season. Each deploy's Pages artifact is
+also kept 90 days as a second copy.
+
+To undo a bad deploy, find the last good commit on `data-history` and run the workflow by hand
+with that commit in **restore**: every league starts from that copy instead of the published one
+and is redeployed. Or locally:
+
+```bash
+git fetch origin data-history && mkdir -p /tmp/h && git archive <commit> | tar -x -C /tmp/h
+python3 archive.py restore /tmp/h restored      # restored/<league path>/data.json, as published
+```
+
 ## Tests and CI
 
 ```bash
@@ -193,6 +212,7 @@ python3 -m unittest discover -s tests       # fetcher caching rules against a fa
 - `tests/page.test.js`: renders every team from `app.html` against a stub DOM, including
   what-ifs, the simulation fallback and escaping of ESPN-supplied text.
 - `tests/test_fetch.py`: which ESPN calls happen when, using a fake ESPN.
+- `tests/test_archive.py`: history copies restore byte for byte, and the odds log.
 
 `.github/workflows/ci.yml` runs all of this on every pull request, then builds the site
 offline from each league's season snapshot and checks it.
