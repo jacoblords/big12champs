@@ -808,6 +808,12 @@ function pastOdds(w) {
   if (!end && !P.length) { const seeds = finalSeeds(); end = T.map((_, i) => (seeds.includes(i) ? 1 : 0)); }
   return start && end ? { start, end } : null;
 }
+// why a past week has no race: the odds weren't kept week by week before the first recorded week
+function untracked(w) {
+  const kept = Object.keys(DATA.weekStarts || {}).map(Number).concat(DATA.baseline ? [DATA.baseline.week] : []);
+  const from = kept.length ? Math.min(...kept) : null;
+  return from != null && w < from ? ` Title odds weren't tracked week by week until week ${from}, so this week shows its results only.` : "";
+}
 function showWeek(w, write) {
   if (w === viewWeek) return;
   viewWeek = w;
@@ -1048,7 +1054,8 @@ function renderGameday() {
   $("lede").innerHTML = !n ? `No ${esc(LG.name)} games to show this week.`
     : mode === "now" ? `Week ${viewWeek}: ${nG}${!left ? ", all final" : left < n ? `, ${left} still to play` : ""}. What each result does to the title race, and how it has moved this week.`
     : mode === "ahead" ? `Week ${viewWeek}: ${nG}, from ${firstDay}. What each result would do to the title race as it stands now.`
-    : `Week ${viewWeek}: ${nG}${left ? `, ${n - left} final` : ", all final"}. What each result did to the title race${PO ? ", and how it moved that week" : ""}.`;
+    : `Week ${viewWeek}: ${nG}${left ? `, ${n - left} final` : ", all final"}. What each result did to the title race${PO ? ", and how it moved that week" : ""}.`
+      + (PO ? "" : untracked(viewWeek));
   const el = $("gameday");
   if (!n || (mode !== "past" && !W)) { el.innerHTML = n ? weekStrip() : ""; return; }
   // the race: odds now (with this week's start), or a past week's start and end
