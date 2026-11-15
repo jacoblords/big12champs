@@ -1524,3 +1524,76 @@ test("gameday: the r/CFB link: that account's game threads, every word required,
   g.timeValid = false;
   assert.doesNotMatch(await at("2026-11-21T04:00Z"), /reddit/);
 });
+
+// ---- The season's odds chart (trend.json) ----
+function trendFor(d) {
+  const t0 = Math.floor(Date.parse("2026-11-13T10:16Z") / 60e3);
+  return { t: [t0, t0 + 2400, t0 + 2500], teams: Object.fromEntries(d.teams.map((t, k) => [t.id, [[415, 1, 652], [300, 500, 30], [200, 200, 200], [210, 210, 210], [10, 10, 10]][k] || [5, 5, 5]])) };
+}
+const fetchWith = (d, trend, asked) => async (url) => {
+  if (asked) asked.push(url);
+  return url === "trend.json" ? (trend === undefined ? { ok: false, json: async () => null } : { ok: true, json: async () => trend }) : { ok: true, json: async () => d };
+};
+
+test("team page: the season's odds chart from trend.json, under the hero", async () => {
+  const t = data.teams[0];
+  const asked = [];
+  const { els, handlers } = render(data, "#" + t.abbr.toLowerCase(), { fetch: fetchWith(data, trendFor(data), asked), Date: clockAt("2026-11-16T12:00Z") });
+  await settle(); await settle();
+  assert.deepEqual(asked, ["page-data.json", "trend.json"]);
+  const html = els.team.innerHTML;
+  assert.ok(html.indexOf('class="panel trend"') > html.indexOf('class="facts"') && html.indexOf('class="panel trend"') < html.indexOf('class="cols"'));
+  assert.match(html, new RegExp(`aria-label="${t.short}: 42% on Fri, Nov 13, \\d+:16 [AP]M, 65% now"`));
+  // the picked team as steps in its color, every other team that ever had odds in grey behind it
+  assert.equal((html.match(/class="o"/g) || []).length, data.teams.length - 1);
+  assert.match(html, /<path d="M0,[\d.]+H[\d.]+V[\d.]+H[\d.]+V[\d.]+H600" class="s"\/>/);
+  // a logo at the start of the picked team's line and of each line at 5% or more now: not team 1's
+  // (3% now) or the 1% teams'; teams 2 and 3 start a point apart, so theirs are nudged apart
+  const logos = [...html.matchAll(/<span class="tl( me)?" style="top:([\d.]+)px" title="([^"]+)">/g)];
+  assert.deepEqual(logos.map((m) => m[3]).sort(), [0, 2, 3].map((k) => data.teams[k].short).sort());
+  assert.equal(logos.find((m) => m[1])[3], t.short);
+  const tops = logos.map((m) => +m[2]).sort((a, b) => a - b);
+  assert.ok(tops.every((y, k) => y >= 9 && y <= 121 && (!k || y - tops[k - 1] >= 18 - 1e-9)), "logos sit inside the chart and don't overlap: " + tops);
+  // hovering reads every team's odds at that moment, the picked team's change, and draws the line
+  // nearest the pointer in its team's color
+  const read = { textContent: "", innerHTML: "" }, mk = () => ({ attrs: {}, setAttribute(k, v) { this.attrs[k] = v; } });
+  const line = mk(), hl = mk();
+  const svg = { getBoundingClientRect: () => ({ left: 0, width: 1000, top: 0, height: 130 }), querySelector: (q) => (q === ".h" ? hl : line) };
+  const plot = { dataset: { trend: "0" }, querySelector: () => svg, parentNode: { querySelector: () => read } };
+  handlers.pointermove({ target: { closest: (q) => (q === "[data-trend]" ? plot : null) }, clientX: 555, clientY: 104 });
+  const r = text(read.innerHTML);
+  assert.match(r, new RegExp(`: ${t.short} 0\\.1% \\(−41 pts\\) ${data.teams[1].short} 50% ${data.teams[3].short} 21% ${data.teams[2].short} 20% ${data.teams[4].short} 1\\.0% `));
+  // the picked team listed though it's under 1%; the other long shots only counted
+  assert.match(r, new RegExp(`${t.short} 0\\.1% ${data.teams.length - 5} more under 1% $`));
+  assert.match(read.innerHTML, new RegExp(`class="tr-t near"><i style="background:${data.teams[2].color}`));
+  assert.match(hl.attrs.d, /^M0,/);
+  assert.equal(hl.attrs.style, `stroke:${data.teams[2].color}`);
+  assert.equal(line.attrs.x1, "333.0");
+  // over the picked team's own line: nothing extra drawn
+  handlers.pointermove({ target: { closest: () => plot }, clientX: 555, clientY: 130 });
+  assert.equal(hl.attrs.d, "");
+});
+
+test("team page: an unrecorded stretch of the chart is drawn dashed and says so", async () => {
+  const t = data.teams[0], tr = { ...trendFor(data), gaps: [0] };
+  const { els, handlers } = render(data, "#" + t.abbr.toLowerCase(), { fetch: fetchWith(data, tr), Date: clockAt("2026-11-16T12:00Z") });
+  await settle(); await settle();
+  const html = els.team.innerHTML;
+  assert.match(html, /<path d="M0,[\d.]+M[\d.]+,[\d.]+H[\d.]+V[\d.]+H600" class="s"\/><path d="M0\.0,[\d.]+L[\d.]+,[\d.]+" class="s gap"\/>/);
+  assert.equal((html.match(/class="o gap"/g) || []).length, data.teams.length - 1);
+  const read = { textContent: "" }, svg = { getBoundingClientRect: () => ({ left: 0, width: 1000 }), querySelector: () => null };
+  handlers.pointermove({ target: { closest: () => ({ dataset: { trend: "0" }, querySelector: () => svg, parentNode: { querySelector: () => read } }) }, clientX: 300 });
+  assert.match(read.textContent, / to .*: changes not recorded \(42% to 0\.1%\)$/);
+});
+
+test("team page: no chart without a usable trend.json; the gameday page doesn't ask for one", async () => {
+  for (const bad of [undefined, { t: [], teams: {} }, { t: [2, 1], teams: {} }, { t: [1], teams: { 9: [1001] } }, data]) {
+    const { els } = render(data, "", { fetch: fetchWith(data, bad) });
+    await settle(); await settle();
+    assert.doesNotMatch(els.team.innerHTML, /trend/);
+  }
+  const asked = [];
+  renderGameday(data, { fetch: fetchWith(data, trendFor(data), asked), Date: clockAt(FRIDAY_WK12) });
+  await settle(); await settle();
+  assert.ok(!asked.includes("trend.json"));
+});

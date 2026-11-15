@@ -85,6 +85,18 @@ jobs:
         run: python fetch_data.py --league big10 --prev "${PREV_ROOT:-$PUBLISHED}/big10/data.json" --site site --artifact '' $FORCE --github-output
       - id: pac12
         run: python fetch_data.py --league pac12 --prev "${PREV_ROOT:-$PUBLISHED}/pac12/data.json" --site site --artifact '' $FORCE --github-output
+      # Each league's trend.json, the team page's season odds chart: data-history's odds.jsonl
+      # plus the odds this deploy is about to publish (archive records them only after it).
+      # No branch yet (a new fork) charts only those; any other failure to read it fails the run.
+      - if: steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true' || steps.big10.outputs.changed == 'true' || steps.pac12.outputs.changed == 'true'
+        run: |
+          : > "$RUNNER_TEMP/odds.jsonl"
+          rc=0; git ls-remote --exit-code --heads origin data-history > /dev/null || rc=$?
+          if [ "$rc" = 0 ]; then
+            git fetch --no-tags --depth=1 origin data-history
+            if git cat-file -e FETCH_HEAD:odds.jsonl; then git show FETCH_HEAD:odds.jsonl > "$RUNNER_TEMP/odds.jsonl"; fi
+          elif [ "$rc" != 2 ]; then exit "$rc"; fi  # 2: no such branch
+          python archive.py trend "$RUNNER_TEMP/odds.jsonl" site
       - if: steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true' || steps.big10.outputs.changed == 'true' || steps.pac12.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
