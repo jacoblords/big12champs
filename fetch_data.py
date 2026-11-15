@@ -41,6 +41,9 @@ SCHEDULE_TTL = dt.timedelta(hours=24)
 # Bumped when fetch_week starts keeping more of the scoreboard: the next run re-reads every week
 # with unplayed games instead of waiting up to SCHEDULE_TTL. 2: TV, spread, venue, TBD times.
 SCHEDULE_FIELDS = 2
+# Bumped when fetch_winprob changes how it reads ESPN's plays: the next run reads every stored
+# chart again, a final one included (otherwise never re-read). 2: drops plays filed out of order.
+WP_RULES = 2
 FPI_TTL = dt.timedelta(hours=6)
 # The CFP committee publishes Tuesday nights from early November; checked as often as FPI.
 CFP_TTL = dt.timedelta(hours=6)
@@ -609,6 +612,24 @@ def main():
             if ended:
                 read_weeks(ended)
 
+    # Charts stored under older WP_RULES, read again once. A game ESPN can't give back keeps its
+    # chart, and the next run tries again.
+    if not args.offline and meta.get("wpRules") != WP_RULES:
+        redo = [gid for gid, g in games.items() if g.get("wp") and gid not in (live if week is not None else ())]
+        if redo:
+            print(f"win probability for {len(redo)} stored charts (rules {meta.get('wpRules')} -> {WP_RULES})")
+        missed = 0
+        for gid, wp in pmap(fetch_winprob, redo):
+            if wp is None:
+                missed += 1
+            elif games[gid]["wp"] != wp:
+                games[gid]["wp"] = wp
+                changed.append(f"win probability {gid} (rules {WP_RULES})")
+        # every stored chart now drawn by these rules (this run's live ones already were); with no
+        # charts yet there's nothing to record, and nothing to save for it
+        if not missed and any(g.get("wp") for g in games.values()):
+            meta["wpRules"] = WP_RULES
+
     # ESPN's game summary calls a game final a minute or more before its scoreboard does (seen from
     # GitHub's runners for 7+ minutes on 2026-11-14). The page shows "Final" from the summary, so
     # take the result from it too rather than show a finished game with the odds not yet moved,
@@ -675,7 +696,7 @@ def main():
 
     # A check that found nothing new still has to be saved, or the next run repeats it.
     checks_moved = not args.offline and (
-        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt", "cfpCheckedAt")))
+        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt", "cfpCheckedAt", "wpRules")))
     build = bool(changed) or checks_moved or args.force_build
     if build:
         out = Path(args.data_out)
