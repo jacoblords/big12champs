@@ -607,6 +607,46 @@ class FetchTests(unittest.TestCase):
         self.run_fetch(written, now, fake)
         self.assertEqual(fake.summaries, [])
 
+    def test_stored_charts_are_read_again_once_when_the_chart_rules_change(self):
+        now = first_kickoff() + dt.timedelta(hours=1)
+        written, _ = self.run_fetch(self.fresh_prev(now), now, FakeESPN(final=False, summary_final=True))
+        # a second chart, on a game from an earlier week: stored charts are redrawn whatever their week
+        first = next(g for g in written["games"] if g.get("wp"))
+        other = next(g for g in written["games"] if g["completed"] and not g.get("wp"))
+        other["wp"] = copy.deepcopy(first["wp"])
+        charted = {g["id"] for g in written["games"] if g.get("wp")}
+        self.assertEqual(len(charted), 2)
+        self.assertEqual(written["meta"]["wpRules"], F.WP_RULES)
+        # drawn by older rules, and final, so the usual rule never reads them again
+        for g in written["games"]:
+            if g.get("wp"):
+                g["wp"]["pts"] = [[3488, 999]]
+        written["meta"]["wpRules"] = F.WP_RULES - 1
+        # ESPN failing for one: the others are redrawn, the rules stay old, and the next run asks again
+        flaky = FakeESPN(final=False, summary_final=True)
+        miss = sorted(charted)[0]
+        with mock.patch.object(F, "fetch_winprob", lambda gid, real=F.fetch_winprob: (gid, None) if gid == miss else real(gid)):
+            again, _ = self.run_fetch(written, now, flaky)
+        self.assertEqual(set(flaky.summaries), charted - {miss})
+        self.assertEqual(again["meta"]["wpRules"], F.WP_RULES - 1)
+        self.assertEqual(self.changed, "changed=true")
+        fake = FakeESPN(final=False, summary_final=True)
+        again, _ = self.run_fetch(again, now, fake)
+        self.assertEqual(set(fake.summaries), charted)
+        self.assertEqual(again["meta"]["wpRules"], F.WP_RULES)
+        self.assertTrue(all(g["wp"]["pts"] != [[3488, 999]] for g in again["games"] if g.get("wp")))
+        # then never again; and old rules with no charts stored ask ESPN nothing and save nothing
+        fake = FakeESPN(final=False, summary_final=True)
+        self.run_fetch(again, now, fake)
+        self.assertEqual(fake.summaries, [])
+        before = first_kickoff() - dt.timedelta(hours=1)
+        bare = self.fresh_prev(before)
+        bare["meta"]["wpRules"] = F.WP_RULES - 1
+        fake = FakeESPN()
+        saved, _ = self.run_fetch(bare, before, fake)
+        self.assertEqual(fake.summaries, [])
+        self.assertIsNone(saved)
+
     def test_a_game_espn_calls_final_has_its_result_read_at_once(self):
         now = first_kickoff() + dt.timedelta(hours=1)  # well before kickoff + 3h
         fake = FakeESPN(final=True, summary_final=True)
