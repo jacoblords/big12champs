@@ -1,0 +1,9808 @@
+{
+ "schema": 3,
+ "league": "acc",
+ "leagues": [
+  {
+   "id": "big12",
+   "name": "Big 12",
+   "path": "",
+   "group": 4,
+   "logo": "logos/c046db7181745023.png",
+   "logoDark": "logos/1570a062998c6a04.png",
+   "sponsor": {
+    "name": "Monster Energy",
+    "logo": "logos/af1676412c64e865.png"
+   }
+  },
+  {
+   "id": "sec",
+   "name": "SEC",
+   "path": "sec/",
+   "group": 8,
+   "logo": "logos/6e4d4654eba315be.png",
+   "logoDark": "logos/6e4d4654eba315be.png"
+  },
+  {
+   "id": "acc",
+   "name": "ACC",
+   "path": "acc/",
+   "group": 1,
+   "logo": "logos/5afb22e530e72b68.png",
+   "logoDark": "logos/ca6afd1f284debd1.png"
+  },
+  {
+   "id": "big10",
+   "name": "Big Ten",
+   "path": "big10/",
+   "group": 5,
+   "logo": "logos/c7eb872c98c059d8.png",
+   "logoDark": "logos/d829bbbe10b6b319.png"
+  },
+  {
+   "id": "pac12",
+   "name": "Pac-12",
+   "path": "pac12/",
+   "group": 9,
+   "lastConfWeek": 12,
+   "logo": "logos/f791cb82b7179397.png",
+   "logoDark": "logos/a561f8576da7470c.png"
+  }
+ ],
+ "season": 2026,
+ "fetchedAt": "2026-11-15T02:31Z",
+ "meta": {
+  "scheduleCheckedAt": "2026-11-14T16:01Z",
+  "fpiCheckedAt": "2026-11-14T22:31Z",
+  "fpiRun": "2026-11-14T09:00Z",
+  "checkedAt": "2026-11-15T02:31Z",
+  "nextResultCheck": "2026-11-15T03:00Z",
+  "updatedAt": "2026-11-15T02:31Z",
+  "espnCalls": 2,
+  "scheduleFields": 2,
+  "cfpCheckedAt": "2026-11-15T01:31Z"
+ },
+ "calendar": [
+  {
+   "week": 1,
+   "start": "2026-08-22T07:00Z",
+   "end": "2026-09-08T06:59Z"
+  },
+  {
+   "week": 2,
+   "start": "2026-09-08T07:00Z",
+   "end": "2026-09-14T06:59Z"
+  },
+  {
+   "week": 3,
+   "start": "2026-09-14T07:00Z",
+   "end": "2026-09-21T06:59Z"
+  },
+  {
+   "week": 4,
+   "start": "2026-09-21T07:00Z",
+   "end": "2026-09-28T06:59Z"
+  },
+  {
+   "week": 5,
+   "start": "2026-09-28T07:00Z",
+   "end": "2026-10-05T06:59Z"
+  },
+  {
+   "week": 6,
+   "start": "2026-10-05T07:00Z",
+   "end": "2026-10-12T06:59Z"
+  },
+  {
+   "week": 7,
+   "start": "2026-10-12T07:00Z",
+   "end": "2026-10-19T06:59Z"
+  },
+  {
+   "week": 8,
+   "start": "2026-10-19T07:00Z",
+   "end": "2026-10-26T06:59Z"
+  },
+  {
+   "week": 9,
+   "start": "2026-10-26T07:00Z",
+   "end": "2026-11-02T07:59Z"
+  },
+  {
+   "week": 10,
+   "start": "2026-11-02T08:00Z",
+   "end": "2026-11-09T07:59Z"
+  },
+  {
+   "week": 11,
+   "start": "2026-11-09T08:00Z",
+   "end": "2026-11-16T07:59Z"
+  },
+  {
+   "week": 12,
+   "start": "2026-11-16T08:00Z",
+   "end": "2026-11-23T07:59Z"
+  },
+  {
+   "week": 13,
+   "start": "2026-11-23T08:00Z",
+   "end": "2026-11-30T07:59Z"
+  },
+  {
+   "week": 14,
+   "start": "2026-11-30T08:00Z",
+   "end": "2026-12-07T07:59Z"
+  },
+  {
+   "week": 15,
+   "start": "2026-12-07T08:00Z",
+   "end": "2026-12-13T07:59Z"
+  }
+ ],
+ "teams": [
+  {
+   "id": "2390",
+   "abbr": "MIA",
+   "name": "Miami Hurricanes",
+   "short": "Miami",
+   "color": "#f47423",
+   "alt": "#035131",
+   "logo": "logos/5f87096e8a2f7ec4.png",
+   "logoDark": "logos/5f87096e8a2f7ec4.png",
+   "fpi": 25.912
+  },
+  {
+   "id": "154",
+   "abbr": "WAKE",
+   "name": "Wake Forest Demon Deacons",
+   "short": "Wake Forest",
+   "color": "#ceb888",
+   "alt": "#2c2a29",
+   "logo": "logos/30e79970a09a54f1.png",
+   "logoDark": "logos/2e2536e6c1ecf742.png",
+   "fpi": 17.844
+  },
+  {
+   "id": "2567",
+   "abbr": "SMU",
+   "name": "SMU Mustangs",
+   "short": "SMU",
+   "color": "#a80000",
+   "alt": "#0033a1",
+   "logo": "logos/af50e47ef263370b.png",
+   "logoDark": "logos/e7f80c2504adc060.png",
+   "fpi": 11.895
+  },
+  {
+   "id": "150",
+   "abbr": "DUKE",
+   "name": "Duke Blue Devils",
+   "short": "Duke",
+   "color": "#00539b",
+   "alt": "#ffffff",
+   "logo": "logos/6cf601582bbafea9.png",
+   "logoDark": "logos/f5b02e8d7a589be0.png",
+   "fpi": 12.409
+  },
+  {
+   "id": "97",
+   "abbr": "LOU",
+   "name": "Louisville Cardinals",
+   "short": "Louisville",
+   "color": "#c9001f",
+   "alt": "#ffffff",
+   "logo": "logos/7d50e503e7a06a47.png",
+   "logoDark": "logos/7d50e503e7a06a47.png",
+   "fpi": 14.876
+  },
+  {
+   "id": "228",
+   "abbr": "CLEM",
+   "name": "Clemson Tigers",
+   "short": "Clemson",
+   "color": "#f56600",
+   "alt": "#ffffff",
+   "logo": "logos/3e4ea44ef0928ef0.png",
+   "logoDark": "logos/43d5833b70c2039e.png",
+   "fpi": 7.15
+  },
+  {
+   "id": "221",
+   "abbr": "PITT",
+   "name": "Pittsburgh Panthers",
+   "short": "Pitt",
+   "color": "#003594",
+   "alt": "#ffb81c",
+   "logo": "logos/d9d5d28605f68ebc.png",
+   "logoDark": "logos/7c1fd9c7fa4e3550.png",
+   "fpi": 7.55
+  },
+  {
+   "id": "259",
+   "abbr": "VT",
+   "name": "Virginia Tech Hokies",
+   "short": "Virginia Tech",
+   "color": "#6a2c3e",
+   "alt": "#cf4520",
+   "logo": "logos/4b5a14d5d45e4040.png",
+   "logoDark": "logos/585659dcdbc5f9b2.png",
+   "fpi": 4.823
+  },
+  {
+   "id": "153",
+   "abbr": "UNC",
+   "name": "North Carolina Tar Heels",
+   "short": "North Carolina",
+   "color": "#7bafd4",
+   "alt": "#13294b",
+   "logo": "logos/f4ef3bb47d4a4600.png",
+   "logoDark": "logos/176b07e1ae9b5431.png",
+   "fpi": 9.26
+  },
+  {
+   "id": "52",
+   "abbr": "FSU",
+   "name": "Florida State Seminoles",
+   "short": "Florida St",
+   "color": "#782f40",
+   "alt": "#ceb888",
+   "logo": "logos/6c260600cc11616a.png",
+   "logoDark": "logos/6c260600cc11616a.png",
+   "fpi": 8.498
+  },
+  {
+   "id": "24",
+   "abbr": "STAN",
+   "name": "Stanford Cardinal",
+   "short": "Stanford",
+   "color": "#8c1515",
+   "alt": "#ffffff",
+   "logo": "logos/50bdbbb4d5e3c76d.png",
+   "logoDark": "logos/79f1bec51971a71e.png",
+   "fpi": -9.996
+  },
+  {
+   "id": "258",
+   "abbr": "UVA",
+   "name": "Virginia Cavaliers",
+   "short": "Virginia",
+   "color": "#232d4b",
+   "alt": "#f84c1e",
+   "logo": "logos/89f41bb84662035d.png",
+   "logoDark": "logos/9dba307cf96d8cdb.png",
+   "fpi": 3.957
+  },
+  {
+   "id": "152",
+   "abbr": "NCSU",
+   "name": "NC State Wolfpack",
+   "short": "NC State",
+   "color": "#cc0000",
+   "alt": "#ffffff",
+   "logo": "logos/5d19554cfa93aae1.png",
+   "logoDark": "logos/5d19554cfa93aae1.png",
+   "fpi": -1.294
+  },
+  {
+   "id": "103",
+   "abbr": "BC",
+   "name": "Boston College Eagles",
+   "short": "Boston College",
+   "color": "#8c2232",
+   "alt": "#dbcca6",
+   "logo": "logos/5eb318a66941c49a.png",
+   "logoDark": "logos/5e2f5a6e800152b1.png",
+   "fpi": -3.703
+  },
+  {
+   "id": "183",
+   "abbr": "SYR",
+   "name": "Syracuse Orange",
+   "short": "Syracuse",
+   "color": "#000e54",
+   "alt": "#ff431b",
+   "logo": "logos/b0683da7845f99a2.png",
+   "logoDark": "logos/eeab9ac512db9431.png",
+   "fpi": 2.11
+  },
+  {
+   "id": "25",
+   "abbr": "CAL",
+   "name": "California Golden Bears",
+   "short": "California",
+   "color": "#041e42",
+   "alt": "#ffc72c",
+   "logo": "logos/f8967741e1b50a8e.png",
+   "logoDark": "logos/b07e654d48956a24.png",
+   "fpi": -7.138
+  },
+  {
+   "id": "59",
+   "abbr": "GT",
+   "name": "Georgia Tech Yellow Jackets",
+   "short": "Georgia Tech",
+   "color": "#b3a369",
+   "alt": "#ffffff",
+   "logo": "logos/a85cc9b41ddb188a.png",
+   "logoDark": "logos/d187456a62830e2a.png",
+   "fpi": -4.45
+  }
+ ],
+ "fpi": {
+  "2": 8.656,
+  "5": -13.804,
+  "6": -10.184,
+  "8": 1.62,
+  "9": 1.696,
+  "12": 12.614,
+  "16": -29.187,
+  "21": -9.418,
+  "23": -11.957,
+  "24": -9.996,
+  "25": -7.138,
+  "26": 12.737,
+  "30": 14.791,
+  "36": -12.975,
+  "38": 0.225,
+  "41": -6.128,
+  "48": -9.608,
+  "52": 8.498,
+  "55": -5.174,
+  "57": 12.458,
+  "58": -3.239,
+  "59": -4.45,
+  "61": 27.159,
+  "62": -9.933,
+  "66": 2.533,
+  "68": 11.742,
+  "77": 12.35,
+  "84": 21.352,
+  "87": 27.245,
+  "96": 11.244,
+  "97": 14.876,
+  "98": -14.865,
+  "99": 22.482,
+  "103": -3.703,
+  "113": -16.551,
+  "120": -3.476,
+  "127": 2.243,
+  "130": 9.18,
+  "135": 1.804,
+  "142": 12.858,
+  "145": 18.301,
+  "150": 12.409,
+  "151": -3.665,
+  "152": -1.294,
+  "153": 9.26,
+  "154": 17.844,
+  "158": 13.141,
+  "164": -5.269,
+  "166": -15.326,
+  "167": 7.812,
+  "183": 2.11,
+  "189": -17.69,
+  "193": -9.069,
+  "194": 24.257,
+  "195": -9.771,
+  "197": 13.816,
+  "201": 13.586,
+  "202": -0.079,
+  "204": 1.622,
+  "213": 12.191,
+  "218": -10.34,
+  "221": 7.55,
+  "228": 7.15,
+  "235": 3.526,
+  "238": 0.699,
+  "239": 11.512,
+  "242": -14.795,
+  "245": 13.018,
+  "248": 11.855,
+  "249": 3.828,
+  "251": 23.857,
+  "252": 14.746,
+  "254": 18.646,
+  "256": 4.831,
+  "258": 3.957,
+  "259": 4.823,
+  "264": 6.582,
+  "265": -9.726,
+  "275": 9.158,
+  "276": -15.671,
+  "277": 2.669,
+  "278": 0.512,
+  "290": -1.984,
+  "295": -14.853,
+  "309": -3.334,
+  "324": -12.13,
+  "326": 2.966,
+  "328": -4.078,
+  "333": 26.016,
+  "338": -11.942,
+  "344": 6.928,
+  "349": -2.8,
+  "356": 7.464,
+  "2005": -3.2,
+  "2006": -23.737,
+  "2026": -10.249,
+  "2032": -10.329,
+  "2050": -21.341,
+  "2084": -11.523,
+  "2116": 3.424,
+  "2117": -11.837,
+  "2132": 4.366,
+  "2199": -18.078,
+  "2226": -6.945,
+  "2229": -12.675,
+  "2247": -7.5,
+  "2294": 14.658,
+  "2305": 4.153,
+  "2306": 1.45,
+  "2309": -23.649,
+  "2335": 4.551,
+  "2348": -0.085,
+  "2390": 25.912,
+  "2393": -16.593,
+  "2426": -4.349,
+  "2429": -21.466,
+  "2433": -24.13,
+  "2439": -4.893,
+  "2440": -9.438,
+  "2449": 0.663,
+  "2459": -21.424,
+  "2483": 19.69,
+  "2509": 1.311,
+  "2534": -20.772,
+  "2567": 11.895,
+  "2572": -14.947,
+  "2579": 14.103,
+  "2623": -15.279,
+  "2628": 7.604,
+  "2633": 18.507,
+  "2636": -2.955,
+  "2638": -24.081,
+  "2641": 15.476,
+  "2649": -3.125,
+  "2653": -10.971,
+  "2655": -9.876,
+  "2711": -2.558,
+  "2751": -11.052
+ },
+ "games": [
+  {
+   "id": "401856766",
+   "week": 1,
+   "date": "2026-08-29T16:00Z",
+   "home": "2628",
+   "away": "153",
+   "homeName": "TCU",
+   "awayName": "UNC",
+   "neutral": true,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "153",
+   "homeScore": 10,
+   "awayScore": 15,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858202",
+   "week": 1,
+   "date": "2026-08-29T19:30Z",
+   "home": "258",
+   "away": "152",
+   "homeName": "UVA",
+   "awayName": "NCSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "258",
+   "homeScore": 34,
+   "awayScore": 8,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858201",
+   "week": 1,
+   "date": "2026-08-29T23:00Z",
+   "home": "24",
+   "away": "62",
+   "homeName": "STAN",
+   "awayName": "HAW",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "24",
+   "homeScore": 37,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401864570",
+   "week": 1,
+   "date": "2026-08-29T23:00Z",
+   "home": "52",
+   "away": "166",
+   "homeName": "FSU",
+   "awayName": "NMSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "52",
+   "homeScore": 34,
+   "awayScore": 17,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858204",
+   "week": 1,
+   "date": "2026-09-03T23:00Z",
+   "home": "154",
+   "away": "2006",
+   "homeName": "WAKE",
+   "awayName": "AKR",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 38,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856776",
+   "week": 1,
+   "date": "2026-09-04T00:00Z",
+   "home": "59",
+   "away": "38",
+   "homeName": "GT",
+   "awayName": "COLO",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "38",
+   "homeScore": 13,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858206",
+   "week": 1,
+   "date": "2026-09-05T01:00Z",
+   "home": "24",
+   "away": "2390",
+   "homeName": "STAN",
+   "awayName": "MIA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 6,
+   "awayScore": 45,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858208",
+   "week": 1,
+   "date": "2026-09-05T16:00Z",
+   "home": "183",
+   "away": "160",
+   "homeName": "SYR",
+   "awayName": "UNH",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "183",
+   "homeScore": 66,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858207",
+   "week": 1,
+   "date": "2026-09-05T16:30Z",
+   "home": "221",
+   "away": "193",
+   "homeName": "PITT",
+   "awayName": "M-OH",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "221",
+   "homeScore": 59,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856777",
+   "week": 1,
+   "date": "2026-09-05T19:30Z",
+   "home": "2132",
+   "away": "103",
+   "homeName": "CIN",
+   "awayName": "BC",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2132",
+   "homeScore": 34,
+   "awayScore": 15,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858209",
+   "week": 1,
+   "date": "2026-09-05T19:30Z",
+   "home": "150",
+   "away": "2655",
+   "homeName": "DUKE",
+   "awayName": "TULN",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 17,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858211",
+   "week": 1,
+   "date": "2026-09-05T23:30Z",
+   "home": "259",
+   "away": "2678",
+   "homeName": "VT",
+   "awayName": "VMI",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 73,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401856660",
+   "week": 1,
+   "date": "2026-09-06T01:40Z",
+   "home": "99",
+   "away": "228",
+   "homeName": "LSU",
+   "awayName": "CLEM",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "99",
+   "homeScore": 51,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858210",
+   "week": 1,
+   "date": "2026-09-06T02:30Z",
+   "home": "25",
+   "away": "26",
+   "homeName": "CAL",
+   "awayName": "UCLA",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 24,
+   "awayScore": 45,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856661",
+   "week": 1,
+   "date": "2026-09-06T23:30Z",
+   "home": "145",
+   "away": "97",
+   "homeName": "MISS",
+   "awayName": "LOU",
+   "neutral": true,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "145",
+   "homeScore": 41,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858212",
+   "week": 1,
+   "date": "2026-09-07T23:30Z",
+   "home": "52",
+   "away": "2567",
+   "homeName": "FSU",
+   "awayName": "SMU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 24,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858213",
+   "week": 2,
+   "date": "2026-09-11T00:00Z",
+   "home": "2390",
+   "away": "50",
+   "homeName": "MIA",
+   "awayName": "FAMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 77,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858215",
+   "week": 2,
+   "date": "2026-09-11T23:00Z",
+   "home": "97",
+   "away": "222",
+   "homeName": "LOU",
+   "awayName": "VILL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "97",
+   "homeScore": 59,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858220",
+   "week": 2,
+   "date": "2026-09-11T23:00Z",
+   "home": "258",
+   "away": "2450",
+   "homeName": "UVA",
+   "awayName": "NORF",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "258",
+   "homeScore": 59,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858222",
+   "week": 2,
+   "date": "2026-09-11T23:00Z",
+   "home": "152",
+   "away": "257",
+   "homeName": "NCSU",
+   "awayName": "RICH",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "152",
+   "homeScore": 73,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858214",
+   "week": 2,
+   "date": "2026-09-11T23:30Z",
+   "home": "103",
+   "away": "164",
+   "homeName": "BC",
+   "awayName": "RUTG",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "103",
+   "homeScore": 28,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858218",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "153",
+   "away": "2193",
+   "homeName": "UNC",
+   "awayName": "ETSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "153",
+   "homeScore": 35,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858221",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "259",
+   "away": "295",
+   "homeName": "VT",
+   "awayName": "ODU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 44,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858224",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "2509",
+   "away": "154",
+   "homeName": "PUR",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 36,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856790",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "221",
+   "away": "2116",
+   "homeName": "PITT",
+   "awayName": "UCF",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "221",
+   "homeScore": 12,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858216",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "183",
+   "away": "25",
+   "homeName": "SYR",
+   "awayName": "CAL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "25",
+   "homeScore": 18,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858217",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "356",
+   "away": "150",
+   "homeName": "ILL",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 27,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858223",
+   "week": 2,
+   "date": "2026-09-12T20:00Z",
+   "home": "2567",
+   "away": "302",
+   "homeName": "SMU",
+   "awayName": "UCD",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 56,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401856681",
+   "week": 2,
+   "date": "2026-09-12T23:00Z",
+   "home": "59",
+   "away": "2633",
+   "homeName": "GT",
+   "awayName": "TENN",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2633",
+   "homeScore": 24,
+   "awayScore": 45,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858219",
+   "week": 2,
+   "date": "2026-09-13T01:30Z",
+   "home": "228",
+   "away": "290",
+   "homeName": "CLEM",
+   "awayName": "GASO",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "228",
+   "homeScore": 22,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858225",
+   "week": 3,
+   "date": "2026-09-17T23:30Z",
+   "home": "221",
+   "away": "183",
+   "homeName": "PITT",
+   "awayName": "SYR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "221",
+   "homeScore": 27,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858226",
+   "week": 3,
+   "date": "2026-09-18T23:30Z",
+   "home": "154",
+   "away": "2390",
+   "homeName": "WAKE",
+   "awayName": "MIA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 20,
+   "awayScore": 33,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858228",
+   "week": 3,
+   "date": "2026-09-19T16:00Z",
+   "home": "59",
+   "away": "2382",
+   "homeName": "GT",
+   "awayName": "MER",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "59",
+   "homeScore": 44,
+   "awayScore": 11,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858229",
+   "week": 3,
+   "date": "2026-09-19T16:00Z",
+   "home": "228",
+   "away": "153",
+   "homeName": "CLEM",
+   "awayName": "UNC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "228",
+   "homeScore": 28,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856695",
+   "week": 3,
+   "date": "2026-09-19T16:45Z",
+   "home": "238",
+   "away": "152",
+   "homeName": "VAN",
+   "awayName": "NCSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "238",
+   "homeScore": 35,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858227",
+   "week": 3,
+   "date": "2026-09-19T18:00Z",
+   "home": "103",
+   "away": "311",
+   "homeName": "BC",
+   "awayName": "ME",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "103",
+   "homeScore": 22,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858230",
+   "week": 3,
+   "date": "2026-09-19T19:30Z",
+   "home": "97",
+   "away": "2567",
+   "homeName": "LOU",
+   "awayName": "SMU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "97",
+   "homeScore": 41,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858233",
+   "week": 3,
+   "date": "2026-09-19T19:30Z",
+   "home": "25",
+   "away": "2681",
+   "homeName": "CAL",
+   "awayName": "WAG",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "25",
+   "homeScore": 49,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858231",
+   "week": 3,
+   "date": "2026-09-19T20:00Z",
+   "home": "150",
+   "away": "24",
+   "homeName": "DUKE",
+   "awayName": "STAN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 35,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856685",
+   "week": 3,
+   "date": "2026-09-19T21:15Z",
+   "home": "333",
+   "away": "52",
+   "homeName": "ALA",
+   "awayName": "FSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "333",
+   "homeScore": 50,
+   "awayScore": 36,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856802",
+   "week": 3,
+   "date": "2026-09-19T23:30Z",
+   "home": "258",
+   "away": "277",
+   "homeName": "UVA",
+   "awayName": "WVU",
+   "neutral": true,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "277",
+   "homeScore": 27,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858232",
+   "week": 3,
+   "date": "2026-09-19T23:30Z",
+   "home": "120",
+   "away": "259",
+   "homeName": "MD",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 26,
+   "awayScore": 35,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858234",
+   "week": 4,
+   "date": "2026-09-26T02:30Z",
+   "home": "25",
+   "away": "228",
+   "homeName": "CAL",
+   "awayName": "CLEM",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "228",
+   "homeScore": 10,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858243",
+   "week": 4,
+   "date": "2026-09-26T16:00Z",
+   "home": "97",
+   "away": "154",
+   "homeName": "LOU",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 27,
+   "awayScore": 30,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858236",
+   "week": 4,
+   "date": "2026-09-26T16:00Z",
+   "home": "221",
+   "away": "2083",
+   "homeName": "PITT",
+   "awayName": "BUCK",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "221",
+   "homeScore": 59,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858242",
+   "week": 4,
+   "date": "2026-09-26T16:00Z",
+   "home": "103",
+   "away": "259",
+   "homeName": "BC",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 14,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858237",
+   "week": 4,
+   "date": "2026-09-26T19:00Z",
+   "home": "52",
+   "away": "2110",
+   "homeName": "FSU",
+   "awayName": "CARK",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "52",
+   "homeScore": 34,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858244",
+   "week": 4,
+   "date": "2026-09-26T19:30Z",
+   "home": "150",
+   "away": "2729",
+   "homeName": "DUKE",
+   "awayName": "W&M",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 62,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858239",
+   "week": 4,
+   "date": "2026-09-26T22:00Z",
+   "home": "258",
+   "away": "48",
+   "homeName": "UVA",
+   "awayName": "DEL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "258",
+   "homeScore": 42,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858238",
+   "week": 4,
+   "date": "2026-09-26T22:30Z",
+   "home": "2390",
+   "away": "2117",
+   "homeName": "MIA",
+   "awayName": "CMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 52,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401864572",
+   "week": 4,
+   "date": "2026-09-26T23:30Z",
+   "home": "152",
+   "away": "2026",
+   "homeName": "NCSU",
+   "awayName": "APP",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "152",
+   "homeScore": 41,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858241",
+   "week": 4,
+   "date": "2026-09-27T01:00Z",
+   "home": "2567",
+   "away": "2623",
+   "homeName": "SMU",
+   "awayName": "MOST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 34,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858240",
+   "week": 4,
+   "date": "2026-09-27T02:30Z",
+   "home": "24",
+   "away": "59",
+   "homeName": "STAN",
+   "awayName": "GT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "24",
+   "homeScore": 34,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858245",
+   "week": 5,
+   "date": "2026-10-02T23:00Z",
+   "home": "259",
+   "away": "221",
+   "homeName": "VT",
+   "awayName": "PITT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "221",
+   "homeScore": 33,
+   "awayScore": 35,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858250",
+   "week": 5,
+   "date": "2026-10-03T16:00Z",
+   "home": "153",
+   "away": "87",
+   "homeName": "UNC",
+   "awayName": "ND",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 26,
+   "awayScore": 37,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858246",
+   "week": 5,
+   "date": "2026-10-03T16:00Z",
+   "home": "2567",
+   "away": "103",
+   "homeName": "SMU",
+   "awayName": "BC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 25,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858251",
+   "week": 5,
+   "date": "2026-10-03T16:00Z",
+   "home": "154",
+   "away": "24",
+   "homeName": "WAKE",
+   "awayName": "STAN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 57,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858252",
+   "week": 5,
+   "date": "2026-10-03T16:00Z",
+   "home": "41",
+   "away": "183",
+   "homeName": "CONN",
+   "awayName": "SYR",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "183",
+   "homeScore": 41,
+   "awayScore": 42,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858247",
+   "week": 5,
+   "date": "2026-10-03T19:30Z",
+   "home": "2439",
+   "away": "25",
+   "homeName": "UNLV",
+   "awayName": "CAL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2439",
+   "homeScore": 39,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858248",
+   "week": 5,
+   "date": "2026-10-03T19:30Z",
+   "home": "152",
+   "away": "97",
+   "homeName": "NCSU",
+   "awayName": "LOU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "152",
+   "homeScore": 31,
+   "awayScore": 28,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858253",
+   "week": 5,
+   "date": "2026-10-03T19:30Z",
+   "home": "52",
+   "away": "258",
+   "homeName": "FSU",
+   "awayName": "UVA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "52",
+   "homeScore": 38,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858249",
+   "week": 5,
+   "date": "2026-10-03T23:30Z",
+   "home": "228",
+   "away": "2390",
+   "homeName": "CLEM",
+   "awayName": "MIA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 13,
+   "awayScore": 41,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858254",
+   "week": 6,
+   "date": "2026-10-09T23:00Z",
+   "home": "97",
+   "away": "52",
+   "homeName": "LOU",
+   "awayName": "FSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "97",
+   "homeScore": 44,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858256",
+   "week": 6,
+   "date": "2026-10-10T16:00Z",
+   "home": "221",
+   "away": "153",
+   "homeName": "PITT",
+   "awayName": "UNC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "153",
+   "homeScore": 17,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858260",
+   "week": 6,
+   "date": "2026-10-10T16:00Z",
+   "home": "152",
+   "away": "154",
+   "homeName": "NCSU",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 14,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858257",
+   "week": 6,
+   "date": "2026-10-10T19:30Z",
+   "home": "87",
+   "away": "24",
+   "homeName": "ND",
+   "awayName": "STAN",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 58,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858255",
+   "week": 6,
+   "date": "2026-10-10T19:30Z",
+   "home": "59",
+   "away": "150",
+   "homeName": "GT",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "59",
+   "homeScore": 28,
+   "awayScore": 25,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858259",
+   "week": 6,
+   "date": "2026-10-10T19:30Z",
+   "home": "25",
+   "away": "259",
+   "homeName": "CAL",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "25",
+   "homeScore": 25,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858258",
+   "week": 6,
+   "date": "2026-10-10T23:30Z",
+   "home": "258",
+   "away": "183",
+   "homeName": "UVA",
+   "awayName": "SYR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "258",
+   "homeScore": 28,
+   "awayScore": 25,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858268",
+   "week": 7,
+   "date": "2026-10-17T16:00Z",
+   "home": "2567",
+   "away": "258",
+   "homeName": "SMU",
+   "awayName": "UVA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 23,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858261",
+   "week": 7,
+   "date": "2026-10-17T16:00Z",
+   "home": "228",
+   "away": "2127",
+   "homeName": "CLEM",
+   "awayName": "CHSO",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "228",
+   "homeScore": 37,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858267",
+   "week": 7,
+   "date": "2026-10-17T16:00Z",
+   "home": "103",
+   "away": "221",
+   "homeName": "BC",
+   "awayName": "PITT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "103",
+   "homeScore": 27,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858264",
+   "week": 7,
+   "date": "2026-10-17T19:30Z",
+   "home": "259",
+   "away": "59",
+   "homeName": "VT",
+   "awayName": "GT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 34,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858266",
+   "week": 7,
+   "date": "2026-10-17T19:30Z",
+   "home": "150",
+   "away": "153",
+   "homeName": "DUKE",
+   "awayName": "UNC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "153",
+   "homeScore": 20,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858263",
+   "week": 7,
+   "date": "2026-10-17T23:00Z",
+   "home": "2390",
+   "away": "52",
+   "homeName": "MIA",
+   "awayName": "FSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 43,
+   "awayScore": 35,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858262",
+   "week": 7,
+   "date": "2026-10-17T23:30Z",
+   "home": "24",
+   "away": "2210",
+   "homeName": "STAN",
+   "awayName": "ELON",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "24",
+   "homeScore": 34,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858265",
+   "week": 7,
+   "date": "2026-10-17T23:30Z",
+   "home": "183",
+   "away": "97",
+   "homeName": "SYR",
+   "awayName": "LOU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "97",
+   "homeScore": 26,
+   "awayScore": 34,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858269",
+   "week": 7,
+   "date": "2026-10-18T02:30Z",
+   "home": "25",
+   "away": "154",
+   "homeName": "CAL",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 7,
+   "awayScore": 41,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858271",
+   "week": 8,
+   "date": "2026-10-23T23:00Z",
+   "home": "258",
+   "away": "150",
+   "homeName": "UVA",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 16,
+   "awayScore": 19,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858272",
+   "week": 8,
+   "date": "2026-10-24T02:30Z",
+   "home": "24",
+   "away": "152",
+   "homeName": "STAN",
+   "awayName": "NCSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "24",
+   "homeScore": 31,
+   "awayScore": 28,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858274",
+   "week": 8,
+   "date": "2026-10-24T16:00Z",
+   "home": "2390",
+   "away": "221",
+   "homeName": "MIA",
+   "awayName": "PITT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 52,
+   "awayScore": 23,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858270",
+   "week": 8,
+   "date": "2026-10-24T16:00Z",
+   "home": "2567",
+   "away": "25",
+   "homeName": "SMU",
+   "awayName": "CAL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 59,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858273",
+   "week": 8,
+   "date": "2026-10-24T19:30Z",
+   "home": "59",
+   "away": "103",
+   "homeName": "GT",
+   "awayName": "BC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "103",
+   "homeScore": 27,
+   "awayScore": 49,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858276",
+   "week": 8,
+   "date": "2026-10-24T23:00Z",
+   "home": "228",
+   "away": "259",
+   "homeName": "CLEM",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 16,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858275",
+   "week": 8,
+   "date": "2026-10-24T23:30Z",
+   "home": "153",
+   "away": "183",
+   "homeName": "UNC",
+   "awayName": "SYR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "183",
+   "homeScore": 30,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858278",
+   "week": 9,
+   "date": "2026-10-31T16:00Z",
+   "home": "183",
+   "away": "2567",
+   "homeName": "SYR",
+   "awayName": "SMU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "183",
+   "homeScore": 30,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858277",
+   "week": 9,
+   "date": "2026-10-31T16:00Z",
+   "home": "152",
+   "away": "25",
+   "homeName": "NCSU",
+   "awayName": "CAL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "152",
+   "homeScore": 31,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858279",
+   "week": 9,
+   "date": "2026-10-31T16:00Z",
+   "home": "150",
+   "away": "103",
+   "homeName": "DUKE",
+   "awayName": "BC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 47,
+   "awayScore": 2,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858283",
+   "week": 9,
+   "date": "2026-10-31T19:15Z",
+   "home": "97",
+   "away": "24",
+   "homeName": "LOU",
+   "awayName": "STAN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "97",
+   "homeScore": 52,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858284",
+   "week": 9,
+   "date": "2026-10-31T19:45Z",
+   "home": "154",
+   "away": "258",
+   "homeName": "WAKE",
+   "awayName": "UVA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 51,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858280",
+   "week": 9,
+   "date": "2026-10-31T23:00Z",
+   "home": "52",
+   "away": "228",
+   "homeName": "FSU",
+   "awayName": "CLEM",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "228",
+   "homeScore": 24,
+   "awayScore": 36,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858282",
+   "week": 9,
+   "date": "2026-10-31T23:30Z",
+   "home": "153",
+   "away": "2390",
+   "homeName": "UNC",
+   "awayName": "MIA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 35,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858281",
+   "week": 9,
+   "date": "2026-10-31T23:30Z",
+   "home": "221",
+   "away": "59",
+   "homeName": "PITT",
+   "awayName": "GT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "221",
+   "homeScore": 34,
+   "awayScore": 11,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858288",
+   "week": 10,
+   "date": "2026-11-07T00:00Z",
+   "home": "2567",
+   "away": "259",
+   "homeName": "SMU",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2567",
+   "homeScore": 51,
+   "awayScore": 28,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858285",
+   "week": 10,
+   "date": "2026-11-07T17:00Z",
+   "home": "183",
+   "away": "228",
+   "homeName": "SYR",
+   "awayName": "CLEM",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "228",
+   "homeScore": 13,
+   "awayScore": 18,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858289",
+   "week": 10,
+   "date": "2026-11-07T17:00Z",
+   "home": "103",
+   "away": "52",
+   "homeName": "BC",
+   "awayName": "FSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "52",
+   "homeScore": 24,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858292",
+   "week": 10,
+   "date": "2026-11-07T17:00Z",
+   "home": "41",
+   "away": "153",
+   "homeName": "CONN",
+   "awayName": "UNC",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "153",
+   "homeScore": 21,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858286",
+   "week": 10,
+   "date": "2026-11-07T17:30Z",
+   "home": "152",
+   "away": "150",
+   "homeName": "NCSU",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 3,
+   "awayScore": 41,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858290",
+   "week": 10,
+   "date": "2026-11-07T20:30Z",
+   "home": "154",
+   "away": "2771",
+   "homeName": "WAKE",
+   "awayName": "MRMK",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 77,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858291",
+   "week": 10,
+   "date": "2026-11-08T00:30Z",
+   "home": "87",
+   "away": "2390",
+   "homeName": "ND",
+   "awayName": "MIA",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 31,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858287",
+   "week": 10,
+   "date": "2026-11-08T00:30Z",
+   "home": "59",
+   "away": "97",
+   "homeName": "GT",
+   "awayName": "LOU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "97",
+   "homeScore": 17,
+   "awayScore": 44,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858293",
+   "week": 11,
+   "date": "2026-11-14T00:00Z",
+   "home": "221",
+   "away": "52",
+   "homeName": "PITT",
+   "awayName": "FSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "52",
+   "homeScore": 10,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": "2026-11-13T10:18Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN",
+   "spread": "PITT -3.5",
+   "overUnder": 52.5,
+   "venue": "Acrisure Stadium",
+   "city": "Pittsburgh, PA",
+   "wp": {
+    "pts": [
+     [
+      4,
+      626
+     ],
+     [
+      11,
+      613
+     ],
+     [
+      75,
+      629
+     ],
+     [
+      108,
+      634
+     ],
+     [
+      162,
+      623
+     ],
+     [
+      191,
+      622
+     ],
+     [
+      209,
+      605
+     ],
+     [
+      252,
+      605
+     ],
+     [
+      252,
+      623
+     ],
+     [
+      272,
+      612
+     ],
+     [
+      296,
+      644
+     ],
+     [
+      354,
+      627
+     ],
+     [
+      383,
+      624
+     ],
+     [
+      423,
+      597
+     ],
+     [
+      456,
+      595
+     ],
+     [
+      494,
+      557
+     ],
+     [
+      518,
+      541
+     ],
+     [
+      558,
+      590
+     ],
+     [
+      626,
+      519
+     ],
+     [
+      641,
+      527
+     ],
+     [
+      669,
+      522
+     ],
+     [
+      675,
+      571
+     ],
+     [
+      679,
+      550
+     ],
+     [
+      685,
+      545
+     ],
+     [
+      717,
+      526
+     ],
+     [
+      795,
+      571
+     ],
+     [
+      825,
+      555
+     ],
+     [
+      900,
+      532
+     ],
+     [
+      907,
+      514
+     ],
+     [
+      960,
+      516
+     ],
+     [
+      982,
+      507
+     ],
+     [
+      1026,
+      484
+     ],
+     [
+      1064,
+      476
+     ],
+     [
+      1095,
+      488
+     ],
+     [
+      1184,
+      399
+     ],
+     [
+      1225,
+      411
+     ],
+     [
+      1296,
+      439
+     ],
+     [
+      1301,
+      418
+     ],
+     [
+      1339,
+      388
+     ],
+     [
+      1355,
+      436
+     ],
+     [
+      1361,
+      411
+     ],
+     [
+      1430,
+      443
+     ],
+     [
+      1466,
+      504
+     ],
+     [
+      1533,
+      520
+     ],
+     [
+      1570,
+      548
+     ],
+     [
+      1613,
+      612
+     ],
+     [
+      1619,
+      600
+     ],
+     [
+      1680,
+      598
+     ],
+     [
+      1691,
+      607
+     ],
+     [
+      1726,
+      613
+     ],
+     [
+      1735,
+      631
+     ],
+     [
+      1748,
+      611
+     ],
+     [
+      1762,
+      610
+     ],
+     [
+      1771,
+      612
+     ],
+     [
+      1784,
+      623
+     ],
+     [
+      1784,
+      622
+     ],
+     [
+      1785,
+      620
+     ],
+     [
+      1800,
+      589
+     ],
+     [
+      1807,
+      596
+     ],
+     [
+      1856,
+      611
+     ],
+     [
+      1893,
+      647
+     ],
+     [
+      1908,
+      640
+     ],
+     [
+      1917,
+      528
+     ],
+     [
+      1945,
+      476
+     ],
+     [
+      1989,
+      436
+     ],
+     [
+      2020,
+      433
+     ],
+     [
+      2051,
+      383
+     ],
+     [
+      2056,
+      378
+     ],
+     [
+      2106,
+      324
+     ],
+     [
+      2140,
+      332
+     ],
+     [
+      2151,
+      373
+     ],
+     [
+      2190,
+      382
+     ],
+     [
+      2231,
+      415
+     ],
+     [
+      2262,
+      456
+     ],
+     [
+      2292,
+      441
+     ],
+     [
+      2332,
+      505
+     ],
+     [
+      2368,
+      488
+     ],
+     [
+      2433,
+      391
+     ],
+     [
+      2437,
+      420
+     ],
+     [
+      2446,
+      444
+     ],
+     [
+      2480,
+      470
+     ],
+     [
+      2521,
+      476
+     ],
+     [
+      2586,
+      491
+     ],
+     [
+      2616,
+      476
+     ],
+     [
+      2691,
+      390
+     ],
+     [
+      2696,
+      316
+     ],
+     [
+      2700,
+      330
+     ],
+     [
+      2713,
+      272
+     ],
+     [
+      2755,
+      248
+     ],
+     [
+      2850,
+      380
+     ],
+     [
+      2859,
+      353
+     ],
+     [
+      2913,
+      383
+     ],
+     [
+      2945,
+      428
+     ],
+     [
+      2984,
+      412
+     ],
+     [
+      2989,
+      379
+     ],
+     [
+      3003,
+      475
+     ],
+     [
+      3035,
+      464
+     ],
+     [
+      3070,
+      345
+     ],
+     [
+      3088,
+      241
+     ],
+     [
+      3131,
+      206
+     ],
+     [
+      3203,
+      242
+     ],
+     [
+      3208,
+      304
+     ],
+     [
+      3213,
+      227
+     ],
+     [
+      3219,
+      196
+     ],
+     [
+      3248,
+      208
+     ],
+     [
+      3288,
+      145
+     ],
+     [
+      3313,
+      154
+     ],
+     [
+      3391,
+      74
+     ],
+     [
+      3430,
+      83
+     ],
+     [
+      3471,
+      55
+     ],
+     [
+      3480,
+      107
+     ],
+     [
+      3491,
+      32
+     ],
+     [
+      3499,
+      70
+     ],
+     [
+      3512,
+      84
+     ],
+     [
+      3528,
+      105
+     ],
+     [
+      3537,
+      104
+     ],
+     [
+      3554,
+      54
+     ],
+     [
+      3554,
+      54
+     ],
+     [
+      3569,
+      1
+     ],
+     [
+      3600,
+      0
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 10,
+    "awayScore": 16
+   },
+   "moved": {}
+  },
+  {
+   "id": "401858296",
+   "week": 11,
+   "date": "2026-11-14T17:00Z",
+   "home": "2390",
+   "away": "150",
+   "homeName": "MIA",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2390",
+   "homeScore": 36,
+   "awayScore": 25,
+   "pHome": null,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ABC",
+   "spread": "MIA -14",
+   "overUnder": 54.5,
+   "venue": "Hard Rock Stadium",
+   "city": "Miami Gardens, FL",
+   "wp": {
+    "pts": [
+     [
+      0,
+      872
+     ],
+     [
+      43,
+      871
+     ],
+     [
+      64,
+      863
+     ],
+     [
+      88,
+      868
+     ],
+     [
+      124,
+      881
+     ],
+     [
+      135,
+      866
+     ],
+     [
+      162,
+      865
+     ],
+     [
+      204,
+      867
+     ],
+     [
+      244,
+      858
+     ],
+     [
+      276,
+      857
+     ],
+     [
+      285,
+      854
+     ],
+     [
+      337,
+      854
+     ],
+     [
+      341,
+      862
+     ],
+     [
+      388,
+      875
+     ],
+     [
+      388,
+      876
+     ],
+     [
+      423,
+      868
+     ],
+     [
+      451,
+      854
+     ],
+     [
+      471,
+      870
+     ],
+     [
+      520,
+      874
+     ],
+     [
+      554,
+      871
+     ],
+     [
+      568,
+      877
+     ],
+     [
+      598,
+      870
+     ],
+     [
+      684,
+      881
+     ],
+     [
+      710,
+      882
+     ],
+     [
+      773,
+      885
+     ],
+     [
+      820,
+      890
+     ],
+     [
+      879,
+      892
+     ],
+     [
+      900,
+      891
+     ],
+     [
+      913,
+      867
+     ],
+     [
+      917,
+      879
+     ],
+     [
+      929,
+      874
+     ],
+     [
+      940,
+      879
+     ],
+     [
+      971,
+      864
+     ],
+     [
+      989,
+      860
+     ],
+     [
+      1028,
+      867
+     ],
+     [
+      1132,
+      830
+     ],
+     [
+      1151,
+      834
+     ],
+     [
+      1188,
+      810
+     ],
+     [
+      1233,
+      847
+     ],
+     [
+      1239,
+      844
+     ],
+     [
+      1279,
+      877
+     ],
+     [
+      1326,
+      888
+     ],
+     [
+      1345,
+      895
+     ],
+     [
+      1399,
+      874
+     ],
+     [
+      1401,
+      886
+     ],
+     [
+      1421,
+      894
+     ],
+     [
+      1453,
+      912
+     ],
+     [
+      1467,
+      915
+     ],
+     [
+      1496,
+      916
+     ],
+     [
+      1588,
+      901
+     ],
+     [
+      1603,
+      821
+     ],
+     [
+      1619,
+      810
+     ],
+     [
+      1667,
+      835
+     ],
+     [
+      1680,
+      832
+     ],
+     [
+      1715,
+      843
+     ],
+     [
+      1735,
+      856
+     ],
+     [
+      1747,
+      871
+     ],
+     [
+      1756,
+      861
+     ],
+     [
+      1759,
+      848
+     ],
+     [
+      1763,
+      855
+     ],
+     [
+      1765,
+      868
+     ],
+     [
+      1800,
+      862
+     ],
+     [
+      1810,
+      893
+     ],
+     [
+      1836,
+      881
+     ],
+     [
+      1921,
+      861
+     ],
+     [
+      1950,
+      898
+     ],
+     [
+      1994,
+      919
+     ],
+     [
+      2029,
+      912
+     ],
+     [
+      2103,
+      887
+     ],
+     [
+      2112,
+      890
+     ],
+     [
+      2120,
+      895
+     ],
+     [
+      2197,
+      910
+     ],
+     [
+      2226,
+      877
+     ],
+     [
+      2282,
+      883
+     ],
+     [
+      2282,
+      885
+     ],
+     [
+      2331,
+      876
+     ],
+     [
+      2369,
+      886
+     ],
+     [
+      2383,
+      901
+     ],
+     [
+      2386,
+      889
+     ],
+     [
+      2419,
+      908
+     ],
+     [
+      2441,
+      901
+     ],
+     [
+      2522,
+      906
+     ],
+     [
+      2537,
+      961
+     ],
+     [
+      2543,
+      959
+     ],
+     [
+      2553,
+      932
+     ],
+     [
+      2617,
+      911
+     ],
+     [
+      2659,
+      892
+     ],
+     [
+      2663,
+      889
+     ],
+     [
+      2700,
+      876
+     ],
+     [
+      2712,
+      905
+     ],
+     [
+      2780,
+      890
+     ],
+     [
+      2827,
+      916
+     ],
+     [
+      2885,
+      928
+     ],
+     [
+      2918,
+      913
+     ],
+     [
+      2946,
+      908
+     ],
+     [
+      2989,
+      939
+     ],
+     [
+      3064,
+      970
+     ],
+     [
+      3101,
+      976
+     ],
+     [
+      3114,
+      982
+     ],
+     [
+      3114,
+      982
+     ],
+     [
+      3166,
+      977
+     ],
+     [
+      3186,
+      992
+     ],
+     [
+      3236,
+      995
+     ],
+     [
+      3300,
+      997
+     ],
+     [
+      3339,
+      999
+     ],
+     [
+      3352,
+      999
+     ],
+     [
+      3367,
+      999
+     ],
+     [
+      3388,
+      999
+     ],
+     [
+      3412,
+      999
+     ],
+     [
+      3436,
+      999
+     ],
+     [
+      3455,
+      999
+     ],
+     [
+      3480,
+      999
+     ],
+     [
+      3485,
+      999
+     ],
+     [
+      3507,
+      999
+     ],
+     [
+      3520,
+      999
+     ],
+     [
+      3528,
+      999
+     ],
+     [
+      3540,
+      999
+     ],
+     [
+      3579,
+      999
+     ],
+     [
+      3580,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 36,
+    "awayScore": 25,
+    "state": "post"
+   },
+   "moved": {
+    "150": [
+     0.01351,
+     0.0001252
+    ],
+    "154": [
+     0.9764,
+     0.9898
+    ]
+   }
+  },
+  {
+   "id": "401858301",
+   "week": 11,
+   "date": "2026-11-14T17:00Z",
+   "home": "2567",
+   "away": "154",
+   "homeName": "SMU",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 7,
+   "awayScore": 49,
+   "pHome": null,
+   "predAt": "2026-11-14T20:46Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPNEWS/Disney+",
+   "spread": "SMU -1.5",
+   "overUnder": 60.5,
+   "venue": "Gerald J. Ford Stadium",
+   "city": "Dallas, TX",
+   "wp": {
+    "pts": [
+     [
+      0,
+      254
+     ],
+     [
+      3,
+      424
+     ],
+     [
+      50,
+      371
+     ],
+     [
+      93,
+      370
+     ],
+     [
+      121,
+      340
+     ],
+     [
+      147,
+      319
+     ],
+     [
+      229,
+      374
+     ],
+     [
+      236,
+      265
+     ],
+     [
+      242,
+      277
+     ],
+     [
+      272,
+      291
+     ],
+     [
+      292,
+      280
+     ],
+     [
+      353,
+      319
+     ],
+     [
+      386,
+      291
+     ],
+     [
+      432,
+      231
+     ],
+     [
+      432,
+      253
+     ],
+     [
+      442,
+      256
+     ],
+     [
+      483,
+      261
+     ],
+     [
+      488,
+      248
+     ],
+     [
+      528,
+      231
+     ],
+     [
+      575,
+      192
+     ],
+     [
+      580,
+      185
+     ],
+     [
+      663,
+      173
+     ],
+     [
+      691,
+      185
+     ],
+     [
+      699,
+      135
+     ],
+     [
+      710,
+      128
+     ],
+     [
+      762,
+      116
+     ],
+     [
+      794,
+      140
+     ],
+     [
+      825,
+      146
+     ],
+     [
+      893,
+      116
+     ],
+     [
+      893,
+      121
+     ],
+     [
+      907,
+      123
+     ],
+     [
+      932,
+      114
+     ],
+     [
+      966,
+      113
+     ],
+     [
+      1042,
+      94
+     ],
+     [
+      1066,
+      53
+     ],
+     [
+      1080,
+      45
+     ],
+     [
+      1117,
+      32
+     ],
+     [
+      1163,
+      22
+     ],
+     [
+      1205,
+      24
+     ],
+     [
+      1210,
+      21
+     ],
+     [
+      1213,
+      25
+     ],
+     [
+      1218,
+      15
+     ],
+     [
+      1221,
+      12
+     ],
+     [
+      1236,
+      12
+     ],
+     [
+      1261,
+      10
+     ],
+     [
+      1279,
+      11
+     ],
+     [
+      1307,
+      10
+     ],
+     [
+      1367,
+      8
+     ],
+     [
+      1401,
+      9
+     ],
+     [
+      1448,
+      10
+     ],
+     [
+      1495,
+      3
+     ],
+     [
+      1529,
+      11
+     ],
+     [
+      1534,
+      6
+     ],
+     [
+      1540,
+      7
+     ],
+     [
+      1636,
+      4
+     ],
+     [
+      1674,
+      5
+     ],
+     [
+      1678,
+      7
+     ],
+     [
+      1684,
+      8
+     ],
+     [
+      1684,
+      8
+     ],
+     [
+      1699,
+      11
+     ],
+     [
+      1704,
+      11
+     ],
+     [
+      1723,
+      8
+     ],
+     [
+      1731,
+      19
+     ],
+     [
+      1741,
+      16
+     ],
+     [
+      1767,
+      12
+     ],
+     [
+      1774,
+      6
+     ],
+     [
+      1789,
+      6
+     ],
+     [
+      1793,
+      7
+     ],
+     [
+      1800,
+      6
+     ],
+     [
+      1805,
+      7
+     ],
+     [
+      1807,
+      8
+     ],
+     [
+      1858,
+      5
+     ],
+     [
+      1880,
+      6
+     ],
+     [
+      1962,
+      3
+     ],
+     [
+      1980,
+      2
+     ],
+     [
+      2074,
+      4
+     ],
+     [
+      2086,
+      4
+     ],
+     [
+      2097,
+      4
+     ],
+     [
+      2126,
+      3
+     ],
+     [
+      2135,
+      2
+     ],
+     [
+      2209,
+      2
+     ],
+     [
+      2225,
+      3
+     ],
+     [
+      2256,
+      2
+     ],
+     [
+      2272,
+      4
+     ],
+     [
+      2299,
+      3
+     ],
+     [
+      2350,
+      4
+     ],
+     [
+      2366,
+      5
+     ],
+     [
+      2430,
+      4
+     ],
+     [
+      2465,
+      1
+     ],
+     [
+      2465,
+      1
+     ],
+     [
+      2512,
+      1
+     ],
+     [
+      2547,
+      1
+     ],
+     [
+      2633,
+      1
+     ],
+     [
+      2684,
+      1
+     ],
+     [
+      2700,
+      1
+     ],
+     [
+      2707,
+      1
+     ],
+     [
+      2749,
+      1
+     ],
+     [
+      2792,
+      1
+     ],
+     [
+      2801,
+      1
+     ],
+     [
+      2823,
+      1
+     ],
+     [
+      2866,
+      1
+     ],
+     [
+      2866,
+      1
+     ],
+     [
+      2914,
+      1
+     ],
+     [
+      2949,
+      1
+     ],
+     [
+      3022,
+      1
+     ],
+     [
+      3029,
+      1
+     ],
+     [
+      3078,
+      1
+     ],
+     [
+      3096,
+      1
+     ],
+     [
+      3131,
+      1
+     ],
+     [
+      3181,
+      1
+     ],
+     [
+      3187,
+      1
+     ],
+     [
+      3217,
+      1
+     ],
+     [
+      3228,
+      1
+     ],
+     [
+      3277,
+      1
+     ],
+     [
+      3329,
+      1
+     ],
+     [
+      3386,
+      1
+     ],
+     [
+      3469,
+      1
+     ],
+     [
+      3475,
+      1
+     ],
+     [
+      3491,
+      1
+     ],
+     [
+      3532,
+      1
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 7,
+    "awayScore": 49
+   },
+   "moved": {
+    "97": [
+     0.07079,
+     0.01011
+    ],
+    "154": [
+     0.7187,
+     0.9764
+    ],
+    "2567": [
+     0.1965,
+     2.112e-09
+    ]
+   }
+  },
+  {
+   "id": "401858300",
+   "week": 11,
+   "date": "2026-11-14T17:00Z",
+   "home": "152",
+   "away": "183",
+   "homeName": "NCSU",
+   "awayName": "SYR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "183",
+   "homeScore": 31,
+   "awayScore": 34,
+   "pHome": null,
+   "predAt": "2026-11-14T20:46Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ACC Network",
+   "spread": "SYR -3",
+   "overUnder": 54.5,
+   "venue": "Carter-Finley Stadium",
+   "city": "Raleigh, NC",
+   "wp": {
+    "pts": [
+     [
+      4,
+      460
+     ],
+     [
+      35,
+      444
+     ],
+     [
+      63,
+      450
+     ],
+     [
+      124,
+      428
+     ],
+     [
+      147,
+      454
+     ],
+     [
+      222,
+      409
+     ],
+     [
+      251,
+      394
+     ],
+     [
+      324,
+      373
+     ],
+     [
+      402,
+      425
+     ],
+     [
+      436,
+      409
+     ],
+     [
+      454,
+      426
+     ],
+     [
+      480,
+      432
+     ],
+     [
+      547,
+      445
+     ],
+     [
+      586,
+      432
+     ],
+     [
+      632,
+      387
+     ],
+     [
+      668,
+      403
+     ],
+     [
+      709,
+      385
+     ],
+     [
+      778,
+      389
+     ],
+     [
+      814,
+      363
+     ],
+     [
+      871,
+      388
+     ],
+     [
+      900,
+      387
+     ],
+     [
+      912,
+      405
+     ],
+     [
+      919,
+      400
+     ],
+     [
+      977,
+      402
+     ],
+     [
+      1045,
+      395
+     ],
+     [
+      1069,
+      366
+     ],
+     [
+      1119,
+      375
+     ],
+     [
+      1126,
+      374
+     ],
+     [
+      1168,
+      400
+     ],
+     [
+      1173,
+      385
+     ],
+     [
+      1241,
+      420
+     ],
+     [
+      1252,
+      420
+     ],
+     [
+      1311,
+      433
+     ],
+     [
+      1375,
+      460
+     ],
+     [
+      1415,
+      455
+     ],
+     [
+      1486,
+      388
+     ],
+     [
+      1499,
+      528
+     ],
+     [
+      1570,
+      492
+     ],
+     [
+      1580,
+      584
+     ],
+     [
+      1592,
+      591
+     ],
+     [
+      1663,
+      596
+     ],
+     [
+      1686,
+      584
+     ],
+     [
+      1731,
+      543
+     ],
+     [
+      1737,
+      524
+     ],
+     [
+      1744,
+      520
+     ],
+     [
+      1748,
+      527
+     ],
+     [
+      1770,
+      507
+     ],
+     [
+      1770,
+      507
+     ],
+     [
+      1778,
+      525
+     ],
+     [
+      1786,
+      536
+     ],
+     [
+      1790,
+      522
+     ],
+     [
+      1792,
+      512
+     ],
+     [
+      1800,
+      499
+     ],
+     [
+      1813,
+      658
+     ],
+     [
+      1835,
+      649
+     ],
+     [
+      1873,
+      721
+     ],
+     [
+      1878,
+      716
+     ],
+     [
+      1896,
+      729
+     ],
+     [
+      1947,
+      769
+     ],
+     [
+      1961,
+      868
+     ],
+     [
+      2040,
+      901
+     ],
+     [
+      2040,
+      902
+     ],
+     [
+      2049,
+      917
+     ],
+     [
+      2063,
+      889
+     ],
+     [
+      2117,
+      890
+     ],
+     [
+      2174,
+      858
+     ],
+     [
+      2213,
+      862
+     ],
+     [
+      2226,
+      842
+     ],
+     [
+      2259,
+      792
+     ],
+     [
+      2278,
+      810
+     ],
+     [
+      2316,
+      799
+     ],
+     [
+      2352,
+      761
+     ],
+     [
+      2371,
+      818
+     ],
+     [
+      2394,
+      809
+     ],
+     [
+      2428,
+      839
+     ],
+     [
+      2436,
+      838
+     ],
+     [
+      2494,
+      861
+     ],
+     [
+      2528,
+      874
+     ],
+     [
+      2559,
+      944
+     ],
+     [
+      2566,
+      949
+     ],
+     [
+      2615,
+      969
+     ],
+     [
+      2655,
+      968
+     ],
+     [
+      2700,
+      971
+     ],
+     [
+      2717,
+      959
+     ],
+     [
+      2757,
+      961
+     ],
+     [
+      2795,
+      952
+     ],
+     [
+      2815,
+      877
+     ],
+     [
+      2875,
+      870
+     ],
+     [
+      2875,
+      872
+     ],
+     [
+      2883,
+      898
+     ],
+     [
+      2948,
+      918
+     ],
+     [
+      2983,
+      932
+     ],
+     [
+      3044,
+      959
+     ],
+     [
+      3055,
+      934
+     ],
+     [
+      3109,
+      960
+     ],
+     [
+      3120,
+      948
+     ],
+     [
+      3185,
+      962
+     ],
+     [
+      3200,
+      951
+     ],
+     [
+      3212,
+      957
+     ],
+     [
+      3224,
+      978
+     ],
+     [
+      3233,
+      984
+     ],
+     [
+      3247,
+      976
+     ],
+     [
+      3284,
+      847
+     ],
+     [
+      3300,
+      793
+     ],
+     [
+      3341,
+      729
+     ],
+     [
+      3388,
+      843
+     ],
+     [
+      3428,
+      664
+     ],
+     [
+      3470,
+      666
+     ],
+     [
+      3486,
+      752
+     ],
+     [
+      3494,
+      642
+     ],
+     [
+      3545,
+      582
+     ],
+     [
+      3545,
+      580
+     ],
+     [
+      3548,
+      491
+     ],
+     [
+      3552,
+      52
+     ],
+     [
+      3556,
+      57
+     ],
+     [
+      3569,
+      198
+     ],
+     [
+      3570,
+      274
+     ],
+     [
+      3578,
+      151
+     ],
+     [
+      3589,
+      1
+     ],
+     [
+      3600,
+      0
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 31,
+    "awayScore": 34
+   },
+   "moved": {}
+  },
+  {
+   "id": "401858297",
+   "week": 11,
+   "date": "2026-11-14T17:30Z",
+   "home": "228",
+   "away": "59",
+   "homeName": "CLEM",
+   "awayName": "GT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "59",
+   "homeScore": 6,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": "2026-11-14T23:57Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": "CLEM -15.5",
+   "overUnder": 47.5,
+   "venue": "Memorial Stadium (Clemson, SC)",
+   "city": "Clemson, SC",
+   "wp": {
+    "pts": [
+     [
+      0,
+      850
+     ],
+     [
+      36,
+      866
+     ],
+     [
+      64,
+      872
+     ],
+     [
+      130,
+      850
+     ],
+     [
+      144,
+      836
+     ],
+     [
+      184,
+      847
+     ],
+     [
+      221,
+      852
+     ],
+     [
+      277,
+      850
+     ],
+     [
+      291,
+      843
+     ],
+     [
+      326,
+      821
+     ],
+     [
+      337,
+      824
+     ],
+     [
+      383,
+      808
+     ],
+     [
+      396,
+      816
+     ],
+     [
+      460,
+      795
+     ],
+     [
+      496,
+      799
+     ],
+     [
+      566,
+      699
+     ],
+     [
+      566,
+      703
+     ],
+     [
+      608,
+      701
+     ],
+     [
+      639,
+      660
+     ],
+     [
+      691,
+      635
+     ],
+     [
+      720,
+      608
+     ],
+     [
+      753,
+      579
+     ],
+     [
+      789,
+      567
+     ],
+     [
+      868,
+      574
+     ],
+     [
+      894,
+      570
+     ],
+     [
+      912,
+      598
+     ],
+     [
+      940,
+      593
+     ],
+     [
+      945,
+      587
+     ],
+     [
+      975,
+      580
+     ],
+     [
+      1017,
+      540
+     ],
+     [
+      1024,
+      547
+     ],
+     [
+      1089,
+      513
+     ],
+     [
+      1121,
+      505
+     ],
+     [
+      1176,
+      502
+     ],
+     [
+      1184,
+      454
+     ],
+     [
+      1258,
+      465
+     ],
+     [
+      1289,
+      502
+     ],
+     [
+      1304,
+      539
+     ],
+     [
+      1348,
+      503
+     ],
+     [
+      1408,
+      605
+     ],
+     [
+      1458,
+      591
+     ],
+     [
+      1500,
+      546
+     ],
+     [
+      1528,
+      584
+     ],
+     [
+      1534,
+      589
+     ],
+     [
+      1575,
+      622
+     ],
+     [
+      1594,
+      628
+     ],
+     [
+      1653,
+      595
+     ],
+     [
+      1661,
+      647
+     ],
+     [
+      1685,
+      681
+     ],
+     [
+      1686,
+      555
+     ],
+     [
+      1729,
+      566
+     ],
+     [
+      1729,
+      565
+     ],
+     [
+      1753,
+      435
+     ],
+     [
+      1753,
+      398
+     ],
+     [
+      1773,
+      429
+     ],
+     [
+      1773,
+      406
+     ],
+     [
+      1780,
+      450
+     ],
+     [
+      1783,
+      453
+     ],
+     [
+      1784,
+      449
+     ],
+     [
+      1800,
+      449
+     ],
+     [
+      1815,
+      430
+     ],
+     [
+      1838,
+      435
+     ],
+     [
+      1910,
+      465
+     ],
+     [
+      1928,
+      465
+     ],
+     [
+      1955,
+      440
+     ],
+     [
+      1974,
+      386
+     ],
+     [
+      1993,
+      359
+     ],
+     [
+      2016,
+      336
+     ],
+     [
+      2041,
+      168
+     ],
+     [
+      2047,
+      160
+     ],
+     [
+      2081,
+      165
+     ],
+     [
+      2118,
+      144
+     ],
+     [
+      2168,
+      136
+     ],
+     [
+      2175,
+      155
+     ],
+     [
+      2253,
+      156
+     ],
+     [
+      2280,
+      153
+     ],
+     [
+      2298,
+      152
+     ],
+     [
+      2315,
+      162
+     ],
+     [
+      2391,
+      123
+     ],
+     [
+      2426,
+      151
+     ],
+     [
+      2468,
+      112
+     ],
+     [
+      2519,
+      128
+     ],
+     [
+      2519,
+      118
+     ],
+     [
+      2556,
+      101
+     ],
+     [
+      2594,
+      99
+     ],
+     [
+      2672,
+      118
+     ],
+     [
+      2700,
+      112
+     ],
+     [
+      2716,
+      101
+     ],
+     [
+      2719,
+      78
+     ],
+     [
+      2741,
+      104
+     ],
+     [
+      2774,
+      98
+     ],
+     [
+      2830,
+      117
+     ],
+     [
+      2882,
+      118
+     ],
+     [
+      2903,
+      101
+     ],
+     [
+      2911,
+      75
+     ],
+     [
+      2974,
+      45
+     ],
+     [
+      2983,
+      50
+     ],
+     [
+      3070,
+      21
+     ],
+     [
+      3111,
+      16
+     ],
+     [
+      3177,
+      10
+     ],
+     [
+      3216,
+      10
+     ],
+     [
+      3225,
+      2
+     ],
+     [
+      3233,
+      4
+     ],
+     [
+      3288,
+      10
+     ],
+     [
+      3310,
+      3
+     ],
+     [
+      3356,
+      4
+     ],
+     [
+      3356,
+      4
+     ],
+     [
+      3363,
+      6
+     ],
+     [
+      3371,
+      2
+     ],
+     [
+      3399,
+      1
+     ],
+     [
+      3406,
+      1
+     ],
+     [
+      3461,
+      1
+     ],
+     [
+      3462,
+      1
+     ],
+     [
+      3483,
+      2
+     ],
+     [
+      3495,
+      2
+     ],
+     [
+      3500,
+      2
+     ],
+     [
+      3509,
+      2
+     ],
+     [
+      3519,
+      1
+     ],
+     [
+      3557,
+      1
+     ],
+     [
+      3600,
+      0
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 6,
+    "awayScore": 20,
+    "state": "post"
+   },
+   "moved": {}
+  },
+  {
+   "id": "401858294",
+   "week": 11,
+   "date": "2026-11-14T20:30Z",
+   "home": "87",
+   "away": "103",
+   "homeName": "ND",
+   "awayName": "BC",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 41,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "NBC",
+   "spread": "ND -29.5",
+   "overUnder": 51.5,
+   "venue": "Notre Dame Stadium",
+   "city": "Notre Dame, IN",
+   "wp": {
+    "pts": [
+     [
+      8,
+      985
+     ],
+     [
+      13,
+      985
+     ],
+     [
+      101,
+      983
+     ],
+     [
+      141,
+      983
+     ],
+     [
+      214,
+      984
+     ],
+     [
+      214,
+      984
+     ],
+     [
+      256,
+      984
+     ],
+     [
+      290,
+      985
+     ],
+     [
+      368,
+      986
+     ],
+     [
+      401,
+      986
+     ],
+     [
+      428,
+      986
+     ],
+     [
+      515,
+      990
+     ],
+     [
+      521,
+      989
+     ],
+     [
+      560,
+      989
+     ],
+     [
+      603,
+      990
+     ],
+     [
+      609,
+      990
+     ],
+     [
+      614,
+      990
+     ],
+     [
+      657,
+      989
+     ],
+     [
+      699,
+      991
+     ],
+     [
+      713,
+      991
+     ],
+     [
+      753,
+      988
+     ],
+     [
+      753,
+      988
+     ],
+     [
+      761,
+      988
+     ],
+     [
+      767,
+      989
+     ],
+     [
+      821,
+      987
+     ],
+     [
+      840,
+      987
+     ],
+     [
+      882,
+      989
+     ],
+     [
+      882,
+      989
+     ],
+     [
+      888,
+      989
+     ],
+     [
+      900,
+      988
+     ],
+     [
+      915,
+      988
+     ],
+     [
+      997,
+      988
+     ],
+     [
+      1034,
+      990
+     ],
+     [
+      1109,
+      991
+     ],
+     [
+      1142,
+      991
+     ],
+     [
+      1188,
+      992
+     ],
+     [
+      1227,
+      992
+     ],
+     [
+      1267,
+      994
+     ],
+     [
+      1272,
+      994
+     ],
+     [
+      1281,
+      994
+     ],
+     [
+      1327,
+      994
+     ],
+     [
+      1327,
+      994
+     ],
+     [
+      1372,
+      994
+     ],
+     [
+      1416,
+      996
+     ],
+     [
+      1481,
+      996
+     ],
+     [
+      1526,
+      997
+     ],
+     [
+      1566,
+      997
+     ],
+     [
+      1648,
+      998
+     ],
+     [
+      1648,
+      998
+     ],
+     [
+      1681,
+      998
+     ],
+     [
+      1681,
+      998
+     ],
+     [
+      1689,
+      999
+     ],
+     [
+      1694,
+      999
+     ],
+     [
+      1705,
+      999
+     ],
+     [
+      1716,
+      999
+     ],
+     [
+      1724,
+      999
+     ],
+     [
+      1730,
+      999
+     ],
+     [
+      1730,
+      999
+     ],
+     [
+      1736,
+      999
+     ],
+     [
+      1742,
+      999
+     ],
+     [
+      1768,
+      999
+     ],
+     [
+      1772,
+      999
+     ],
+     [
+      1786,
+      999
+     ],
+     [
+      1793,
+      999
+     ],
+     [
+      1798,
+      999
+     ],
+     [
+      1807,
+      999
+     ],
+     [
+      1810,
+      999
+     ],
+     [
+      1837,
+      999
+     ],
+     [
+      1880,
+      999
+     ],
+     [
+      1891,
+      999
+     ],
+     [
+      1933,
+      999
+     ],
+     [
+      2007,
+      999
+     ],
+     [
+      2039,
+      999
+     ],
+     [
+      2071,
+      999
+     ],
+     [
+      2083,
+      999
+     ],
+     [
+      2093,
+      999
+     ],
+     [
+      2176,
+      999
+     ],
+     [
+      2229,
+      999
+     ],
+     [
+      2235,
+      999
+     ],
+     [
+      2275,
+      999
+     ],
+     [
+      2331,
+      999
+     ],
+     [
+      2373,
+      999
+     ],
+     [
+      2451,
+      999
+     ],
+     [
+      2489,
+      999
+     ],
+     [
+      2489,
+      999
+     ],
+     [
+      2540,
+      999
+     ],
+     [
+      2576,
+      999
+     ],
+     [
+      2633,
+      999
+     ],
+     [
+      2656,
+      999
+     ],
+     [
+      2711,
+      999
+     ],
+     [
+      2753,
+      999
+     ],
+     [
+      2777,
+      999
+     ],
+     [
+      2787,
+      999
+     ],
+     [
+      2827,
+      999
+     ],
+     [
+      2874,
+      999
+     ],
+     [
+      2878,
+      999
+     ],
+     [
+      2884,
+      999
+     ],
+     [
+      2926,
+      999
+     ],
+     [
+      2996,
+      999
+     ],
+     [
+      3045,
+      999
+     ],
+     [
+      3057,
+      999
+     ],
+     [
+      3057,
+      999
+     ],
+     [
+      3064,
+      999
+     ],
+     [
+      3140,
+      999
+     ],
+     [
+      3151,
+      999
+     ],
+     [
+      3158,
+      999
+     ],
+     [
+      3202,
+      999
+     ],
+     [
+      3249,
+      999
+     ],
+     [
+      3293,
+      999
+     ],
+     [
+      3308,
+      999
+     ],
+     [
+      3313,
+      999
+     ],
+     [
+      3355,
+      999
+     ],
+     [
+      3364,
+      999
+     ],
+     [
+      3373,
+      999
+     ],
+     [
+      3458,
+      999
+     ],
+     [
+      3480,
+      999
+     ],
+     [
+      3487,
+      999
+     ],
+     [
+      3493,
+      999
+     ],
+     [
+      3562,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 41,
+    "awayScore": 7,
+    "state": "post"
+   }
+  },
+  {
+   "id": "401858295",
+   "week": 11,
+   "date": "2026-11-14T20:30Z",
+   "home": "258",
+   "away": "25",
+   "homeName": "UVA",
+   "awayName": "CAL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "258",
+   "homeScore": 36,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": "2026-11-14T23:57Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ACC Network",
+   "spread": "UVA -11.5",
+   "overUnder": 46.5,
+   "venue": "Scott Stadium",
+   "city": "Charlottesville, VA",
+   "wp": {
+    "pts": [
+     [
+      6,
+      876
+     ],
+     [
+      25,
+      872
+     ],
+     [
+      38,
+      881
+     ],
+     [
+      113,
+      887
+     ],
+     [
+      137,
+      886
+     ],
+     [
+      182,
+      866
+     ],
+     [
+      219,
+      902
+     ],
+     [
+      255,
+      898
+     ],
+     [
+      291,
+      909
+     ],
+     [
+      328,
+      948
+     ],
+     [
+      328,
+      913
+     ],
+     [
+      342,
+      922
+     ],
+     [
+      380,
+      908
+     ],
+     [
+      443,
+      906
+     ],
+     [
+      479,
+      902
+     ],
+     [
+      526,
+      906
+     ],
+     [
+      567,
+      918
+     ],
+     [
+      602,
+      913
+     ],
+     [
+      608,
+      913
+     ],
+     [
+      680,
+      924
+     ],
+     [
+      720,
+      918
+     ],
+     [
+      800,
+      909
+     ],
+     [
+      841,
+      908
+     ],
+     [
+      883,
+      919
+     ],
+     [
+      900,
+      919
+     ],
+     [
+      944,
+      911
+     ],
+     [
+      961,
+      906
+     ],
+     [
+      998,
+      908
+     ],
+     [
+      1005,
+      915
+     ],
+     [
+      1088,
+      923
+     ],
+     [
+      1111,
+      924
+     ],
+     [
+      1117,
+      921
+     ],
+     [
+      1155,
+      916
+     ],
+     [
+      1199,
+      941
+     ],
+     [
+      1219,
+      924
+     ],
+     [
+      1277,
+      924
+     ],
+     [
+      1313,
+      929
+     ],
+     [
+      1316,
+      935
+     ],
+     [
+      1323,
+      935
+     ],
+     [
+      1391,
+      920
+     ],
+     [
+      1400,
+      927
+     ],
+     [
+      1454,
+      918
+     ],
+     [
+      1493,
+      911
+     ],
+     [
+      1533,
+      899
+     ],
+     [
+      1567,
+      906
+     ],
+     [
+      1579,
+      882
+     ],
+     [
+      1620,
+      889
+     ],
+     [
+      1680,
+      973
+     ],
+     [
+      1680,
+      974
+     ],
+     [
+      1684,
+      974
+     ],
+     [
+      1689,
+      970
+     ],
+     [
+      1719,
+      969
+     ],
+     [
+      1726,
+      969
+     ],
+     [
+      1756,
+      959
+     ],
+     [
+      1771,
+      961
+     ],
+     [
+      1778,
+      960
+     ],
+     [
+      1786,
+      934
+     ],
+     [
+      1788,
+      931
+     ],
+     [
+      1800,
+      928
+     ],
+     [
+      1808,
+      935
+     ],
+     [
+      1828,
+      940
+     ],
+     [
+      1841,
+      943
+     ],
+     [
+      1855,
+      937
+     ],
+     [
+      1923,
+      926
+     ],
+     [
+      1932,
+      927
+     ],
+     [
+      1975,
+      952
+     ],
+     [
+      2009,
+      949
+     ],
+     [
+      2095,
+      964
+     ],
+     [
+      2131,
+      966
+     ],
+     [
+      2177,
+      960
+     ],
+     [
+      2214,
+      952
+     ],
+     [
+      2218,
+      957
+     ],
+     [
+      2218,
+      956
+     ],
+     [
+      2266,
+      953
+     ],
+     [
+      2311,
+      942
+     ],
+     [
+      2385,
+      943
+     ],
+     [
+      2421,
+      950
+     ],
+     [
+      2436,
+      959
+     ],
+     [
+      2436,
+      960
+     ],
+     [
+      2480,
+      959
+     ],
+     [
+      2516,
+      978
+     ],
+     [
+      2601,
+      973
+     ],
+     [
+      2633,
+      965
+     ],
+     [
+      2661,
+      967
+     ],
+     [
+      2688,
+      962
+     ],
+     [
+      2696,
+      996
+     ],
+     [
+      2699,
+      995
+     ],
+     [
+      2706,
+      994
+     ],
+     [
+      2729,
+      996
+     ],
+     [
+      2774,
+      999
+     ],
+     [
+      2814,
+      997
+     ],
+     [
+      2823,
+      997
+     ],
+     [
+      2836,
+      997
+     ],
+     [
+      2863,
+      998
+     ],
+     [
+      2866,
+      998
+     ],
+     [
+      2880,
+      998
+     ],
+     [
+      2880,
+      998
+     ],
+     [
+      2908,
+      997
+     ],
+     [
+      2927,
+      997
+     ],
+     [
+      2951,
+      999
+     ],
+     [
+      2967,
+      999
+     ],
+     [
+      3014,
+      999
+     ],
+     [
+      3063,
+      999
+     ],
+     [
+      3110,
+      999
+     ],
+     [
+      3150,
+      999
+     ],
+     [
+      3187,
+      999
+     ],
+     [
+      3222,
+      999
+     ],
+     [
+      3241,
+      999
+     ],
+     [
+      3259,
+      999
+     ],
+     [
+      3298,
+      999
+     ],
+     [
+      3308,
+      999
+     ],
+     [
+      3363,
+      999
+     ],
+     [
+      3396,
+      999
+     ],
+     [
+      3408,
+      999
+     ],
+     [
+      3427,
+      999
+     ],
+     [
+      3466,
+      999
+     ],
+     [
+      3488,
+      999
+     ],
+     [
+      3496,
+      999
+     ],
+     [
+      3542,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 36,
+    "awayScore": 7,
+    "state": "post"
+   },
+   "moved": {}
+  },
+  {
+   "id": "401858298",
+   "week": 11,
+   "date": "2026-11-15T00:00Z",
+   "home": "153",
+   "away": "97",
+   "homeName": "UNC",
+   "awayName": "LOU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.3968,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN2",
+   "spread": "LOU -3.5",
+   "overUnder": 57.5,
+   "venue": "Kenan Stadium",
+   "city": "Chapel Hill, NC",
+   "wp": {
+    "pts": [
+     [
+      0,
+      382
+     ],
+     [
+      8,
+      396
+     ],
+     [
+      12,
+      394
+     ],
+     [
+      56,
+      345
+     ],
+     [
+      90,
+      350
+     ],
+     [
+      135,
+      370
+     ],
+     [
+      166,
+      330
+     ],
+     [
+      205,
+      344
+     ],
+     [
+      243,
+      345
+     ],
+     [
+      276,
+      384
+     ],
+     [
+      279,
+      348
+     ],
+     [
+      279,
+      348
+     ],
+     [
+      284,
+      342
+     ],
+     [
+      305,
+      330
+     ],
+     [
+      316,
+      371
+     ],
+     [
+      356,
+      370
+     ],
+     [
+      377,
+      367
+     ],
+     [
+      413,
+      391
+     ],
+     [
+      459,
+      401
+     ],
+     [
+      495,
+      390
+     ],
+     [
+      532,
+      408
+     ],
+     [
+      575,
+      451
+     ],
+     [
+      606,
+      501
+     ],
+     [
+      606,
+      495
+     ],
+     [
+      611,
+      492
+     ],
+     [
+      651,
+      472
+     ],
+     [
+      685,
+      458
+     ],
+     [
+      728,
+      455
+     ],
+     [
+      762,
+      442
+     ],
+     [
+      802,
+      418
+     ],
+     [
+      839,
+      403
+     ],
+     [
+      873,
+      411
+     ],
+     [
+      900,
+      411
+     ],
+     [
+      906,
+      475
+     ],
+     [
+      944,
+      463
+     ],
+     [
+      944,
+      456
+     ],
+     [
+      950,
+      350
+     ],
+     [
+      959,
+      346
+     ],
+     [
+      993,
+      314
+     ],
+     [
+      1028,
+      309
+     ],
+     [
+      1065,
+      274
+     ],
+     [
+      1065,
+      272
+     ],
+     [
+      1070,
+      269
+     ],
+     [
+      1104,
+      258
+     ],
+     [
+      1107,
+      236
+     ],
+     [
+      1114,
+      202
+     ],
+     [
+      1114,
+      235
+     ],
+     [
+      1127,
+      231
+     ],
+     [
+      1159,
+      266
+     ],
+     [
+      1209,
+      219
+     ],
+     [
+      1235,
+      234
+     ],
+     [
+      1265,
+      248
+     ],
+     [
+      1291,
+      244
+     ],
+     [
+      1327,
+      261
+     ],
+     [
+      1333,
+      254
+     ],
+     [
+      1333,
+      254
+     ],
+     [
+      1341,
+      215
+     ],
+     [
+      1382,
+      224
+     ],
+     [
+      1426,
+      223
+     ],
+     [
+      1477,
+      226
+     ],
+     [
+      1554,
+      228
+     ],
+     [
+      1559,
+      254
+     ],
+     [
+      1566,
+      254
+     ],
+     [
+      1573,
+      264
+     ],
+     [
+      1609,
+      252
+     ],
+     [
+      1646,
+      232
+     ],
+     [
+      1680,
+      228
+     ],
+     [
+      1688,
+      251
+     ],
+     [
+      1688,
+      245
+     ],
+     [
+      1701,
+      240
+     ],
+     [
+      1713,
+      237
+     ],
+     [
+      1743,
+      233
+     ],
+     [
+      1753,
+      224
+     ],
+     [
+      1767,
+      224
+     ],
+     [
+      1774,
+      214
+     ],
+     [
+      1783,
+      200
+     ],
+     [
+      1783,
+      200
+     ],
+     [
+      1783,
+      204
+     ],
+     [
+      1790,
+      208
+     ],
+     [
+      1790,
+      209
+     ],
+     [
+      1790,
+      209
+     ],
+     [
+      1793,
+      207
+     ],
+     [
+      1798,
+      238
+     ],
+     [
+      1798,
+      249
+     ],
+     [
+      1800,
+      243
+     ],
+     [
+      1800,
+      261
+     ],
+     [
+      1800,
+      234
+     ],
+     [
+      1812,
+      218
+     ],
+     [
+      1849,
+      226
+     ],
+     [
+      1888,
+      219
+     ],
+     [
+      1922,
+      211
+     ],
+     [
+      1929,
+      215
+     ],
+     [
+      1963,
+      225
+     ],
+     [
+      2000,
+      256
+     ],
+     [
+      2010,
+      251
+     ],
+     [
+      2010,
+      254
+     ],
+     [
+      2017,
+      306
+     ],
+     [
+      2055,
+      329
+     ],
+     [
+      2090,
+      370
+     ],
+     [
+      2110,
+      393
+     ],
+     [
+      2150,
+      330
+     ],
+     [
+      2166,
+      293
+     ],
+     [
+      2166,
+      280
+     ],
+     [
+      2170,
+      226
+     ],
+     [
+      2177,
+      212
+     ],
+     [
+      2214,
+      217
+     ],
+     [
+      2254,
+      222
+     ],
+     [
+      2309,
+      248
+     ],
+     [
+      2342,
+      238
+     ],
+     [
+      2342,
+      240
+     ],
+     [
+      2347,
+      233
+     ],
+     [
+      2388,
+      267
+     ],
+     [
+      2426,
+      263
+     ],
+     [
+      2457,
+      248
+     ],
+     [
+      2505,
+      285
+     ],
+     [
+      2538,
+      282
+     ],
+     [
+      2585,
+      286
+     ],
+     [
+      2626,
+      300
+     ],
+     [
+      2650,
+      332
+     ],
+     [
+      2700,
+      331
+     ]
+    ],
+    "final": false,
+    "detail": "15:00 - 4th",
+    "homeScore": 7,
+    "awayScore": 13,
+    "state": "in"
+   }
+  },
+  {
+   "id": "401858299",
+   "week": 11,
+   "date": "2026-11-15T00:30Z",
+   "home": "259",
+   "away": "24",
+   "homeName": "VT",
+   "awayName": "STAN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9041,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ACC Network",
+   "spread": "VT -17.5",
+   "overUnder": 57.5,
+   "venue": "Lane Stadium",
+   "city": "Blacksburg, VA",
+   "wp": {
+    "pts": [
+     [
+      0,
+      898
+     ],
+     [
+      6,
+      896
+     ],
+     [
+      40,
+      898
+     ],
+     [
+      81,
+      909
+     ],
+     [
+      116,
+      905
+     ],
+     [
+      131,
+      914
+     ],
+     [
+      147,
+      907
+     ],
+     [
+      181,
+      915
+     ],
+     [
+      214,
+      896
+     ],
+     [
+      220,
+      881
+     ],
+     [
+      225,
+      886
+     ],
+     [
+      261,
+      892
+     ],
+     [
+      266,
+      900
+     ],
+     [
+      273,
+      900
+     ],
+     [
+      280,
+      895
+     ],
+     [
+      305,
+      892
+     ],
+     [
+      344,
+      866
+     ],
+     [
+      350,
+      867
+     ],
+     [
+      381,
+      874
+     ],
+     [
+      383,
+      886
+     ],
+     [
+      408,
+      893
+     ],
+     [
+      416,
+      895
+     ],
+     [
+      423,
+      899
+     ],
+     [
+      449,
+      906
+     ],
+     [
+      475,
+      910
+     ],
+     [
+      494,
+      906
+     ],
+     [
+      506,
+      910
+     ],
+     [
+      542,
+      910
+     ],
+     [
+      571,
+      900
+     ],
+     [
+      581,
+      881
+     ],
+     [
+      594,
+      862
+     ],
+     [
+      612,
+      743
+     ],
+     [
+      631,
+      846
+     ],
+     [
+      667,
+      833
+     ],
+     [
+      699,
+      838
+     ],
+     [
+      704,
+      843
+     ],
+     [
+      747,
+      786
+     ],
+     [
+      752,
+      785
+     ],
+     [
+      761,
+      782
+     ],
+     [
+      781,
+      803
+     ],
+     [
+      804,
+      817
+     ],
+     [
+      825,
+      806
+     ],
+     [
+      831,
+      808
+     ],
+     [
+      867,
+      758
+     ],
+     [
+      900,
+      757
+     ],
+     [
+      912,
+      738
+     ],
+     [
+      922,
+      745
+     ],
+     [
+      960,
+      719
+     ],
+     [
+      1000,
+      715
+     ],
+     [
+      1011,
+      719
+     ],
+     [
+      1052,
+      729
+     ],
+     [
+      1053,
+      692
+     ],
+     [
+      1080,
+      662
+     ],
+     [
+      1105,
+      671
+     ],
+     [
+      1149,
+      628
+     ],
+     [
+      1196,
+      591
+     ],
+     [
+      1217,
+      569
+     ],
+     [
+      1254,
+      532
+     ],
+     [
+      1254,
+      524
+     ],
+     [
+      1260,
+      426
+     ],
+     [
+      1281,
+      412
+     ],
+     [
+      1302,
+      340
+     ],
+     [
+      1316,
+      341
+     ],
+     [
+      1340,
+      275
+     ],
+     [
+      1340,
+      255
+     ],
+     [
+      1346,
+      265
+     ],
+     [
+      1367,
+      253
+     ],
+     [
+      1427,
+      314
+     ],
+     [
+      1452,
+      306
+     ],
+     [
+      1464,
+      307
+     ],
+     [
+      1482,
+      330
+     ],
+     [
+      1495,
+      328
+     ],
+     [
+      1495,
+      324
+     ],
+     [
+      1512,
+      321
+     ],
+     [
+      1536,
+      270
+     ],
+     [
+      1582,
+      360
+     ],
+     [
+      1629,
+      341
+     ],
+     [
+      1670,
+      326
+     ],
+     [
+      1687,
+      396
+     ],
+     [
+      1687,
+      416
+     ],
+     [
+      1692,
+      422
+     ],
+     [
+      1702,
+      404
+     ],
+     [
+      1712,
+      383
+     ],
+     [
+      1733,
+      382
+     ],
+     [
+      1738,
+      378
+     ],
+     [
+      1743,
+      345
+     ],
+     [
+      1753,
+      321
+     ],
+     [
+      1772,
+      314
+     ],
+     [
+      1772,
+      316
+     ],
+     [
+      1777,
+      296
+     ],
+     [
+      1782,
+      293
+     ],
+     [
+      1782,
+      294
+     ],
+     [
+      1785,
+      295
+     ],
+     [
+      1785,
+      297
+     ],
+     [
+      1790,
+      291
+     ],
+     [
+      1790,
+      260
+     ],
+     [
+      1792,
+      273
+     ],
+     [
+      1800,
+      268
+     ]
+    ],
+    "final": false,
+    "detail": "Halftime",
+    "homeScore": 7,
+    "awayScore": 24,
+    "state": "in"
+   }
+  },
+  {
+   "id": "401858303",
+   "week": 12,
+   "date": "2026-11-21T00:30Z",
+   "home": "150",
+   "away": "228",
+   "homeName": "DUKE",
+   "awayName": "CLEM",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.7117,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Wallace Wade Stadium",
+   "city": "Durham, NC"
+  },
+  {
+   "id": "401858302",
+   "week": 12,
+   "date": "2026-11-21T05:00Z",
+   "home": "2390",
+   "away": "259",
+   "homeName": "MIA",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9496,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": "MIA -18.5",
+   "overUnder": 61.5,
+   "venue": "Hard Rock Stadium",
+   "city": "Miami Gardens, FL"
+  },
+  {
+   "id": "401858310",
+   "week": 12,
+   "date": "2026-11-21T05:00Z",
+   "home": "59",
+   "away": "154",
+   "homeName": "GT",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.076,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Bobby Dodd Stadium",
+   "city": "Atlanta, GA"
+  },
+  {
+   "id": "401858306",
+   "week": 12,
+   "date": "2026-11-21T05:00Z",
+   "home": "97",
+   "away": "221",
+   "homeName": "LOU",
+   "awayName": "PITT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.7602,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "L&N Federal Credit Union Stadium",
+   "city": "Louisville, KY"
+  },
+  {
+   "id": "401858309",
+   "week": 12,
+   "date": "2026-11-21T17:00Z",
+   "home": "103",
+   "away": "183",
+   "homeName": "BC",
+   "awayName": "SYR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.3862,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ACC Network",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Alumni Stadium (Chestnut Hill, MA)",
+   "city": "Chestnut Hill, MA"
+  },
+  {
+   "id": "401858305",
+   "week": 12,
+   "date": "2026-11-21T17:30Z",
+   "home": "258",
+   "away": "153",
+   "homeName": "UVA",
+   "awayName": "UNC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.3978,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Scott Stadium",
+   "city": "Charlottesville, VA"
+  },
+  {
+   "id": "401858304",
+   "week": 12,
+   "date": "2026-11-21T20:30Z",
+   "home": "52",
+   "away": "152",
+   "homeName": "FSU",
+   "awayName": "NCSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8205,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ACC Network",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Doak Campbell Stadium",
+   "city": "Tallahassee, FL"
+  },
+  {
+   "id": "401858307",
+   "week": 12,
+   "date": "2026-11-22T00:30Z",
+   "home": "87",
+   "away": "2567",
+   "homeName": "ND",
+   "awayName": "SMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9033,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "NBC",
+   "spread": "ND -16.5",
+   "overUnder": 57.5,
+   "venue": "Notre Dame Stadium",
+   "city": "Notre Dame, IN"
+  },
+  {
+   "id": "401858308",
+   "week": 12,
+   "date": "2026-11-22T00:30Z",
+   "home": "25",
+   "away": "24",
+   "homeName": "CAL",
+   "awayName": "STAN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.6407,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ACC Network",
+   "spread": null,
+   "overUnder": null,
+   "venue": "California Memorial Stadium",
+   "city": "Berkeley, CA"
+  },
+  {
+   "id": "401856759",
+   "week": 13,
+   "date": "2026-11-27T20:30Z",
+   "home": "52",
+   "away": "57",
+   "homeName": "FSU",
+   "awayName": "FLA",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.4375,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ABC",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Doak Campbell Stadium",
+   "city": "Tallahassee, FL"
+  },
+  {
+   "id": "401858311",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "2390",
+   "away": "103",
+   "homeName": "MIA",
+   "awayName": "BC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9829,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Hard Rock Stadium",
+   "city": "Miami Gardens, FL"
+  },
+  {
+   "id": "401856760",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "61",
+   "away": "59",
+   "homeName": "UGA",
+   "awayName": "GT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9843,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Sanford Stadium",
+   "city": "Athens, GA"
+  },
+  {
+   "id": "401856761",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "96",
+   "away": "97",
+   "homeName": "UK",
+   "awayName": "LOU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.4455,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Kroger Field",
+   "city": "Lexington, KY"
+  },
+  {
+   "id": "401858314",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "183",
+   "away": "87",
+   "homeName": "SYR",
+   "awayName": "ND",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.0575,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "JMA Wireless Dome",
+   "city": "Syracuse, NY"
+  },
+  {
+   "id": "401858312",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "154",
+   "away": "150",
+   "homeName": "WAKE",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.7116,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Allegacy Federal Credit Union Stadium",
+   "city": "Winston-Salem, NC"
+  },
+  {
+   "id": "401856764",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "228",
+   "away": "2579",
+   "homeName": "CLEM",
+   "awayName": "SC",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.349,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Memorial Stadium (Clemson, SC)",
+   "city": "Clemson, SC"
+  },
+  {
+   "id": "401858313",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "153",
+   "away": "152",
+   "homeName": "UNC",
+   "awayName": "NCSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8218,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": 55.5,
+   "venue": "Kenan Stadium",
+   "city": "Chapel Hill, NC"
+  },
+  {
+   "id": "401858315",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "25",
+   "away": "221",
+   "homeName": "CAL",
+   "awayName": "PITT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.2163,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "California Memorial Stadium",
+   "city": "Berkeley, CA"
+  },
+  {
+   "id": "401858316",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "24",
+   "away": "2567",
+   "homeName": "STAN",
+   "awayName": "SMU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.094,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Stanford Stadium",
+   "city": "Stanford, CA"
+  },
+  {
+   "id": "401858317",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "259",
+   "away": "258",
+   "homeName": "VT",
+   "awayName": "UVA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.5852,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Lane Stadium",
+   "city": "Blacksburg, VA"
+  }
+ ],
+ "baseline": {
+  "week": 11,
+  "at": "2026-11-13T10:18Z",
+  "odds": {
+   "24": 0,
+   "25": 0,
+   "52": 0,
+   "59": 0,
+   "97": 0.06865,
+   "103": 0,
+   "150": 0.01409,
+   "152": 0,
+   "153": 1.046e-05,
+   "154": 0.717,
+   "183": 0,
+   "221": 0,
+   "228": 1.809e-06,
+   "258": 0,
+   "259": 2.953e-08,
+   "2390": 0.9999,
+   "2567": 0.2003
+  }
+ },
+ "cfp": {
+  "date": "2026-11-10T08:00Z",
+  "week": 11,
+  "ranks": {
+   "12": 23,
+   "26": 4,
+   "30": 18,
+   "61": 1,
+   "68": 24,
+   "84": 9,
+   "87": 5,
+   "96": 11,
+   "99": 21,
+   "142": 22,
+   "145": 19,
+   "154": 13,
+   "194": 20,
+   "197": 25,
+   "248": 14,
+   "251": 6,
+   "252": 10,
+   "254": 2,
+   "333": 3,
+   "2294": 15,
+   "2390": 7,
+   "2483": 16,
+   "2579": 17,
+   "2633": 8,
+   "2641": 12
+  }
+ },
+ "exact": {
+  "key": "e4ac1441fa8fc67f",
+  "gameIds": [
+   "401858298",
+   "401858299",
+   "401858303",
+   "401858302",
+   "401858310",
+   "401858306",
+   "401858309",
+   "401858305",
+   "401858304",
+   "401858308",
+   "401858311",
+   "401858312",
+   "401858313",
+   "401858315",
+   "401858316",
+   "401858317"
+  ],
+  "games": 16,
+  "budgetSec": 180,
+  "finishes": 65536,
+  "elapsedSec": 1,
+  "coinTossShare": 0,
+  "teams": [
+   {
+    "id": "2390",
+    "p": 0.999999999999995,
+    "first": 0.999433324342141,
+    "pWinOut": 1,
+    "clinched": true,
+    "eliminated": false,
+    "winOutGuaranteed": true,
+    "best": {
+     "mask": 40750,
+     "prob": 0.012014619692626693
+    },
+    "need": {
+     "games": 0,
+     "homeWins": 0,
+     "prob": 1
+    },
+    "games": [
+     {
+      "pH": 0.9999999999999967,
+      "pA": 0.9999999999999941,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999996,
+      "pA": 0.9999999999999525,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999996,
+      "pA": 0.9999999999999838,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0000000000000018,
+      "pA": 0.9999999999998657,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.000000000000007,
+      "pA": 0.999999999999994,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999969,
+      "pA": 0.9999999999999889,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0000000000000049,
+      "pA": 0.9999999999999888,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0000000000000053,
+      "pA": 0.9999999999999882,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.999999999999998,
+      "pA": 0.9999999999999815,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999901,
+      "pA": 1.0000000000000038,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0000000000000009,
+      "pA": 0.9999999999996624,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999943,
+      "pA": 0.9999999999999966,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999976,
+      "pA": 0.9999999999999831,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999917,
+      "pA": 0.9999999999999959,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0000000000000004,
+      "pA": 0.9999999999999943,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.999999999999993,
+      "pA": 0.9999999999999979,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "154",
+    "p": 0.9898134545578107,
+    "first": 0.0005666756578560008,
+    "pWinOut": 1,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": true,
+    "best": {
+     "mask": 40750,
+     "prob": 0.012014619692626693
+    },
+    "need": {
+     "games": 16,
+     "homeWins": 0,
+     "prob": 0.924
+    },
+    "games": [
+     {
+      "pH": 0.9996577488467547,
+      "pA": 0.9833376323199908,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898138492040571,
+      "pA": 0.9898097340190056,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9897584416931705,
+      "pA": 0.9899492598154048,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898097340190593,
+      "pA": 0.9898835542323805,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8659665073397074,
+      "pA": 0.9999999999999923,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9867788211199958,
+      "pA": 0.9994336728206415,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898134545578205,
+      "pA": 0.9898134545578045,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.989813454557821,
+      "pA": 0.9898134545578038,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898134545578154,
+      "pA": 0.9898134545577887,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898134545578071,
+      "pA": 0.989813454557817,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898134545578177,
+      "pA": 0.9898134545574092,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999943,
+      "pA": 0.9646791073433241,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898134545578143,
+      "pA": 0.9898134545577937,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898134545578096,
+      "pA": 0.9898134545578109,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9885045230323742,
+      "pA": 0.9899492598154167,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9898160917407854,
+      "pA": 0.9898097340190526,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "2567",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "150",
+    "p": 6.859687071252182e-05,
+    "first": 0,
+    "pWinOut": 0.00033420433772451415,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 55199,
+     "prob": 5.6959516438024055e-06
+    },
+    "need": {
+     "games": 18621,
+     "homeWins": 16541,
+     "prob": 5.270599235973423e-05
+    },
+    "games": [
+     {
+      "pH": 0.00017287517820696024,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 6.839753014439627e-05,
+      "pA": 7.047615963475666e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 9.638453099974964e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 7.04761596347566e-05,
+      "pA": 3.3188681018987e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0009025904041121293,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.00028605867686622947,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 6.859687071252182e-05,
+      "pA": 6.859687071252182e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0001358052576068507,
+      "pA": 2.4200496905540717e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 6.859687071252184e-05,
+      "pA": 6.859687071252173e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 6.859687071252188e-05,
+      "pA": 6.859687071252171e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 6.859687071252189e-05,
+      "pA": 6.859687071251762e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.00023785322715853615,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 5.402333147600516e-05,
+      "pA": 0.0001358052576068506,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 6.859687071252182e-05,
+      "pA": 6.859687071252182e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0007297539437502321,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 6.72647978400971e-05,
+      "pA": 7.047615963475651e-05,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "97",
+    "p": 0.010117948571470338,
+    "first": 0,
+    "pWinOut": 0.02191839999999996,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 38718,
+     "prob": 0.00040050778848298206
+    },
+    "need": {
+     "games": 2097,
+     "homeWins": 48,
+     "prob": 0.010050740184576
+    },
+    "games": [
+     {
+      "pH": 0.00016937597503611097,
+      "pA": 0.01666236768000002,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010117753265796952,
+      "pA": 0.01011978982130671,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0101451737758284,
+      "pA": 0.010050740184576015,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010119789821306667,
+      "pA": 0.010083257086458875,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.13313090225618865,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0.013221178880000012,
+      "pA": 0.00028026850247843296,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010117948571470347,
+      "pA": 0.010117948571470333,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010050740184576005,
+      "pA": 0.01016234494527732,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010117948571470348,
+      "pA": 0.010117948571470293,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010117948571470333,
+      "pA": 0.010117948571470347,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010117948571470334,
+      "pA": 0.010117948571470529,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.0350830394295088,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0.010132522110706843,
+      "pA": 0.010050740184576067,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010117948571470331,
+      "pA": 0.01011794857147034,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010765723023877356,
+      "pA": 0.010050740184576011,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.010116643461367642,
+      "pA": 0.01011978982130664,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "228",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "221",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "259",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "153",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "52",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "24",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "258",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "152",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "103",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "183",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "25",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "59",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   }
+  ],
+  "computedAt": "2026-11-15T00:01Z"
+ }
+}

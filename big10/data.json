@@ -1,0 +1,10518 @@
+{
+ "schema": 3,
+ "league": "big10",
+ "leagues": [
+  {
+   "id": "big12",
+   "name": "Big 12",
+   "path": "",
+   "group": 4,
+   "logo": "logos/c046db7181745023.png",
+   "logoDark": "logos/1570a062998c6a04.png",
+   "sponsor": {
+    "name": "Monster Energy",
+    "logo": "logos/af1676412c64e865.png"
+   }
+  },
+  {
+   "id": "sec",
+   "name": "SEC",
+   "path": "sec/",
+   "group": 8,
+   "logo": "logos/6e4d4654eba315be.png",
+   "logoDark": "logos/6e4d4654eba315be.png"
+  },
+  {
+   "id": "acc",
+   "name": "ACC",
+   "path": "acc/",
+   "group": 1,
+   "logo": "logos/5afb22e530e72b68.png",
+   "logoDark": "logos/ca6afd1f284debd1.png"
+  },
+  {
+   "id": "big10",
+   "name": "Big Ten",
+   "path": "big10/",
+   "group": 5,
+   "logo": "logos/c7eb872c98c059d8.png",
+   "logoDark": "logos/d829bbbe10b6b319.png"
+  },
+  {
+   "id": "pac12",
+   "name": "Pac-12",
+   "path": "pac12/",
+   "group": 9,
+   "lastConfWeek": 12,
+   "logo": "logos/f791cb82b7179397.png",
+   "logoDark": "logos/a561f8576da7470c.png"
+  }
+ ],
+ "season": 2026,
+ "fetchedAt": "2026-11-15T02:31Z",
+ "meta": {
+  "scheduleCheckedAt": "2026-11-14T16:01Z",
+  "fpiCheckedAt": "2026-11-14T22:31Z",
+  "fpiRun": "2026-11-14T09:00Z",
+  "checkedAt": "2026-11-15T02:31Z",
+  "nextResultCheck": "2026-11-15T03:00Z",
+  "updatedAt": "2026-11-15T02:31Z",
+  "espnCalls": 2,
+  "scheduleFields": 2,
+  "cfpCheckedAt": "2026-11-15T01:31Z"
+ },
+ "calendar": [
+  {
+   "week": 1,
+   "start": "2026-08-22T07:00Z",
+   "end": "2026-09-08T06:59Z"
+  },
+  {
+   "week": 2,
+   "start": "2026-09-08T07:00Z",
+   "end": "2026-09-14T06:59Z"
+  },
+  {
+   "week": 3,
+   "start": "2026-09-14T07:00Z",
+   "end": "2026-09-21T06:59Z"
+  },
+  {
+   "week": 4,
+   "start": "2026-09-21T07:00Z",
+   "end": "2026-09-28T06:59Z"
+  },
+  {
+   "week": 5,
+   "start": "2026-09-28T07:00Z",
+   "end": "2026-10-05T06:59Z"
+  },
+  {
+   "week": 6,
+   "start": "2026-10-05T07:00Z",
+   "end": "2026-10-12T06:59Z"
+  },
+  {
+   "week": 7,
+   "start": "2026-10-12T07:00Z",
+   "end": "2026-10-19T06:59Z"
+  },
+  {
+   "week": 8,
+   "start": "2026-10-19T07:00Z",
+   "end": "2026-10-26T06:59Z"
+  },
+  {
+   "week": 9,
+   "start": "2026-10-26T07:00Z",
+   "end": "2026-11-02T07:59Z"
+  },
+  {
+   "week": 10,
+   "start": "2026-11-02T08:00Z",
+   "end": "2026-11-09T07:59Z"
+  },
+  {
+   "week": 11,
+   "start": "2026-11-09T08:00Z",
+   "end": "2026-11-16T07:59Z"
+  },
+  {
+   "week": 12,
+   "start": "2026-11-16T08:00Z",
+   "end": "2026-11-23T07:59Z"
+  },
+  {
+   "week": 13,
+   "start": "2026-11-23T08:00Z",
+   "end": "2026-11-30T07:59Z"
+  },
+  {
+   "week": 14,
+   "start": "2026-11-30T08:00Z",
+   "end": "2026-12-07T07:59Z"
+  },
+  {
+   "week": 15,
+   "start": "2026-12-07T08:00Z",
+   "end": "2026-12-13T07:59Z"
+  }
+ ],
+ "teams": [
+  {
+   "id": "26",
+   "abbr": "UCLA",
+   "name": "UCLA Bruins",
+   "short": "UCLA",
+   "color": "#2774ae",
+   "alt": "#f2a900",
+   "logo": "logos/2a03859e447653f8.png",
+   "logoDark": "logos/3f46a7a1e392a6d8.png",
+   "fpi": 12.737
+  },
+  {
+   "id": "84",
+   "abbr": "IU",
+   "name": "Indiana Hoosiers",
+   "short": "Indiana",
+   "color": "#970310",
+   "alt": "#ffffff",
+   "logo": "logos/de004a8bbf2e6f1a.png",
+   "logoDark": "logos/13c30d7171166669.png",
+   "fpi": 21.352
+  },
+  {
+   "id": "2294",
+   "abbr": "IOWA",
+   "name": "Iowa Hawkeyes",
+   "short": "Iowa",
+   "color": "#231f20",
+   "alt": "#fcd116",
+   "logo": "logos/309c6eaab6047306.png",
+   "logoDark": "logos/9241225b2dbe716b.png",
+   "fpi": 14.658
+  },
+  {
+   "id": "30",
+   "abbr": "USC",
+   "name": "USC Trojans",
+   "short": "USC",
+   "color": "#9d2235",
+   "alt": "#ffc72c",
+   "logo": "logos/0cf85f0edfa83416.png",
+   "logoDark": "logos/0cf85f0edfa83416.png",
+   "fpi": 14.791
+  },
+  {
+   "id": "2483",
+   "abbr": "ORE",
+   "name": "Oregon Ducks",
+   "short": "Oregon",
+   "color": "#00934b",
+   "alt": "#fff41b",
+   "logo": "logos/f4750374aef32303.png",
+   "logoDark": "logos/7e6f56f216d771c4.png",
+   "fpi": 19.69
+  },
+  {
+   "id": "194",
+   "abbr": "OSU",
+   "name": "Ohio State Buckeyes",
+   "short": "Ohio State",
+   "color": "#ba0c2f",
+   "alt": "#a8adb4",
+   "logo": "logos/fc8572d017b3b606.png",
+   "logoDark": "logos/c637562beb451045.png",
+   "fpi": 24.257
+  },
+  {
+   "id": "275",
+   "abbr": "WIS",
+   "name": "Wisconsin Badgers",
+   "short": "Wisconsin",
+   "color": "#a00000",
+   "alt": "#ffffff",
+   "logo": "logos/5df6a70598c234ac.png",
+   "logoDark": "logos/5df6a70598c234ac.png",
+   "fpi": 9.158
+  },
+  {
+   "id": "356",
+   "abbr": "ILL",
+   "name": "Illinois Fighting Illini",
+   "short": "Illinois",
+   "color": "#ff5f05",
+   "alt": "#13294b",
+   "logo": "logos/63c8d5221678f44e.png",
+   "logoDark": "logos/fa0d47726617dc28.png",
+   "fpi": 7.464
+  },
+  {
+   "id": "77",
+   "abbr": "NU",
+   "name": "Northwestern Wildcats",
+   "short": "Northwestern",
+   "color": "#492f92",
+   "alt": "#ffffff",
+   "logo": "logos/664676ce82b36e0c.png",
+   "logoDark": "logos/c3f0e6fed1f6b3ff.png",
+   "fpi": 12.35
+  },
+  {
+   "id": "135",
+   "abbr": "MINN",
+   "name": "Minnesota Golden Gophers",
+   "short": "Minnesota",
+   "color": "#5e0a2f",
+   "alt": "#fab41c",
+   "logo": "logos/bcca1bc21dfc0afa.png",
+   "logoDark": "logos/bcca1bc21dfc0afa.png",
+   "fpi": 1.804
+  },
+  {
+   "id": "213",
+   "abbr": "PSU",
+   "name": "Penn State Nittany Lions",
+   "short": "Penn State",
+   "color": "#061440",
+   "alt": "#ffffff",
+   "logo": "logos/b6613031750b4153.png",
+   "logoDark": "logos/5fe957a0748cabd4.png",
+   "fpi": 12.191
+  },
+  {
+   "id": "264",
+   "abbr": "WASH",
+   "name": "Washington Huskies",
+   "short": "Washington",
+   "color": "#33006f",
+   "alt": "#e8d3a2",
+   "logo": "logos/299bf6e87f9076aa.png",
+   "logoDark": "logos/299bf6e87f9076aa.png",
+   "fpi": 6.582
+  },
+  {
+   "id": "130",
+   "abbr": "MICH",
+   "name": "Michigan Wolverines",
+   "short": "Michigan",
+   "color": "#00274c",
+   "alt": "#ffcb05",
+   "logo": "logos/4bbfc28871033d95.png",
+   "logoDark": "logos/523c3368bebb014d.png",
+   "fpi": 9.18
+  },
+  {
+   "id": "158",
+   "abbr": "NEB",
+   "name": "Nebraska Cornhuskers",
+   "short": "Nebraska",
+   "color": "#e31937",
+   "alt": "#ffffff",
+   "logo": "logos/e45a619a02540904.png",
+   "logoDark": "logos/e45a619a02540904.png",
+   "fpi": 13.141
+  },
+  {
+   "id": "2509",
+   "abbr": "PUR",
+   "name": "Purdue Boilermakers",
+   "short": "Purdue",
+   "color": "#ceb888",
+   "alt": "#000000",
+   "logo": "logos/372253c976757dec.png",
+   "logoDark": "logos/30caea092438da56.png",
+   "fpi": 1.311
+  },
+  {
+   "id": "120",
+   "abbr": "MD",
+   "name": "Maryland Terrapins",
+   "short": "Maryland",
+   "color": "#ce1126",
+   "alt": "#ffffff",
+   "logo": "logos/12705905b9531e74.png",
+   "logoDark": "logos/dc37d16f9d946e65.png",
+   "fpi": -3.476
+  },
+  {
+   "id": "127",
+   "abbr": "MSU",
+   "name": "Michigan State Spartans",
+   "short": "Michigan St",
+   "color": "#173f35",
+   "alt": "#ffffff",
+   "logo": "logos/10f2ba6ba367ab9a.png",
+   "logoDark": "logos/d59dd9a533698724.png",
+   "fpi": 2.243
+  },
+  {
+   "id": "164",
+   "abbr": "RUTG",
+   "name": "Rutgers Scarlet Knights",
+   "short": "Rutgers",
+   "color": "#ce0e2d",
+   "alt": "#ffffff",
+   "logo": "logos/6a39232050a123ba.png",
+   "logoDark": "logos/13d05dd23b59605e.png",
+   "fpi": -5.269
+  }
+ ],
+ "fpi": {
+  "2": 8.656,
+  "5": -13.804,
+  "6": -10.184,
+  "8": 1.62,
+  "9": 1.696,
+  "12": 12.614,
+  "16": -29.187,
+  "21": -9.418,
+  "23": -11.957,
+  "24": -9.996,
+  "25": -7.138,
+  "26": 12.737,
+  "30": 14.791,
+  "36": -12.975,
+  "38": 0.225,
+  "41": -6.128,
+  "48": -9.608,
+  "52": 8.498,
+  "55": -5.174,
+  "57": 12.458,
+  "58": -3.239,
+  "59": -4.45,
+  "61": 27.159,
+  "62": -9.933,
+  "66": 2.533,
+  "68": 11.742,
+  "77": 12.35,
+  "84": 21.352,
+  "87": 27.245,
+  "96": 11.244,
+  "97": 14.876,
+  "98": -14.865,
+  "99": 22.482,
+  "103": -3.703,
+  "113": -16.551,
+  "120": -3.476,
+  "127": 2.243,
+  "130": 9.18,
+  "135": 1.804,
+  "142": 12.858,
+  "145": 18.301,
+  "150": 12.409,
+  "151": -3.665,
+  "152": -1.294,
+  "153": 9.26,
+  "154": 17.844,
+  "158": 13.141,
+  "164": -5.269,
+  "166": -15.326,
+  "167": 7.812,
+  "183": 2.11,
+  "189": -17.69,
+  "193": -9.069,
+  "194": 24.257,
+  "195": -9.771,
+  "197": 13.816,
+  "201": 13.586,
+  "202": -0.079,
+  "204": 1.622,
+  "213": 12.191,
+  "218": -10.34,
+  "221": 7.55,
+  "228": 7.15,
+  "235": 3.526,
+  "238": 0.699,
+  "239": 11.512,
+  "242": -14.795,
+  "245": 13.018,
+  "248": 11.855,
+  "249": 3.828,
+  "251": 23.857,
+  "252": 14.746,
+  "254": 18.646,
+  "256": 4.831,
+  "258": 3.957,
+  "259": 4.823,
+  "264": 6.582,
+  "265": -9.726,
+  "275": 9.158,
+  "276": -15.671,
+  "277": 2.669,
+  "278": 0.512,
+  "290": -1.984,
+  "295": -14.853,
+  "309": -3.334,
+  "324": -12.13,
+  "326": 2.966,
+  "328": -4.078,
+  "333": 26.016,
+  "338": -11.942,
+  "344": 6.928,
+  "349": -2.8,
+  "356": 7.464,
+  "2005": -3.2,
+  "2006": -23.737,
+  "2026": -10.249,
+  "2032": -10.329,
+  "2050": -21.341,
+  "2084": -11.523,
+  "2116": 3.424,
+  "2117": -11.837,
+  "2132": 4.366,
+  "2199": -18.078,
+  "2226": -6.945,
+  "2229": -12.675,
+  "2247": -7.5,
+  "2294": 14.658,
+  "2305": 4.153,
+  "2306": 1.45,
+  "2309": -23.649,
+  "2335": 4.551,
+  "2348": -0.085,
+  "2390": 25.912,
+  "2393": -16.593,
+  "2426": -4.349,
+  "2429": -21.466,
+  "2433": -24.13,
+  "2439": -4.893,
+  "2440": -9.438,
+  "2449": 0.663,
+  "2459": -21.424,
+  "2483": 19.69,
+  "2509": 1.311,
+  "2534": -20.772,
+  "2567": 11.895,
+  "2572": -14.947,
+  "2579": 14.103,
+  "2623": -15.279,
+  "2628": 7.604,
+  "2633": 18.507,
+  "2636": -2.955,
+  "2638": -24.081,
+  "2641": 15.476,
+  "2649": -3.125,
+  "2653": -10.971,
+  "2655": -9.876,
+  "2711": -2.558,
+  "2751": -11.052
+ },
+ "games": [
+  {
+   "id": "401864494",
+   "week": 1,
+   "date": "2026-08-29T19:00Z",
+   "home": "30",
+   "away": "23",
+   "homeName": "USC",
+   "awayName": "SJSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 42,
+   "awayScore": 26,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858423",
+   "week": 1,
+   "date": "2026-09-03T22:00Z",
+   "home": "164",
+   "away": "113",
+   "homeName": "RUTG",
+   "awayName": "MASS",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "113",
+   "homeScore": 21,
+   "awayScore": 37,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858422",
+   "week": 1,
+   "date": "2026-09-04T00:00Z",
+   "home": "135",
+   "away": "2197",
+   "homeName": "MINN",
+   "awayName": "EIU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "135",
+   "homeScore": 59,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858424",
+   "week": 1,
+   "date": "2026-09-04T01:00Z",
+   "home": "356",
+   "away": "5",
+   "homeName": "ILL",
+   "awayName": "UAB",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "356",
+   "homeScore": 42,
+   "awayScore": 23,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858435",
+   "week": 1,
+   "date": "2026-09-04T23:00Z",
+   "home": "2509",
+   "away": "282",
+   "homeName": "PUR",
+   "awayName": "INST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2509",
+   "homeScore": 44,
+   "awayScore": 19,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858429",
+   "week": 1,
+   "date": "2026-09-05T00:00Z",
+   "home": "127",
+   "away": "2649",
+   "homeName": "MSU",
+   "awayName": "TOL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "127",
+   "homeScore": 30,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858436",
+   "week": 1,
+   "date": "2026-09-05T01:00Z",
+   "home": "30",
+   "away": "278",
+   "homeName": "USC",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 39,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858425",
+   "week": 1,
+   "date": "2026-09-05T16:00Z",
+   "home": "84",
+   "away": "249",
+   "homeName": "IU",
+   "awayName": "UNT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 52,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858430",
+   "week": 1,
+   "date": "2026-09-05T16:00Z",
+   "home": "158",
+   "away": "195",
+   "homeName": "NEB",
+   "awayName": "OHIO",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "158",
+   "homeScore": 49,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858432",
+   "week": 1,
+   "date": "2026-09-05T16:30Z",
+   "home": "194",
+   "away": "2050",
+   "homeName": "OSU",
+   "awayName": "BALL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 56,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858433",
+   "week": 1,
+   "date": "2026-09-05T19:30Z",
+   "home": "2483",
+   "away": "68",
+   "homeName": "ORE",
+   "awayName": "BOIS",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 34,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858434",
+   "week": 1,
+   "date": "2026-09-05T19:30Z",
+   "home": "213",
+   "away": "276",
+   "homeName": "PSU",
+   "awayName": "MRSH",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "213",
+   "homeScore": 45,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858426",
+   "week": 1,
+   "date": "2026-09-05T20:15Z",
+   "home": "2294",
+   "away": "2459",
+   "homeName": "IOWA",
+   "awayName": "NIU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 40,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858428",
+   "week": 1,
+   "date": "2026-09-05T23:30Z",
+   "home": "130",
+   "away": "2711",
+   "homeName": "MICH",
+   "awayName": "WMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "130",
+   "homeScore": 13,
+   "awayScore": 12,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858427",
+   "week": 1,
+   "date": "2026-09-06T00:00Z",
+   "home": "120",
+   "away": "2261",
+   "homeName": "MD",
+   "awayName": "HAMP",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "120",
+   "homeScore": 62,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858431",
+   "week": 1,
+   "date": "2026-09-06T00:00Z",
+   "home": "77",
+   "away": "2571",
+   "homeName": "NU",
+   "awayName": "SDST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "77",
+   "homeScore": 34,
+   "awayScore": 18,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858210",
+   "week": 1,
+   "date": "2026-09-06T02:30Z",
+   "home": "25",
+   "away": "26",
+   "homeName": "CAL",
+   "awayName": "UCLA",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 24,
+   "awayScore": 45,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858437",
+   "week": 1,
+   "date": "2026-09-06T20:00Z",
+   "home": "264",
+   "away": "265",
+   "homeName": "WASH",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 24,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858438",
+   "week": 1,
+   "date": "2026-09-06T23:30Z",
+   "home": "87",
+   "away": "275",
+   "homeName": "ND",
+   "awayName": "WIS",
+   "neutral": true,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 41,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858214",
+   "week": 2,
+   "date": "2026-09-11T23:30Z",
+   "home": "103",
+   "away": "164",
+   "homeName": "BC",
+   "awayName": "RUTG",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "103",
+   "homeScore": 28,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858439",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "84",
+   "away": "47",
+   "homeName": "IU",
+   "awayName": "HOW",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 55,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401856679",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "130",
+   "away": "201",
+   "homeName": "MICH",
+   "awayName": "OU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "130",
+   "homeScore": 17,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858442",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "218",
+   "away": "213",
+   "homeName": "TEM",
+   "awayName": "PSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "213",
+   "homeScore": 9,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858224",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "2509",
+   "away": "154",
+   "homeName": "PUR",
+   "awayName": "WAKE",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "154",
+   "homeScore": 36,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856782",
+   "week": 2,
+   "date": "2026-09-12T17:30Z",
+   "home": "197",
+   "away": "2483",
+   "homeName": "OKST",
+   "awayName": "ORE",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "197",
+   "homeScore": 39,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858446",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "264",
+   "away": "328",
+   "homeName": "WASH",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 16,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856677",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "135",
+   "away": "344",
+   "homeName": "MINN",
+   "awayName": "MSST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "344",
+   "homeScore": 13,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858217",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "356",
+   "away": "150",
+   "homeName": "ILL",
+   "awayName": "DUKE",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "150",
+   "homeScore": 27,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858440",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "127",
+   "away": "2199",
+   "homeName": "MSU",
+   "awayName": "EMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "127",
+   "homeScore": 35,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858444",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "41",
+   "away": "120",
+   "homeName": "CONN",
+   "awayName": "MD",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "120",
+   "homeScore": 14,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858441",
+   "week": 2,
+   "date": "2026-09-12T23:00Z",
+   "home": "158",
+   "away": "189",
+   "homeName": "NEB",
+   "awayName": "BGSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "158",
+   "homeScore": 56,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858443",
+   "week": 2,
+   "date": "2026-09-12T23:15Z",
+   "home": "26",
+   "away": "21",
+   "homeName": "UCLA",
+   "awayName": "SDSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 28,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858447",
+   "week": 2,
+   "date": "2026-09-12T23:15Z",
+   "home": "275",
+   "away": "2710",
+   "homeName": "WIS",
+   "awayName": "WIU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "275",
+   "homeScore": 36,
+   "awayScore": 9,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401856682",
+   "week": 2,
+   "date": "2026-09-12T23:30Z",
+   "home": "251",
+   "away": "194",
+   "homeName": "TEX",
+   "awayName": "OSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "251",
+   "homeScore": 24,
+   "awayScore": 23,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856788",
+   "week": 2,
+   "date": "2026-09-12T23:30Z",
+   "home": "2294",
+   "away": "66",
+   "homeName": "IOWA",
+   "awayName": "ISU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 16,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858445",
+   "week": 2,
+   "date": "2026-09-13T03:00Z",
+   "home": "30",
+   "away": "309",
+   "homeName": "USC",
+   "awayName": "UL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 49,
+   "awayScore": 30,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858455",
+   "week": 3,
+   "date": "2026-09-19T02:30Z",
+   "home": "2483",
+   "away": "2502",
+   "homeName": "ORE",
+   "awayName": "PRST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 84,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858454",
+   "week": 3,
+   "date": "2026-09-19T16:00Z",
+   "home": "194",
+   "away": "2309",
+   "homeName": "OSU",
+   "awayName": "KENT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 59,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858456",
+   "week": 3,
+   "date": "2026-09-19T16:00Z",
+   "home": "213",
+   "away": "2084",
+   "homeName": "PSU",
+   "awayName": "BUFF",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "213",
+   "homeScore": 55,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858451",
+   "week": 3,
+   "date": "2026-09-19T16:00Z",
+   "home": "135",
+   "away": "2006",
+   "homeName": "MINN",
+   "awayName": "AKR",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "135",
+   "homeScore": 41,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858460",
+   "week": 3,
+   "date": "2026-09-19T16:30Z",
+   "home": "275",
+   "away": "2199",
+   "homeName": "WIS",
+   "awayName": "EMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "275",
+   "homeScore": 54,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858448",
+   "week": 3,
+   "date": "2026-09-19T18:00Z",
+   "home": "356",
+   "away": "79",
+   "homeName": "ILL",
+   "awayName": "SIU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "356",
+   "homeScore": 48,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858457",
+   "week": 3,
+   "date": "2026-09-19T19:30Z",
+   "home": "164",
+   "away": "30",
+   "homeName": "RUTG",
+   "awayName": "USC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 35,
+   "awayScore": 42,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858450",
+   "week": 3,
+   "date": "2026-09-19T19:30Z",
+   "home": "130",
+   "away": "2638",
+   "homeName": "MICH",
+   "awayName": "UTEP",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "130",
+   "homeScore": 52,
+   "awayScore": 17,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858449",
+   "week": 3,
+   "date": "2026-09-19T20:00Z",
+   "home": "84",
+   "away": "98",
+   "homeName": "IU",
+   "awayName": "WKU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 38,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858471",
+   "week": 3,
+   "date": "2026-09-19T20:00Z",
+   "home": "2294",
+   "away": "2460",
+   "homeName": "IOWA",
+   "awayName": "UNI",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 55,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858452",
+   "week": 3,
+   "date": "2026-09-19T23:15Z",
+   "home": "158",
+   "away": "155",
+   "homeName": "NEB",
+   "awayName": "UND",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "158",
+   "homeScore": 34,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858459",
+   "week": 3,
+   "date": "2026-09-19T23:15Z",
+   "home": "264",
+   "away": "331",
+   "homeName": "WASH",
+   "awayName": "EWU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 48,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858453",
+   "week": 3,
+   "date": "2026-09-19T23:30Z",
+   "home": "87",
+   "away": "127",
+   "homeName": "ND",
+   "awayName": "MSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 27,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856796",
+   "week": 3,
+   "date": "2026-09-19T23:30Z",
+   "home": "77",
+   "away": "38",
+   "homeName": "NU",
+   "awayName": "COLO",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "77",
+   "homeScore": 41,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858232",
+   "week": 3,
+   "date": "2026-09-19T23:30Z",
+   "home": "120",
+   "away": "259",
+   "homeName": "MD",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "259",
+   "homeScore": 26,
+   "awayScore": 35,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858458",
+   "week": 3,
+   "date": "2026-09-20T03:00Z",
+   "home": "26",
+   "away": "2509",
+   "homeName": "UCLA",
+   "awayName": "PUR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 52,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858468",
+   "week": 4,
+   "date": "2026-09-25T23:00Z",
+   "home": "164",
+   "away": "47",
+   "homeName": "RUTG",
+   "awayName": "HOW",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "164",
+   "homeScore": 58,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858461",
+   "week": 4,
+   "date": "2026-09-26T00:00Z",
+   "home": "84",
+   "away": "77",
+   "homeName": "IU",
+   "awayName": "NU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 29,
+   "awayScore": 23,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858465",
+   "week": 4,
+   "date": "2026-09-26T16:00Z",
+   "home": "194",
+   "away": "356",
+   "homeName": "OSU",
+   "awayName": "ILL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 42,
+   "awayScore": 19,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858462",
+   "week": 4,
+   "date": "2026-09-26T17:30Z",
+   "home": "120",
+   "away": "26",
+   "homeName": "MD",
+   "awayName": "UCLA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 3,
+   "awayScore": 54,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858467",
+   "week": 4,
+   "date": "2026-09-26T18:00Z",
+   "home": "2509",
+   "away": "87",
+   "homeName": "PUR",
+   "awayName": "ND",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "87",
+   "homeScore": 10,
+   "awayScore": 49,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858463",
+   "week": 4,
+   "date": "2026-09-26T19:30Z",
+   "home": "130",
+   "away": "2294",
+   "homeName": "MICH",
+   "awayName": "IOWA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 19,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858466",
+   "week": 4,
+   "date": "2026-09-26T21:00Z",
+   "home": "213",
+   "away": "275",
+   "homeName": "PSU",
+   "awayName": "WIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "275",
+   "homeScore": 20,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858464",
+   "week": 4,
+   "date": "2026-09-26T21:00Z",
+   "home": "127",
+   "away": "158",
+   "homeName": "MSU",
+   "awayName": "NEB",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "158",
+   "homeScore": 13,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858469",
+   "week": 4,
+   "date": "2026-09-26T23:30Z",
+   "home": "30",
+   "away": "2483",
+   "homeName": "USC",
+   "awayName": "ORE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 27,
+   "awayScore": 41,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858470",
+   "week": 4,
+   "date": "2026-09-27T03:00Z",
+   "home": "264",
+   "away": "135",
+   "homeName": "WASH",
+   "awayName": "MINN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "135",
+   "homeScore": 24,
+   "awayScore": 27,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858476",
+   "week": 5,
+   "date": "2026-10-03T00:00Z",
+   "home": "77",
+   "away": "213",
+   "homeName": "NU",
+   "awayName": "PSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "77",
+   "homeScore": 34,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858474",
+   "week": 5,
+   "date": "2026-10-03T16:00Z",
+   "home": "135",
+   "away": "130",
+   "homeName": "MINN",
+   "awayName": "MICH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "135",
+   "homeScore": 20,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858479",
+   "week": 5,
+   "date": "2026-10-03T16:30Z",
+   "home": "275",
+   "away": "127",
+   "homeName": "WIS",
+   "awayName": "MSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "275",
+   "homeScore": 31,
+   "awayScore": 3,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858473",
+   "week": 5,
+   "date": "2026-10-03T19:30Z",
+   "home": "2294",
+   "away": "194",
+   "homeName": "IOWA",
+   "awayName": "OSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 14,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858475",
+   "week": 5,
+   "date": "2026-10-03T20:00Z",
+   "home": "158",
+   "away": "120",
+   "homeName": "NEB",
+   "awayName": "MD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "158",
+   "homeScore": 48,
+   "awayScore": 23,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858472",
+   "week": 5,
+   "date": "2026-10-03T20:15Z",
+   "home": "356",
+   "away": "2509",
+   "homeName": "ILL",
+   "awayName": "PUR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2509",
+   "homeScore": 17,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858478",
+   "week": 5,
+   "date": "2026-10-03T23:30Z",
+   "home": "30",
+   "away": "264",
+   "homeName": "USC",
+   "awayName": "WASH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 25,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858477",
+   "week": 5,
+   "date": "2026-10-04T00:00Z",
+   "home": "164",
+   "away": "84",
+   "homeName": "RUTG",
+   "awayName": "IU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 15,
+   "awayScore": 47,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858487",
+   "week": 6,
+   "date": "2026-10-10T01:00Z",
+   "home": "264",
+   "away": "2294",
+   "homeName": "WASH",
+   "awayName": "IOWA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 24,
+   "awayScore": 41,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858481",
+   "week": 6,
+   "date": "2026-10-10T16:00Z",
+   "home": "158",
+   "away": "84",
+   "homeName": "NEB",
+   "awayName": "IU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 17,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858482",
+   "week": 6,
+   "date": "2026-10-10T16:30Z",
+   "home": "77",
+   "away": "2050",
+   "homeName": "NU",
+   "awayName": "BALL",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "77",
+   "homeScore": 45,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858484",
+   "week": 6,
+   "date": "2026-10-10T19:30Z",
+   "home": "2483",
+   "away": "26",
+   "homeName": "ORE",
+   "awayName": "UCLA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 15,
+   "awayScore": 17,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858480",
+   "week": 6,
+   "date": "2026-10-10T19:30Z",
+   "home": "127",
+   "away": "356",
+   "homeName": "MSU",
+   "awayName": "ILL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "356",
+   "homeScore": 37,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858483",
+   "week": 6,
+   "date": "2026-10-10T20:15Z",
+   "home": "194",
+   "away": "120",
+   "homeName": "OSU",
+   "awayName": "MD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 45,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858485",
+   "week": 6,
+   "date": "2026-10-10T23:30Z",
+   "home": "213",
+   "away": "30",
+   "homeName": "PSU",
+   "awayName": "USC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 23,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858486",
+   "week": 6,
+   "date": "2026-10-11T00:00Z",
+   "home": "2509",
+   "away": "135",
+   "homeName": "PUR",
+   "awayName": "MINN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2509",
+   "homeScore": 41,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858493",
+   "week": 7,
+   "date": "2026-10-17T00:00Z",
+   "home": "2509",
+   "away": "264",
+   "homeName": "PUR",
+   "awayName": "WASH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 26,
+   "awayScore": 38,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858488",
+   "week": 7,
+   "date": "2026-10-17T16:00Z",
+   "home": "84",
+   "away": "194",
+   "homeName": "IU",
+   "awayName": "OSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 15,
+   "awayScore": 19,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858491",
+   "week": 7,
+   "date": "2026-10-17T16:00Z",
+   "home": "127",
+   "away": "77",
+   "homeName": "MSU",
+   "awayName": "NU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "77",
+   "homeScore": 21,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858489",
+   "week": 7,
+   "date": "2026-10-17T16:30Z",
+   "home": "120",
+   "away": "164",
+   "homeName": "MD",
+   "awayName": "RUTG",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "164",
+   "homeScore": 30,
+   "awayScore": 37,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858490",
+   "week": 7,
+   "date": "2026-10-17T19:30Z",
+   "home": "130",
+   "away": "213",
+   "homeName": "MICH",
+   "awayName": "PSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "130",
+   "homeScore": 21,
+   "awayScore": 18,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858494",
+   "week": 7,
+   "date": "2026-10-17T23:30Z",
+   "home": "26",
+   "away": "275",
+   "homeName": "UCLA",
+   "awayName": "WIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 17,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858492",
+   "week": 7,
+   "date": "2026-10-18T03:00Z",
+   "home": "2483",
+   "away": "158",
+   "homeName": "ORE",
+   "awayName": "NEB",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 17,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858496",
+   "week": 8,
+   "date": "2026-10-24T16:00Z",
+   "home": "130",
+   "away": "84",
+   "homeName": "MICH",
+   "awayName": "IU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 6,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858498",
+   "week": 8,
+   "date": "2026-10-24T16:00Z",
+   "home": "77",
+   "away": "164",
+   "homeName": "NU",
+   "awayName": "RUTG",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "77",
+   "homeScore": 42,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858495",
+   "week": 8,
+   "date": "2026-10-24T19:00Z",
+   "home": "356",
+   "away": "2483",
+   "homeName": "ILL",
+   "awayName": "ORE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "356",
+   "homeScore": 21,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858499",
+   "week": 8,
+   "date": "2026-10-24T19:30Z",
+   "home": "26",
+   "away": "127",
+   "homeName": "UCLA",
+   "awayName": "MSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 28,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858497",
+   "week": 8,
+   "date": "2026-10-24T19:30Z",
+   "home": "135",
+   "away": "2294",
+   "homeName": "MINN",
+   "awayName": "IOWA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "135",
+   "homeScore": 13,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858500",
+   "week": 8,
+   "date": "2026-10-24T23:30Z",
+   "home": "275",
+   "away": "30",
+   "homeName": "WIS",
+   "awayName": "USC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "275",
+   "homeScore": 24,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858502",
+   "week": 9,
+   "date": "2026-10-31T16:00Z",
+   "home": "2294",
+   "away": "275",
+   "homeName": "IOWA",
+   "awayName": "WIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 30,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858503",
+   "week": 9,
+   "date": "2026-10-31T16:00Z",
+   "home": "120",
+   "away": "356",
+   "homeName": "MD",
+   "awayName": "ILL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "356",
+   "homeScore": 17,
+   "awayScore": 20,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858507",
+   "week": 9,
+   "date": "2026-10-31T16:30Z",
+   "home": "164",
+   "away": "130",
+   "homeName": "RUTG",
+   "awayName": "MICH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "130",
+   "homeScore": 21,
+   "awayScore": 28,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858501",
+   "week": 9,
+   "date": "2026-10-31T19:30Z",
+   "home": "84",
+   "away": "135",
+   "homeName": "IU",
+   "awayName": "MINN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 23,
+   "awayScore": 16,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858505",
+   "week": 9,
+   "date": "2026-10-31T19:30Z",
+   "home": "2483",
+   "away": "77",
+   "homeName": "ORE",
+   "awayName": "NU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 34,
+   "awayScore": 26,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858508",
+   "week": 9,
+   "date": "2026-10-31T20:15Z",
+   "home": "26",
+   "away": "2440",
+   "homeName": "UCLA",
+   "awayName": "NEV",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 27,
+   "awayScore": 0,
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858506",
+   "week": 9,
+   "date": "2026-10-31T20:15Z",
+   "home": "213",
+   "away": "2509",
+   "homeName": "PSU",
+   "awayName": "PUR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "213",
+   "homeScore": 31,
+   "awayScore": 17,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858509",
+   "week": 9,
+   "date": "2026-10-31T23:30Z",
+   "home": "30",
+   "away": "194",
+   "homeName": "USC",
+   "awayName": "OSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 30,
+   "awayScore": 18,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858504",
+   "week": 9,
+   "date": "2026-11-01T00:00Z",
+   "home": "158",
+   "away": "264",
+   "homeName": "NEB",
+   "awayName": "WASH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 10,
+   "awayScore": 17,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858510",
+   "week": 10,
+   "date": "2026-11-07T01:00Z",
+   "home": "356",
+   "away": "158",
+   "homeName": "ILL",
+   "awayName": "NEB",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "356",
+   "homeScore": 24,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858512",
+   "week": 10,
+   "date": "2026-11-07T17:00Z",
+   "home": "135",
+   "away": "26",
+   "homeName": "MINN",
+   "awayName": "UCLA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 20,
+   "awayScore": 34,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858515",
+   "week": 10,
+   "date": "2026-11-07T17:30Z",
+   "home": "2509",
+   "away": "120",
+   "homeName": "PUR",
+   "awayName": "MD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "120",
+   "homeScore": 29,
+   "awayScore": 34,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858514",
+   "week": 10,
+   "date": "2026-11-07T20:30Z",
+   "home": "194",
+   "away": "2483",
+   "homeName": "OSU",
+   "awayName": "ORE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 28,
+   "awayScore": 41,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858516",
+   "week": 10,
+   "date": "2026-11-07T20:30Z",
+   "home": "264",
+   "away": "213",
+   "homeName": "WASH",
+   "awayName": "PSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "213",
+   "homeScore": 25,
+   "awayScore": 28,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858517",
+   "week": 10,
+   "date": "2026-11-07T21:15Z",
+   "home": "275",
+   "away": "164",
+   "homeName": "WIS",
+   "awayName": "RUTG",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "275",
+   "homeScore": 31,
+   "awayScore": 10,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858513",
+   "week": 10,
+   "date": "2026-11-08T00:30Z",
+   "home": "77",
+   "away": "2294",
+   "homeName": "NU",
+   "awayName": "IOWA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2294",
+   "homeScore": 10,
+   "awayScore": 24,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858511",
+   "week": 10,
+   "date": "2026-11-08T00:30Z",
+   "home": "130",
+   "away": "127",
+   "homeName": "MICH",
+   "awayName": "MSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "127",
+   "homeScore": 6,
+   "awayScore": 15,
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858526",
+   "week": 11,
+   "date": "2026-11-14T02:00Z",
+   "home": "26",
+   "away": "356",
+   "homeName": "UCLA",
+   "awayName": "ILL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 22,
+   "awayScore": 14,
+   "pHome": null,
+   "predAt": "2026-11-13T10:19Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "Fox",
+   "spread": "UCLA -10",
+   "overUnder": 47.5,
+   "venue": "Rose Bowl",
+   "city": "Pasadena, CA",
+   "wp": {
+    "pts": [
+     [
+      0,
+      750
+     ],
+     [
+      4,
+      750
+     ],
+     [
+      64,
+      760
+     ],
+     [
+      101,
+      748
+     ],
+     [
+      143,
+      838
+     ],
+     [
+      149,
+      841
+     ],
+     [
+      218,
+      825
+     ],
+     [
+      252,
+      833
+     ],
+     [
+      258,
+      835
+     ],
+     [
+      305,
+      853
+     ],
+     [
+      314,
+      865
+     ],
+     [
+      394,
+      872
+     ],
+     [
+      437,
+      861
+     ],
+     [
+      471,
+      861
+     ],
+     [
+      546,
+      842
+     ],
+     [
+      556,
+      850
+     ],
+     [
+      602,
+      863
+     ],
+     [
+      644,
+      875
+     ],
+     [
+      656,
+      842
+     ],
+     [
+      699,
+      815
+     ],
+     [
+      737,
+      812
+     ],
+     [
+      805,
+      826
+     ],
+     [
+      826,
+      847
+     ],
+     [
+      843,
+      839
+     ],
+     [
+      875,
+      832
+     ],
+     [
+      905,
+      816
+     ],
+     [
+      912,
+      816
+     ],
+     [
+      917,
+      819
+     ],
+     [
+      991,
+      804
+     ],
+     [
+      1018,
+      808
+     ],
+     [
+      1103,
+      792
+     ],
+     [
+      1139,
+      804
+     ],
+     [
+      1168,
+      851
+     ],
+     [
+      1180,
+      840
+     ],
+     [
+      1233,
+      859
+     ],
+     [
+      1292,
+      848
+     ],
+     [
+      1340,
+      911
+     ],
+     [
+      1365,
+      863
+     ],
+     [
+      1396,
+      868
+     ],
+     [
+      1443,
+      847
+     ],
+     [
+      1513,
+      859
+     ],
+     [
+      1518,
+      870
+     ],
+     [
+      1532,
+      858
+     ],
+     [
+      1538,
+      871
+     ],
+     [
+      1580,
+      885
+     ],
+     [
+      1657,
+      898
+     ],
+     [
+      1680,
+      896
+     ],
+     [
+      1686,
+      896
+     ],
+     [
+      1698,
+      904
+     ],
+     [
+      1704,
+      910
+     ],
+     [
+      1704,
+      913
+     ],
+     [
+      1711,
+      890
+     ],
+     [
+      1711,
+      889
+     ],
+     [
+      1714,
+      887
+     ],
+     [
+      1719,
+      886
+     ],
+     [
+      1735,
+      890
+     ],
+     [
+      1749,
+      900
+     ],
+     [
+      1756,
+      904
+     ],
+     [
+      1765,
+      905
+     ],
+     [
+      1776,
+      898
+     ],
+     [
+      1788,
+      897
+     ],
+     [
+      1800,
+      911
+     ],
+     [
+      1800,
+      903
+     ],
+     [
+      1804,
+      882
+     ],
+     [
+      1891,
+      868
+     ],
+     [
+      1922,
+      928
+     ],
+     [
+      1972,
+      916
+     ],
+     [
+      2012,
+      936
+     ],
+     [
+      2060,
+      930
+     ],
+     [
+      2105,
+      902
+     ],
+     [
+      2152,
+      904
+     ],
+     [
+      2193,
+      938
+     ],
+     [
+      2199,
+      942
+     ],
+     [
+      2256,
+      945
+     ],
+     [
+      2299,
+      952
+     ],
+     [
+      2348,
+      944
+     ],
+     [
+      2400,
+      937
+     ],
+     [
+      2436,
+      914
+     ],
+     [
+      2447,
+      919
+     ],
+     [
+      2490,
+      906
+     ],
+     [
+      2565,
+      884
+     ],
+     [
+      2595,
+      890
+     ],
+     [
+      2632,
+      830
+     ],
+     [
+      2645,
+      802
+     ],
+     [
+      2674,
+      803
+     ],
+     [
+      2709,
+      856
+     ],
+     [
+      2732,
+      861
+     ],
+     [
+      2816,
+      899
+     ],
+     [
+      2857,
+      891
+     ],
+     [
+      2902,
+      956
+     ],
+     [
+      2909,
+      950
+     ],
+     [
+      2946,
+      958
+     ],
+     [
+      3003,
+      949
+     ],
+     [
+      3033,
+      960
+     ],
+     [
+      3062,
+      969
+     ],
+     [
+      3136,
+      900
+     ],
+     [
+      3151,
+      914
+     ],
+     [
+      3161,
+      967
+     ],
+     [
+      3166,
+      863
+     ],
+     [
+      3172,
+      836
+     ],
+     [
+      3179,
+      859
+     ],
+     [
+      3223,
+      805
+     ],
+     [
+      3237,
+      850
+     ],
+     [
+      3274,
+      829
+     ],
+     [
+      3317,
+      810
+     ],
+     [
+      3358,
+      779
+     ],
+     [
+      3397,
+      839
+     ],
+     [
+      3425,
+      902
+     ],
+     [
+      3438,
+      964
+     ],
+     [
+      3444,
+      991
+     ],
+     [
+      3448,
+      977
+     ],
+     [
+      3480,
+      972
+     ],
+     [
+      3484,
+      981
+     ],
+     [
+      3484,
+      985
+     ],
+     [
+      3491,
+      974
+     ],
+     [
+      3503,
+      984
+     ],
+     [
+      3544,
+      996
+     ],
+     [
+      3553,
+      999
+     ],
+     [
+      3559,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 22,
+    "awayScore": 14
+   },
+   "moved": {
+    "26": [
+     0.7155,
+     0.822
+    ],
+    "84": [
+     0.6586,
+     0.6458
+    ],
+    "194": [
+     0.173,
+     0.1313
+    ],
+    "356": [
+     0.007575,
+     0
+    ],
+    "2294": [
+     0.03105,
+     0.02198
+    ],
+    "2483": [
+     0.2699,
+     0.2394
+    ]
+   }
+  },
+  {
+   "id": "401858522",
+   "week": 11,
+   "date": "2026-11-14T17:00Z",
+   "home": "194",
+   "away": "77",
+   "homeName": "OSU",
+   "awayName": "NU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "194",
+   "homeScore": 28,
+   "awayScore": 19,
+   "pHome": null,
+   "predAt": "2026-11-14T23:57Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "Fox",
+   "spread": "OSU -14",
+   "overUnder": 45.5,
+   "venue": "Ohio Stadium",
+   "city": "Columbus, OH",
+   "wp": {
+    "pts": [
+     [
+      0,
+      850
+     ],
+     [
+      0,
+      852
+     ],
+     [
+      0,
+      864
+     ],
+     [
+      81,
+      873
+     ],
+     [
+      81,
+      889
+     ],
+     [
+      81,
+      884
+     ],
+     [
+      81,
+      848
+     ],
+     [
+      202,
+      849
+     ],
+     [
+      202,
+      822
+     ],
+     [
+      202,
+      831
+     ],
+     [
+      202,
+      840
+     ],
+     [
+      202,
+      803
+     ],
+     [
+      202,
+      806
+     ],
+     [
+      202,
+      793
+     ],
+     [
+      202,
+      797
+     ],
+     [
+      202,
+      831
+     ],
+     [
+      607,
+      787
+     ],
+     [
+      607,
+      793
+     ],
+     [
+      607,
+      799
+     ],
+     [
+      607,
+      811
+     ],
+     [
+      607,
+      810
+     ],
+     [
+      607,
+      822
+     ],
+     [
+      607,
+      828
+     ],
+     [
+      607,
+      842
+     ],
+     [
+      900,
+      832
+     ],
+     [
+      900,
+      840
+     ],
+     [
+      945,
+      867
+     ],
+     [
+      945,
+      867
+     ],
+     [
+      945,
+      865
+     ],
+     [
+      945,
+      874
+     ],
+     [
+      945,
+      816
+     ],
+     [
+      945,
+      851
+     ],
+     [
+      945,
+      863
+     ],
+     [
+      1240,
+      832
+     ],
+     [
+      1249,
+      836
+     ],
+     [
+      1249,
+      843
+     ],
+     [
+      1249,
+      841
+     ],
+     [
+      1249,
+      846
+     ],
+     [
+      1249,
+      859
+     ],
+     [
+      1249,
+      872
+     ],
+     [
+      1249,
+      872
+     ],
+     [
+      1564,
+      876
+     ],
+     [
+      1564,
+      872
+     ],
+     [
+      1564,
+      861
+     ],
+     [
+      1564,
+      890
+     ],
+     [
+      1629,
+      908
+     ],
+     [
+      1629,
+      912
+     ],
+     [
+      1629,
+      906
+     ],
+     [
+      1680,
+      907
+     ],
+     [
+      1680,
+      904
+     ],
+     [
+      1680,
+      894
+     ],
+     [
+      1680,
+      900
+     ],
+     [
+      1680,
+      909
+     ],
+     [
+      1680,
+      913
+     ],
+     [
+      1759,
+      912
+     ],
+     [
+      1765,
+      908
+     ],
+     [
+      1800,
+      912
+     ],
+     [
+      1800,
+      915
+     ],
+     [
+      1800,
+      918
+     ],
+     [
+      1800,
+      904
+     ],
+     [
+      1868,
+      894
+     ],
+     [
+      1868,
+      885
+     ],
+     [
+      1868,
+      845
+     ],
+     [
+      1868,
+      847
+     ],
+     [
+      1868,
+      820
+     ],
+     [
+      2099,
+      798
+     ],
+     [
+      2105,
+      791
+     ],
+     [
+      2105,
+      794
+     ],
+     [
+      2105,
+      818
+     ],
+     [
+      2105,
+      837
+     ],
+     [
+      2105,
+      841
+     ],
+     [
+      2105,
+      841
+     ],
+     [
+      2105,
+      827
+     ],
+     [
+      2105,
+      875
+     ],
+     [
+      2105,
+      868
+     ],
+     [
+      2105,
+      830
+     ],
+     [
+      2522,
+      909
+     ],
+     [
+      2532,
+      906
+     ],
+     [
+      2532,
+      912
+     ],
+     [
+      2532,
+      931
+     ],
+     [
+      2623,
+      874
+     ],
+     [
+      2623,
+      898
+     ],
+     [
+      2623,
+      900
+     ],
+     [
+      2700,
+      901
+     ],
+     [
+      2745,
+      920
+     ],
+     [
+      2745,
+      935
+     ],
+     [
+      2745,
+      907
+     ],
+     [
+      2745,
+      912
+     ],
+     [
+      2745,
+      902
+     ],
+     [
+      2865,
+      885
+     ],
+     [
+      2865,
+      898
+     ],
+     [
+      2865,
+      926
+     ],
+     [
+      2917,
+      952
+     ],
+     [
+      2917,
+      945
+     ],
+     [
+      2917,
+      963
+     ],
+     [
+      2917,
+      943
+     ],
+     [
+      2917,
+      929
+     ],
+     [
+      3155,
+      987
+     ],
+     [
+      3155,
+      982
+     ],
+     [
+      3155,
+      977
+     ],
+     [
+      3207,
+      995
+     ],
+     [
+      3207,
+      995
+     ],
+     [
+      3207,
+      994
+     ],
+     [
+      3207,
+      996
+     ],
+     [
+      3207,
+      998
+     ],
+     [
+      3354,
+      999
+     ],
+     [
+      3361,
+      999
+     ],
+     [
+      3361,
+      999
+     ],
+     [
+      3367,
+      999
+     ],
+     [
+      3367,
+      999
+     ],
+     [
+      3420,
+      999
+     ],
+     [
+      3420,
+      999
+     ],
+     [
+      3480,
+      999
+     ],
+     [
+      3535,
+      999
+     ],
+     [
+      3535,
+      999
+     ],
+     [
+      3535,
+      999
+     ],
+     [
+      3535,
+      998
+     ],
+     [
+      3535,
+      998
+     ],
+     [
+      3600,
+      993
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 28,
+    "awayScore": 19
+   },
+   "moved": {
+    "26": [
+     0.819,
+     0.8081
+    ],
+    "84": [
+     0.647,
+     0.6401
+    ],
+    "194": [
+     0.1334,
+     0.1566
+    ]
+   }
+  },
+  {
+   "id": "401858520",
+   "week": 11,
+   "date": "2026-11-14T17:00Z",
+   "home": "120",
+   "away": "275",
+   "homeName": "MD",
+   "awayName": "WIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "120",
+   "homeScore": 24,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": "2026-11-14T23:57Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "FS1",
+   "spread": "WIS -8.5",
+   "overUnder": 41.5,
+   "venue": "SECU Stadium",
+   "city": "College Park, MD",
+   "wp": {
+    "pts": [
+     [
+      0,
+      235
+     ],
+     [
+      14,
+      237
+     ],
+     [
+      80,
+      209
+     ],
+     [
+      109,
+      201
+     ],
+     [
+      121,
+      220
+     ],
+     [
+      162,
+      183
+     ],
+     [
+      202,
+      147
+     ],
+     [
+      239,
+      133
+     ],
+     [
+      244,
+      135
+     ],
+     [
+      280,
+      132
+     ],
+     [
+      353,
+      140
+     ],
+     [
+      360,
+      131
+     ],
+     [
+      413,
+      121
+     ],
+     [
+      413,
+      121
+     ],
+     [
+      453,
+      132
+     ],
+     [
+      475,
+      140
+     ],
+     [
+      517,
+      160
+     ],
+     [
+      562,
+      175
+     ],
+     [
+      623,
+      141
+     ],
+     [
+      658,
+      133
+     ],
+     [
+      690,
+      136
+     ],
+     [
+      700,
+      153
+     ],
+     [
+      786,
+      166
+     ],
+     [
+      817,
+      129
+     ],
+     [
+      822,
+      163
+     ],
+     [
+      858,
+      172
+     ],
+     [
+      885,
+      168
+     ],
+     [
+      907,
+      164
+     ],
+     [
+      950,
+      138
+     ],
+     [
+      982,
+      115
+     ],
+     [
+      995,
+      117
+     ],
+     [
+      1075,
+      100
+     ],
+     [
+      1099,
+      106
+     ],
+     [
+      1145,
+      100
+     ],
+     [
+      1182,
+      86
+     ],
+     [
+      1264,
+      102
+     ],
+     [
+      1264,
+      101
+     ],
+     [
+      1312,
+      106
+     ],
+     [
+      1312,
+      101
+     ],
+     [
+      1327,
+      98
+     ],
+     [
+      1346,
+      95
+     ],
+     [
+      1424,
+      134
+     ],
+     [
+      1427,
+      135
+     ],
+     [
+      1486,
+      136
+     ],
+     [
+      1499,
+      164
+     ],
+     [
+      1570,
+      189
+     ],
+     [
+      1604,
+      210
+     ],
+     [
+      1612,
+      207
+     ],
+     [
+      1641,
+      216
+     ],
+     [
+      1651,
+      233
+     ],
+     [
+      1680,
+      240
+     ],
+     [
+      1680,
+      243
+     ],
+     [
+      1689,
+      251
+     ],
+     [
+      1697,
+      268
+     ],
+     [
+      1736,
+      297
+     ],
+     [
+      1760,
+      315
+     ],
+     [
+      1777,
+      308
+     ],
+     [
+      1784,
+      237
+     ],
+     [
+      1800,
+      232
+     ],
+     [
+      1808,
+      184
+     ],
+     [
+      1850,
+      206
+     ],
+     [
+      1894,
+      236
+     ],
+     [
+      1936,
+      207
+     ],
+     [
+      1968,
+      200
+     ],
+     [
+      2051,
+      202
+     ],
+     [
+      2051,
+      198
+     ],
+     [
+      2061,
+      348
+     ],
+     [
+      2082,
+      334
+     ],
+     [
+      2160,
+      285
+     ],
+     [
+      2196,
+      440
+     ],
+     [
+      2213,
+      448
+     ],
+     [
+      2262,
+      474
+     ],
+     [
+      2303,
+      518
+     ],
+     [
+      2312,
+      381
+     ],
+     [
+      2317,
+      404
+     ],
+     [
+      2362,
+      364
+     ],
+     [
+      2363,
+      276
+     ],
+     [
+      2437,
+      388
+     ],
+     [
+      2437,
+      399
+     ],
+     [
+      2439,
+      370
+     ],
+     [
+      2451,
+      335
+     ],
+     [
+      2537,
+      325
+     ],
+     [
+      2569,
+      319
+     ],
+     [
+      2577,
+      326
+     ],
+     [
+      2625,
+      292
+     ],
+     [
+      2686,
+      270
+     ],
+     [
+      2700,
+      270
+     ],
+     [
+      2751,
+      168
+     ],
+     [
+      2756,
+      127
+     ],
+     [
+      2773,
+      106
+     ],
+     [
+      2822,
+      91
+     ],
+     [
+      2909,
+      136
+     ],
+     [
+      2947,
+      151
+     ],
+     [
+      2999,
+      118
+     ],
+     [
+      3014,
+      100
+     ],
+     [
+      3077,
+      90
+     ],
+     [
+      3077,
+      88
+     ],
+     [
+      3087,
+      111
+     ],
+     [
+      3125,
+      145
+     ],
+     [
+      3135,
+      120
+     ],
+     [
+      3143,
+      132
+     ],
+     [
+      3185,
+      150
+     ],
+     [
+      3242,
+      83
+     ],
+     [
+      3284,
+      58
+     ],
+     [
+      3341,
+      49
+     ],
+     [
+      3385,
+      54
+     ],
+     [
+      3461,
+      111
+     ],
+     [
+      3469,
+      392
+     ],
+     [
+      3480,
+      316
+     ],
+     [
+      3480,
+      323
+     ],
+     [
+      3495,
+      736
+     ],
+     [
+      3528,
+      810
+     ],
+     [
+      3555,
+      828
+     ],
+     [
+      3563,
+      880
+     ],
+     [
+      3569,
+      836
+     ],
+     [
+      3569,
+      832
+     ],
+     [
+      3571,
+      991
+     ],
+     [
+      3573,
+      979
+     ],
+     [
+      3598,
+      997
+     ],
+     [
+      3598,
+      997
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 24,
+    "awayScore": 21
+   },
+   "moved": {
+    "26": [
+     0.819,
+     0.8342
+    ],
+    "30": [
+     0.09285,
+     0.08482
+    ],
+    "84": [
+     0.647,
+     0.658
+    ],
+    "194": [
+     0.1334,
+     0.1568
+    ],
+    "275": [
+     0.04843,
+     0
+    ],
+    "2294": [
+     0.02265,
+     0.0364
+    ],
+    "2483": [
+     0.2367,
+     0.2297
+    ]
+   }
+  },
+  {
+   "id": "401858525",
+   "week": 11,
+   "date": "2026-11-14T17:30Z",
+   "home": "164",
+   "away": "158",
+   "homeName": "RUTG",
+   "awayName": "NEB",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "158",
+   "homeScore": 0,
+   "awayScore": 31,
+   "pHome": null,
+   "predAt": "2026-11-14T23:57Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "BTN",
+   "spread": "NEB -15.5",
+   "overUnder": 51.5,
+   "venue": "SHI Stadium",
+   "city": "Piscataway, NJ",
+   "wp": {
+    "pts": [
+     [
+      0,
+      136
+     ],
+     [
+      14,
+      137
+     ],
+     [
+      89,
+      122
+     ],
+     [
+      121,
+      147
+     ],
+     [
+      153,
+      142
+     ],
+     [
+      163,
+      157
+     ],
+     [
+      248,
+      145
+     ],
+     [
+      286,
+      135
+     ],
+     [
+      323,
+      142
+     ],
+     [
+      339,
+      146
+     ],
+     [
+      401,
+      136
+     ],
+     [
+      439,
+      126
+     ],
+     [
+      485,
+      121
+     ],
+     [
+      523,
+      124
+     ],
+     [
+      581,
+      116
+     ],
+     [
+      623,
+      124
+     ],
+     [
+      638,
+      119
+     ],
+     [
+      697,
+      143
+     ],
+     [
+      754,
+      116
+     ],
+     [
+      825,
+      105
+     ],
+     [
+      841,
+      109
+     ],
+     [
+      874,
+      119
+     ],
+     [
+      880,
+      85
+     ],
+     [
+      887,
+      95
+     ],
+     [
+      900,
+      95
+     ],
+     [
+      909,
+      92
+     ],
+     [
+      991,
+      77
+     ],
+     [
+      1034,
+      83
+     ],
+     [
+      1042,
+      88
+     ],
+     [
+      1083,
+      73
+     ],
+     [
+      1131,
+      74
+     ],
+     [
+      1154,
+      78
+     ],
+     [
+      1165,
+      78
+     ],
+     [
+      1189,
+      82
+     ],
+     [
+      1223,
+      88
+     ],
+     [
+      1232,
+      91
+     ],
+     [
+      1255,
+      88
+     ],
+     [
+      1291,
+      98
+     ],
+     [
+      1365,
+      88
+     ],
+     [
+      1381,
+      80
+     ],
+     [
+      1388,
+      86
+     ],
+     [
+      1417,
+      91
+     ],
+     [
+      1480,
+      78
+     ],
+     [
+      1506,
+      77
+     ],
+     [
+      1526,
+      81
+     ],
+     [
+      1563,
+      88
+     ],
+     [
+      1641,
+      71
+     ],
+     [
+      1675,
+      47
+     ],
+     [
+      1675,
+      48
+     ],
+     [
+      1685,
+      35
+     ],
+     [
+      1701,
+      34
+     ],
+     [
+      1728,
+      32
+     ],
+     [
+      1735,
+      31
+     ],
+     [
+      1780,
+      32
+     ],
+     [
+      1795,
+      33
+     ],
+     [
+      1795,
+      33
+     ],
+     [
+      1795,
+      31
+     ],
+     [
+      1800,
+      23
+     ],
+     [
+      1808,
+      29
+     ],
+     [
+      1855,
+      24
+     ],
+     [
+      1888,
+      26
+     ],
+     [
+      1894,
+      29
+     ],
+     [
+      1942,
+      40
+     ],
+     [
+      1954,
+      47
+     ],
+     [
+      1988,
+      55
+     ],
+     [
+      2026,
+      50
+     ],
+     [
+      2051,
+      20
+     ],
+     [
+      2091,
+      19
+     ],
+     [
+      2135,
+      19
+     ],
+     [
+      2150,
+      2
+     ],
+     [
+      2199,
+      7
+     ],
+     [
+      2207,
+      8
+     ],
+     [
+      2225,
+      7
+     ],
+     [
+      2267,
+      8
+     ],
+     [
+      2349,
+      5
+     ],
+     [
+      2377,
+      4
+     ],
+     [
+      2385,
+      3
+     ],
+     [
+      2402,
+      4
+     ],
+     [
+      2469,
+      4
+     ],
+     [
+      2485,
+      7
+     ],
+     [
+      2495,
+      6
+     ],
+     [
+      2538,
+      6
+     ],
+     [
+      2610,
+      3
+     ],
+     [
+      2639,
+      2
+     ],
+     [
+      2651,
+      1
+     ],
+     [
+      2664,
+      1
+     ],
+     [
+      2700,
+      1
+     ],
+     [
+      2714,
+      1
+     ],
+     [
+      2730,
+      1
+     ],
+     [
+      2730,
+      1
+     ],
+     [
+      2772,
+      1
+     ],
+     [
+      2783,
+      1
+     ],
+     [
+      2819,
+      1
+     ],
+     [
+      2833,
+      1
+     ],
+     [
+      2890,
+      1
+     ],
+     [
+      2917,
+      1
+     ],
+     [
+      2959,
+      1
+     ],
+     [
+      2969,
+      1
+     ],
+     [
+      3015,
+      1
+     ],
+     [
+      3015,
+      1
+     ],
+     [
+      3024,
+      1
+     ],
+     [
+      3052,
+      1
+     ],
+     [
+      3190,
+      1
+     ],
+     [
+      3190,
+      1
+     ],
+     [
+      3201,
+      1
+     ],
+     [
+      3201,
+      1
+     ],
+     [
+      3253,
+      1
+     ],
+     [
+      3266,
+      1
+     ],
+     [
+      3305,
+      1
+     ],
+     [
+      3322,
+      1
+     ],
+     [
+      3400,
+      1
+     ],
+     [
+      3429,
+      1
+     ],
+     [
+      3441,
+      1
+     ],
+     [
+      3477,
+      1
+     ],
+     [
+      3513,
+      1
+     ],
+     [
+      3523,
+      1
+     ],
+     [
+      3539,
+      1
+     ],
+     [
+      3571,
+      1
+     ],
+     [
+      3591,
+      1
+     ],
+     [
+      3600,
+      0
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 0,
+    "awayScore": 31,
+    "state": "post"
+   },
+   "moved": {}
+  },
+  {
+   "id": "401858518",
+   "week": 11,
+   "date": "2026-11-14T20:30Z",
+   "home": "84",
+   "away": "30",
+   "homeName": "IU",
+   "awayName": "USC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "84",
+   "homeScore": 27,
+   "awayScore": 13,
+   "pHome": null,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "CBS",
+   "spread": "IU -8.5",
+   "overUnder": 51.5,
+   "venue": "Memorial Stadium (Bloomington, IN)",
+   "city": "Bloomington, IN",
+   "wp": {
+    "pts": [
+     [
+      0,
+      771
+     ],
+     [
+      28,
+      759
+     ],
+     [
+      51,
+      755
+     ],
+     [
+      119,
+      737
+     ],
+     [
+      133,
+      743
+     ],
+     [
+      186,
+      711
+     ],
+     [
+      214,
+      741
+     ],
+     [
+      260,
+      774
+     ],
+     [
+      263,
+      793
+     ],
+     [
+      269,
+      784
+     ],
+     [
+      271,
+      879
+     ],
+     [
+      360,
+      833
+     ],
+     [
+      402,
+      871
+     ],
+     [
+      402,
+      864
+     ],
+     [
+      474,
+      852
+     ],
+     [
+      488,
+      848
+     ],
+     [
+      529,
+      833
+     ],
+     [
+      571,
+      845
+     ],
+     [
+      620,
+      801
+     ],
+     [
+      648,
+      797
+     ],
+     [
+      734,
+      831
+     ],
+     [
+      775,
+      844
+     ],
+     [
+      785,
+      838
+     ],
+     [
+      826,
+      838
+     ],
+     [
+      857,
+      829
+     ],
+     [
+      866,
+      806
+     ],
+     [
+      900,
+      805
+     ],
+     [
+      922,
+      827
+     ],
+     [
+      937,
+      830
+     ],
+     [
+      1006,
+      833
+     ],
+     [
+      1006,
+      835
+     ],
+     [
+      1034,
+      816
+     ],
+     [
+      1079,
+      804
+     ],
+     [
+      1119,
+      849
+     ],
+     [
+      1145,
+      804
+     ],
+     [
+      1182,
+      802
+     ],
+     [
+      1216,
+      831
+     ],
+     [
+      1224,
+      821
+     ],
+     [
+      1231,
+      811
+     ],
+     [
+      1261,
+      800
+     ],
+     [
+      1306,
+      868
+     ],
+     [
+      1327,
+      868
+     ],
+     [
+      1371,
+      854
+     ],
+     [
+      1408,
+      838
+     ],
+     [
+      1413,
+      808
+     ],
+     [
+      1427,
+      819
+     ],
+     [
+      1467,
+      862
+     ],
+     [
+      1534,
+      836
+     ],
+     [
+      1560,
+      875
+     ],
+     [
+      1644,
+      889
+     ],
+     [
+      1681,
+      885
+     ],
+     [
+      1686,
+      877
+     ],
+     [
+      1692,
+      857
+     ],
+     [
+      1695,
+      863
+     ],
+     [
+      1695,
+      876
+     ],
+     [
+      1713,
+      882
+     ],
+     [
+      1744,
+      888
+     ],
+     [
+      1756,
+      890
+     ],
+     [
+      1771,
+      804
+     ],
+     [
+      1775,
+      806
+     ],
+     [
+      1779,
+      714
+     ],
+     [
+      1784,
+      708
+     ],
+     [
+      1800,
+      728
+     ],
+     [
+      1807,
+      735
+     ],
+     [
+      1846,
+      720
+     ],
+     [
+      1876,
+      756
+     ],
+     [
+      1906,
+      776
+     ],
+     [
+      1976,
+      792
+     ],
+     [
+      1978,
+      809
+     ],
+     [
+      2019,
+      820
+     ],
+     [
+      2058,
+      797
+     ],
+     [
+      2098,
+      761
+     ],
+     [
+      2098,
+      757
+     ],
+     [
+      2113,
+      726
+     ],
+     [
+      2140,
+      722
+     ],
+     [
+      2213,
+      697
+     ],
+     [
+      2301,
+      641
+     ],
+     [
+      2343,
+      652
+     ],
+     [
+      2393,
+      709
+     ],
+     [
+      2433,
+      694
+     ],
+     [
+      2440,
+      692
+     ],
+     [
+      2472,
+      747
+     ],
+     [
+      2526,
+      852
+     ],
+     [
+      2541,
+      864
+     ],
+     [
+      2549,
+      883
+     ],
+     [
+      2569,
+      894
+     ],
+     [
+      2616,
+      834
+     ],
+     [
+      2672,
+      761
+     ],
+     [
+      2684,
+      765
+     ],
+     [
+      2709,
+      794
+     ],
+     [
+      2749,
+      839
+     ],
+     [
+      2752,
+      886
+     ],
+     [
+      2760,
+      881
+     ],
+     [
+      2803,
+      886
+     ],
+     [
+      2814,
+      926
+     ],
+     [
+      2854,
+      913
+     ],
+     [
+      2863,
+      915
+     ],
+     [
+      2942,
+      898
+     ],
+     [
+      2981,
+      907
+     ],
+     [
+      2981,
+      905
+     ],
+     [
+      3028,
+      900
+     ],
+     [
+      3064,
+      866
+     ],
+     [
+      3093,
+      846
+     ],
+     [
+      3205,
+      864
+     ],
+     [
+      3205,
+      756
+     ],
+     [
+      3205,
+      878
+     ],
+     [
+      3258,
+      924
+     ],
+     [
+      3301,
+      966
+     ],
+     [
+      3379,
+      974
+     ],
+     [
+      3384,
+      977
+     ],
+     [
+      3384,
+      980
+     ],
+     [
+      3390,
+      999
+     ],
+     [
+      3397,
+      998
+     ],
+     [
+      3419,
+      999
+     ],
+     [
+      3419,
+      999
+     ],
+     [
+      3456,
+      999
+     ],
+     [
+      3462,
+      999
+     ],
+     [
+      3486,
+      999
+     ],
+     [
+      3525,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 27,
+    "awayScore": 13,
+    "state": "post"
+   },
+   "moved": {
+    "26": [
+     0.8113,
+     0.8243
+    ],
+    "30": [
+     0.0846,
+     0.0001893
+    ],
+    "84": [
+     0.6397,
+     0.8023
+    ],
+    "194": [
+     0.1691,
+     0.1257
+    ],
+    "2483": [
+     0.2674,
+     0.2151
+    ]
+   }
+  },
+  {
+   "id": "401858523",
+   "week": 11,
+   "date": "2026-11-14T20:30Z",
+   "home": "2483",
+   "away": "130",
+   "homeName": "ORE",
+   "awayName": "MICH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 31,
+   "awayScore": 7,
+   "pHome": null,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "FS1",
+   "spread": "ORE -10",
+   "overUnder": 39.5,
+   "venue": "Autzen Stadium",
+   "city": "Eugene, OR",
+   "wp": {
+    "pts": [
+     [
+      0,
+      865
+     ],
+     [
+      10,
+      864
+     ],
+     [
+      79,
+      871
+     ],
+     [
+      120,
+      917
+     ],
+     [
+      120,
+      915
+     ],
+     [
+      163,
+      910
+     ],
+     [
+      209,
+      907
+     ],
+     [
+      270,
+      906
+     ],
+     [
+      276,
+      910
+     ],
+     [
+      317,
+      920
+     ],
+     [
+      334,
+      910
+     ],
+     [
+      375,
+      929
+     ],
+     [
+      401,
+      926
+     ],
+     [
+      479,
+      914
+     ],
+     [
+      514,
+      913
+     ],
+     [
+      522,
+      914
+     ],
+     [
+      560,
+      917
+     ],
+     [
+      566,
+      926
+     ],
+     [
+      574,
+      930
+     ],
+     [
+      586,
+      930
+     ],
+     [
+      602,
+      934
+     ],
+     [
+      646,
+      941
+     ],
+     [
+      686,
+      939
+     ],
+     [
+      728,
+      928
+     ],
+     [
+      809,
+      949
+     ],
+     [
+      847,
+      946
+     ],
+     [
+      887,
+      958
+     ],
+     [
+      891,
+      957
+     ],
+     [
+      900,
+      957
+     ],
+     [
+      911,
+      918
+     ],
+     [
+      927,
+      922
+     ],
+     [
+      963,
+      932
+     ],
+     [
+      985,
+      924
+     ],
+     [
+      1030,
+      944
+     ],
+     [
+      1039,
+      948
+     ],
+     [
+      1095,
+      947
+     ],
+     [
+      1125,
+      952
+     ],
+     [
+      1160,
+      948
+     ],
+     [
+      1201,
+      931
+     ],
+     [
+      1243,
+      914
+     ],
+     [
+      1251,
+      920
+     ],
+     [
+      1369,
+      932
+     ],
+     [
+      1384,
+      922
+     ],
+     [
+      1400,
+      919
+     ],
+     [
+      1444,
+      906
+     ],
+     [
+      1482,
+      905
+     ],
+     [
+      1533,
+      897
+     ],
+     [
+      1571,
+      900
+     ],
+     [
+      1593,
+      910
+     ],
+     [
+      1664,
+      903
+     ],
+     [
+      1671,
+      900
+     ],
+     [
+      1683,
+      896
+     ],
+     [
+      1700,
+      889
+     ],
+     [
+      1707,
+      878
+     ],
+     [
+      1727,
+      889
+     ],
+     [
+      1733,
+      903
+     ],
+     [
+      1742,
+      899
+     ],
+     [
+      1768,
+      904
+     ],
+     [
+      1776,
+      906
+     ],
+     [
+      1794,
+      964
+     ],
+     [
+      1796,
+      965
+     ],
+     [
+      1800,
+      966
+     ],
+     [
+      1800,
+      962
+     ],
+     [
+      1842,
+      960
+     ],
+     [
+      1888,
+      965
+     ],
+     [
+      1937,
+      952
+     ],
+     [
+      1980,
+      960
+     ],
+     [
+      1990,
+      967
+     ],
+     [
+      2039,
+      974
+     ],
+     [
+      2073,
+      986
+     ],
+     [
+      2101,
+      986
+     ],
+     [
+      2132,
+      978
+     ],
+     [
+      2173,
+      973
+     ],
+     [
+      2214,
+      966
+     ],
+     [
+      2264,
+      968
+     ],
+     [
+      2307,
+      970
+     ],
+     [
+      2320,
+      964
+     ],
+     [
+      2408,
+      962
+     ],
+     [
+      2451,
+      965
+     ],
+     [
+      2508,
+      966
+     ],
+     [
+      2524,
+      974
+     ],
+     [
+      2573,
+      960
+     ],
+     [
+      2619,
+      950
+     ],
+     [
+      2664,
+      952
+     ],
+     [
+      2664,
+      940
+     ],
+     [
+      2706,
+      948
+     ],
+     [
+      2715,
+      949
+     ],
+     [
+      2763,
+      969
+     ],
+     [
+      2808,
+      981
+     ],
+     [
+      2837,
+      980
+     ],
+     [
+      2893,
+      978
+     ],
+     [
+      2938,
+      977
+     ],
+     [
+      2956,
+      980
+     ],
+     [
+      3044,
+      987
+     ],
+     [
+      3050,
+      989
+     ],
+     [
+      3085,
+      986
+     ],
+     [
+      3160,
+      989
+     ],
+     [
+      3202,
+      997
+     ],
+     [
+      3214,
+      996
+     ],
+     [
+      3242,
+      995
+     ],
+     [
+      3242,
+      995
+     ],
+     [
+      3250,
+      996
+     ],
+     [
+      3282,
+      999
+     ],
+     [
+      3290,
+      999
+     ],
+     [
+      3339,
+      998
+     ],
+     [
+      3346,
+      998
+     ],
+     [
+      3346,
+      999
+     ],
+     [
+      3357,
+      999
+     ],
+     [
+      3357,
+      999
+     ],
+     [
+      3357,
+      999
+     ],
+     [
+      3386,
+      999
+     ],
+     [
+      3394,
+      999
+     ],
+     [
+      3434,
+      999
+     ],
+     [
+      3467,
+      999
+     ],
+     [
+      3480,
+      999
+     ],
+     [
+      3527,
+      999
+     ],
+     [
+      3557,
+      999
+     ],
+     [
+      3560,
+      999
+     ],
+     [
+      3564,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 31,
+    "awayScore": 7,
+    "state": "post"
+   },
+   "moved": {
+    "26": [
+     0.8223,
+     0.8113
+    ],
+    "84": [
+     0.6489,
+     0.6397
+    ],
+    "194": [
+     0.1815,
+     0.1691
+    ],
+    "2483": [
+     0.2295,
+     0.2674
+    ]
+   }
+  },
+  {
+   "id": "401858521",
+   "week": 11,
+   "date": "2026-11-14T22:30Z",
+   "home": "127",
+   "away": "264",
+   "homeName": "MSU",
+   "awayName": "WASH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 14,
+   "awayScore": 21,
+   "pHome": null,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "BTN",
+   "spread": "WASH -2.5",
+   "overUnder": 44.5,
+   "venue": "Spartan Stadium",
+   "city": "East Lansing, MI",
+   "wp": {
+    "pts": [
+     [
+      0,
+      501
+     ],
+     [
+      0,
+      486
+     ],
+     [
+      0,
+      545
+     ],
+     [
+      0,
+      591
+     ],
+     [
+      0,
+      612
+     ],
+     [
+      202,
+      646
+     ],
+     [
+      210,
+      644
+     ],
+     [
+      210,
+      629
+     ],
+     [
+      210,
+      605
+     ],
+     [
+      210,
+      610
+     ],
+     [
+      210,
+      583
+     ],
+     [
+      210,
+      599
+     ],
+     [
+      210,
+      637
+     ],
+     [
+      751,
+      697
+     ],
+     [
+      900,
+      523
+     ],
+     [
+      900,
+      700
+     ],
+     [
+      900,
+      696
+     ],
+     [
+      900,
+      657
+     ],
+     [
+      900,
+      666
+     ],
+     [
+      900,
+      682
+     ],
+     [
+      900,
+      694
+     ],
+     [
+      900,
+      693
+     ],
+     [
+      900,
+      646
+     ],
+     [
+      900,
+      636
+     ],
+     [
+      900,
+      640
+     ],
+     [
+      900,
+      658
+     ],
+     [
+      900,
+      512
+     ],
+     [
+      900,
+      501
+     ],
+     [
+      900,
+      535
+     ],
+     [
+      900,
+      518
+     ],
+     [
+      900,
+      560
+     ],
+     [
+      900,
+      568
+     ],
+     [
+      900,
+      518
+     ],
+     [
+      900,
+      492
+     ],
+     [
+      1109,
+      482
+     ],
+     [
+      1109,
+      516
+     ],
+     [
+      1109,
+      462
+     ],
+     [
+      1270,
+      448
+     ],
+     [
+      1270,
+      451
+     ],
+     [
+      1270,
+      483
+     ],
+     [
+      1270,
+      427
+     ],
+     [
+      1270,
+      310
+     ],
+     [
+      1334,
+      299
+     ],
+     [
+      1334,
+      326
+     ],
+     [
+      1334,
+      323
+     ],
+     [
+      1334,
+      309
+     ],
+     [
+      1334,
+      350
+     ],
+     [
+      1334,
+      369
+     ],
+     [
+      1334,
+      364
+     ],
+     [
+      1334,
+      344
+     ],
+     [
+      1334,
+      426
+     ],
+     [
+      1334,
+      410
+     ],
+     [
+      1657,
+      399
+     ],
+     [
+      1657,
+      336
+     ],
+     [
+      1680,
+      490
+     ],
+     [
+      1685,
+      494
+     ],
+     [
+      1685,
+      466
+     ],
+     [
+      1685,
+      485
+     ],
+     [
+      1685,
+      507
+     ],
+     [
+      1717,
+      493
+     ],
+     [
+      1717,
+      472
+     ],
+     [
+      1800,
+      482
+     ],
+     [
+      1807,
+      466
+     ],
+     [
+      1807,
+      473
+     ],
+     [
+      1807,
+      449
+     ],
+     [
+      1807,
+      462
+     ],
+     [
+      1974,
+      484
+     ],
+     [
+      1974,
+      513
+     ],
+     [
+      2000,
+      518
+     ],
+     [
+      2000,
+      520
+     ],
+     [
+      2000,
+      548
+     ],
+     [
+      2000,
+      526
+     ],
+     [
+      2233,
+      498
+     ],
+     [
+      2233,
+      528
+     ],
+     [
+      2233,
+      559
+     ],
+     [
+      2298,
+      521
+     ],
+     [
+      2298,
+      524
+     ],
+     [
+      2298,
+      583
+     ],
+     [
+      2298,
+      525
+     ],
+     [
+      2298,
+      646
+     ],
+     [
+      2298,
+      627
+     ],
+     [
+      2565,
+      466
+     ],
+     [
+      2565,
+      460
+     ],
+     [
+      2565,
+      438
+     ],
+     [
+      2565,
+      446
+     ],
+     [
+      2565,
+      458
+     ],
+     [
+      2700,
+      452
+     ],
+     [
+      2700,
+      477
+     ],
+     [
+      2764,
+      504
+     ],
+     [
+      2764,
+      509
+     ],
+     [
+      2764,
+      493
+     ],
+     [
+      2764,
+      430
+     ],
+     [
+      2873,
+      646
+     ],
+     [
+      2873,
+      589
+     ],
+     [
+      2974,
+      421
+     ],
+     [
+      2974,
+      415
+     ],
+     [
+      2974,
+      507
+     ],
+     [
+      2974,
+      539
+     ],
+     [
+      3073,
+      555
+     ],
+     [
+      3073,
+      495
+     ],
+     [
+      3073,
+      464
+     ],
+     [
+      3168,
+      452
+     ],
+     [
+      3168,
+      509
+     ],
+     [
+      3168,
+      385
+     ],
+     [
+      3168,
+      283
+     ],
+     [
+      3168,
+      272
+     ],
+     [
+      3168,
+      304
+     ],
+     [
+      3456,
+      75
+     ],
+     [
+      3463,
+      26
+     ],
+     [
+      3463,
+      25
+     ],
+     [
+      3480,
+      20
+     ],
+     [
+      3480,
+      12
+     ],
+     [
+      3480,
+      53
+     ],
+     [
+      3480,
+      54
+     ],
+     [
+      3480,
+      42
+     ],
+     [
+      3539,
+      15
+     ],
+     [
+      3539,
+      68
+     ],
+     [
+      3554,
+      47
+     ],
+     [
+      3565,
+      1
+     ],
+     [
+      3600,
+      0
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 14,
+    "awayScore": 21,
+    "state": "post"
+   },
+   "moved": {}
+  },
+  {
+   "id": "401858524",
+   "week": 11,
+   "date": "2026-11-15T00:00Z",
+   "home": "213",
+   "away": "135",
+   "homeName": "PSU",
+   "awayName": "MINN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8347,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "FS1",
+   "spread": "PSU -12.5",
+   "overUnder": 42.5,
+   "venue": "Beaver Stadium",
+   "city": "University Park, PA",
+   "wp": {
+    "pts": [
+     [
+      0,
+      826
+     ],
+     [
+      0,
+      840
+     ],
+     [
+      0,
+      845
+     ],
+     [
+      0,
+      821
+     ],
+     [
+      0,
+      823
+     ],
+     [
+      0,
+      813
+     ],
+     [
+      206,
+      851
+     ],
+     [
+      206,
+      854
+     ],
+     [
+      206,
+      889
+     ],
+     [
+      206,
+      891
+     ],
+     [
+      206,
+      886
+     ],
+     [
+      376,
+      902
+     ],
+     [
+      376,
+      898
+     ],
+     [
+      376,
+      899
+     ],
+     [
+      376,
+      904
+     ],
+     [
+      376,
+      917
+     ],
+     [
+      376,
+      920
+     ],
+     [
+      475,
+      927
+     ],
+     [
+      475,
+      928
+     ],
+     [
+      475,
+      933
+     ],
+     [
+      475,
+      932
+     ],
+     [
+      585,
+      950
+     ],
+     [
+      585,
+      951
+     ],
+     [
+      585,
+      952
+     ],
+     [
+      585,
+      956
+     ],
+     [
+      585,
+      957
+     ],
+     [
+      585,
+      946
+     ],
+     [
+      585,
+      942
+     ],
+     [
+      585,
+      944
+     ],
+     [
+      585,
+      952
+     ],
+     [
+      585,
+      954
+     ],
+     [
+      896,
+      955
+     ],
+     [
+      896,
+      953
+     ],
+     [
+      900,
+      953
+     ],
+     [
+      900,
+      959
+     ],
+     [
+      900,
+      957
+     ],
+     [
+      900,
+      956
+     ],
+     [
+      900,
+      950
+     ],
+     [
+      1036,
+      953
+     ],
+     [
+      1036,
+      956
+     ],
+     [
+      1036,
+      956
+     ],
+     [
+      1036,
+      961
+     ],
+     [
+      1036,
+      962
+     ],
+     [
+      1108,
+      963
+     ],
+     [
+      1108,
+      962
+     ],
+     [
+      1108,
+      962
+     ],
+     [
+      1190,
+      981
+     ],
+     [
+      1190,
+      983
+     ],
+     [
+      1190,
+      983
+     ],
+     [
+      1190,
+      981
+     ],
+     [
+      1190,
+      982
+     ],
+     [
+      1190,
+      982
+     ],
+     [
+      1190,
+      985
+     ],
+     [
+      1325,
+      983
+     ],
+     [
+      1325,
+      984
+     ],
+     [
+      1325,
+      986
+     ],
+     [
+      1325,
+      987
+     ],
+     [
+      1325,
+      987
+     ],
+     [
+      1325,
+      986
+     ],
+     [
+      1325,
+      985
+     ],
+     [
+      1325,
+      983
+     ],
+     [
+      1554,
+      987
+     ],
+     [
+      1554,
+      989
+     ],
+     [
+      1554,
+      989
+     ],
+     [
+      1554,
+      990
+     ],
+     [
+      1613,
+      991
+     ],
+     [
+      1613,
+      992
+     ],
+     [
+      1680,
+      993
+     ],
+     [
+      1680,
+      996
+     ],
+     [
+      1680,
+      995
+     ],
+     [
+      1680,
+      995
+     ],
+     [
+      1763,
+      995
+     ],
+     [
+      1763,
+      997
+     ],
+     [
+      1772,
+      998
+     ],
+     [
+      1772,
+      998
+     ],
+     [
+      1779,
+      998
+     ],
+     [
+      1779,
+      998
+     ],
+     [
+      1782,
+      998
+     ],
+     [
+      1782,
+      998
+     ],
+     [
+      1782,
+      997
+     ],
+     [
+      1800,
+      997
+     ],
+     [
+      1800,
+      998
+     ],
+     [
+      1800,
+      998
+     ],
+     [
+      1800,
+      998
+     ],
+     [
+      1800,
+      997
+     ],
+     [
+      1800,
+      998
+     ],
+     [
+      1800,
+      999
+     ],
+     [
+      1800,
+      999
+     ],
+     [
+      1800,
+      999
+     ],
+     [
+      1800,
+      999
+     ],
+     [
+      1800,
+      999
+     ],
+     [
+      2136,
+      999
+     ],
+     [
+      2136,
+      999
+     ],
+     [
+      2187,
+      998
+     ],
+     [
+      2192,
+      998
+     ],
+     [
+      2192,
+      999
+     ],
+     [
+      2192,
+      999
+     ],
+     [
+      2192,
+      996
+     ],
+     [
+      2326,
+      999
+     ],
+     [
+      2326,
+      999
+     ],
+     [
+      2326,
+      999
+     ],
+     [
+      2326,
+      999
+     ],
+     [
+      2326,
+      999
+     ],
+     [
+      2326,
+      998
+     ]
+    ],
+    "final": false,
+    "detail": "4:54 - 3rd",
+    "homeScore": 35,
+    "awayScore": 7,
+    "state": "in"
+   }
+  },
+  {
+   "id": "401858519",
+   "week": 11,
+   "date": "2026-11-15T00:30Z",
+   "home": "2294",
+   "away": "2509",
+   "homeName": "IOWA",
+   "awayName": "PUR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8707,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "NBC",
+   "spread": "IOWA -19.5",
+   "overUnder": 47.5,
+   "venue": "Kinnick Stadium",
+   "city": "Iowa City, IA",
+   "wp": {
+    "pts": [
+     [
+      4,
+      868
+     ],
+     [
+      11,
+      870
+     ],
+     [
+      54,
+      870
+     ],
+     [
+      110,
+      838
+     ],
+     [
+      129,
+      842
+     ],
+     [
+      165,
+      850
+     ],
+     [
+      195,
+      819
+     ],
+     [
+      201,
+      828
+     ],
+     [
+      207,
+      836
+     ],
+     [
+      224,
+      834
+     ],
+     [
+      257,
+      846
+     ],
+     [
+      284,
+      867
+     ],
+     [
+      296,
+      870
+     ],
+     [
+      324,
+      866
+     ],
+     [
+      357,
+      871
+     ],
+     [
+      393,
+      874
+     ],
+     [
+      425,
+      878
+     ],
+     [
+      456,
+      870
+     ],
+     [
+      463,
+      875
+     ],
+     [
+      487,
+      893
+     ],
+     [
+      539,
+      886
+     ],
+     [
+      563,
+      898
+     ],
+     [
+      589,
+      892
+     ],
+     [
+      599,
+      897
+     ],
+     [
+      642,
+      908
+     ],
+     [
+      679,
+      906
+     ],
+     [
+      698,
+      912
+     ],
+     [
+      701,
+      917
+     ],
+     [
+      706,
+      923
+     ],
+     [
+      717,
+      926
+     ],
+     [
+      753,
+      924
+     ],
+     [
+      791,
+      933
+     ],
+     [
+      827,
+      933
+     ],
+     [
+      835,
+      932
+     ],
+     [
+      843,
+      936
+     ],
+     [
+      890,
+      940
+     ],
+     [
+      900,
+      940
+     ],
+     [
+      909,
+      935
+     ],
+     [
+      916,
+      940
+     ],
+     [
+      955,
+      921
+     ],
+     [
+      991,
+      910
+     ],
+     [
+      998,
+      910
+     ],
+     [
+      1042,
+      900
+     ],
+     [
+      1069,
+      900
+     ],
+     [
+      1101,
+      904
+     ],
+     [
+      1136,
+      919
+     ],
+     [
+      1136,
+      920
+     ],
+     [
+      1145,
+      921
+     ],
+     [
+      1153,
+      922
+     ],
+     [
+      1183,
+      932
+     ],
+     [
+      1219,
+      944
+     ],
+     [
+      1256,
+      946
+     ],
+     [
+      1289,
+      943
+     ],
+     [
+      1329,
+      932
+     ],
+     [
+      1378,
+      949
+     ],
+     [
+      1405,
+      961
+     ],
+     [
+      1405,
+      964
+     ],
+     [
+      1420,
+      963
+     ],
+     [
+      1453,
+      964
+     ],
+     [
+      1496,
+      962
+     ],
+     [
+      1535,
+      958
+     ],
+     [
+      1565,
+      956
+     ],
+     [
+      1589,
+      954
+     ],
+     [
+      1612,
+      945
+     ],
+     [
+      1648,
+      934
+     ],
+     [
+      1680,
+      947
+     ],
+     [
+      1680,
+      942
+     ],
+     [
+      1686,
+      938
+     ],
+     [
+      1691,
+      918
+     ],
+     [
+      1698,
+      914
+     ],
+     [
+      1709,
+      913
+     ],
+     [
+      1723,
+      910
+     ],
+     [
+      1729,
+      920
+     ],
+     [
+      1745,
+      922
+     ],
+     [
+      1745,
+      921
+     ],
+     [
+      1750,
+      922
+     ],
+     [
+      1758,
+      924
+     ],
+     [
+      1763,
+      922
+     ],
+     [
+      1768,
+      923
+     ],
+     [
+      1777,
+      923
+     ],
+     [
+      1781,
+      920
+     ],
+     [
+      1795,
+      967
+     ],
+     [
+      1795,
+      970
+     ],
+     [
+      1800,
+      971
+     ],
+     [
+      1800,
+      971
+     ],
+     [
+      1800,
+      968
+     ],
+     [
+      1807,
+      968
+     ],
+     [
+      1847,
+      966
+     ],
+     [
+      1886,
+      974
+     ],
+     [
+      1924,
+      976
+     ],
+     [
+      1965,
+      978
+     ],
+     [
+      1997,
+      977
+     ],
+     [
+      2033,
+      991
+     ],
+     [
+      2037,
+      992
+     ],
+     [
+      2043,
+      992
+     ],
+     [
+      2050,
+      992
+     ],
+     [
+      2099,
+      994
+     ],
+     [
+      2109,
+      994
+     ]
+    ],
+    "final": false,
+    "detail": "9:51 - 3rd",
+    "homeScore": 28,
+    "awayScore": 7,
+    "state": "in"
+   }
+  },
+  {
+   "id": "401858529",
+   "week": 12,
+   "date": "2026-11-21T01:00Z",
+   "home": "127",
+   "away": "2483",
+   "homeName": "MSU",
+   "awayName": "ORE",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.1579,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "Fox",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Spartan Stadium",
+   "city": "East Lansing, MI"
+  },
+  {
+   "id": "401858535",
+   "week": 12,
+   "date": "2026-11-21T05:00Z",
+   "home": "264",
+   "away": "84",
+   "homeName": "WASH",
+   "awayName": "IU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.2059,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Husky Stadium",
+   "city": "Seattle, WA"
+  },
+  {
+   "id": "401858528",
+   "week": 12,
+   "date": "2026-11-21T05:00Z",
+   "home": "130",
+   "away": "26",
+   "homeName": "MICH",
+   "awayName": "UCLA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.5065,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Michigan Stadium",
+   "city": "Ann Arbor, MI"
+  },
+  {
+   "id": "401858531",
+   "week": 12,
+   "date": "2026-11-21T05:00Z",
+   "home": "158",
+   "away": "194",
+   "homeName": "NEB",
+   "awayName": "OSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.2582,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": "OSU -5.5",
+   "overUnder": 47.5,
+   "venue": "Memorial Stadium (Lincoln, NE)",
+   "city": "Lincoln, NE"
+  },
+  {
+   "id": "401858530",
+   "week": 12,
+   "date": "2026-11-21T17:00Z",
+   "home": "135",
+   "away": "77",
+   "homeName": "MINN",
+   "awayName": "NU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.2618,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "FS1",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Huntington Bank Stadium",
+   "city": "Minneapolis, MN"
+  },
+  {
+   "id": "401858533",
+   "week": 12,
+   "date": "2026-11-21T17:00Z",
+   "home": "2509",
+   "away": "275",
+   "homeName": "PUR",
+   "awayName": "WIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.3275,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "NBC",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Ross-Ade Stadium",
+   "city": "West Lafayette, IN"
+  },
+  {
+   "id": "401858527",
+   "week": 12,
+   "date": "2026-11-21T19:30Z",
+   "home": "356",
+   "away": "2294",
+   "homeName": "ILL",
+   "awayName": "IOWA",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.3496,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "BTN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Gies Memorial Stadium",
+   "city": "Champaign, IL"
+  },
+  {
+   "id": "401858532",
+   "week": 12,
+   "date": "2026-11-21T20:30Z",
+   "home": "213",
+   "away": "164",
+   "homeName": "PSU",
+   "awayName": "RUTG",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9172,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "FS1",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Beaver Stadium",
+   "city": "University Park, PA"
+  },
+  {
+   "id": "401858534",
+   "week": 12,
+   "date": "2026-11-21T23:15Z",
+   "home": "30",
+   "away": "120",
+   "homeName": "USC",
+   "awayName": "MD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9425,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "BTN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Los Angeles Memorial Coliseum",
+   "city": "Los Angeles, CA"
+  },
+  {
+   "id": "401858536",
+   "week": 13,
+   "date": "2026-11-27T17:00Z",
+   "home": "2294",
+   "away": "158",
+   "homeName": "IOWA",
+   "awayName": "NEB",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.6097,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "CBS",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Kinnick Stadium",
+   "city": "Iowa City, IA"
+  },
+  {
+   "id": "401858544",
+   "week": 13,
+   "date": "2026-11-28T00:30Z",
+   "home": "275",
+   "away": "135",
+   "homeName": "WIS",
+   "awayName": "MINN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.7617,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "NBC",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Camp Randall Stadium",
+   "city": "Madison, WI"
+  },
+  {
+   "id": "401858538",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "84",
+   "away": "2509",
+   "homeName": "IU",
+   "awayName": "PUR",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9377,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Memorial Stadium (Bloomington, IN)",
+   "city": "Bloomington, IN"
+  },
+  {
+   "id": "401858543",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "26",
+   "away": "30",
+   "homeName": "UCLA",
+   "awayName": "USC",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.4921,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Rose Bowl",
+   "city": "Pasadena, CA"
+  },
+  {
+   "id": "401858541",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "2483",
+   "away": "264",
+   "homeName": "ORE",
+   "awayName": "WASH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8672,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Autzen Stadium",
+   "city": "Eugene, OR"
+  },
+  {
+   "id": "401858537",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "77",
+   "away": "356",
+   "homeName": "NU",
+   "awayName": "ILL",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.6994,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Ryan Field",
+   "city": "Evanston, IL"
+  },
+  {
+   "id": "401858539",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "120",
+   "away": "213",
+   "homeName": "MD",
+   "awayName": "PSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.1546,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "SECU Stadium",
+   "city": "College Park, MD"
+  },
+  {
+   "id": "401858542",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "164",
+   "away": "127",
+   "homeName": "RUTG",
+   "awayName": "MSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.3465,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "SHI Stadium",
+   "city": "Piscataway, NJ"
+  },
+  {
+   "id": "401858540",
+   "week": 13,
+   "date": "2026-11-28T17:00Z",
+   "home": "194",
+   "away": "130",
+   "homeName": "OSU",
+   "awayName": "MICH",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8916,
+   "predAt": "2026-11-14T10:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "Fox",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Ohio Stadium",
+   "city": "Columbus, OH"
+  }
+ ],
+ "baseline": {
+  "week": 11,
+  "at": "2026-11-13T10:19Z",
+  "odds": {
+   "26": 0.7155,
+   "30": 0.089,
+   "77": 0.0002,
+   "84": 0.6586,
+   "120": 0,
+   "127": 0,
+   "130": 0,
+   "135": 7.5e-05,
+   "158": 0,
+   "164": 0,
+   "194": 0.173,
+   "213": 0,
+   "264": 0,
+   "275": 0.0551,
+   "356": 0.007575,
+   "2294": 0.03105,
+   "2483": 0.2699,
+   "2509": 0
+  }
+ },
+ "cfp": {
+  "date": "2026-11-10T08:00Z",
+  "week": 11,
+  "ranks": {
+   "12": 23,
+   "26": 4,
+   "30": 18,
+   "61": 1,
+   "68": 24,
+   "84": 9,
+   "87": 5,
+   "96": 11,
+   "99": 21,
+   "142": 22,
+   "145": 19,
+   "154": 13,
+   "194": 20,
+   "197": 25,
+   "248": 14,
+   "251": 6,
+   "252": 10,
+   "254": 2,
+   "333": 3,
+   "2294": 15,
+   "2390": 7,
+   "2483": 16,
+   "2579": 17,
+   "2633": 8,
+   "2641": 12
+  }
+ },
+ "exact": {
+  "key": "ca7ec5d1736a50e3",
+  "gameIds": [
+   "401858524",
+   "401858519",
+   "401858529",
+   "401858535",
+   "401858528",
+   "401858531",
+   "401858530",
+   "401858533",
+   "401858527",
+   "401858532",
+   "401858534",
+   "401858536",
+   "401858544",
+   "401858538",
+   "401858543",
+   "401858541",
+   "401858537",
+   "401858539",
+   "401858542",
+   "401858540"
+  ],
+  "games": 20,
+  "budgetSec": 180,
+  "finishes": 1048576,
+  "elapsedSec": 4,
+  "coinTossShare": 0,
+  "teams": [
+   {
+    "id": "26",
+    "p": 0.8236369317035883,
+    "first": 0.3718273403827725,
+    "pWinOut": 1,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": true,
+    "best": {
+     "mask": 638467,
+     "prob": 0.0032814753498754037
+    },
+    "need": {
+     "games": 16,
+     "homeWins": 0,
+     "prob": 0.49350000000000005
+    },
+    "games": [
+     {
+      "pH": 0.8229993843578501,
+      "pA": 0.8268562951003676,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8181893291395698,
+      "pA": 0.8603208261544076,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9253208650789816,
+      "pA": 0.8045704395055423,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7957623498628739,
+      "pA": 0.8308644551905585,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.6518004574602903,
+      "pA": 0.9999999999999012,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8945515388928366,
+      "pA": 0.7989535243481503,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8270909207182793,
+      "pA": 0.8224119868051244,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8237190579099823,
+      "pA": 0.8235969371569801,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.860320826154697,
+      "pA": 0.8039187744156,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8236371110504492,
+      "pA": 0.8236349450255589,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8236369145985074,
+      "pA": 0.8236372120781761,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8001537038797131,
+      "pA": 0.8603208261545664,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8226679310505802,
+      "pA": 0.8267342367702953,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8247635114005352,
+      "pA": 0.8066803701975355,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0000000000000004,
+      "pA": 0.6527602514345109,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8083198191556512,
+      "pA": 0.9236595220768646,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8235234921140476,
+      "pA": 0.8239008693247617,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8240326110829095,
+      "pA": 0.8235645730188911,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8234525516264778,
+      "pA": 0.8237346940551092,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8158635109993058,
+      "pA": 0.8875740341015435,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "84",
+    "p": 0.8005392832423214,
+    "first": 0.5756237503488892,
+    "pWinOut": 1,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": true,
+    "best": {
+     "mask": 638483,
+     "prob": 0.0033679174563564164
+    },
+    "need": {
+     "games": 8200,
+     "homeWins": 8192,
+     "prob": 0.74462757
+    },
+    "games": [
+     {
+      "pH": 0.7997584500905222,
+      "pA": 0.8044821836162281,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7971328089530917,
+      "pA": 0.8234783177638395,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8385922075654516,
+      "pA": 0.7934040775059216,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.212903905355898,
+      "pA": 0.9529056405106938,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8398222324082143,
+      "pA": 0.7602215248785427,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8282074992722053,
+      "pA": 0.7909087448506847,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8037236193831061,
+      "pA": 0.7994099697748906,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7998481996543868,
+      "pA": 0.8008758332423935,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8234776049540359,
+      "pA": 0.7882095826420518,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8004841845752144,
+      "pA": 0.801149627414671,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8005489673071522,
+      "pA": 0.8003805487883545,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7858550139156536,
+      "pA": 0.823478045754413,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7993048433268112,
+      "pA": 0.8044850360062495,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8408486167905255,
+      "pA": 0.1938288166588388,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7601738835306594,
+      "pA": 0.8396489764853,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7951387819297278,
+      "pA": 0.8358052074763661,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.80061543591039,
+      "pA": 0.8003621003546061,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8005156616499951,
+      "pA": 0.8005436029704661,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8008195624731053,
+      "pA": 0.8003906730610413,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7971425817582362,
+      "pA": 0.828477466297768,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "2294",
+    "p": 0.03481281492078473,
+    "first": 0.0013433971174833133,
+    "pWinOut": 0.10081979134743409,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 638515,
+     "prob": 0.001172278629322225
+    },
+    "need": {
+     "games": 59710,
+     "homeWins": 43058,
+     "prob": 0.01247099833088958
+    },
+    "games": [
+     {
+      "pH": 0.03623053947144513,
+      "pA": 0.02765386342389278,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03998119608571865,
+      "pA": 9.183982594730556e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.047631600899198503,
+      "pA": 0.03240919740981034,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.06320438284847293,
+      "pA": 0.02745124353643641,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.061944982330897486,
+      "pA": 0.006965919696423826,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.08932777806933608,
+      "pA": 0.01583766867522534,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.028176474442051142,
+      "pA": 0.03716636942814378,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03542280332924881,
+      "pA": 0.03451575736870743,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.7488133233167006e-06,
+      "pA": 0.05352429817903891,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03486772691967153,
+      "pA": 0.03420453852731886,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03480302976820265,
+      "pA": 0.03497320633484762,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.05709752895391046,
+      "pA": 1.1568475160686345e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03701592630709917,
+      "pA": 0.02777080928521735,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03339679896214122,
+      "pA": 0.05612578706235807,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0070159705101182235,
+      "pA": 0.06174494158841416,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03216732973903317,
+      "pA": 0.05208815189077687,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.034850194293709516,
+      "pA": 0.034725845082382883,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03443999602391964,
+      "pA": 0.03488099306303141,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.03471705321781616,
+      "pA": 0.034863589871172815,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.027368051368903665,
+      "pA": 0.096046681921312,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "30",
+    "p": 0.00023047673046575006,
+    "first": 0,
+    "pWinOut": 0.0004814680942242486,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 628271,
+     "prob": 2.3618083589205753e-06
+    },
+    "need": {
+     "games": 589225,
+     "homeWins": 529449,
+     "prob": 2.0375772331180595e-05
+    },
+    "games": [
+     {
+      "pH": 0.0002455917084605204,
+      "pA": 0.00015415203517092342,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00020546103496050215,
+      "pA": 0.0003989312244829145,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.000726900105776415,
+      "pA": 0.00013739366317973414,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0011193624597656633,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0.0001856697764034175,
+      "pA": 0.0002764640095591065,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0006762384126554441,
+      "pA": 7.53194558076495e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00028998214144585366,
+      "pA": 0.00020937334846278188,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00017101227364200777,
+      "pA": 0.0002594352577665316,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00031878994545499786,
+      "pA": 0.0001830070195797706,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00023046080908918816,
+      "pA": 0.00023065309624573292,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00024453764505649874,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0.000169412077729966,
+      "pA": 0.0003258677598611063,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0002517920112562924,
+      "pA": 0.00016234475657504039,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.0036994659785834667,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0,
+      "pA": 0.0004537836788063596,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0.00010164908906825608,
+      "pA": 0.0010717367501939636,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00023133434277251876,
+      "pA": 0.00022848134108666146,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0002210248104615674,
+      "pA": 0.00023220522210597554,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00033235326343955177,
+      "pA": 0.00017645956340312988,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00017971953505519536,
+      "pA": 0.0006479593451156628,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "2483",
+    "p": 0.21504214299715133,
+    "first": 0.04660865628303233,
+    "pWinOut": 0.2938673327867143,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 636435,
+     "prob": 0.0021559753702081507
+    },
+    "need": {
+     "games": 34828,
+     "homeWins": 32776,
+     "prob": 0.0586864493286624
+    },
+    "games": [
+     {
+      "pH": 0.21503484003178028,
+      "pA": 0.21507902010057064,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.20544377184516402,
+      "pA": 0.279677114087912,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0016448500176457896,
+      "pA": 0.2550557192487413,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.6045000075545821,
+      "pA": 0.11406068686772808,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.2839342059765908,
+      "pA": 0.14433529416415014,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1869669929433018,
+      "pA": 0.22481432383282662,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21498598178291173,
+      "pA": 0.21506206037169476,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21510155734416364,
+      "pA": 0.21501320887276984,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.2797174435266438,
+      "pA": 0.18027817456985953,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21504205064515444,
+      "pA": 0.21504316600743567,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21503597670940997,
+      "pA": 0.2151432164962164,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1736336389911341,
+      "pA": 0.2797276794882318,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.2150244818773999,
+      "pA": 0.21509859484320534,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1894585583644588,
+      "pA": 0.6001099970914654,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.14457888589703422,
+      "pA": 0.28331339485572116,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.24776517565577355,
+      "pA": 0.0013567972022929735,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21504906084369282,
+      "pA": 0.21502604738214426,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21497483964496703,
+      "pA": 0.2150544508966636,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.21495259074330067,
+      "pA": 0.21508962556174085,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.2184497145258804,
+      "pA": 0.18701455282173746,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "194",
+    "p": 0.12572144848425304,
+    "first": 0.004596855867833699,
+    "pWinOut": 0.1899709108028261,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 638483,
+     "prob": 0.0033679174563564164
+    },
+    "need": {
+     "games": 543026,
+     "homeWins": 526354,
+     "prob": 0.05874620593753467
+    },
+    "games": [
+     {
+      "pH": 0.12571874166692334,
+      "pA": 0.12573511684738123,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.13903263013255707,
+      "pA": 0.0360845895424254,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1859948731782016,
+      "pA": 0.1144197340095179,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.3224279039078455,
+      "pA": 0.07471797389450655,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1623024582876599,
+      "pA": 0.0881768051905842,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00021908919029777607,
+      "pA": 0.1694053379014804,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.12570441384686087,
+      "pA": 0.12572748975771453,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1257274484821664,
+      "pA": 0.1257185265521837,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.036125837225415056,
+      "pA": 0.17388046708217703,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.12572143459954518,
+      "pA": 0.12572160228925353,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.12571535054809785,
+      "pA": 0.12582140161166627,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.18307518446114898,
+      "pA": 0.03612735977015246,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1257193937467949,
+      "pA": 0.12572801622878463,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.11153251448232766,
+      "pA": 0.3392842641119484,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.08820193512845255,
+      "pA": 0.16207378658700833,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.11649827686142156,
+      "pA": 0.18594987040683933,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.1257199876633851,
+      "pA": 0.1257248473469112,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.12579399412842357,
+      "pA": 0.1257081819162512,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.12571085931059792,
+      "pA": 0.12572706309583914,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.14098386805450366,
+      "pA": 0.00018663954665667487,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "275",
+    "p": 4.498470760064491e-06,
+    "first": 0,
+    "pWinOut": 8.781903441508544e-06,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 612159,
+     "prob": 1.933222305747533e-07
+    },
+    "need": {
+     "games": 129452,
+     "homeWins": 86316,
+     "prob": 1.6707291451925082e-06
+    },
+    "games": [
+     {
+      "pH": 4.499020178902162e-06,
+      "pA": 4.495696410979169e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 3.2135718495193962e-06,
+      "pA": 1.3150918412126476e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.848936516823617e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 2.1847842448103407e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 4.495696410979139e-06,
+      "pA": 4.5013181923071065e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.4122263834222615e-05,
+      "pA": 1.1486953869886932e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.5062936190973505e-06,
+      "pA": 4.495696410979145e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 6.689175851397014e-06,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 9.010176973013452e-06,
+      "pA": 2.0733593024277193e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.4984707600644906e-06,
+      "pA": 4.4984707600645e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.243840720352542e-06,
+      "pA": 8.67218923708209e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.3978669077697815e-06,
+      "pA": 9.342022306936346e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 5.905830064414456e-06,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 7.220659325946211e-05,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 8.626714036857229e-06,
+      "pA": 4.986508811322099e-07,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 3.199203281068985e-09,
+      "pA": 3.3853135624842976e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 5.710600165737905e-06,
+      "pA": 1.6782335467312067e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.4984707600644906e-06,
+      "pA": 4.498470760064491e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.503703190446232e-06,
+      "pA": 4.495696410979146e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.7360991597830082e-06,
+      "pA": 1.8994139752785612e-05,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "356",
+    "p": 8.164132099057128e-06,
+    "first": 0,
+    "pWinOut": 7.768722755725375e-05,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 581423,
+     "prob": 8.258319689506776e-07
+    },
+    "need": {
+     "games": 620988,
+     "homeWins": 547116,
+     "prob": 3.7166030808710873e-06
+    },
+    "games": [
+     {
+      "pH": 7.953652831667883e-06,
+      "pA": 9.226969633780677e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 7.887336695498917e-06,
+      "pA": 1.0028059074139367e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.6939901084935e-05,
+      "pA": 8.933876234958921e-07,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 3.9650957256226944e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 1.0495601607690472e-06,
+      "pA": 1.546611930623628e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.5430248700822525e-05,
+      "pA": 2.1542759295022275e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 7.9084256413934e-06,
+      "pA": 8.254817483257026e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 5.387426132800909e-06,
+      "pA": 9.516356937642871e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.335278060371032e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 8.159992191238543e-06,
+      "pA": 8.209991077936436e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 6.823912700275406e-06,
+      "pA": 3.013207615734883e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.0770944670750016e-05,
+      "pA": 4.091947561621426e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 9.725849985357275e-06,
+      "pA": 3.172270940874911e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.00013104545905388645,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 1.4584119435797543e-05,
+      "pA": 1.9438608480038536e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 7.085042243082792e-06,
+      "pA": 1.5210718869395561e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 2.715945475401573e-05,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 1.4940084994524845e-05,
+      "pA": 6.924999951388203e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 6.288901571441164e-06,
+      "pA": 9.158420358917774e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 7.0643888103161105e-06,
+      "pA": 1.7209622101284905e-05,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "77",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "135",
+    "p": 4.239318518805888e-06,
+    "first": 0,
+    "pWinOut": 0.0004110829932534553,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 640638,
+     "prob": 5.16048153481035e-08
+    },
+    "need": {
+     "games": 719209,
+     "homeWins": 540776,
+     "prob": 4.271004181052022e-07
+    },
+    "games": [
+     {
+      "pH": 0,
+      "pA": 2.564621003512334e-05,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 3.701900379361938e-06,
+      "pA": 7.8582665003515e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.327388849391914e-05,
+      "pA": 2.5452695946040324e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.0589210873268034e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 4.448503352820306e-06,
+      "pA": 4.024623243368598e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.1310706831468727e-05,
+      "pA": 1.777964431006556e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.6192966076416686e-05,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 4.5335802568983535e-06,
+      "pA": 4.0960163340842785e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 5.386422829951277e-06,
+      "pA": 3.6227323146600883e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.372937858102096e-06,
+      "pA": 2.7591777216744578e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.15567011743728e-06,
+      "pA": 5.610424923847861e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 3.3489091292229757e-06,
+      "pA": 5.630255246524827e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 1.7789838517859374e-05,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0,
+      "pA": 6.804684620876222e-05,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 6.114100261697053e-06,
+      "pA": 2.4228583973710744e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 1.8793278713516895e-06,
+      "pA": 1.9650341782904384e-05,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.784231811196749e-06,
+      "pA": 2.9714796741679374e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.434103563345141e-06,
+      "pA": 4.569441812056694e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 4.236760472284013e-06,
+      "pA": 4.240674851047404e-06,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 2.753270120314325e-06,
+      "pA": 1.6462203685734643e-05,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "213",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "264",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "130",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "158",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "2509",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "120",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "127",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "164",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   }
+  ],
+  "computedAt": "2026-11-15T01:57Z"
+ }
+}

@@ -1,0 +1,3713 @@
+{
+ "schema": 3,
+ "league": "pac12",
+ "leagues": [
+  {
+   "id": "big12",
+   "name": "Big 12",
+   "path": "",
+   "group": 4,
+   "logo": "logos/c046db7181745023.png",
+   "logoDark": "logos/1570a062998c6a04.png",
+   "sponsor": {
+    "name": "Monster Energy",
+    "logo": "logos/af1676412c64e865.png"
+   }
+  },
+  {
+   "id": "sec",
+   "name": "SEC",
+   "path": "sec/",
+   "group": 8,
+   "logo": "logos/6e4d4654eba315be.png",
+   "logoDark": "logos/6e4d4654eba315be.png"
+  },
+  {
+   "id": "acc",
+   "name": "ACC",
+   "path": "acc/",
+   "group": 1,
+   "logo": "logos/5afb22e530e72b68.png",
+   "logoDark": "logos/ca6afd1f284debd1.png"
+  },
+  {
+   "id": "big10",
+   "name": "Big Ten",
+   "path": "big10/",
+   "group": 5,
+   "logo": "logos/c7eb872c98c059d8.png",
+   "logoDark": "logos/d829bbbe10b6b319.png"
+  },
+  {
+   "id": "pac12",
+   "name": "Pac-12",
+   "path": "pac12/",
+   "group": 9,
+   "lastConfWeek": 12,
+   "logo": "logos/f791cb82b7179397.png",
+   "logoDark": "logos/a561f8576da7470c.png"
+  }
+ ],
+ "season": 2026,
+ "fetchedAt": "2026-11-15T02:31Z",
+ "meta": {
+  "scheduleCheckedAt": "2026-11-14T19:01Z",
+  "scheduleFields": 2,
+  "fpiCheckedAt": "2026-11-15T01:01Z",
+  "fpiRun": "2026-11-14T09:00Z",
+  "checkedAt": "2026-11-15T02:31Z",
+  "nextResultCheck": "2026-11-15T02:00Z",
+  "updatedAt": "2026-11-15T02:31Z",
+  "espnCalls": 8,
+  "cfpCheckedAt": "2026-11-15T01:31Z"
+ },
+ "calendar": [
+  {
+   "week": 1,
+   "start": "2026-08-22T07:00Z",
+   "end": "2026-09-08T06:59Z"
+  },
+  {
+   "week": 2,
+   "start": "2026-09-08T07:00Z",
+   "end": "2026-09-14T06:59Z"
+  },
+  {
+   "week": 3,
+   "start": "2026-09-14T07:00Z",
+   "end": "2026-09-21T06:59Z"
+  },
+  {
+   "week": 4,
+   "start": "2026-09-21T07:00Z",
+   "end": "2026-09-28T06:59Z"
+  },
+  {
+   "week": 5,
+   "start": "2026-09-28T07:00Z",
+   "end": "2026-10-05T06:59Z"
+  },
+  {
+   "week": 6,
+   "start": "2026-10-05T07:00Z",
+   "end": "2026-10-12T06:59Z"
+  },
+  {
+   "week": 7,
+   "start": "2026-10-12T07:00Z",
+   "end": "2026-10-19T06:59Z"
+  },
+  {
+   "week": 8,
+   "start": "2026-10-19T07:00Z",
+   "end": "2026-10-26T06:59Z"
+  },
+  {
+   "week": 9,
+   "start": "2026-10-26T07:00Z",
+   "end": "2026-11-02T07:59Z"
+  },
+  {
+   "week": 10,
+   "start": "2026-11-02T08:00Z",
+   "end": "2026-11-09T07:59Z"
+  },
+  {
+   "week": 11,
+   "start": "2026-11-09T08:00Z",
+   "end": "2026-11-16T07:59Z"
+  },
+  {
+   "week": 12,
+   "start": "2026-11-16T08:00Z",
+   "end": "2026-11-23T07:59Z"
+  },
+  {
+   "week": 13,
+   "start": "2026-11-23T08:00Z",
+   "end": "2026-11-30T07:59Z"
+  },
+  {
+   "week": 14,
+   "start": "2026-11-30T08:00Z",
+   "end": "2026-12-07T07:59Z"
+  },
+  {
+   "week": 15,
+   "start": "2026-12-07T08:00Z",
+   "end": "2026-12-13T07:59Z"
+  }
+ ],
+ "teams": [
+  {
+   "id": "68",
+   "abbr": "BOIS",
+   "name": "Boise State Broncos",
+   "short": "Boise St",
+   "color": "#0033a0",
+   "alt": "#d64309",
+   "logo": "logos/e3f99f13eb201228.png",
+   "logoDark": "logos/e3f99f13eb201228.png",
+   "fpi": 11.742
+  },
+  {
+   "id": "326",
+   "abbr": "TXST",
+   "name": "Texas State Bobcats",
+   "short": "Texas St",
+   "color": "#501214",
+   "alt": "#6a5638",
+   "logo": "logos/bce6a1d6ee85c199.png",
+   "logoDark": "logos/bce6a1d6ee85c199.png",
+   "fpi": 2.966
+  },
+  {
+   "id": "204",
+   "abbr": "ORST",
+   "name": "Oregon State Beavers",
+   "short": "Oregon St",
+   "color": "#dc4405",
+   "alt": "#000000",
+   "logo": "logos/c787b3ff1f1c2845.png",
+   "logoDark": "logos/59ff3adf6506077c.png",
+   "fpi": 1.622
+  },
+  {
+   "id": "278",
+   "abbr": "FRES",
+   "name": "Fresno State Bulldogs",
+   "short": "Fresno St",
+   "color": "#b1102b",
+   "alt": "#13284c",
+   "logo": "logos/9f26e788d0aff3cf.png",
+   "logoDark": "logos/ac57e6b13810addd.png",
+   "fpi": 0.512
+  },
+  {
+   "id": "21",
+   "abbr": "SDSU",
+   "name": "San Diego State Aztecs",
+   "short": "San Diego St",
+   "color": "#a6192e",
+   "alt": "#000000",
+   "logo": "logos/f13560f6d1b73ed3.png",
+   "logoDark": "logos/dbd06553ef6f1fb6.png",
+   "fpi": -9.418
+  },
+  {
+   "id": "328",
+   "abbr": "USU",
+   "name": "Utah State Aggies",
+   "short": "Utah State",
+   "color": "#0f2439",
+   "alt": "#ffffff",
+   "logo": "logos/892075094c6d7518.png",
+   "logoDark": "logos/b0224467b4700ca2.png",
+   "fpi": -4.078
+  },
+  {
+   "id": "36",
+   "abbr": "CSU",
+   "name": "Colorado State Rams",
+   "short": "Colorado St",
+   "color": "#004c23",
+   "alt": "#c8c372",
+   "logo": "logos/8160a097e6c334d6.png",
+   "logoDark": "logos/8160a097e6c334d6.png",
+   "fpi": -12.975
+  },
+  {
+   "id": "265",
+   "abbr": "WSU",
+   "name": "Washington State Cougars",
+   "short": "Washington St",
+   "color": "#a60f2d",
+   "alt": "#4d4d4d",
+   "logo": "logos/a7ad84e5edc4ac0b.png",
+   "logoDark": "logos/fab62beb27f06287.png",
+   "fpi": -9.726
+  }
+ ],
+ "fpi": {
+  "87": 27.245,
+  "61": 27.159,
+  "333": 26.016,
+  "2390": 25.912,
+  "194": 24.257,
+  "251": 23.857,
+  "99": 22.482,
+  "84": 21.352,
+  "2483": 19.69,
+  "254": 18.646,
+  "2633": 18.507,
+  "145": 18.301,
+  "154": 17.844,
+  "2641": 15.476,
+  "97": 14.876,
+  "30": 14.791,
+  "252": 14.746,
+  "2294": 14.658,
+  "2579": 14.103,
+  "197": 13.816,
+  "201": 13.586,
+  "158": 13.141,
+  "245": 13.018,
+  "142": 12.858,
+  "26": 12.737,
+  "12": 12.614,
+  "57": 12.458,
+  "150": 12.409,
+  "77": 12.35,
+  "213": 12.191,
+  "2567": 11.895,
+  "248": 11.855,
+  "68": 11.742,
+  "239": 11.512,
+  "96": 11.244,
+  "153": 9.26,
+  "130": 9.18,
+  "275": 9.158,
+  "2": 8.656,
+  "52": 8.498,
+  "167": 7.812,
+  "2628": 7.604,
+  "221": 7.55,
+  "356": 7.464,
+  "228": 7.15,
+  "344": 6.928,
+  "264": 6.582,
+  "256": 4.831,
+  "259": 4.823,
+  "2335": 4.551,
+  "2132": 4.366,
+  "2305": 4.153,
+  "258": 3.957,
+  "249": 3.828,
+  "235": 3.526,
+  "2116": 3.424,
+  "326": 2.966,
+  "277": 2.669,
+  "66": 2.533,
+  "127": 2.243,
+  "183": 2.11,
+  "135": 1.804,
+  "9": 1.696,
+  "204": 1.622,
+  "8": 1.62,
+  "2306": 1.45,
+  "2509": 1.311,
+  "238": 0.699,
+  "2449": 0.663,
+  "278": 0.512,
+  "38": 0.225,
+  "202": -0.079,
+  "2348": -0.085,
+  "152": -1.294,
+  "290": -1.984,
+  "2711": -2.558,
+  "349": -2.8,
+  "2636": -2.955,
+  "2649": -3.125,
+  "2005": -3.2,
+  "58": -3.239,
+  "309": -3.334,
+  "120": -3.476,
+  "151": -3.665,
+  "103": -3.703,
+  "328": -4.078,
+  "2426": -4.349,
+  "59": -4.45,
+  "2439": -4.893,
+  "55": -5.174,
+  "164": -5.269,
+  "41": -6.128,
+  "2226": -6.945,
+  "25": -7.138,
+  "2247": -7.5,
+  "193": -9.069,
+  "21": -9.418,
+  "2440": -9.438,
+  "48": -9.608,
+  "265": -9.726,
+  "195": -9.771,
+  "2655": -9.876,
+  "62": -9.933,
+  "24": -9.996,
+  "6": -10.184,
+  "2026": -10.249,
+  "2032": -10.329,
+  "218": -10.34,
+  "2653": -10.971,
+  "2751": -11.052,
+  "2084": -11.523,
+  "2117": -11.837,
+  "338": -11.942,
+  "23": -11.957,
+  "324": -12.13,
+  "2229": -12.675,
+  "36": -12.975,
+  "5": -13.804,
+  "242": -14.795,
+  "295": -14.853,
+  "98": -14.865,
+  "2572": -14.947,
+  "2623": -15.279,
+  "166": -15.326,
+  "276": -15.671,
+  "113": -16.551,
+  "2393": -16.593,
+  "189": -17.69,
+  "2199": -18.078,
+  "2534": -20.772,
+  "2050": -21.341,
+  "2459": -21.424,
+  "2429": -21.466,
+  "2309": -23.649,
+  "2006": -23.737,
+  "2638": -24.081,
+  "2433": -24.13,
+  "16": -29.187
+ },
+ "games": [
+  {
+   "id": "401858436",
+   "week": 1,
+   "date": "2026-09-05T01:00Z",
+   "home": "30",
+   "away": "278",
+   "homeName": "USC",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "30",
+   "homeScore": 39,
+   "awayScore": 0,
+   "timeValid": true,
+   "tv": "Fox",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Los Angeles Memorial Coliseum",
+   "city": "Los Angeles, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856778",
+   "week": 1,
+   "date": "2026-09-05T16:00Z",
+   "home": "248",
+   "away": "204",
+   "homeName": "HOU",
+   "awayName": "ORST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "248",
+   "homeScore": 33,
+   "awayScore": 20,
+   "timeValid": true,
+   "tv": "ESPNEWS/Disney+",
+   "spread": null,
+   "overUnder": null,
+   "venue": "TDECU Stadium",
+   "city": "Houston, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858433",
+   "week": 1,
+   "date": "2026-09-05T19:30Z",
+   "home": "2483",
+   "away": "68",
+   "homeName": "ORE",
+   "awayName": "BOIS",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2483",
+   "homeScore": 34,
+   "awayScore": 27,
+   "timeValid": true,
+   "tv": "CBS",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Autzen Stadium",
+   "city": "Eugene, OR",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856667",
+   "week": 1,
+   "date": "2026-09-05T19:30Z",
+   "home": "251",
+   "away": "326",
+   "homeName": "TEX",
+   "awayName": "TXST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "251",
+   "homeScore": 59,
+   "awayScore": 7,
+   "timeValid": true,
+   "tv": "ESPN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "DKR-Texas Memorial Stadium",
+   "city": "Austin, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860878",
+   "week": 1,
+   "date": "2026-09-05T22:00Z",
+   "home": "36",
+   "away": "2751",
+   "homeName": "CSU",
+   "awayName": "WYO",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "36",
+   "homeScore": 35,
+   "awayScore": 13,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860880",
+   "week": 1,
+   "date": "2026-09-05T23:00Z",
+   "home": "328",
+   "away": "304",
+   "homeName": "USU",
+   "awayName": "IDST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "304",
+   "homeScore": 17,
+   "awayScore": 29,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Maverik Stadium",
+   "city": "Logan, UT",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401860879",
+   "week": 1,
+   "date": "2026-09-06T01:30Z",
+   "home": "21",
+   "away": "2502",
+   "homeName": "SDSU",
+   "awayName": "PRST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "21",
+   "homeScore": 53,
+   "awayScore": 20,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Snapdragon Stadium",
+   "city": "San Diego, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858437",
+   "week": 1,
+   "date": "2026-09-06T20:00Z",
+   "home": "264",
+   "away": "265",
+   "homeName": "WASH",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 24,
+   "awayScore": 10,
+   "timeValid": true,
+   "tv": "NBC",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Husky Stadium",
+   "city": "Seattle, WA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856781",
+   "week": 2,
+   "date": "2026-09-12T16:00Z",
+   "home": "2306",
+   "away": "265",
+   "homeName": "KSU",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2306",
+   "homeScore": 34,
+   "awayScore": 7,
+   "timeValid": true,
+   "tv": "TNT",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Bill Snyder Family Stadium",
+   "city": "Manhattan, KS",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401858446",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "264",
+   "away": "328",
+   "homeName": "WASH",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "264",
+   "homeScore": 16,
+   "awayScore": 14,
+   "timeValid": true,
+   "tv": "BTN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Husky Stadium",
+   "city": "Seattle, WA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860884",
+   "week": 2,
+   "date": "2026-09-12T19:30Z",
+   "home": "326",
+   "away": "2636",
+   "homeName": "TXST",
+   "awayName": "UTSA",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2636",
+   "homeScore": 26,
+   "awayScore": 31,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860881",
+   "week": 2,
+   "date": "2026-09-12T22:00Z",
+   "home": "68",
+   "away": "235",
+   "homeName": "BOIS",
+   "awayName": "MEM",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 38,
+   "awayScore": 20,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Albertsons Stadium",
+   "city": "Boise, ID",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860882",
+   "week": 2,
+   "date": "2026-09-12T23:00Z",
+   "home": "36",
+   "away": "253",
+   "homeName": "CSU",
+   "awayName": "SUU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "36",
+   "homeScore": 58,
+   "awayScore": 24,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401858443",
+   "week": 2,
+   "date": "2026-09-12T23:15Z",
+   "home": "26",
+   "away": "21",
+   "homeName": "UCLA",
+   "awayName": "SDSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "26",
+   "homeScore": 28,
+   "awayScore": 10,
+   "timeValid": true,
+   "tv": "BTN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Rose Bowl",
+   "city": "Pasadena, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856783",
+   "week": 2,
+   "date": "2026-09-12T23:30Z",
+   "home": "204",
+   "away": "2641",
+   "homeName": "ORST",
+   "awayName": "TTU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2641",
+   "homeScore": 24,
+   "awayScore": 35,
+   "timeValid": true,
+   "tv": "CBS",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Reser Stadium",
+   "city": "Corvallis, OR",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860883",
+   "week": 2,
+   "date": "2026-09-13T02:30Z",
+   "home": "278",
+   "away": "16",
+   "homeName": "FRES",
+   "awayName": "SAC",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "278",
+   "homeScore": 49,
+   "awayScore": 3,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Valley Children's Stadium",
+   "city": "Fresno, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860889",
+   "week": 3,
+   "date": "2026-09-19T16:00Z",
+   "home": "326",
+   "away": "249",
+   "homeName": "TXST",
+   "awayName": "UNT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "326",
+   "homeScore": 49,
+   "awayScore": 35,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401856801",
+   "week": 3,
+   "date": "2026-09-19T19:30Z",
+   "home": "254",
+   "away": "328",
+   "homeName": "UTAH",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "254",
+   "homeScore": 33,
+   "awayScore": 0,
+   "timeValid": true,
+   "tv": "Fox",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Rice-Eccles Stadium",
+   "city": "Salt Lake City, UT",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860890",
+   "week": 3,
+   "date": "2026-09-19T19:30Z",
+   "home": "265",
+   "away": "2184",
+   "homeName": "WSU",
+   "awayName": "DUQ",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "265",
+   "homeScore": 48,
+   "awayScore": 7,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Martin Stadium",
+   "city": "Pullman, WA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401856795",
+   "week": 3,
+   "date": "2026-09-20T00:15Z",
+   "home": "36",
+   "away": "252",
+   "homeName": "CSU",
+   "awayName": "BYU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "252",
+   "homeScore": 23,
+   "awayScore": 41,
+   "timeValid": true,
+   "tv": "CBS",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860885",
+   "week": 3,
+   "date": "2026-09-20T02:00Z",
+   "home": "68",
+   "away": "233",
+   "homeName": "BOIS",
+   "awayName": "SDAK",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 38,
+   "awayScore": 24,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Albertsons Stadium",
+   "city": "Boise, ID",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401860887",
+   "week": 3,
+   "date": "2026-09-20T02:00Z",
+   "home": "21",
+   "away": "256",
+   "homeName": "SDSU",
+   "awayName": "JMU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "256",
+   "homeScore": 13,
+   "awayScore": 26,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Snapdragon Stadium",
+   "city": "San Diego, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860886",
+   "week": 3,
+   "date": "2026-09-20T03:00Z",
+   "home": "204",
+   "away": "149",
+   "homeName": "ORST",
+   "awayName": "MONT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "204",
+   "homeScore": 52,
+   "awayScore": 17,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Reser Stadium",
+   "city": "Corvallis, OR",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401860888",
+   "week": 3,
+   "date": "2026-09-20T03:00Z",
+   "home": "23",
+   "away": "278",
+   "homeName": "SJSU",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "278",
+   "homeScore": 10,
+   "awayScore": 26,
+   "timeValid": true,
+   "tv": "FS1",
+   "spread": null,
+   "overUnder": null,
+   "venue": "CEFCU Stadium",
+   "city": "San Jose, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860893",
+   "week": 4,
+   "date": "2026-09-26T16:00Z",
+   "home": "2649",
+   "away": "21",
+   "homeName": "TOL",
+   "awayName": "SDSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2649",
+   "homeScore": 41,
+   "awayScore": 16,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Glass Bowl",
+   "city": "Toledo, OH",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860896",
+   "week": 4,
+   "date": "2026-09-26T16:00Z",
+   "home": "2636",
+   "away": "36",
+   "homeName": "UTSA",
+   "awayName": "CSU",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "2636",
+   "homeScore": 59,
+   "awayScore": 45,
+   "timeValid": true,
+   "tv": "ESPNU",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Alamodome",
+   "city": "San Antonio, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860897",
+   "week": 4,
+   "date": "2026-09-26T19:30Z",
+   "home": "2711",
+   "away": "68",
+   "homeName": "WMU",
+   "awayName": "BOIS",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 7,
+   "awayScore": 32,
+   "timeValid": true,
+   "tv": "ESPN2",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Waldo Stadium",
+   "city": "Kalamazoo, MI",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860892",
+   "week": 4,
+   "date": "2026-09-26T22:00Z",
+   "home": "326",
+   "away": "2916",
+   "homeName": "TXST",
+   "awayName": "UIW",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "326",
+   "homeScore": 63,
+   "awayScore": 10,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401856804",
+   "week": 4,
+   "date": "2026-09-26T23:30Z",
+   "home": "265",
+   "away": "12",
+   "homeName": "WSU",
+   "awayName": "ARIZ",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "12",
+   "homeScore": 24,
+   "awayScore": 34,
+   "timeValid": true,
+   "tv": "CBS",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Martin Stadium",
+   "city": "Pullman, WA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860894",
+   "week": 4,
+   "date": "2026-09-26T23:30Z",
+   "home": "328",
+   "away": "2653",
+   "homeName": "USU",
+   "awayName": "TROY",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "328",
+   "homeScore": 21,
+   "awayScore": 10,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Maverik Stadium",
+   "city": "Logan, UT",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860895",
+   "week": 4,
+   "date": "2026-09-27T01:00Z",
+   "home": "2638",
+   "away": "204",
+   "homeName": "UTEP",
+   "awayName": "ORST",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "204",
+   "homeScore": 7,
+   "awayScore": 33,
+   "timeValid": true,
+   "tv": "MW+",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Sun Bowl",
+   "city": "El Paso, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860891",
+   "week": 4,
+   "date": "2026-09-27T02:00Z",
+   "home": "278",
+   "away": "242",
+   "homeName": "FRES",
+   "awayName": "RICE",
+   "neutral": false,
+   "confFlag": false,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "278",
+   "homeScore": 38,
+   "awayScore": 24,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Valley Children's Stadium",
+   "city": "Fresno, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860899",
+   "week": 5,
+   "date": "2026-10-03T22:00Z",
+   "home": "36",
+   "away": "204",
+   "homeName": "CSU",
+   "awayName": "ORST",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "204",
+   "homeScore": 26,
+   "awayScore": 56,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860898",
+   "week": 5,
+   "date": "2026-10-03T23:30Z",
+   "home": "68",
+   "away": "328",
+   "homeName": "BOIS",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 37,
+   "awayScore": 18,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Albertsons Stadium",
+   "city": "Boise, ID",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860921",
+   "week": 5,
+   "date": "2026-10-04T01:30Z",
+   "home": "265",
+   "away": "278",
+   "homeName": "WSU",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "278",
+   "homeScore": 6,
+   "awayScore": 26,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Martin Stadium",
+   "city": "Pullman, WA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860900",
+   "week": 5,
+   "date": "2026-10-04T02:30Z",
+   "home": "21",
+   "away": "326",
+   "homeName": "SDSU",
+   "awayName": "TXST",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "21",
+   "homeScore": 31,
+   "awayScore": 29,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Snapdragon Stadium",
+   "city": "San Diego, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860922",
+   "week": 6,
+   "date": "2026-10-10T01:00Z",
+   "home": "328",
+   "away": "265",
+   "homeName": "USU",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "328",
+   "homeScore": 17,
+   "awayScore": 16,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Maverik Stadium",
+   "city": "Logan, UT",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860902",
+   "week": 6,
+   "date": "2026-10-10T22:00Z",
+   "home": "204",
+   "away": "21",
+   "homeName": "ORST",
+   "awayName": "SDSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "204",
+   "homeScore": 66,
+   "awayScore": 14,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Reser Stadium",
+   "city": "Corvallis, OR",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860901",
+   "week": 6,
+   "date": "2026-10-11T02:30Z",
+   "home": "278",
+   "away": "68",
+   "homeName": "FRES",
+   "awayName": "BOIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 31,
+   "awayScore": 38,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Valley Children's Stadium",
+   "city": "Fresno, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860923",
+   "week": 7,
+   "date": "2026-10-16T00:00Z",
+   "home": "326",
+   "away": "36",
+   "homeName": "TXST",
+   "awayName": "CSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "326",
+   "homeScore": 66,
+   "awayScore": 27,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860903",
+   "week": 7,
+   "date": "2026-10-17T22:00Z",
+   "home": "204",
+   "away": "265",
+   "homeName": "ORST",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "204",
+   "homeScore": 48,
+   "awayScore": 30,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Reser Stadium",
+   "city": "Corvallis, OR",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860904",
+   "week": 7,
+   "date": "2026-10-18T02:30Z",
+   "home": "21",
+   "away": "278",
+   "homeName": "SDSU",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "21",
+   "homeScore": 26,
+   "awayScore": 23,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Snapdragon Stadium",
+   "city": "San Diego, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860907",
+   "week": 8,
+   "date": "2026-10-24T22:00Z",
+   "home": "265",
+   "away": "68",
+   "homeName": "WSU",
+   "awayName": "BOIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 10,
+   "awayScore": 31,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Martin Stadium",
+   "city": "Pullman, WA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860905",
+   "week": 8,
+   "date": "2026-10-24T22:30Z",
+   "home": "36",
+   "away": "21",
+   "homeName": "CSU",
+   "awayName": "SDSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "36",
+   "homeScore": 56,
+   "awayScore": 49,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860906",
+   "week": 8,
+   "date": "2026-10-24T23:30Z",
+   "home": "326",
+   "away": "328",
+   "homeName": "TXST",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "326",
+   "homeScore": 20,
+   "awayScore": 17,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860910",
+   "week": 9,
+   "date": "2026-10-31T19:30Z",
+   "home": "328",
+   "away": "36",
+   "homeName": "USU",
+   "awayName": "CSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "328",
+   "homeScore": 31,
+   "awayScore": 14,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Maverik Stadium",
+   "city": "Logan, UT",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860909",
+   "week": 9,
+   "date": "2026-10-31T23:00Z",
+   "home": "21",
+   "away": "265",
+   "homeName": "SDSU",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "21",
+   "homeScore": 26,
+   "awayScore": 20,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Snapdragon Stadium",
+   "city": "San Diego, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860908",
+   "week": 9,
+   "date": "2026-11-01T02:00Z",
+   "home": "68",
+   "away": "326",
+   "homeName": "BOIS",
+   "awayName": "TXST",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 46,
+   "awayScore": 45,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Albertsons Stadium",
+   "city": "Boise, ID",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860924",
+   "week": 9,
+   "date": "2026-11-01T03:00Z",
+   "home": "278",
+   "away": "204",
+   "homeName": "FRES",
+   "awayName": "ORST",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "278",
+   "homeScore": 38,
+   "awayScore": 22,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Valley Children's Stadium",
+   "city": "Fresno, CA",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860911",
+   "week": 10,
+   "date": "2026-11-07T23:00Z",
+   "home": "36",
+   "away": "68",
+   "homeName": "CSU",
+   "awayName": "BOIS",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "68",
+   "homeScore": 38,
+   "awayScore": 64,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860913",
+   "week": 10,
+   "date": "2026-11-08T02:30Z",
+   "home": "328",
+   "away": "278",
+   "homeName": "USU",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "328",
+   "homeScore": 17,
+   "awayScore": 10,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Maverik Stadium",
+   "city": "Logan, UT",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860912",
+   "week": 10,
+   "date": "2026-11-08T03:30Z",
+   "home": "204",
+   "away": "326",
+   "homeName": "ORST",
+   "awayName": "TXST",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "326",
+   "homeScore": 21,
+   "awayScore": 42,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Reser Stadium",
+   "city": "Corvallis, OR",
+   "pHome": null,
+   "predAt": null,
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860916",
+   "week": 11,
+   "date": "2026-11-14T21:00Z",
+   "home": "326",
+   "away": "278",
+   "homeName": "TXST",
+   "awayName": "FRES",
+   "neutral": false,
+   "confFlag": true,
+   "completed": true,
+   "canceled": false,
+   "postponed": false,
+   "winner": "326",
+   "homeScore": 37,
+   "awayScore": 35,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": "TXST -10",
+   "overUnder": 60.5,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": null,
+   "predAt": "2026-11-15T02:31Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "wp": {
+    "pts": [
+     [
+      7,
+      677
+     ],
+     [
+      14,
+      669
+     ],
+     [
+      73,
+      673
+     ],
+     [
+      100,
+      732
+     ],
+     [
+      146,
+      750
+     ],
+     [
+      164,
+      737
+     ],
+     [
+      232,
+      703
+     ],
+     [
+      269,
+      768
+     ],
+     [
+      313,
+      733
+     ],
+     [
+      342,
+      792
+     ],
+     [
+      357,
+      672
+     ],
+     [
+      377,
+      722
+     ],
+     [
+      438,
+      708
+     ],
+     [
+      459,
+      747
+     ],
+     [
+      529,
+      751
+     ],
+     [
+      565,
+      769
+     ],
+     [
+      614,
+      764
+     ],
+     [
+      620,
+      768
+     ],
+     [
+      666,
+      748
+     ],
+     [
+      743,
+      782
+     ],
+     [
+      750,
+      791
+     ],
+     [
+      793,
+      817
+     ],
+     [
+      814,
+      828
+     ],
+     [
+      849,
+      834
+     ],
+     [
+      849,
+      833
+     ],
+     [
+      877,
+      849
+     ],
+     [
+      899,
+      897
+     ],
+     [
+      906,
+      904
+     ],
+     [
+      944,
+      910
+     ],
+     [
+      991,
+      892
+     ],
+     [
+      1028,
+      895
+     ],
+     [
+      1078,
+      867
+     ],
+     [
+      1093,
+      867
+     ],
+     [
+      1174,
+      851
+     ],
+     [
+      1212,
+      830
+     ],
+     [
+      1220,
+      814
+     ],
+     [
+      1237,
+      826
+     ],
+     [
+      1260,
+      817
+     ],
+     [
+      1288,
+      904
+     ],
+     [
+      1288,
+      907
+     ],
+     [
+      1339,
+      916
+     ],
+     [
+      1375,
+      896
+     ],
+     [
+      1451,
+      911
+     ],
+     [
+      1505,
+      887
+     ],
+     [
+      1576,
+      890
+     ],
+     [
+      1617,
+      879
+     ],
+     [
+      1658,
+      874
+     ],
+     [
+      1678,
+      871
+     ],
+     [
+      1686,
+      838
+     ],
+     [
+      1686,
+      841
+     ],
+     [
+      1696,
+      811
+     ],
+     [
+      1702,
+      822
+     ],
+     [
+      1711,
+      818
+     ],
+     [
+      1733,
+      776
+     ],
+     [
+      1733,
+      778
+     ],
+     [
+      1741,
+      796
+     ],
+     [
+      1746,
+      797
+     ],
+     [
+      1755,
+      818
+     ],
+     [
+      1764,
+      807
+     ],
+     [
+      1766,
+      805
+     ],
+     [
+      1800,
+      808
+     ],
+     [
+      1811,
+      778
+     ],
+     [
+      1844,
+      785
+     ],
+     [
+      1920,
+      763
+     ],
+     [
+      1952,
+      780
+     ],
+     [
+      1963,
+      813
+     ],
+     [
+      1970,
+      818
+     ],
+     [
+      1998,
+      832
+     ],
+     [
+      2021,
+      853
+     ],
+     [
+      2036,
+      858
+     ],
+     [
+      2079,
+      841
+     ],
+     [
+      2087,
+      863
+     ],
+     [
+      2142,
+      879
+     ],
+     [
+      2163,
+      882
+     ],
+     [
+      2231,
+      892
+     ],
+     [
+      2255,
+      881
+     ],
+     [
+      2299,
+      905
+     ],
+     [
+      2327,
+      892
+     ],
+     [
+      2362,
+      868
+     ],
+     [
+      2390,
+      879
+     ],
+     [
+      2410,
+      887
+     ],
+     [
+      2442,
+      891
+     ],
+     [
+      2527,
+      848
+     ],
+     [
+      2565,
+      860
+     ],
+     [
+      2640,
+      825
+     ],
+     [
+      2673,
+      848
+     ],
+     [
+      2677,
+      884
+     ],
+     [
+      2685,
+      741
+     ],
+     [
+      2685,
+      727
+     ],
+     [
+      2707,
+      696
+     ],
+     [
+      2750,
+      674
+     ],
+     [
+      2775,
+      679
+     ],
+     [
+      2781,
+      692
+     ],
+     [
+      2832,
+      615
+     ],
+     [
+      2873,
+      630
+     ],
+     [
+      2963,
+      522
+     ],
+     [
+      2967,
+      383
+     ],
+     [
+      2974,
+      371
+     ],
+     [
+      2994,
+      340
+     ],
+     [
+      3044,
+      408
+     ],
+     [
+      3064,
+      463
+     ],
+     [
+      3120,
+      447
+     ],
+     [
+      3151,
+      512
+     ],
+     [
+      3189,
+      545
+     ],
+     [
+      3253,
+      266
+     ],
+     [
+      3300,
+      162
+     ],
+     [
+      3339,
+      197
+     ],
+     [
+      3375,
+      203
+     ],
+     [
+      3390,
+      356
+     ],
+     [
+      3414,
+      334
+     ],
+     [
+      3446,
+      292
+     ],
+     [
+      3446,
+      283
+     ],
+     [
+      3481,
+      478
+     ],
+     [
+      3481,
+      470
+     ],
+     [
+      3511,
+      764
+     ],
+     [
+      3511,
+      758
+     ],
+     [
+      3540,
+      865
+     ],
+     [
+      3544,
+      863
+     ],
+     [
+      3565,
+      999
+     ],
+     [
+      3600,
+      1000
+     ]
+    ],
+    "final": true,
+    "detail": "Final",
+    "homeScore": 37,
+    "awayScore": 35,
+    "state": "post"
+   },
+   "moved": {
+    "21": [
+     0.1746,
+     0.0638
+    ],
+    "204": [
+     0.07334,
+     0.02174
+    ],
+    "278": [
+     0.08171,
+     0
+    ],
+    "326": [
+     0.6121,
+     0.8996
+    ],
+    "328": [
+     0.0612,
+     0.01785
+    ]
+   }
+  },
+  {
+   "id": "401860914",
+   "week": 11,
+   "date": "2026-11-14T23:00Z",
+   "home": "68",
+   "away": "204",
+   "homeName": "BOIS",
+   "awayName": "ORST",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": "BOIS -16.5",
+   "overUnder": 65.5,
+   "venue": "Albertsons Stadium",
+   "city": "Boise, ID",
+   "pHome": 0.8207,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "wp": {
+    "pts": [
+     [
+      0,
+      811
+     ],
+     [
+      7,
+      820
+     ],
+     [
+      47,
+      773
+     ],
+     [
+      81,
+      768
+     ],
+     [
+      141,
+      742
+     ],
+     [
+      173,
+      696
+     ],
+     [
+      178,
+      686
+     ],
+     [
+      229,
+      663
+     ],
+     [
+      233,
+      640
+     ],
+     [
+      243,
+      661
+     ],
+     [
+      272,
+      658
+     ],
+     [
+      294,
+      645
+     ],
+     [
+      365,
+      627
+     ],
+     [
+      387,
+      640
+     ],
+     [
+      390,
+      594
+     ],
+     [
+      441,
+      595
+     ],
+     [
+      475,
+      615
+     ],
+     [
+      497,
+      644
+     ],
+     [
+      502,
+      683
+     ],
+     [
+      502,
+      684
+     ],
+     [
+      515,
+      655
+     ],
+     [
+      569,
+      732
+     ],
+     [
+      587,
+      736
+     ],
+     [
+      631,
+      746
+     ],
+     [
+      668,
+      784
+     ],
+     [
+      678,
+      798
+     ],
+     [
+      704,
+      789
+     ],
+     [
+      722,
+      788
+     ],
+     [
+      760,
+      778
+     ],
+     [
+      793,
+      902
+     ],
+     [
+      800,
+      896
+     ],
+     [
+      823,
+      892
+     ],
+     [
+      842,
+      898
+     ],
+     [
+      900,
+      876
+     ],
+     [
+      909,
+      867
+     ],
+     [
+      960,
+      865
+     ],
+     [
+      995,
+      869
+     ],
+     [
+      1041,
+      827
+     ],
+     [
+      1064,
+      818
+     ],
+     [
+      1071,
+      829
+     ],
+     [
+      1109,
+      836
+     ],
+     [
+      1187,
+      878
+     ],
+     [
+      1225,
+      873
+     ],
+     [
+      1274,
+      906
+     ],
+     [
+      1274,
+      909
+     ],
+     [
+      1280,
+      915
+     ],
+     [
+      1327,
+      928
+     ],
+     [
+      1336,
+      904
+     ],
+     [
+      1346,
+      920
+     ],
+     [
+      1382,
+      916
+     ],
+     [
+      1430,
+      905
+     ],
+     [
+      1452,
+      922
+     ],
+     [
+      1489,
+      921
+     ],
+     [
+      1525,
+      932
+     ],
+     [
+      1542,
+      926
+     ],
+     [
+      1587,
+      931
+     ],
+     [
+      1670,
+      964
+     ],
+     [
+      1677,
+      971
+     ],
+     [
+      1681,
+      972
+     ],
+     [
+      1687,
+      956
+     ],
+     [
+      1710,
+      950
+     ],
+     [
+      1743,
+      935
+     ],
+     [
+      1745,
+      933
+     ],
+     [
+      1757,
+      915
+     ],
+     [
+      1764,
+      916
+     ],
+     [
+      1776,
+      924
+     ],
+     [
+      1784,
+      938
+     ],
+     [
+      1785,
+      936
+     ],
+     [
+      1791,
+      935
+     ],
+     [
+      1795,
+      946
+     ],
+     [
+      1800,
+      932
+     ],
+     [
+      1800,
+      949
+     ],
+     [
+      1848,
+      944
+     ],
+     [
+      1892,
+      935
+     ],
+     [
+      1966,
+      956
+     ],
+     [
+      1986,
+      957
+     ],
+     [
+      2024,
+      954
+     ],
+     [
+      2107,
+      942
+     ],
+     [
+      2107,
+      941
+     ],
+     [
+      2146,
+      933
+     ],
+     [
+      2170,
+      933
+     ],
+     [
+      2200,
+      926
+     ],
+     [
+      2220,
+      929
+     ],
+     [
+      2256,
+      913
+     ],
+     [
+      2278,
+      900
+     ],
+     [
+      2329,
+      884
+     ],
+     [
+      2360,
+      860
+     ],
+     [
+      2374,
+      848
+     ],
+     [
+      2409,
+      864
+     ],
+     [
+      2442,
+      850
+     ],
+     [
+      2514,
+      842
+     ],
+     [
+      2557,
+      859
+     ],
+     [
+      2622,
+      912
+     ],
+     [
+      2652,
+      906
+     ],
+     [
+      2699,
+      930
+     ],
+     [
+      2713,
+      928
+     ],
+     [
+      2747,
+      954
+     ],
+     [
+      2747,
+      957
+     ],
+     [
+      2777,
+      943
+     ],
+     [
+      2820,
+      946
+     ],
+     [
+      2878,
+      940
+     ],
+     [
+      2909,
+      918
+     ],
+     [
+      2924,
+      911
+     ],
+     [
+      2963,
+      866
+     ],
+     [
+      2970,
+      890
+     ],
+     [
+      3065,
+      921
+     ],
+     [
+      3095,
+      918
+     ],
+     [
+      3133,
+      930
+     ],
+     [
+      3224,
+      983
+     ],
+     [
+      3224,
+      985
+     ],
+     [
+      3274,
+      953
+     ],
+     [
+      3299,
+      954
+     ],
+     [
+      3316,
+      977
+     ],
+     [
+      3330,
+      981
+     ],
+     [
+      3335,
+      892
+     ],
+     [
+      3335,
+      924
+     ],
+     [
+      3388,
+      899
+     ],
+     [
+      3388,
+      851
+     ],
+     [
+      3471,
+      994
+     ],
+     [
+      3471,
+      994
+     ]
+    ],
+    "final": false,
+    "detail": "2:00 - 4th",
+    "homeScore": 46,
+    "awayScore": 41,
+    "state": "in"
+   }
+  },
+  {
+   "id": "401860915",
+   "week": 11,
+   "date": "2026-11-15T02:30Z",
+   "home": "21",
+   "away": "328",
+   "homeName": "SDSU",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": "USU -3",
+   "overUnder": 43.5,
+   "venue": "Snapdragon Stadium",
+   "city": "San Diego, CA",
+   "pHome": 0.4492,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/14 - 9:30 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
+  },
+  {
+   "id": "401860917",
+   "week": 11,
+   "date": "2026-11-15T03:45Z",
+   "home": "265",
+   "away": "36",
+   "homeName": "WSU",
+   "awayName": "CSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": "WSU -8.5",
+   "overUnder": 64.5,
+   "venue": "Martin Stadium",
+   "city": "Pullman, WA",
+   "pHome": 0.7038,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860920",
+   "week": 12,
+   "date": "2026-11-21T23:00Z",
+   "home": "326",
+   "away": "265",
+   "homeName": "TXST",
+   "awayName": "WSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "UFCU Stadium",
+   "city": "San Marcos, TX",
+   "pHome": 0.8787,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860918",
+   "week": 12,
+   "date": "2026-11-22T00:30Z",
+   "home": "278",
+   "away": "36",
+   "homeName": "FRES",
+   "awayName": "CSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "CW",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Valley Children's Stadium",
+   "city": "Fresno, CA",
+   "pHome": 0.8811,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860925",
+   "week": 12,
+   "date": "2026-11-22T02:30Z",
+   "home": "68",
+   "away": "21",
+   "homeName": "BOIS",
+   "awayName": "SDSU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "USA Net",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Albertsons Stadium",
+   "city": "Boise, ID",
+   "pHome": 0.9498,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860919",
+   "week": 12,
+   "date": "2026-11-22T03:30Z",
+   "home": "204",
+   "away": "328",
+   "homeName": "ORST",
+   "awayName": "USU",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": true,
+   "tv": "CBSSN",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Reser Stadium",
+   "city": "Corvallis, OR",
+   "pHome": 0.7329,
+   "predAt": "2026-11-14T13:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true
+  },
+  {
+   "id": "401860926",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "36",
+   "away": "-2",
+   "homeName": "CSU",
+   "awayName": "TBD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Canvas Stadium",
+   "city": "Fort Collins, CO",
+   "pHome": null,
+   "predAt": "2026-11-15T02:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401860927",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "278",
+   "away": "-2",
+   "homeName": "FRES",
+   "awayName": "TBD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Valley Children's Stadium",
+   "city": "Fresno, CA",
+   "pHome": null,
+   "predAt": "2026-11-15T02:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401860928",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "328",
+   "away": "-2",
+   "homeName": "USU",
+   "awayName": "TBD",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Maverik Stadium",
+   "city": "Logan, UT",
+   "pHome": null,
+   "predAt": "2026-11-15T02:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  },
+  {
+   "id": "401860929",
+   "week": 13,
+   "date": "2026-11-28T05:00Z",
+   "home": "265",
+   "away": "-2",
+   "homeName": "WSU",
+   "awayName": "TBD",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "timeValid": false,
+   "tv": null,
+   "spread": null,
+   "overUnder": null,
+   "venue": "Martin Stadium",
+   "city": "Pullman, WA",
+   "pHome": null,
+   "predAt": "2026-11-15T02:31Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": false
+  }
+ ],
+ "baseline": {
+  "week": 11,
+  "at": "2026-11-13T18:54Z",
+  "odds": {
+   "21": 0.1736,
+   "36": 0,
+   "68": 0.997,
+   "204": 0.07462,
+   "265": 0,
+   "278": 0.08194,
+   "326": 0.6124,
+   "328": 0.06038
+  }
+ },
+ "cfp": {
+  "date": "2026-11-10T08:00Z",
+  "week": 11,
+  "ranks": {
+   "12": 23,
+   "26": 4,
+   "30": 18,
+   "61": 1,
+   "68": 24,
+   "84": 9,
+   "87": 5,
+   "96": 11,
+   "99": 21,
+   "142": 22,
+   "145": 19,
+   "154": 13,
+   "194": 20,
+   "197": 25,
+   "248": 14,
+   "251": 6,
+   "252": 10,
+   "254": 2,
+   "333": 3,
+   "2294": 15,
+   "2390": 7,
+   "2483": 16,
+   "2579": 17,
+   "2633": 8,
+   "2641": 12
+  }
+ },
+ "exact": {
+  "key": "6205e60dc1f4f6b0",
+  "gameIds": [
+   "401860914",
+   "401860915",
+   "401860917",
+   "401860920",
+   "401860918",
+   "401860925",
+   "401860919"
+  ],
+  "games": 7,
+  "budgetSec": 180,
+  "finishes": 128,
+  "elapsedSec": 0,
+  "coinTossShare": 0,
+  "teams": [
+   {
+    "id": "68",
+    "p": 0.997036748751935,
+    "first": 0.9923233346420646,
+    "pWinOut": 1,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": true,
+    "best": {
+     "mask": 125,
+     "prob": 0.17146296999677899
+    },
+    "need": {
+     "games": 32,
+     "homeWins": 32,
+     "prob": 0.9498
+    },
+    "games": [
+     {
+      "pH": 1,
+      "pA": 0.9834732222639991,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.993403269706,
+      "pA": 0.9999999999999998,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9970367487519352,
+      "pA": 0.9970367487519347,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9970367487519352,
+      "pA": 0.997036748751934,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9970367487519352,
+      "pA": 0.9970367487519343,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9999999999999998,
+      "pA": 0.9409710906760013,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9959568136879999,
+      "pA": 0.9999999999999996,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "326",
+    "p": 0.8995807702809773,
+    "first": 0,
+    "pWinOut": 0.9738166809540647,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 125,
+     "prob": 0.17146296999677899
+    },
+    "need": {
+     "games": 40,
+     "homeWins": 40,
+     "prob": 0.83458926
+    },
+    "games": [
+     {
+      "pH": 0.9123618205568357,
+      "pA": 0.8410787738426224,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8428288191510229,
+      "pA": 0.9458643150296622,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8995807702809773,
+      "pA": 0.8995807702809772,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9738166809540647,
+      "pA": 0.36181411975796,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8958795603103378,
+      "pA": 0.9270083237303504,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9227836736368598,
+      "pA": 0.46057444343999787,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9144118775990643,
+      "pA": 0.8588854555919996,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "204",
+    "p": 0.0217364549703378,
+    "first": 0.006596730294000003,
+    "pWinOut": 0.16541074,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 116,
+     "prob": 0.005171140916405018
+    },
+    "need": {
+     "games": 73,
+     "homeWins": 64,
+     "prob": 0.015939908060999996
+    },
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0.12122953134599998,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0.021736454970337795,
+      "pA": 0.021736454970337802,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0217364549703378,
+      "pA": 0.021736454970337802,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.0065967302940000035,
+      "pA": 0.13140897,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.021736454970337795,
+      "pA": 0.02173645497033782,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.015939908060999996,
+      "pA": 0.13140897,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.029658145682,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "278",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "21",
+    "p": 0.06380053011274961,
+    "first": 0.0010799350639352006,
+    "pWinOut": 1,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": true,
+    "best": {
+     "mask": 119,
+     "prob": 0.01930351211766857
+    },
+    "need": {
+     "games": 27,
+     "homeWins": 19,
+     "prob": 0.03940126661500919
+    },
+    "games": [
+     {
+      "pH": 0.06979268355916429,
+      "pA": 0.03637297666337689,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.14203145617263938,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0.06380053011274961,
+      "pA": 0.06380053011274961,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.02254984000000001,
+      "pA": 0.362621481490104,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.06750174008338905,
+      "pA": 0.03637297666337696,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.04343092241814023,
+      "pA": 0.44920000000000027,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.059973163030935736,
+      "pA": 0.07430250440800004,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "328",
+    "p": 0.017845495883999994,
+    "first": 0,
+    "pWinOut": 0.12129999999999996,
+    "clinched": false,
+    "eliminated": false,
+    "winOutGuaranteed": false,
+    "best": {
+     "mask": 53,
+     "prob": 0.008626203173268919
+    },
+    "need": {
+     "games": 74,
+     "homeWins": 0,
+     "prob": 0.017845495883999994
+    },
+    "games": [
+     {
+      "pH": 0.017845495883999994,
+      "pA": 0.017845495883999998,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.032399229999999994,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0.017845495883999994,
+      "pA": 0.017845495883999994,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.14711868,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0.017845495883999994,
+      "pA": 0.017845495883999994,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.01784549588399999,
+      "pA": 0.01784549588400006,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.06681203999999998,
+      "needH": false,
+      "needA": true
+     }
+    ]
+   },
+   {
+    "id": "36",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   },
+   {
+    "id": "265",
+    "p": 0,
+    "first": 0,
+    "pWinOut": 0,
+    "clinched": false,
+    "eliminated": true,
+    "winOutGuaranteed": false,
+    "best": null,
+    "need": null,
+    "games": [
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0,
+      "needH": false,
+      "needA": false
+     }
+    ]
+   }
+  ],
+  "computedAt": "2026-11-15T00:31Z"
+ }
+}
