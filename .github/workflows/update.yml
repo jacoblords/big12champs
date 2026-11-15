@@ -18,6 +18,12 @@ on:
         description: Rebuild and deploy even if no data changed
         type: boolean
         default: true
+      restore:
+        description: >-
+          Restart every league from this commit on the data-history branch instead of the
+          published data (to undo a bad deploy; leave empty otherwise)
+        type: string
+        default: ""
   push:
     branches: [main]
 
@@ -44,7 +50,8 @@ jobs:
       PUBLISHED: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
       # Pushes and "Run workflow" clicks rebuild; schedules and the trigger worker
       # (force=false) deploy only on changed data. Dispatch inputs arrive as strings.
-      FORCE: ${{ github.event_name != 'schedule' && github.event.inputs.force != 'false' && '--force-build' || '' }}
+      # A restore always deploys: the restored data is what's to go live.
+      FORCE: ${{ (github.event_name != 'schedule' && github.event.inputs.force != 'false' || github.event.inputs.restore != '') && '--force-build' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -53,22 +60,38 @@ jobs:
       - uses: actions/setup-node@v4  # exact.js
         with:
           node-version: "22"
-      # One step per league, each starting from its own published data. Every step writes its
-      # page into site/ whether or not it changed, so one deploy carries all of them.
+      # The "restore" input: every league starts from that data-history commit instead
+      # (archive.py restore puts the logos back in). Dispatch inputs reach the shell as env only.
+      - if: github.event.inputs.restore != ''
+        env:
+          RESTORE: ${{ github.event.inputs.restore }}
+        run: |
+          [[ "$RESTORE" =~ ^[0-9a-f]{7,40}$ ]] || { echo "restore: '$RESTORE' isn't a commit id"; exit 1; }
+          git fetch --no-tags origin data-history
+          git merge-base --is-ancestor "$RESTORE" FETCH_HEAD || { echo "restore: $RESTORE isn't on data-history"; exit 1; }
+          mkdir -p "$RUNNER_TEMP/history"
+          git archive "$RESTORE" | tar -x -C "$RUNNER_TEMP/history"
+          python archive.py restore "$RUNNER_TEMP/history" "$RUNNER_TEMP/restored"
+          echo "PREV_ROOT=$RUNNER_TEMP/restored" >> "$GITHUB_ENV"
+      # One step per league, each starting from its own published data (or the restored copy).
+      # Every step writes its page into site/ whether or not it changed, so one deploy carries
+      # all of them.
       - id: big12
-        run: python fetch_data.py --league big12 --prev "$PUBLISHED/data.json" --site site --artifact '' $FORCE --github-output
+        run: python fetch_data.py --league big12 --prev "${PREV_ROOT:-$PUBLISHED}/data.json" --site site --artifact '' $FORCE --github-output
       - id: sec
-        run: python fetch_data.py --league sec --prev "$PUBLISHED/sec/data.json" --site site --artifact '' $FORCE --github-output
+        run: python fetch_data.py --league sec --prev "${PREV_ROOT:-$PUBLISHED}/sec/data.json" --site site --artifact '' $FORCE --github-output
       - id: acc
-        run: python fetch_data.py --league acc --prev "$PUBLISHED/acc/data.json" --site site --artifact '' $FORCE --github-output
+        run: python fetch_data.py --league acc --prev "${PREV_ROOT:-$PUBLISHED}/acc/data.json" --site site --artifact '' $FORCE --github-output
       - id: big10
-        run: python fetch_data.py --league big10 --prev "$PUBLISHED/big10/data.json" --site site --artifact '' $FORCE --github-output
+        run: python fetch_data.py --league big10 --prev "${PREV_ROOT:-$PUBLISHED}/big10/data.json" --site site --artifact '' $FORCE --github-output
       - id: pac12
-        run: python fetch_data.py --league pac12 --prev "$PUBLISHED/pac12/data.json" --site site --artifact '' $FORCE --github-output
+        run: python fetch_data.py --league pac12 --prev "${PREV_ROOT:-$PUBLISHED}/pac12/data.json" --site site --artifact '' $FORCE --github-output
       - if: steps.big12.outputs.changed == 'true' || steps.sec.outputs.changed == 'true' || steps.acc.outputs.changed == 'true' || steps.big10.outputs.changed == 'true' || steps.pac12.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
+          # a second copy of each deploy, beside data-history: 90 days is the most GitHub keeps
+          retention-days: 90
 
   deploy:
     needs: update
@@ -80,3 +103,51 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Every deployed data.json, committed to the data-history branch (archive.py): the only lasting
+  # copy of what ESPN can't give again, a "restore" point for a bad deploy, and odds.jsonl, each
+  # team's odds over the season. Runs after the deploy, so it records only what went live; the
+  # workflow's concurrency group keeps runs, and so these pushes, one at a time. A failure here
+  # fails the run (and GitHub says so) but has already deployed.
+  archive:
+    needs: [update, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/pages
+      - name: Commit the deployed data to data-history
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          mkdir -p "$RUNNER_TEMP/site"
+          tar -xf "$RUNNER_TEMP/pages/artifact.tar" -C "$RUNNER_TEMP/site" --wildcards --exclude='*page-data.json' '*data.json'
+          H="$RUNNER_TEMP/history"
+          if git fetch --no-tags --depth=1 origin data-history; then
+            git worktree add -B data-history "$H" FETCH_HEAD
+          else
+            git worktree add --orphan -b data-history "$H"
+          fi
+          for attempt in 1 2 3; do
+            msg=$(python archive.py record "$RUNNER_TEMP/site" "$H")
+            git -C "$H" add -A
+            if git -C "$H" diff --cached --quiet; then echo "nothing new to record"; exit 0; fi
+            git -C "$H" commit -q -m "$msg" -m "$RUN_URL"
+            git -C "$H" push origin data-history && exit 0
+            # someone else's push got there first: start again from theirs
+            git fetch --no-tags --depth=1 origin data-history
+            git -C "$H" reset -q --hard FETCH_HEAD
+          done
+          exit 1
