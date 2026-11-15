@@ -43,6 +43,17 @@ test("proven labels agree with the numbers", () => {
   }
 });
 
+// Summing 65,536 finishes drifts in the last bits: a certainty came out 0.9999999999999984 and
+// the page showed Utah ">99.9%" with a win that guaranteed its spot. A certain share is exact.
+test("certain odds are exactly 0 or 1, not a rounding error away", () => {
+  for (const t of ex.teams) {
+    for (const v of [t.p, t.pWinOut, ...t.games.flatMap((g) => [g.pH, g.pA])]) {
+      if (v == null) continue;
+      assert.ok(v === 0 || v === 1 || (v > 1e-9 && v < 1 - 1e-9), `${t.id}: ${v}`);
+    }
+  }
+});
+
 test("matches an independent Monte Carlo run", () => {
   const n = 100000;
   const sim = B.simulate(ctx, n, null, 11);

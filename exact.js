@@ -53,7 +53,7 @@ function solve(data, opts = {}) {
   const appear = new Float64Array(N), first = new Float64Array(N);
   const wo = new Float64Array(N), woIn = new Float64Array(N);
   const cntIn = new Float64Array(N), cntOut = new Float64Array(N), woOut = new Float64Array(N);
-  const inH = new Float64Array(N * n), cntInH = new Float64Array(N * n);
+  const inH = new Float64Array(N * n), cntInH = new Float64Array(N * n), cntOutH = new Float64Array(N * n);
   const bestLp = new Float64Array(N).fill(-1), bestMask = new Uint32Array(N);
   // inBits[t]: bit m set when finish m puts team t in the title game outright (no coin toss
   // involved), or when finish m can't happen. bestSure*: likeliest finish of that kind.
@@ -120,7 +120,11 @@ function solve(data, opts = {}) {
           if (lp > bestSureLp[t]) { bestSureLp[t] = lp; bestSureMask[t] = m >>> 0; }
         }
       }
-      if (q < 1) { cntOut[t]++; if (wonOut) woOut[t]++; }
+      if (q < 1) {
+        cntOut[t]++;
+        if (wonOut) woOut[t]++;
+        for (let i = 0; i < n; i++) if ((m >>> i) & 1) cntOutH[t * n + i]++;
+      }
     }
   }
 
@@ -133,11 +137,15 @@ function solve(data, opts = {}) {
     return r ? { need: r } : { need: null, needSkipped: "out of time" };
   });
 
+  // Sums over tens of thousands of finishes drift in the last bits, so a certainty can come out as
+  // 0.9999999999999984 and show as ">99.9%" (Utah beating WVU, 2026 week 13). The counts say
+  // when a share is really all or nothing; those are reported exactly.
+  const share = (nIn, nOut, p) => (nOut === 0 ? 1 : nIn === 0 ? 0 : p);
   const teams = ctx.teams.map((t, i) => ({
     id: t.id,
-    p: appear[i],
+    p: share(cntIn[i], cntOut[i], appear[i]),
     first: first[i],
-    pWinOut: wo[i] > 0 ? woIn[i] / wo[i] : null,
+    pWinOut: wo[i] > 0 ? (woOut[i] === 0 ? 1 : woIn[i] / wo[i]) : null,
     clinched: cntOut[i] === 0,
     eliminated: cntIn[i] === 0,
     winOutGuaranteed: wo[i] > 0 && woOut[i] === 0,
@@ -145,10 +153,10 @@ function solve(data, opts = {}) {
     ...needs[i],
     // per unplayed game: odds if home wins / if away wins, and whether the other result is impossible
     games: P.map((g, k) => {
-      const ih = inH[i * n + k], ch = cntInH[i * n + k];
+      const ih = inH[i * n + k], ch = cntInH[i * n + k], co = cntOutH[i * n + k];
       return {
-        pH: g.pHome > 0 ? ih / g.pHome : null,
-        pA: g.pHome < 1 ? (appear[i] - ih) / (1 - g.pHome) : null,
+        pH: g.pHome > 0 ? share(ch, co, ih / g.pHome) : null,
+        pA: g.pHome < 1 ? share(cntIn[i] - ch, cntOut[i] - co, (appear[i] - ih) / (1 - g.pHome)) : null,
         needH: cntIn[i] > 0 && cntIn[i] - ch === 0, // never gets in when the away team wins
         needA: cntIn[i] > 0 && ch === 0,
       };
