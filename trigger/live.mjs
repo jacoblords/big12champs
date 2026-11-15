@@ -18,6 +18,22 @@ function playSeconds(pl) {
 // Python's round(): halves go to the even neighbour, so a chart matches fetch_data.py's exactly
 const roundEven = (x) => { const r = Math.round(x); return Math.abs(x % 1) === 0.5 && r % 2 ? r - 1 : r; };
 
+// The points on the longest run of plays whose game time never goes back: ESPN files a play out of
+// place now and then, and its odds belong to some other moment. fetch_data.py's in_order says
+// why, and picks the same run: the same patience sort, ties going the same way.
+export function inOrder(pts) {
+  const tails = [], ends = [], prev = [];
+  pts.forEach(([t], i) => {
+    let lo = 0, hi = tails.length; // first tail greater than t (Python's bisect_right)
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (tails[mid] <= t) lo = mid + 1; else hi = mid; }
+    prev.push(lo ? ends[lo - 1] : -1);
+    tails[lo] = t; ends[lo] = i;
+  });
+  const keep = [];
+  for (let i = ends.length ? ends[ends.length - 1] : -1; i >= 0; i = prev[i]) keep.push(i);
+  return keep.reverse().map((i) => pts[i]);
+}
+
 // ESPN's game summary, cut down to what a game card draws: the same shape fetch_data.py stores
 // as a game's "wp".
 export function slim(d) {
@@ -26,13 +42,13 @@ export function slim(d) {
   for (const dr of [...(drives.previous || []), ...(drives.current ? [drives.current] : [])]) {
     for (const pl of dr.plays || []) plays.set(pl.id, pl);
   }
-  let pts = [], last = 0;
+  let pts = [];
   for (const w of d.winprobability || []) {
     const pl = plays.get(w.playId);
     if (!pl || w.homeWinPercentage == null) continue;
-    last = Math.max(last, playSeconds(pl));
-    pts.push([last, roundEven(w.homeWinPercentage * 1000)]);
+    pts.push([playSeconds(pl), roundEven(w.homeWinPercentage * 1000)]);
   }
+  pts = inOrder(pts);
   if (pts.length > WP_POINTS) {
     const keep = [...new Set(Array.from({ length: WP_POINTS }, (_, k) => roundEven((k * (pts.length - 1)) / (WP_POINTS - 1))))];
     pts = keep.map((k) => pts[k]);
