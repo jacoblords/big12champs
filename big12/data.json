@@ -54,12 +54,12 @@
   "scheduleCheckedAt": "2026-11-14T16:01Z",
   "fpiCheckedAt": "2026-11-15T04:16Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T07:18Z",
+  "checkedAt": "2026-11-15T07:31Z",
   "nextResultCheck": "2026-11-21T02:00Z",
   "updatedAt": "2026-11-15T07:18Z",
-  "espnCalls": 2,
+  "espnCalls": 1,
   "scheduleFields": 2,
-  "cfpCheckedAt": "2026-11-15T01:31Z"
+  "cfpCheckedAt": "2026-11-15T07:31Z"
  },
  "calendar": [
   {
