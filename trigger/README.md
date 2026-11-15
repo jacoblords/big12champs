@@ -12,6 +12,12 @@ A Cloudflare Worker with two jobs:
   result and odds land in a minute or two. Browsers may read it from titlepaths.com (`ORIGINS`)
   and localhost.
 
+  It only asks ESPN about games the site lists in `live-ids.json` (`SITE` in `wrangler.toml`): every
+  league's games not yet final, written by `fetch_data.py` on each deploy and reread every 5
+  minutes. Any other id gets `null` with no ESPN call, nothing cached and no workflow started, so
+  a stranger can't use the endpoint to hammer ESPN, fill its memory or queue workflow runs. If the
+  list can't be read it keeps the last good one; with none yet, no game is live.
+
 GitHub's own `schedule:` trigger is best-effort, and in November 2026 it fired only every 4-8
 hours here. Cloudflare cron triggers fire on time and are free. The workflow keeps an hourly
 GitHub schedule as a backup, so updates slow down rather than stop if this worker breaks.
@@ -43,7 +49,8 @@ data changed. A manual "Run workflow" click in GitHub still rebuilds and deploys
    ```
 
    The next deploy puts it in the gameday pages. Unset, the pages simply don't poll. Check it
-   with `curl "$LIVE_URL/live?ids=<an ESPN game id>"`.
+   with `curl "$LIVE_URL/live?ids=<an ESPN game id>"`, using an id from
+   `https://titlepaths.com/live-ids.json` (any other id answers `null`).
 
 ## Checking on it
 

@@ -3,7 +3,7 @@
 const test = require("node:test");
 const assert = require("node:assert");
 
-const env = { GITHUB_TOKEN: "t0ken", REPO: "jacoblords/big12champs", WORKFLOW: "update.yml", REF: "main" };
+const env = { GITHUB_TOKEN: "t0ken", REPO: "jacoblords/big12champs", WORKFLOW: "update.yml", REF: "main", SITE: "https://site.example/" };
 const load = () => import("../trigger/worker.mjs").then((m) => m.default);
 
 test("the Worker's main module exports only what Cloudflare can run: handlers and the Durable Object", async () => {
@@ -51,11 +51,13 @@ const espnSummary = ({ final = false, kick = "2026-11-14T03:15Z", home = "35", a
   header: { competitions: [{ date: kick, status: { type: { completed: final, state: final ? "post" : "in", shortDetail: final ? "Final" : "10:00 - 4th" } },
     competitors: [{ homeAway: "home", score: home }, { homeAway: "away", score: away }] }] },
 });
-function liveCache({ replies, now }) {
+const LIVE_IDS = "https://site.example/live-ids.json";
+function liveCache({ replies, now, allowed = () => ({ big12: ["401856860", "1", "2"] }) }) {
   const calls = [], store = new Map();
   const fetchFn = async (url) => {
     calls.push(url);
     if (url.startsWith("https://api.github.com")) return new Response(null, { status: 204 });
+    if (url === LIVE_IDS) { const r = allowed(); return r instanceof Response ? r : Response.json(r); }
     const r = replies(url);
     return r instanceof Response ? r : Response.json(r);
   };
@@ -126,7 +128,42 @@ test("live: ESPN failing gives null for that game, and isn't retried for 30 seco
   const { cache, calls } = await liveCache({ replies: () => new Response("busy", { status: 503 }), now: () => t });
   assert.deepStrictEqual(await ask(cache, "1,2"), { 1: null, 2: null });
   t += 10e3; await ask(cache, "1,2");
-  assert.strictEqual(calls.length, 2);
+  assert.strictEqual(calls.filter((u) => u.includes("espn.com")).length, 2);
+});
+
+test("live: only the games in the site's live-ids.json are asked about, cached or can start the workflow", async () => {
+  let t = Date.parse("2026-11-14T06:50Z");
+  const { cache, calls } = await liveCache({ replies: () => espnSummary({ final: true }), now: () => t });
+  assert.deepStrictEqual(await ask(cache, "401856860,999"), { 401856860: await ask(cache, "401856860").then((r) => r["401856860"]), 999: null });
+  assert.ok(!calls.some((u) => u.includes("event=999")), "no ESPN call for a game the site doesn't list");
+  assert.ok(!cache.games.has("999"), "nothing kept for it");
+  assert.strictEqual(calls.filter((u) => u.startsWith("https://api.github.com")).length, 1, "only the listed game's final dispatched");
+  assert.strictEqual(calls.filter((u) => u === LIVE_IDS).length, 1, "the list is read once...");
+  t += 5 * 60e3; await ask(cache, "1");
+  assert.strictEqual(calls.filter((u) => u === LIVE_IDS).length, 2, "...and again after 5 minutes");
+});
+
+test("live: a list that can't be read keeps the last good one, and none at all allows nothing", async () => {
+  let t = 0, up = true;
+  const { cache, calls } = await liveCache({ replies: () => espnSummary(), now: () => t,
+    allowed: () => (up ? { sec: ["1", 2, "x"] } : new Response("down", { status: 503 })) });
+  assert.notStrictEqual((await ask(cache, "1"))["1"], null);
+  up = false; t += 5 * 60e3 + 31e3;
+  assert.notStrictEqual((await ask(cache, "1"))["1"], null, "last good list kept");
+  assert.strictEqual(calls.filter((u) => u === LIVE_IDS).length, 2);
+  await ask(cache, "1");
+  assert.strictEqual(calls.filter((u) => u === LIVE_IDS).length, 3, "a failed read is retried on the next request");
+  assert.deepStrictEqual(await ask(cache, "2"), { 2: null }, "non-string ids in the list are ignored");
+
+  const cold = await liveCache({ replies: () => espnSummary(), now: () => 0, allowed: () => new Response("", { status: 404 }) });
+  assert.deepStrictEqual(await ask(cold.cache, "1"), { 1: null });
+  assert.ok(!cold.calls.some((u) => u.includes("espn.com")));
+});
+
+test("allowedIds: the ids of every league in live-ids.json", async () => {
+  const { allowedIds } = await lib();
+  assert.deepStrictEqual([...allowedIds({ big12: ["1", "2"], sec: ["2", "3"], acc: "4", x: [null, "../5"] })].sort(), ["1", "2", "3"]);
+  for (const bad of [null, [], "1", 1]) assert.strictEqual(allowedIds(bad), null);
 });
 
 test("live endpoint: CORS for titlepaths.com and localhost only, bad requests refused", async () => {

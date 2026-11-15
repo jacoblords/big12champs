@@ -2,6 +2,7 @@
 // every export of that module as an entry point, and refuses to start on plain values.
 
 export const LIVE_TTL_MS = 30e3;
+export const ALLOWED_TTL_MS = 5 * 60e3; // how often the worker rereads the site's live-ids.json
 export const MAX_IDS = 24; // a week's slate across a league, with room
 export const WP_POINTS = 120; // as fetch_data.py: plenty for a 300px chart
 
@@ -66,3 +67,14 @@ export const parseIds = (s) => {
   return ids.length && ids.length <= MAX_IDS && ids.every((id) => /^\d{1,12}$/.test(id)) ? ids : null;
 };
 
+
+// The site's live-ids.json ({ league: [ESPN game ids] }, written by fetch_data.py): the only games
+// /live asks ESPN about. Anything malformed in it is skipped; null if it isn't that shape at all.
+export function allowedIds(json) {
+  if (!json || typeof json !== "object" || Array.isArray(json)) return null;
+  const out = new Set();
+  for (const ids of Object.values(json)) {
+    if (Array.isArray(ids)) for (const id of ids) if (typeof id === "string" && /^\d{1,12}$/.test(id)) out.add(id);
+  }
+  return out;
+}

@@ -12,9 +12,10 @@
 //    goes through one Durable Object, which asks ESPN about a game at most once every LIVE_TTL_MS
 //    however many people are watching, and never again once ESPN calls it final. When it sees a
 //    game go final it starts the workflow once, so the result and the odds land in a minute or
-//    two instead of at the next 15-minute run.
+//    two instead of at the next 15-minute run. It only asks about the games the site lists in its
+//    live-ids.json (the leagues' games not yet final), so nobody can point it at other games.
 
-import { LIVE_TTL_MS, parseIds, slim } from "./live.mjs";
+import { ALLOWED_TTL_MS, LIVE_TTL_MS, allowedIds, parseIds, slim } from "./live.mjs";
 
 const API = "https://api.github.com";
 const ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/college-football";
@@ -52,6 +53,27 @@ export class LiveCache {
     this.fetchFn = fetchFn;
     this.now = now;
     this.games = new Map(); // id -> { at, final, promise }
+    this.allowed = null; // { at, promise -> Set of ids }, from the site's live-ids.json
+  }
+
+  // The games /live may ask ESPN about, reread every ALLOWED_TTL_MS. A failed read keeps the last
+  // good list (none yet: nothing is allowed), and is tried again on the next request.
+  allowedSet(now) {
+    const a = this.allowed;
+    if (a && now - a.at < ALLOWED_TTL_MS) return a.promise;
+    const last = a ? a.promise : Promise.resolve(new Set());
+    const entry = { at: now, promise: null };
+    entry.promise = this.fetchFn(`${String(this.env.SITE || "").replace(/\/?$/, "/")}live-ids.json`, { headers: { "User-Agent": UA } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then(allowedIds)
+      .catch(() => null)
+      .then((set) => {
+        if (set) return set;
+        entry.at = -Infinity; // asked again on the next request
+        return last;
+      });
+    this.allowed = entry;
+    return entry.promise;
   }
 
   async fetch(request) {
@@ -59,8 +81,9 @@ export class LiveCache {
     if (!ids) return new Response("bad ids", { status: 400 });
     const now = this.now();
     for (const [id, c] of this.games) if (now - c.at > FORGET_MS) this.games.delete(id);
+    const allowed = await this.allowedSet(now);
     const out = {};
-    await Promise.all(ids.map(async (id) => { out[id] = await this.game(id, now); }));
+    await Promise.all(ids.map(async (id) => { out[id] = allowed.has(id) ? await this.game(id, now) : null; }));
     return Response.json(out);
   }
 
