@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-15T16:01Z",
+ "fetchedAt": "2026-11-15T18:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-15T16:01Z",
   "fpiCheckedAt": "2026-11-15T16:31Z",
   "fpiRun": "2026-11-15T09:00Z",
-  "checkedAt": "2026-11-15T16:31Z",
+  "checkedAt": "2026-11-15T18:01Z",
   "nextResultCheck": "2026-11-15T21:00Z",
-  "updatedAt": "2026-11-15T16:01Z",
+  "updatedAt": "2026-11-15T18:01Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-15T13:31Z",
@@ -6228,7 +6228,15 @@
    "spread": "OU -2.5",
    "overUnder": 48.5,
    "venue": "Memorial Stadium (Norman, OK)",
-   "city": "Norman, OK"
+   "city": "Norman, OK",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/15 - 1:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856749",
