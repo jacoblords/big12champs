@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-15T02:45Z",
+ "fetchedAt": "2026-11-15T02:46Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-14T16:01Z",
   "fpiCheckedAt": "2026-11-14T22:31Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T02:45Z",
+  "checkedAt": "2026-11-15T02:46Z",
   "nextResultCheck": "2026-11-15T03:00Z",
-  "updatedAt": "2026-11-15T02:45Z",
+  "updatedAt": "2026-11-15T02:46Z",
   "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-15T01:31Z"
@@ -7075,6 +7075,10 @@
      [
       2700,
       997
+     ],
+     [
+      2700,
+      998
      ],
      [
       2700,
