@@ -153,6 +153,15 @@ button { font: inherit; color: inherit; }
 .delta.up { color: var(--win); }
 .delta.down { color: var(--loss); }
 .gd-none { margin: 0; color: var(--muted); }
+/* the week strip: one chip per week, the shown one filled, this week underlined */
+.gd-weeks { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.gd-weeks .lbl { font-family: var(--display); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.wk-strip { position: relative; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-width: 0; padding: 2px; }
+.wk-strip::-webkit-scrollbar { display: none; }
+.wk-strip a { flex: none; min-width: 2.2em; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-align: center; text-decoration: none; font-variant-numeric: tabular-nums; font-size: 0.85rem; font-weight: 600; }
+.wk-strip a:hover { border-color: var(--muted); }
+.wk-strip a.now { box-shadow: inset 0 -2px 0 var(--accent); }
+.wk-strip a[aria-current] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 /* in-game win probability */
 .wp { display: grid; gap: 2px; border-top: 1px solid var(--line); padding-top: 8px; }
 .wp-lab { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -758,18 +767,56 @@ function weekOdds() {
     return [c.appear[k * 2 * N + i] / c.n[k * 2], c.appear[(k * 2 + 1) * N + i] / c.n[k * 2 + 1]];
   } });
 }
-// change since the week began, in whole points; null when there's nothing to compare
-function weekDelta(i) {
-  const W = weekOdds();
-  if (!BASE || !W || BASE[i] == null) return null;
-  return Math.round((W.p[i] - BASE[i]) * 100);
-}
 const confMatters = RULES.steps.includes("e"); // non-conference games count (total wins step)
 // ESPN parks a kickoff it hasn't set at midnight Eastern; its day is the day in Eastern time
 const ET_MS = 5 * 3600e3;
 const kickKey = (g) => new Date(g.date).getTime() + (g.timeValid === false ? 24 * 3600e3 - 1 : 0);
-const weekGames = () => (WEEK ? DATA.games.filter((g) => g.week === WEEK.week && (g.conf || confMatters)
-  && (ctx.idx[g.home] !== undefined || ctx.idx[g.away] !== undefined)).sort((a, b) => kickKey(a) - kickKey(b)) : []);
+const gamesOf = (w) => DATA.games.filter((g) => g.week === w && (g.conf || confMatters)
+  && (ctx.idx[g.home] !== undefined || ctx.idx[g.away] !== undefined)).sort((a, b) => kickKey(a) - kickKey(b));
+// this week's games (the top bar's live marker and the live poll go by these, whatever week is shown)
+const weekGames = () => (WEEK ? gamesOf(WEEK.week) : []);
+// The gameday page shows one week at a time: this week by default, or any other week with league
+// games, picked from the week strip and kept in the link ("#week=10"). Outside a week (the season
+// over, or not begun) the default is the last week that has started, else the first.
+const WEEKS = (DATA.calendar || []).filter((c) => gamesOf(c.week).length);
+const defaultWeek = () => {
+  if (WEEK && WEEKS.some((c) => c.week === WEEK.week)) return WEEK.week;
+  const now = Date.now(), up = WEEKS.find((c) => new Date(c.end).getTime() > now);
+  if (WEEK && up) return up.week; // a bye week: the next one
+  const begun = WEEKS.filter((c) => new Date(c.start).getTime() <= now);
+  return (begun.length ? begun[begun.length - 1] : WEEKS[0] || {}).week;
+};
+const hashWeek = () => {
+  const m = /^#(?:.*&)?week=(\d+)(?:&|$)/i.exec(location.hash || "");
+  return m && WEEKS.some((c) => c.week === +m[1]) ? +m[1] : null;
+};
+let viewWeek = GAMEDAY ? hashWeek() ?? defaultWeek() : null;
+// how the shown week stands to now: "now", "past" or "ahead"
+const viewMode = () => {
+  if (WEEK && viewWeek === WEEK.week) return "now";
+  const c = WEEKS.find((x) => x.week === viewWeek);
+  return c && new Date(c.start).getTime() > Date.now() ? "ahead" : "past";
+};
+// A past week's odds at its start and at its end (the next week's start, or the final standings
+// once the season is over), by team; null where they weren't recorded.
+function pastOdds(w) {
+  const S = DATA.weekStarts || {};
+  const by = (o) => (o && o.odds ? T.map((t) => (typeof o.odds[t.id] === "number" ? o.odds[t.id] : null)) : null);
+  const start = by(S[w]) || (DATA.baseline && DATA.baseline.week === w ? by(DATA.baseline) : null);
+  const next = WEEKS.find((c) => c.week > w);
+  let end = next ? by(S[next.week]) || (DATA.baseline && DATA.baseline.week === next.week ? by(DATA.baseline) : null) : null;
+  if (!end && !P.length) { const seeds = finalSeeds(); end = T.map((_, i) => (seeds.includes(i) ? 1 : 0)); }
+  return start && end ? { start, end } : null;
+}
+function showWeek(w, write) {
+  if (w === viewWeek) return;
+  viewWeek = w;
+  if (write) {
+    const h = w === defaultWeek() ? "" : "#week=" + w;
+    try { history.replaceState(null, "", h || location.pathname + location.search); } catch (e) { location.hash = h; }
+  }
+  renderGameday();
+}
 // kicked off, not over: no final from the scoreboard or ESPN's summary (and at most 5 hours in,
 // so a result that never lands doesn't leave it live)
 // ESPN hasn't started it yet, though its kickoff time has passed (a TV delay): its card keeps
@@ -799,6 +846,11 @@ const sideOf = (g, home) => {
   return i === undefined ? { i, id, name: (home ? g.homeName : g.awayName) || "TBD", abbr: (home ? g.homeName : g.awayName) || "TBD" }
     : { i, id, name: T[i].short, abbr: T[i].abbr };
 };
+// what a finished game's result did to team i (DATA game .moved), as [before, after]; null if not recorded
+function movedFor(g, i) {
+  const v = g.moved && typeof g.moved === "object" ? g.moved[T[i].id] : null;
+  return Array.isArray(v) && v.length === 2 && v.every(Number.isFinite) ? v : null;
+}
 // How much a game moves the race: the title-game odds that change hands between its two results
 // (half the summed swings, since the two spots add to two). Teams moved less than a point aren't listed.
 function stakesOf(k) {
@@ -904,7 +956,7 @@ function tickers() {
     t.style.setProperty("--dur", `${Math.max(8, run.scrollWidth / 30).toFixed(1)}s`); // ~30px a second
   }
 }
-function gameCard(g, top, dim) {
+function gameCard(g, top, dim, swing) {
   const k = pendingAt.get(g.id), pg = k === undefined ? null : P[k];
   const a = sideOf(g, false), h = sideOf(g, true);
   // ESPN's summary can call a game final a few minutes before our results check does
@@ -915,7 +967,7 @@ function gameCard(g, top, dim) {
   const winner = g.completed ? g.winner : done && hs != null && as != null && hs !== as ? (hs > as ? g.home : g.away) : null;
   const status = g.canceled ? "Canceled" : g.postponed ? "Postponed" : done ? "Final"
     : started ? `<span class="live">${wp && wp.detail ? esc(wp.detail) : "Under way"}</span>` : kickoff(g);
-  const when = `<div class="gc-when"><span>${status}${g.tv ? " · " + esc(g.tv) : ""}</span>${top ? `<span class="tag">Biggest stakes</span>` : ""}</div>`;
+  const when = `<div class="gc-when"><span>${status}${g.tv ? " · " + esc(g.tv) : ""}</span>${top ? `<span class="tag">${swing ? "Biggest swing" : "Biggest stakes"}</span>` : ""}</div>`;
   const line = (side, home) => {
     const won = done && winner === (home ? g.home : g.away), lost = done && winner && !won;
     const score = home ? hs : as;
@@ -952,47 +1004,88 @@ const shownRows = (rows) => {
 // The slate for a picked team: its own game, then the games that move its odds by a point or
 // more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game has no
 // stakes left, so it joins the rest. With no team picked: kickoff order, nothing dimmed.
-function slateFor(games) {
+// In a past week the finished games that moved it (their recorded result) count as moving it.
+function slateFor(games, mode) {
   if (focusTeam == null) return { order: games.map((g) => ({ g, dim: false })), note: "" };
   const own = [], moving = [], rest = [];
   for (const g of games) {
     if (ctx.idx[g.home] === focusTeam || ctx.idx[g.away] === focusTeam) { own.push(g); continue; }
-    const S = !g.completed && !(g.wp && g.wp.final) ? stakesOf(pendingAt.get(g.id)) : null;
+    const done = g.completed || (g.wp && g.wp.final);
+    const S = !done ? stakesOf(pendingAt.get(g.id)) : null;
     const r = S && S.rows.find((x) => x.i === focusTeam);
-    if (r) moving.push({ g, sw: r.sw }); else rest.push(g);
+    const m = done && mode === "past" ? movedFor(g, focusTeam) : null;
+    if (r) moving.push({ g, sw: r.sw });
+    else if (m && Math.round(Math.abs(m[1] - m[0]) * 100) >= 1) moving.push({ g, sw: Math.abs(m[1] - m[0]) });
+    else rest.push(g);
   }
   moving.sort((a, b) => b.sw - a.sw);
   const name = esc(T[focusTeam].short), n = moving.length, more = `${n} game${n === 1 ? "" : "s"}`;
+  const was = mode === "past", wk = mode === "now" ? "this week" : "that week";
+  const move = was ? "moved" : "move";
   const note = own.length
-    ? (n ? `${name}: its game first, then the ${more} that move its odds most, biggest first.` : `${name}: its game first. No other game moves its odds by a point.`)
-    : (n ? `${name} doesn't play this week. The ${more} that move its odds come first, biggest first.` : `${name} doesn't play this week, and no game moves its odds by a point.`);
+    ? (n ? `${name}: its game first, then the ${more} that ${move} its odds most, biggest first.` : `${name}: its game first. No other game ${move}${was ? "" : "s"} its odds by a point.`)
+    : (n ? `${name} ${was ? "didn't" : "doesn't"} play ${wk}. The ${more} that ${move} its odds come first, biggest first.` : `${name} ${was ? "didn't" : "doesn't"} play ${wk}, and no game ${move}${was ? "" : "s"} its odds by a point.`);
   return { order: [...own.map((g) => ({ g, dim: false })), ...moving.map(({ g }) => ({ g, dim: false })), ...rest.map((g) => ({ g, dim: true }))], note };
 }
-function renderGameday() {
-  const games = weekGames(), W = weekOdds();
-  const left = games.filter((g) => !g.completed).length;
-  $("lede").innerHTML = WEEK && games.length
-    ? `Week ${WEEK.week}: ${games.length} game${games.length === 1 ? "" : "s"}${left < games.length ? `, ${left} still to play` : ""}. What each result does to the title race, and how it has moved this week.`
-    : `No ${esc(LG.name)} games to show this week.`;
-  const el = $("gameday");
-  if (!WEEK || !games.length || !W) { el.innerHTML = ""; return; }
-  const rows = T.map((_, i) => ({ i, d: weekDelta(i), p: W.p[i] }))
-    .sort((x, y) => y.p - x.p || curW[y.i] - curW[x.i] || (y.d || 0) - (x.d || 0));
-  const race = rows.map(({ i, d, p }) => {
-    const delta = d == null ? "" : `<span class="delta${d > 0 ? " up" : d < 0 ? " down" : ""}">${d ? `<span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh">${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"} this week</span>` : `<span aria-hidden="true">&ndash;</span><span class="vh">no change this week</span>`}</span>`;
-    return `<button type="button" data-rt="${i}" aria-pressed="${i === focusTeam}"${p === 0 ? ' class="out"' : ""} style="--team:${safeColor(T[i].color)}" title="Highlight ${esc(T[i].short)} in the games">${logo(i) || "<span></span>"}<b>${rk(T[i].id)}${esc(T[i].abbr)}</b><span class="now">${BASE && BASE[i] != null ? `<span class="was">${pct(BASE[i])} &rarr; </span>` : ""}${pct(p)}</span>${delta}</button>`;
+// the week strip: every week with league games, the shown one marked, this week flagged
+function weekStrip() {
+  if (WEEKS.length < 2) return "";
+  const day = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const chips = WEEKS.map((c) => {
+    const cur = c.week === viewWeek, now = WEEK && c.week === WEEK.week;
+    const dates = `${day(c.start)} to ${day(new Date(new Date(c.end).getTime() - 1).toISOString())}`;
+    return `<a href="#week=${c.week}" data-wk="${c.week}"${cur ? ' aria-current="true"' : ""}${now ? ' class="now"' : ""} title="Week ${c.week}: ${dates}"><span class="vh">Week </span>${c.week}${now ? `<span class="vh"> (this week)</span>` : ""}</a>`;
   }).join("");
+  return `<nav class="gd-weeks" aria-label="Weeks"><span class="lbl" aria-hidden="true">Week</span><div class="wk-strip">${chips}</div></nav>`;
+}
+function renderGameday() {
+  const games = viewWeek == null ? [] : gamesOf(viewWeek), mode = viewMode(), W = weekOdds();
+  const left = games.filter((g) => !g.completed).length, n = games.length, nG = `${n} game${n === 1 ? "" : "s"}`;
+  const first = games.find((g) => g.timeValid !== false) || games[0];
+  const firstDay = first ? new Date(first.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "";
+  const PO = mode === "past" ? pastOdds(viewWeek) : null;
+  $("lede").innerHTML = !n ? `No ${esc(LG.name)} games to show this week.`
+    : mode === "now" ? `Week ${viewWeek}: ${nG}${!left ? ", all final" : left < n ? `, ${left} still to play` : ""}. What each result does to the title race, and how it has moved this week.`
+    : mode === "ahead" ? `Week ${viewWeek}: ${nG}, from ${firstDay}. What each result would do to the title race as it stands now.`
+    : `Week ${viewWeek}: ${nG}${left ? `, ${n - left} final` : ", all final"}. What each result did to the title race${PO ? ", and how it moved that week" : ""}.`;
+  const el = $("gameday");
+  if (!n || (mode !== "past" && !W)) { el.innerHTML = n ? weekStrip() : ""; return; }
+  // the race: odds now (with this week's start), or a past week's start and end
+  const p = mode === "past" ? (PO ? PO.end : null) : W.p, base = mode === "now" ? BASE : mode === "past" && PO ? PO.start : null;
+  const wk = mode === "now" ? "this week" : "that week";
+  let raceSec = "";
+  if (p) {
+    const rows = T.map((_, i) => ({ i, d: base && base[i] != null ? Math.round((p[i] - base[i]) * 100) : null, p: p[i] }))
+      .sort((x, y) => y.p - x.p || curW[y.i] - curW[x.i] || (y.d || 0) - (x.d || 0));
+    const race = rows.map(({ i, d, p: pi }) => {
+      const delta = d == null ? "" : `<span class="delta${d > 0 ? " up" : d < 0 ? " down" : ""}">${d ? `<span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh">${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"} ${wk}</span>` : `<span aria-hidden="true">&ndash;</span><span class="vh">no change ${wk}</span>`}</span>`;
+      return `<button type="button" data-rt="${i}" aria-pressed="${i === focusTeam}"${pi === 0 ? ' class="out"' : ""} style="--team:${safeColor(T[i].color)}" title="Highlight ${esc(T[i].short)} in the games">${logo(i) || "<span></span>"}<b>${rk(T[i].id)}${esc(T[i].abbr)}</b><span class="now">${base && base[i] != null ? `<span class="was">${pct(base[i])} &rarr; </span>` : ""}${pct(pi)}</span>${delta}</button>`;
+    }).join("");
+    const intro = mode === "now" ? "Live odds of reaching the title game, updated every 15 minutes on game days."
+      : mode === "ahead" ? "Odds of reaching the title game as they stand now."
+      : "Odds of reaching the title game at the start of the week and at its end.";
+    raceSec = `<section class="gd-sec" aria-labelledby="gd-race"><header><h2 id="gd-race">The race</h2><p>${intro} Pick a team to follow it through the games.</p></header>
+      <div class="race">${race}</div></section>`;
+  }
+  // the game with the most at stake; in a past week, the finished game whose result moved the race most
   let topId = null, topStake = 0.02; // a "biggest" game has to move at least a little
   for (const g of games) {
-    const S = !g.completed ? stakesOf(pendingAt.get(g.id)) : null;
-    if (S && S.total > topStake) { topStake = S.total; topId = g.id; }
+    let total = 0;
+    if (!g.completed) { const S = stakesOf(pendingAt.get(g.id)); total = S ? S.total : 0; }
+    else if (mode === "past") T.forEach((_, i) => { const m = movedFor(g, i); if (m) total += Math.abs(m[1] - m[0]) / 2; });
+    if (total > topStake) { topStake = total; topId = g.id; }
   }
-  const slate = slateFor(games);
-  el.innerHTML = `<section class="gd-sec" aria-labelledby="gd-race"><header><h2 id="gd-race">The race</h2><p>Live odds of reaching the title game, updated every 15 minutes on game days. Pick a team to follow it through the games.</p></header>
-      <div class="race">${race}</div></section>
-    <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>Each team's title-game odds under either result, for the teams it moves by a point or more.</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
-      <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim)).join("")}</div></section>`;
+  const slate = slateFor(games, mode);
+  const gamesIntro = mode === "past" ? "What each result did to the title-game odds, for the teams it moved by a point or more."
+    : "Each team's title-game odds under either result, for the teams it moves by a point or more.";
+  el.innerHTML = `${weekStrip()}${raceSec}
+    <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>${gamesIntro}</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
+      <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim, mode === "past" && g.completed)).join("")}</div></section>`;
   tickers();
+  // the shown week's chip in view in the strip
+  // (by its own scroll, not scrollIntoView, which would also scroll the page on a redraw)
+  const strip = q1(".wk-strip"), chip = q1(".wk-strip [aria-current]");
+  if (strip && chip && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = Math.max(0, chip.offsetLeft - (strip.clientWidth - chip.offsetWidth) / 2);
 }
 
 function renderPicker() {
@@ -1619,6 +1712,12 @@ function fadeCards() {
   for (const c of document.querySelectorAll(".gc[data-gid]")) if (c.animate) c.animate([{ opacity: 0, offset: 0 }], { duration: 180, easing: "ease-out" }); // to its own opacity, dimmed or not
 }
 on(document, "click", (e) => {
+  const wkLink = GAMEDAY && !e.metaKey && !e.ctrlKey && !e.shiftKey && e.target.closest("[data-wk]");
+  if (wkLink) {
+    if (e.preventDefault) e.preventDefault();
+    showWeek(+wkLink.dataset.wk, true);
+    return;
+  }
   const rt = e.target.closest("[data-rt]");
   if (rt) {
     focusTeam = focusTeam === +rt.dataset.rt ? null : +rt.dataset.rt;
@@ -1689,6 +1788,7 @@ on(document, "focusin", (e) => preview(oddsBtn(e.target)));
 on(document, "focusout", (e) => { if (!oddsBtn(e.relatedTarget)) preview(null); });
 // a link pasted into the address bar of an open page: take everything it sets
 on(window, "hashchange", () => {
+  if (GAMEDAY) { showWeek(hashWeek() ?? defaultWeek(), false); return; }
   if (location.hash === hashFor()) return;
   const h = parseHash();
   if (h.team >= 0) sel = h.team;
