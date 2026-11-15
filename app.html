@@ -808,6 +808,12 @@ function pastOdds(w) {
   if (!end && !P.length) { const seeds = finalSeeds(); end = T.map((_, i) => (seeds.includes(i) ? 1 : 0)); }
   return start && end ? { start, end } : null;
 }
+// why a past week has no race: the odds weren't kept week by week before the first recorded week
+function untracked(w) {
+  const kept = Object.keys(DATA.weekStarts || {}).map(Number).concat(DATA.baseline ? [DATA.baseline.week] : []);
+  const from = kept.length ? Math.min(...kept) : null;
+  return from != null && w < from ? ` Title odds weren't tracked week by week until week ${from}, so this week shows its results only.` : "";
+}
 function showWeek(w, write) {
   if (w === viewWeek) return;
   viewWeek = w;
@@ -1002,9 +1008,9 @@ const shownRows = (rows) => {
   return me ? top.concat(me) : top;
 };
 // The slate for a picked team: its own game, then the games that move its odds by a point or
-// more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game has no
-// stakes left, so it joins the rest. With no team picked: kickoff order, nothing dimmed.
-// In a past week the finished games that moved it (their recorded result) count as moving it.
+// more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game counts by
+// what its result did (its recorded .moved), or joins the rest when that wasn't recorded. With no
+// team picked: kickoff order, nothing dimmed.
 function slateFor(games, mode) {
   if (focusTeam == null) return { order: games.map((g) => ({ g, dim: false })), note: "" };
   const own = [], moving = [], rest = [];
@@ -1013,18 +1019,19 @@ function slateFor(games, mode) {
     const done = g.completed || (g.wp && g.wp.final);
     const S = !done ? stakesOf(pendingAt.get(g.id)) : null;
     const r = S && S.rows.find((x) => x.i === focusTeam);
-    const m = done && mode === "past" ? movedFor(g, focusTeam) : null;
+    const m = done ? movedFor(g, focusTeam) : null;
     if (r) moving.push({ g, sw: r.sw });
     else if (m && Math.round(Math.abs(m[1] - m[0]) * 100) >= 1) moving.push({ g, sw: Math.abs(m[1] - m[0]) });
     else rest.push(g);
   }
   moving.sort((a, b) => b.sw - a.sw);
   const name = esc(T[focusTeam].short), n = moving.length, more = `${n} game${n === 1 ? "" : "s"}`;
-  const was = mode === "past", wk = mode === "now" ? "this week" : "that week";
+  // in the past tense once every game in the week is over
+  const was = mode === "past" || games.every((g) => g.completed || g.canceled || (g.wp && g.wp.final)), wk = mode === "now" ? "this week" : "that week";
   const move = was ? "moved" : "move";
   const note = own.length
     ? (n ? `${name}: its game first, then the ${more} that ${move} its odds most, biggest first.` : `${name}: its game first. No other game ${move}${was ? "" : "s"} its odds by a point.`)
-    : (n ? `${name} ${was ? "didn't" : "doesn't"} play ${wk}. The ${more} that ${move} its odds come first, biggest first.` : `${name} ${was ? "didn't" : "doesn't"} play ${wk}, and no game ${move}${was ? "" : "s"} its odds by a point.`);
+    : (n ? `${name} ${mode === "past" ? "didn't" : "doesn't"} play ${wk}. The ${more} that ${move} its odds come first, biggest first.` : `${name} ${mode === "past" ? "didn't" : "doesn't"} play ${wk}, and no game ${move}${was ? "" : "s"} its odds by a point.`);
   return { order: [...own.map((g) => ({ g, dim: false })), ...moving.map(({ g }) => ({ g, dim: false })), ...rest.map((g) => ({ g, dim: true }))], note };
 }
 // the week strip: every week with league games, the shown one marked, this week flagged
@@ -1047,12 +1054,18 @@ function renderGameday() {
   $("lede").innerHTML = !n ? `No ${esc(LG.name)} games to show this week.`
     : mode === "now" ? `Week ${viewWeek}: ${nG}${!left ? ", all final" : left < n ? `, ${left} still to play` : ""}. What each result does to the title race, and how it has moved this week.`
     : mode === "ahead" ? `Week ${viewWeek}: ${nG}, from ${firstDay}. What each result would do to the title race as it stands now.`
-    : `Week ${viewWeek}: ${nG}${left ? `, ${n - left} final` : ", all final"}. What each result did to the title race${PO ? ", and how it moved that week" : ""}.`;
+    : `Week ${viewWeek}: ${nG}${left ? `, ${n - left} final` : ", all final"}. What each result did to the title race${PO ? ", and how it moved that week" : ""}.`
+      + (PO ? "" : untracked(viewWeek));
   const el = $("gameday");
   if (!n || (mode !== "past" && !W)) { el.innerHTML = n ? weekStrip() : ""; return; }
   // the race: odds now (with this week's start), or a past week's start and end
   const p = mode === "past" ? (PO ? PO.end : null) : W.p, base = mode === "now" ? BASE : mode === "past" && PO ? PO.start : null;
   const wk = mode === "now" ? "this week" : "that week";
+  // A week with no race (a past week whose odds weren't recorded) has nothing to pick a team in,
+  // so nothing to undo a pick with: it shows unfollowed. The pick is kept for the other weeks.
+  const followed = focusTeam;
+  if (!p) focusTeam = null;
+  try {
   let raceSec = "";
   if (p) {
     const rows = T.map((_, i) => ({ i, d: base && base[i] != null ? Math.round((p[i] - base[i]) * 100) : null, p: p[i] }))
@@ -1081,6 +1094,7 @@ function renderGameday() {
   el.innerHTML = `${weekStrip()}${raceSec}
     <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>${gamesIntro}</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
       <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim, mode === "past" && g.completed)).join("")}</div></section>`;
+  } finally { focusTeam = followed; }
   tickers();
   // the shown week's chip in view in the strip
   // (by its own scroll, not scrollIntoView, which would also scroll the page on a redraw)

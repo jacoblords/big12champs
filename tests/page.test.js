@@ -1059,9 +1059,11 @@ test("gameday: a finished game keeps what its result did to the race, biggest fi
   // HOU -20, BYU +11, ARIZ -1; Utah's 0.3 point rounds to nothing; unknown teams and bad values dropped
   assert.match(text(line[0]), /^ Title odds HOU &#9660;20 down 20 points BYU &#9650;11 up 11 points ARIZ &#9660;1 down 1 point $/);
   assert.doesNotMatch(card(other.id), /gc-moved/);
-  // following BYU marks it in the line
+  // following BYU marks it in the line, and the game its result moved it by 11 points counts as moving it
   handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(wk.teams.findIndex((t) => t.abbr === "BYU")) } } : null) } });
   assert.match(card(g.id), /<span class="mv me"><b>BYU<\/b>/);
+  assert.doesNotMatch(card(g.id), /class="gc[^"]* dim"/);
+  assert.doesNotMatch(els.gameday.innerHTML, /No other game moves its odds|no game moves its odds/);
 });
 
 test("gameday: a game past its kickoff time that ESPN hasn't started shows its kickoff, not ESPN's schedule text", async () => {
@@ -1344,9 +1346,19 @@ test("gameday: a past week shows its results, its start-to-end odds and the game
 });
 
 test("gameday: a past week without its recorded odds shows just the games", async () => {
-  const { els } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) }, "#week=10");
+  const { els, handlers } = renderGameday(gameday(), { Date: clockAt(FRIDAY_WK12) }, "#week=10");
   await settle();
-  assert.match(els.lede.innerHTML, /^Week 10: 8 games, all final\. What each result did to the title race\.$/);
+  // a team followed in another week: no race here to unpick it in, so it doesn't apply here
+  const utah = data.teams.findIndex((t) => t.abbr === "UTAH");
+  pickWeek(handlers, 12);
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(utah) } } : null) } });
+  assert.match(els.gameday.innerHTML, /gd-focus/);
+  pickWeek(handlers, 10);
+  assert.doesNotMatch(els.gameday.innerHTML, /gd-focus| mine"| dim"| me"/);
+  pickWeek(handlers, 12);
+  assert.match(els.gameday.innerHTML, new RegExp(`data-rt="${utah}" aria-pressed="true"`), "still followed where there's a race");
+  pickWeek(handlers, 10);
+  assert.match(els.lede.innerHTML, /^Week 10: 8 games, all final\. What each result did to the title race\. Title odds weren't tracked week by week until week 12, so this week shows its results only\.$/);
   assert.doesNotMatch(els.gameday.innerHTML, /The race|data-rt=/);
   assert.match(els.gameday.innerHTML, /The games/);
 });
