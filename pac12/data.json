@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-15T03:16Z",
+ "fetchedAt": "2026-11-15T03:27Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-14T19:01Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-15T01:01Z",
   "fpiRun": "2026-11-14T09:00Z",
-  "checkedAt": "2026-11-15T03:16Z",
+  "checkedAt": "2026-11-15T03:27Z",
   "nextResultCheck": "2026-11-15T05:30Z",
-  "updatedAt": "2026-11-15T03:16Z",
+  "updatedAt": "2026-11-15T03:27Z",
   "espnCalls": 5,
   "cfpCheckedAt": "2026-11-15T01:31Z"
  },
@@ -3039,10 +3039,58 @@
      [
       733,
       334
+     ],
+     [
+      737,
+      348
+     ],
+     [
+      745,
+      369
+     ],
+     [
+      779,
+      365
+     ],
+     [
+      788,
+      375
+     ],
+     [
+      819,
+      378
+     ],
+     [
+      839,
+      352
+     ],
+     [
+      860,
+      338
+     ],
+     [
+      868,
+      342
+     ],
+     [
+      897,
+      324
+     ],
+     [
+      897,
+      337
+     ],
+     [
+      900,
+      328
+     ],
+     [
+      938,
+      352
      ]
     ],
     "final": false,
-    "detail": "2:47 - 1st",
+    "detail": "14:21 - 2nd",
     "homeScore": 3,
     "awayScore": 7,
     "state": "in"
@@ -3211,7 +3259,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-15T03:16Z",
+   "predAt": "2026-11-15T03:27Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3239,7 +3287,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-15T03:16Z",
+   "predAt": "2026-11-15T03:27Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3267,7 +3315,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-15T03:16Z",
+   "predAt": "2026-11-15T03:27Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3295,7 +3343,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-15T03:16Z",
+   "predAt": "2026-11-15T03:27Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
