@@ -602,12 +602,18 @@ def main():
 
     # The week's starting odds, for the page's "since" changes: the odds published when a new
     # week began, i.e. the previous data's, before this run adds anything. Kept until the next week.
+    # Every week's starting odds are kept too, by week, so the gameday page can show a past week
+    # from its start to its end (the next week's start).
     baseline = prev.get("baseline") if prev else None
+    starts = dict((prev.get("weekStarts") if prev else None) or {})
+    if baseline and baseline.get("odds"):
+        starts.setdefault(str(baseline["week"]), {"at": baseline.get("at"), "odds": baseline["odds"]})
     week = None if args.offline else current_week(calendar, now)
     if week is not None and prev and (baseline or {}).get("week") != week:
         snap = odds_snapshot(prev)
         if snap:
             baseline = {"week": week, "at": prev["meta"].get("checkedAt") or prev.get("fetchedAt"), "odds": snap}
+            starts[str(week)] = {"at": baseline["at"], "odds": snap}
             changed.append(f"week {week} starting odds")
 
     # In-game win probability for this week's games once they kick off, re-read every run until
@@ -705,6 +711,8 @@ def main():
             "calendar": calendar, "teams": teams, "fpi": fpi, "games": sorted(games.values(), key=lambda g: g["date"])}
     if baseline:
         data["baseline"] = baseline
+    if starts:
+        data["weekStarts"] = dict(sorted(starts.items(), key=lambda kv: int(kv[0])))
     if cfp:
         data["cfp"] = cfp
     if prev and prev.get("exact"):

@@ -582,6 +582,19 @@ class FetchTests(unittest.TestCase):
         written, _ = self.run_fetch(prev, later, FakeESPN())
         self.assertEqual(written["baseline"]["week"], start["week"] + 1)
         self.assertEqual(set(written["baseline"]["odds"].values()), {0.4})
+        # the week it replaced is kept by week, for the gameday page's past weeks
+        self.assertEqual(written["weekStarts"], {str(start["week"]): {"at": start["at"], "odds": start["odds"]},
+                                                 str(start["week"] + 1): {"at": written["baseline"]["at"], "odds": written["baseline"]["odds"]}})
+        self.assertEqual(self.page_data["weekStarts"], written["weekStarts"])
+        # and the weeks before it stay
+        prev = self.with_odds(self.fresh_prev(later + dt.timedelta(days=7)), 0.5)
+        prev.update(baseline=written["baseline"], weekStarts=written["weekStarts"])
+        prev["meta"]["nextResultCheck"] = None
+        for g in prev["games"]:
+            if F.parse(g["date"]) < later + dt.timedelta(days=7):
+                g.update(completed=True, winner=g["home"], pHome=None)
+        third, _ = self.run_fetch(prev, later + dt.timedelta(days=7), FakeESPN())
+        self.assertEqual(list(third["weekStarts"]), [str(start["week"] + k) for k in range(3)])
 
     def test_a_simulated_league_starts_the_week_from_its_precomputed_odds(self):
         now = first_kickoff() - dt.timedelta(hours=1)

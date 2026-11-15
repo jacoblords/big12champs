@@ -85,7 +85,12 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   week (ESPN's calendar, Monday to Monday), with a live marker on Gameday while one of its
   games is under way; league links keep the view. It is the
   same template with `GAMEDAY` set by `fetch_data.py`, with its own copy of the page data one
-  folder down. Two sections:
+  folder down. It opens on this week; a strip of week numbers shows any other week with league
+  games, kept in the link (`#week=10`). A week ahead shows the odds as they stand and what each
+  result would do to them. A past week shows its results, the game whose result moved the race
+  most ("Biggest swing"), and its odds at the start and end of the week, from `data.weekStarts`
+  (every week's starting odds, kept by the fetcher from week 11 of 2026 on; earlier weeks show
+  just their games). Two sections:
   - *The race:* every team's title-game odds now, highest first, with the week's starting odds
     and the change. Picking a team reorders the games: its own first, then the games that move
     its odds by a point or more (biggest swing first, its row highlighted, added when below a
