@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-15T10:31Z",
+ "fetchedAt": "2026-11-15T16:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-14T16:01Z",
+  "scheduleCheckedAt": "2026-11-15T16:01Z",
   "fpiCheckedAt": "2026-11-15T10:31Z",
   "fpiRun": "2026-11-15T09:00Z",
-  "checkedAt": "2026-11-15T13:31Z",
+  "checkedAt": "2026-11-15T16:01Z",
   "nextResultCheck": "2026-11-21T03:30Z",
-  "updatedAt": "2026-11-15T10:31Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-15T16:01Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-15T13:31Z",
   "wpRules": 2
@@ -7406,8 +7406,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": null,
-   "overUnder": null,
+   "spread": "DUKE -8.5",
+   "overUnder": 44.5,
    "venue": "Wallace Wade Stadium",
    "city": "Durham, NC"
   },
@@ -7434,7 +7434,7 @@
    "awayFBS": true,
    "timeValid": false,
    "tv": null,
-   "spread": "MIA -18.5",
+   "spread": "MIA -19.5",
    "overUnder": 61.5,
    "venue": "Hard Rock Stadium",
    "city": "Miami Gardens, FL"
@@ -7462,8 +7462,8 @@
    "awayFBS": true,
    "timeValid": false,
    "tv": null,
-   "spread": null,
-   "overUnder": null,
+   "spread": "WAKE -21",
+   "overUnder": 56.5,
    "venue": "Bobby Dodd Stadium",
    "city": "Atlanta, GA"
   },
@@ -7518,8 +7518,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "SYR -3.5",
+   "overUnder": 50.5,
    "venue": "Alumni Stadium (Chestnut Hill, MA)",
    "city": "Chestnut Hill, MA"
   },
@@ -7574,8 +7574,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "FSU -10",
+   "overUnder": 54.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
   },
@@ -7602,7 +7602,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "ND -16.5",
+   "spread": "ND -17.5",
    "overUnder": 57.5,
    "venue": "Notre Dame Stadium",
    "city": "Notre Dame, IN"
