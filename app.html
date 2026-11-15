@@ -166,18 +166,28 @@ button { font: inherit; color: inherit; }
 .wp-q span { position: absolute; transform: translateX(-50%); }
 /* the team's title-game odds over the season (trend.json): a step for each change */
 .trend { gap: 10px; margin-bottom: 20px; }
-.trend-plot { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; touch-action: pan-y; }
+.trend-plot { position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; column-gap: 6px; touch-action: pan-y; }
 .trend svg { display: block; width: 100%; height: 130px; border-block: 1px solid var(--line); cursor: crosshair; }
 .trend .g { stroke: var(--line); stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; }
 .trend .o { fill: none; stroke: var(--muted); stroke-width: 1; opacity: 0.35; vector-effect: non-scaling-stroke; }
+.trend .h { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
 .trend .s { fill: none; stroke: var(--team); stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .trend .gap { stroke-dasharray: 3 4; }
 .trend .c { stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-l { position: relative; height: 130px; }
+.trend-l .tl { position: absolute; left: 0; width: 22px; height: 18px; transform: translateY(-50%); display: grid; place-items: center; font-size: 0.6rem; font-weight: 600; color: var(--muted); }
+.trend-l .tl img { max-width: 20px; max-height: 18px; object-fit: contain; }
+.trend-l .tl.me { z-index: 1; }
 .trend-y { display: grid; align-content: space-between; height: 130px; font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .trend-y span { transform: translateY(-50%); } .trend-y span:first-child { transform: none; } .trend-y span:last-child { transform: none; }
-.trend-x { position: relative; height: 1.2em; font-size: 0.68rem; color: var(--muted); }
+.trend-x { grid-column: 2; position: relative; height: 1.2em; font-size: 0.68rem; color: var(--muted); }
 .trend-x span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-.trend-read { margin: 0; font-size: 0.85rem; font-variant-numeric: tabular-nums; min-height: 1.3em; }
+.trend-read { display: grid; gap: 6px; margin: 0; font-size: 0.85rem; font-variant-numeric: tabular-nums; min-height: 1.3em; }
+.trend-read .tr-all { display: flex; flex-wrap: wrap; gap: 3px 12px; font-size: 0.78rem; color: var(--muted); }
+.trend-read .tr-t { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.trend-read .tr-t i { width: 8px; height: 8px; border-radius: 50%; }
+.trend-read .tr-t b { color: var(--ink); font-weight: 600; }
+.trend-read .tr-t.me, .trend-read .tr-t.near { color: var(--ink); font-weight: 600; }
 .games { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
 .gc { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 9px; align-content: start; min-width: 0; }
 .gc.top { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
@@ -1207,47 +1217,83 @@ function trendSpan() {
   return { ms, t0: ms[0], t1: end > ms[0] ? end : ms[0] + 3600e3 };
 }
 const trendOf = (i) => TREND.teams[T[i].id] || TREND.t.map(() => 0);
+const TW = 600, TH = 130, LOGO_MIN = 50; // chart size; a logo at its line's start from 5% now
+function trendGeom() {
+  const s = trendSpan();
+  return { ...s, X: (t) => (((t - s.t0) / (s.t1 - s.t0)) * TW).toFixed(1), Y: (v) => (TH - (v / 1000) * TH).toFixed(1) };
+}
+// a step at each change; across an unrecorded stretch, a jump to the next point (drawn dashed apart)
+const trendPath = (c, G) => `M0,${G.Y(c[0])}` + c.slice(1).map((v, k) => (gapAfter(k) ? `M${G.X(G.ms[k + 1])},${G.Y(v)}` : `H${G.X(G.ms[k + 1])}V${G.Y(v)}`)).join("") + `H${TW}`;
+// the logos down the chart's left edge, each at its team's starting odds: the picked team and every
+// team at 5% or more now, the likeliest seven at most, nudged apart so none overlap
+function trendLogos(i) {
+  const SZ = 18, keep = T.map((_, j) => j).filter((j) => TREND.teams[T[j].id] && (j === i || trendOf(j)[TREND.t.length - 1] >= LOGO_MIN))
+    .sort((a, b) => (b === i) - (a === i) || trendOf(b)[TREND.t.length - 1] - trendOf(a)[TREND.t.length - 1]).slice(0, Math.floor(TH / SZ));
+  const at = keep.map((j) => ({ j, y: (1 - trendOf(j)[0] / 1000) * TH })).sort((a, b) => a.y - b.y);
+  at.forEach((m, k) => { m.y = Math.max(m.y, SZ / 2, k ? at[k - 1].y + SZ : 0); });
+  for (let k = at.length - 1; k >= 0; k--) at[k].y = Math.min(at[k].y, k + 1 < at.length ? at[k + 1].y - SZ : TH - SZ / 2);
+  return at.map(({ j, y }) => `<span class="tl${j === i ? " me" : ""}" style="top:${y.toFixed(1)}px" title="${esc(T[j].short)}">${logo(j) || esc(T[j].abbr)}</span>`).join("");
+}
 function trendHTML(i) {
   if (!TREND) return "";
-  const { ms, t0, t1 } = trendSpan(), W = 600, H = 130;
-  const X = (t) => (((t - t0) / (t1 - t0)) * W).toFixed(1), Y = (v) => (H - (v / 1000) * H).toFixed(1);
-  // a step at each change; across an unrecorded stretch, a jump to the next point, dashed apart
-  const step = (c) => `M0,${Y(c[0])}` + c.slice(1).map((v, k) => (gapAfter(k) ? `M${X(ms[k + 1])},${Y(v)}` : `H${X(ms[k + 1])}V${Y(v)}`)).join("") + `H${W}`;
+  const G = trendGeom(), { t0, t1, ms, X, Y } = G;
   const gapped = (c, cls) => (TREND.gaps || []).map((k) => `<path d="M${X(ms[k])},${Y(c[k])}L${X(ms[k + 1])},${Y(c[k + 1])}" class="${cls} gap"/>`).join("");
-  const others = T.map((_, j) => (j === i || !TREND.teams[T[j].id] ? "" : `<path d="${step(TREND.teams[T[j].id])}" class="o"/>${gapped(TREND.teams[T[j].id], "o")}`)).join("");
+  const others = T.map((_, j) => (j === i || !TREND.teams[T[j].id] ? "" : `<path d="${trendPath(TREND.teams[T[j].id], G)}" class="o"/>${gapped(TREND.teams[T[j].id], "o")}`)).join("");
   const weeks = (DATA.calendar || []).map((c) => ({ w: c.week, t: new Date(c.start).getTime() })).filter((c) => c.t > t0 && c.t < t1);
-  const grid = weeks.map((c) => `<line x1="${X(c.t)}" x2="${X(c.t)}" y1="0" y2="${H}" class="g"/>`).join("") + `<line x1="0" x2="${W}" y1="${H / 2}" y2="${H / 2}" class="g"/>`;
+  const grid = weeks.map((c) => `<line x1="${X(c.t)}" x2="${X(c.t)}" y1="0" y2="${TH}" class="g"/>`).join("") + `<line x1="0" x2="${TW}" y1="${TH / 2}" y2="${TH / 2}" class="g"/>`;
   const labels = weeks.map((c) => `<span style="left:${(((c.t - t0) / (t1 - t0)) * 100).toFixed(1)}%">Wk ${c.w}</span>`).join("");
   const c = trendOf(i), first = c[0], now = c[c.length - 1], t = T[i];
   const summary = `${esc(t.short)}: ${tenthsPct(first)} on ${trendDay(t0)}, ${tenthsPct(now)} now`;
   return `<div class="panel trend" style="--team:${safeColor(t.color)}">
-    <header><h3>Title-game odds this season</h3><p>Each time ${esc(t.short)}'s odds changed, with no what-ifs, against the rest of the ${esc(LG.name)} in grey. Hover or tap to read a point.</p></header>
+    <header><h3>Title-game odds this season</h3><p>Each time ${esc(t.short)}'s odds changed, with no what-ifs, against the rest of the ${esc(LG.name)} in grey. Hover or tap for every team's odds at that moment.</p></header>
     <div class="trend-plot" data-trend="${i}" role="img" aria-label="${summary}">
-      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${grid}${others}<path d="${step(c)}" class="s"/>${gapped(c, "s")}<line class="c" x1="-9" x2="-9" y1="0" y2="${H}"/></svg>
+      <div class="trend-l" aria-hidden="true">${trendLogos(i)}</div>
+      <svg viewBox="0 0 ${TW} ${TH}" preserveAspectRatio="none" aria-hidden="true">${grid}${others}<path class="h" d=""/><path d="${trendPath(c, G)}" class="s"/>${gapped(c, "s")}<line class="c" x1="-9" x2="-9" y1="0" y2="${TH}"/></svg>
       <div class="trend-y" aria-hidden="true"><span>100%</span><span>50%</span><span>0</span></div>
       <div class="trend-x" aria-hidden="true">${labels}</div>
     </div>
-    <p class="trend-read" aria-hidden="true">${summary}</p>
+    <div class="trend-read" aria-hidden="true">${summary}</div>
   </div>`;
 }
-// hover or tap the chart: the odds at that moment, and a line marking it
-function readTrend(plot, clientX) {
+// hover or tap the chart: every team's odds at that moment, a line marking it, and the line nearest
+// the pointer drawn in its team's color
+function readTrend(plot, clientX, clientY) {
   const svg = plot.querySelector("svg"), i = Number(plot.dataset.trend), read = plot.parentNode.querySelector(".trend-read");
   if (!TREND || !svg || !read || !T[i]) return;
   const r = svg.getBoundingClientRect(), f = Math.min(Math.max((clientX - r.left) / r.width, 0), 1);
-  const { ms, t0, t1 } = trendSpan(), at = t0 + f * (t1 - t0);
+  const G = trendGeom(), { ms, t0, t1 } = G, at = t0 + f * (t1 - t0);
   let k = 0;
   while (k + 1 < ms.length && ms[k + 1] <= at) k++;
   const c = trendOf(i), d = k ? c[k] - c[k - 1] : 0;
+  const line = svg.querySelector(".c"), hl = svg.querySelector(".h");
+  if (line) { const x = (f * TW).toFixed(1); line.setAttribute("x1", x); line.setAttribute("x2", x); }
   if (gapAfter(k) && at > ms[k]) {
     read.textContent = `${trendDay(ms[k])} to ${trendDay(ms[k + 1])}: changes not recorded (${tenthsPct(c[k])} to ${tenthsPct(c[k + 1])})`;
-  } else read.textContent = `${trendDay(ms[k])}: ${T[i].short} ${tenthsPct(c[k])}${d ? ` (${d > 0 ? "+" : "−"}${tenthsPct(Math.abs(d)).replace("%", "")} pts)` : ""}`;
-  const line = svg.querySelector(".c");
-  if (line) { const x = (f * 600).toFixed(1); line.setAttribute("x1", x); line.setAttribute("x2", x); }
+    if (hl) hl.setAttribute("d", "");
+    return;
+  }
+  // the team whose line is nearest the pointer, within 8 points
+  const v = r.height ? (1 - Math.min(Math.max((clientY - r.top) / r.height, 0), 1)) * 1000 : -1e9;
+  // every team at 1% or more then (and the picked team), the long shots counted
+  const alive = T.map((_, j) => j).filter((j) => TREND.teams[T[j].id] && trendOf(j)[k] > 0);
+  const shown = alive.filter((j) => j === i || trendOf(j)[k] >= 10).sort((a, b) => trendOf(b)[k] - trendOf(a)[k]);
+  const rest = alive.length - shown.length;
+  let near = null;
+  for (const j of T.map((_, j) => j).filter((j) => TREND.teams[T[j].id])) {
+    const gapJ = Math.abs(trendOf(j)[k] - v);
+    if (gapJ <= 80 && (near == null || gapJ < Math.abs(trendOf(near)[k] - v) || (j === i && gapJ === Math.abs(trendOf(near)[k] - v)))) near = j;
+  }
+  if (hl) {
+    hl.setAttribute("d", near == null || near === i ? "" : trendPath(trendOf(near), G));
+    hl.setAttribute("style", near == null ? "" : `stroke:${safeColor(T[near].color)}`);
+  }
+  const chip = (j) => `<span class="tr-t${j === i ? " me" : ""}${j === near ? " near" : ""}"><i style="background:${safeColor(T[j].color)}"></i>${esc(T[j].short)} <b>${tenthsPct(trendOf(j)[k])}</b></span>`;
+  read.innerHTML = `<span class="tr-h"><b>${esc(trendDay(ms[k]))}</b>: ${esc(T[i].short)} ${tenthsPct(c[k])}${d ? ` (${d > 0 ? "+" : "−"}${tenthsPct(Math.abs(d)).replace("%", "")} pts)` : ""}</span>`
+    + `<span class="tr-all">${shown.map(chip).join("")}${rest ? `<span class="tr-t">${rest} more under 1%</span>` : ""}</span>`;
 }
 const trendPlot = (e) => (e.target && e.target.closest ? e.target.closest("[data-trend]") : null);
-on(document, "pointermove", (e) => { const p = trendPlot(e); if (p) readTrend(p, e.clientX); });
-on(document, "pointerdown", (e) => { const p = trendPlot(e); if (p) readTrend(p, e.clientX); });
+on(document, "pointermove", (e) => { const p = trendPlot(e); if (p) readTrend(p, e.clientX, e.clientY); });
+on(document, "pointerdown", (e) => { const p = trendPlot(e); if (p) readTrend(p, e.clientX, e.clientY); });
 function renderFinal(i) {
   const t = T[i], seeds = finalSeeds(), seed = seeds.indexOf(i) + 1;
   $("team").innerHTML = `
