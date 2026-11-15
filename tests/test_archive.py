@@ -138,7 +138,7 @@ class TrendTests(unittest.TestCase):
                       {"at": "2026-11-15T05:00Z", "league": "sec", "week": 11, "odds": {"1": 0.6, "2": 0.4}})
         d = self.data("2026-11-15T06:30Z", {"1": 0.9, "2": 0.1},
                       baseline={"week": 11, "at": "2026-11-13T10:16Z", "odds": {"1": 0.3, "2": 0.7}})
-        rows = A.trend_rows(self.log, d)
+        rows = A.trend_rows(self.log, d, self.dir / 'none')
         self.assertEqual([r["at"] for r in rows], ["2026-11-13T10:16Z", "2026-11-15T03:00Z", "2026-11-15T05:00Z", "2026-11-15T06:30Z"])
         tr = A.trend(rows)
         self.assertEqual(tr["teams"], {"1": [300, 500, 600, 900], "2": [700, 500, 400, 100]})
@@ -148,12 +148,28 @@ class TrendTests(unittest.TestCase):
     def test_odds_already_logged_and_a_later_baseline_add_nothing(self):
         self.log_rows({"at": "2026-11-15T03:00Z", "league": "sec", "week": 11, "odds": {"1": 0.5}})
         d = self.data("2026-11-15T03:00Z", {"1": 0.5}, baseline={"week": 12, "at": "2026-11-16T07:00Z", "odds": {"1": 0.5}})
-        self.assertEqual(len(A.trend_rows(self.log, d)), 1)
+        self.assertEqual(len(A.trend_rows(self.log, d, self.dir / 'none')), 1)
 
     def test_no_log_yet_still_charts_what_is_published(self):
         d = self.data("2026-11-15T03:00Z", {"1": 0.25}, baseline={"week": 11, "at": "2026-11-13T10:16Z", "odds": {"1": 0.5}})
-        tr = A.trend(A.trend_rows(self.dir / "missing.jsonl", d))
+        tr = A.trend(A.trend_rows(self.dir / "missing.jsonl", d, self.dir / "none"))
         self.assertEqual((tr["teams"], tr["gaps"]), ({"1": [500, 250]}, []))  # no log: nothing went unrecorded
+
+    def test_backfill_fills_in_before_the_log_and_closes_the_gap(self):
+        back = self.dir / "back.jsonl"
+        back.write_text("".join(json.dumps(r) + "\n" for r in [
+            {"at": "2026-11-13T10:16Z", "league": "sec", "week": 11, "odds": {"1": 0.3}},
+            {"at": "2026-11-14T20:09Z", "league": "sec", "week": 11, "odds": {"1": 0.45}},
+            {"at": "2026-11-14T20:09Z", "league": "acc", "week": 11, "odds": {"7": 1.0}},
+            {"at": "2026-11-15T04:00Z", "league": "sec", "week": 11, "odds": {"1": 0.9}}]))  # after the log began: ignored
+        self.log_rows({"at": "2026-11-15T03:00Z", "league": "sec", "week": 11, "odds": {"1": 0.5}})
+        d = self.data("2026-11-15T03:00Z", {"1": 0.5}, baseline={"week": 11, "at": "2026-11-13T10:16Z", "odds": {"1": 0.3}})
+        tr = A.trend(A.trend_rows(self.log, d, back))
+        self.assertEqual((tr["teams"], tr["gaps"]), ({"1": [300, 450, 500]}, []))
+        # the backfill this repo carries starts each league at its week-start odds
+        for lg in F.LEAGUES:
+            rows = A.read_rows(A.BACKFILL, lg)
+            self.assertTrue(rows and rows[0]["week"] == 11 and rows == sorted(rows, key=lambda r: r["at"]), lg)
 
     def test_rounding_drops_repeats_and_teams_out_all_along_but_keeps_long_shots_in(self):
         rows = [{"at": "2026-11-15T0%d:00Z" % h, "odds": o} for h, o in
@@ -165,7 +181,7 @@ class TrendTests(unittest.TestCase):
     def test_writes_each_published_league_beside_its_data(self):
         site = self.dir / "site"
         write_site(site, {"big12": published("big12"), "sec": published("sec")})
-        self.assertEqual(A.write_trends(self.log, site), ["big12", "sec"])
+        self.assertEqual(A.write_trends(self.log, site, self.dir / 'none'), ["big12", "sec"])
         tr = json.loads((site / F.LEAGUES["sec"]["path"] / "trend.json").read_text())
         self.assertEqual(len(tr["t"]), 1)
         self.assertEqual(set(tr["teams"]), {t["id"] for t in published("sec")["teams"]})

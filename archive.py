@@ -12,7 +12,8 @@ script is what it runs:
                          PNG (most of the file) moved to HISTORY/logos/<hash>.png; and append
                          each league's title-game odds to HISTORY/odds.jsonl when they changed
   trend ODDS SITE        write each league's SITE/<path>/trend.json for the page's odds chart:
-                         ODDS (data-history's odds.jsonl) plus the odds SITE is about to publish
+                         odds-backfill.jsonl (what odds.jsonl began too late for), ODDS
+                         (data-history's odds.jsonl), and the odds SITE is about to publish
   restore HISTORY OUT    the reverse: OUT/<path>/data.json as published, logos inlined again,
                          for update.yml's "restore" input to start every league from (all
                          of them must be there)
@@ -27,6 +28,8 @@ import fetch_data as F
 
 PNG = "data:image/png;base64,"
 LOGO = re.compile(r"logos/[0-9a-f]{16}\.png")
+# odds.jsonl's rows from before it began, rebuilt by tools/odds_backfill.py
+BACKFILL = Path(__file__).resolve().parent / "odds-backfill.jsonl"
 
 
 def _walk(x, fn):
@@ -108,15 +111,21 @@ def record(site, history):
     return changed
 
 
-def trend_rows(log, data):
-    """One league's odds over the season, oldest first: the week's starting odds data.json keeps
-    (they can predate odds.jsonl), log's rows for that league, then data's own odds when they
+def read_rows(path, league):
+    if not path.exists():
+        return []
+    return sorted((r for r in map(json.loads, filter(str.strip, path.read_text().splitlines())) if r["league"] == league),
+                  key=lambda r: F.parse(r["at"]))
+
+
+def trend_rows(log, data, backfill=BACKFILL):
+    """One league's odds over the season, oldest first: backfill's rows from before log's first,
+    the week's starting odds data.json keeps when they're older still (with what happened between
+    them and the next row unrecorded), log's rows for that league, then data's own odds when they
     aren't the last row's yet (the update job runs before archive has recorded them)."""
     league = data.get("league", "big12")
-    rows = []
-    if log.exists():
-        rows = [r for r in map(json.loads, filter(str.strip, log.read_text().splitlines())) if r["league"] == league]
-    rows.sort(key=lambda r: F.parse(r["at"]))
+    rows = read_rows(log, league)
+    rows = [r for r in read_rows(backfill, league) if not rows or F.parse(r["at"]) < F.parse(rows[0]["at"])] + rows
     b = data.get("baseline") or {}
     if b.get("odds") and b.get("at") and (not rows or F.parse(b["at"]) < F.parse(rows[0]["at"])):
         # what changed between them went unrecorded (odds.jsonl began on 2026-11-15)
@@ -154,14 +163,14 @@ def trend(rows):
             "gaps": [k for k in gaps if k + 1 < len(t)]}
 
 
-def write_trends(log, site):
+def write_trends(log, site, backfill=BACKFILL):
     """Each published league's site/<path>/trend.json; returns the leagues written."""
     done = []
     for lg in F.LEAGUES.values():
         src = site / lg["path"] / "data.json"
         if src.exists():
             data = json.loads(src.read_text())
-            (src.parent / "trend.json").write_text(json.dumps(trend(trend_rows(log, data)), separators=(",", ":")))
+            (src.parent / "trend.json").write_text(json.dumps(trend(trend_rows(log, data, backfill)), separators=(",", ":")))
             done.append(lg["id"])
     return done
 
