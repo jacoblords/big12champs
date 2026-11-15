@@ -315,6 +315,23 @@ def live_url():
     return url
 
 
+def write_live_ids(root, league_id, data):
+    """<site>/live-ids.json: every league's games that can still be under way, by league. The
+    live-scores worker (trigger/worker.mjs) asks ESPN only about these, so a stranger can't make it
+    fetch, cache or start the workflow for any other game. Each league's step adds its own entry
+    to the one file the run's earlier steps wrote."""
+    path = root / "live-ids.json"
+    try:
+        ids = json.loads(path.read_text())
+        if not isinstance(ids, dict):
+            ids = {}
+    except (OSError, ValueError):
+        ids = {}
+    ids[league_id] = sorted(str(g["id"]) for g in data.get("games", [])
+                            if not g.get("completed") and not g.get("canceled") and re.fullmatch(r"\d{1,12}", str(g["id"])))
+    path.write_text(json.dumps(ids, separators=(",", ":"), sort_keys=True))
+
+
 def current_week(calendar, now):
     """The regular-season week (ESPN's calendar, Monday to Monday) that now falls in, if any."""
     for c in calendar or []:
@@ -724,6 +741,7 @@ def main():
         (site / "data.json").write_text(payload)
         (site / "page-data.json").write_text(page_data(data, root, up))
         (root / "favicon.svg").write_text((HERE / "favicon.svg").read_text())
+        write_live_ids(root, args.league, data)
         (site / "index.html").write_text(page_html(league, tpl, up))
         # the league's gameday page: the same template and data, one folder down
         gd = site / "gameday"; gd.mkdir(exist_ok=True)

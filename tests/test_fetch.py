@@ -121,6 +121,7 @@ class FetchTests(unittest.TestCase):
                 self.site_data = json.loads((index.parent / "data.json").read_text())
                 self.page_data = json.loads((index.parent / "page-data.json").read_text())
                 self.logo_files = {p.name: p.read_bytes() for p in (Path(tmp) / "site" / "logos").glob("*.png")}
+                self.live_ids = json.loads((Path(tmp) / "site" / "live-ids.json").read_text())
         return written, site
 
     def fresh_prev(self, now):
@@ -303,6 +304,26 @@ class FetchTests(unittest.TestCase):
         self.assertTrue(site)
         self.assertIn('<link rel="icon" href="favicon.svg"', site)
         self.assertEqual(written["meta"]["checkedAt"], FIXTURE["meta"]["checkedAt"])
+
+
+    def test_live_ids_list_each_leagues_games_not_yet_final(self):
+        """live-ids.json is the live worker's allowlist: every league's step adds its own games
+        that can still be under way, and nothing else."""
+        now = first_kickoff()
+        self.run_fetch(copy.deepcopy(FIXTURE), now, FakeESPN(), "--offline", "--force-build")
+        open_ids = sorted(str(g["id"]) for g in FIXTURE["games"] if not g.get("completed") and not g.get("canceled"))
+        self.assertTrue(open_ids)
+        self.assertEqual(self.live_ids, {"big12": open_ids})
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            games = [{"id": "1"}, {"id": "2", "completed": True}, {"id": "3", "canceled": True}, {"id": "x<"}]
+            F.write_live_ids(root, "big12", {"games": games})
+            F.write_live_ids(root, "sec", {"games": [{"id": "4"}]})
+            F.write_live_ids(root, "big12", {"games": [{"id": "5"}]})  # a league's entry is replaced, others kept
+            self.assertEqual(json.loads((root / "live-ids.json").read_text()), {"big12": ["5"], "sec": ["4"]})
+            (root / "live-ids.json").write_text("not json")
+            F.write_live_ids(root, "acc", {"games": games})
+            self.assertEqual(json.loads((root / "live-ids.json").read_text()), {"acc": ["1"]})
 
 
     def test_dark_logos_backfilled_once_for_older_data(self):

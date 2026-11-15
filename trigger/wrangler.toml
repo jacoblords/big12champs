@@ -14,6 +14,8 @@ WORKFLOW = "update.yml"
 REF = "main"
 # pages allowed to read /live from a browser (localhost is allowed too, for local builds)
 ORIGINS = "https://titlepaths.com,https://www.titlepaths.com"
+# the published site: /live only asks ESPN about the games in its live-ids.json
+SITE = "https://titlepaths.com/"
 
 # UTC, like GitHub's. Every 15 minutes Thursday through Sunday (Thursday evening through late
 # Saturday night in US time) and every 30 minutes Monday to Wednesday. A run with nothing due
