@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-16T11:00Z",
+ "fetchedAt": "2026-11-16T16:30Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-15T16:01Z",
+  "scheduleCheckedAt": "2026-11-16T16:30Z",
   "fpiCheckedAt": "2026-11-16T11:00Z",
   "fpiRun": "2026-11-16T09:00Z",
-  "checkedAt": "2026-11-16T14:00Z",
+  "checkedAt": "2026-11-16T16:30Z",
   "nextResultCheck": "2026-11-21T03:30Z",
-  "updatedAt": "2026-11-16T11:00Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-16T16:30Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-16T14:00Z",
   "wpRules": 2
@@ -7406,43 +7406,15 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": "DUKE -8.5",
-   "overUnder": 44.5,
+   "spread": "DUKE -11.5",
+   "overUnder": 43.5,
    "venue": "Wallace Wade Stadium",
    "city": "Durham, NC"
   },
   {
-   "id": "401858302",
-   "week": 12,
-   "date": "2026-11-21T05:00Z",
-   "home": "2390",
-   "away": "259",
-   "homeName": "MIA",
-   "awayName": "VT",
-   "neutral": false,
-   "confFlag": true,
-   "completed": false,
-   "canceled": false,
-   "postponed": false,
-   "winner": null,
-   "homeScore": null,
-   "awayScore": null,
-   "pHome": 0.9638,
-   "predAt": "2026-11-16T11:00Z",
-   "conf": true,
-   "homeFBS": true,
-   "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": "MIA -19.5",
-   "overUnder": 61.5,
-   "venue": "Hard Rock Stadium",
-   "city": "Miami Gardens, FL"
-  },
-  {
    "id": "401858310",
    "week": 12,
-   "date": "2026-11-21T05:00Z",
+   "date": "2026-11-21T17:00Z",
    "home": "59",
    "away": "154",
    "homeName": "GT",
@@ -7460,40 +7432,12 @@
    "conf": true,
    "homeFBS": true,
    "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
+   "timeValid": true,
+   "tv": "ESPN",
    "spread": "WAKE -21",
    "overUnder": 56.5,
    "venue": "Bobby Dodd Stadium",
    "city": "Atlanta, GA"
-  },
-  {
-   "id": "401858306",
-   "week": 12,
-   "date": "2026-11-21T05:00Z",
-   "home": "97",
-   "away": "221",
-   "homeName": "LOU",
-   "awayName": "PITT",
-   "neutral": false,
-   "confFlag": true,
-   "completed": false,
-   "canceled": false,
-   "postponed": false,
-   "winner": null,
-   "homeScore": null,
-   "awayScore": null,
-   "pHome": 0.7748,
-   "predAt": "2026-11-16T11:00Z",
-   "conf": true,
-   "homeFBS": true,
-   "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
-   "venue": "L&N Federal Credit Union Stadium",
-   "city": "Louisville, KY"
   },
   {
    "id": "401858309",
@@ -7518,7 +7462,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": "SYR -3.5",
+   "spread": "SYR -3",
    "overUnder": 50.5,
    "venue": "Alumni Stadium (Chestnut Hill, MA)",
    "city": "Chestnut Hill, MA"
@@ -7546,8 +7490,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CW",
-   "spread": null,
-   "overUnder": null,
+   "spread": "UNC -1.5",
+   "overUnder": 43.5,
    "venue": "Scott Stadium",
    "city": "Charlottesville, VA"
   },
@@ -7574,10 +7518,66 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": "FSU -10",
+   "spread": "FSU -9.5",
    "overUnder": 54.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
+  },
+  {
+   "id": "401858302",
+   "week": 12,
+   "date": "2026-11-22T00:00Z",
+   "home": "2390",
+   "away": "259",
+   "homeName": "MIA",
+   "awayName": "VT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9638,
+   "predAt": "2026-11-16T11:00Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN",
+   "spread": "MIA -20.5",
+   "overUnder": 60.5,
+   "venue": "Hard Rock Stadium",
+   "city": "Miami Gardens, FL"
+  },
+  {
+   "id": "401858306",
+   "week": 12,
+   "date": "2026-11-22T00:30Z",
+   "home": "97",
+   "away": "221",
+   "homeName": "LOU",
+   "awayName": "PITT",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.7748,
+   "predAt": "2026-11-16T11:00Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN2",
+   "spread": "LOU -13.5",
+   "overUnder": 50.5,
+   "venue": "L&N Federal Credit Union Stadium",
+   "city": "Louisville, KY"
   },
   {
    "id": "401858307",
@@ -7602,8 +7602,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "ND -17.5",
-   "overUnder": 57.5,
+   "spread": "ND -21",
+   "overUnder": 56.5,
    "venue": "Notre Dame Stadium",
    "city": "Notre Dame, IN"
   },
@@ -7630,8 +7630,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "STAN -2.5",
+   "overUnder": 56.5,
    "venue": "California Memorial Stadium",
    "city": "Berkeley, CA"
   },
@@ -8014,15 +8014,15 @@
   }
  },
  "exact": {
-  "key": "c989f836d198ba4b",
+  "key": "5de08c6c402cc6bd",
   "gameIds": [
    "401858303",
-   "401858302",
    "401858310",
-   "401858306",
    "401858309",
    "401858305",
    "401858304",
+   "401858302",
+   "401858306",
    "401858308",
    "401858311",
    "401858312",
@@ -8040,13 +8040,13 @@
    {
     "id": "2390",
     "p": 1,
-    "first": 0.9996107430161115,
+    "first": 0.9996107430161113,
     "pWinOut": 1,
     "clinched": true,
     "eliminated": false,
     "winOutGuaranteed": true,
     "best": {
-     "mask": 1995,
+     "mask": 2033,
      "prob": 0.016934261028034487
     },
     "need": {
@@ -8143,31 +8143,25 @@
    },
    {
     "id": "154",
-    "p": 0.9852075106520001,
-    "first": 0.0003892569838871993,
+    "p": 0.9852075106520002,
+    "first": 0.00038925698388719935,
     "pWinOut": 1,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": true,
     "best": {
-     "mask": 1995,
+     "mask": 2033,
      "prob": 0.016934261028034487
     },
     "need": {
-     "games": 4,
+     "games": 2,
      "homeWins": 0,
      "prob": 0.9251
     },
     "games": [
      {
       "pH": 0.9852075106520016,
-      "pA": 0.9852075106519942,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.9852075106519994,
-      "pA": 0.9852075106520175,
+      "pA": 0.9852075106519947,
       "needH": false,
       "needA": false
      },
@@ -8178,38 +8172,44 @@
       "needA": false
      },
      {
-      "pH": 0.9809079900000014,
-      "pA": 1,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.9852075106519986,
-      "pA": 0.985207510652001,
+      "pH": 0.9852075106519983,
+      "pA": 0.9852075106520013,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.9852075106520005,
-      "pA": 0.9852075106519996,
+      "pA": 0.9852075106520001,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9852075106519979,
-      "pA": 0.985207510652009,
+      "pH": 0.9852075106519982,
+      "pA": 0.9852075106520084,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9852075106519991,
-      "pA": 0.9852075106520012,
+      "pH": 0.9852075106519995,
+      "pA": 0.9852075106520175,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9852075106520024,
-      "pA": 0.9852075106518554,
+      "pH": 0.9809079900000011,
+      "pA": 1,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9852075106519989,
+      "pA": 0.9852075106520016,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.9852075106520023,
+      "pA": 0.9852075106518696,
       "needH": false,
       "needA": false
      },
@@ -8220,25 +8220,25 @@
       "needA": false
      },
      {
-      "pH": 0.9852075106519999,
+      "pH": 0.9852075106520001,
       "pA": 0.985207510652001,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9852075106519996,
-      "pA": 0.9852075106520002,
+      "pH": 0.9852075106520003,
+      "pA": 0.9852075106520001,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.9852075106520012,
-      "pA": 0.9852075106519997,
+      "pA": 0.9852075106520001,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9852075106520007,
+      "pH": 0.9852075106520009,
       "pA": 0.9852075106519995,
       "needH": false,
       "needA": false
@@ -8441,103 +8441,103 @@
    },
    {
     "id": "97",
-    "p": 0.014792489347999992,
+    "p": 0.014792489347999989,
     "first": 0,
-    "pWinOut": 0.01909200999999998,
+    "pWinOut": 0.019092009999999975,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": false,
     "best": {
-     "mask": 1487,
+     "mask": 1523,
      "prob": 0.00046904515967020226
     },
     "need": {
-     "games": 524,
-     "homeWins": 12,
+     "games": 578,
+     "homeWins": 66,
      "prob": 0.014792489348000001
     },
     "games": [
      {
-      "pH": 0.014792489347999996,
+      "pH": 0.014792489347999998,
+      "pA": 0.014792489347999954,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.19749651999999987,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0.014792489348000004,
       "pA": 0.01479248934799998,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.014792489347999998,
-      "pA": 0.014792489347999843,
+      "pH": 0.014792489348000006,
+      "pA": 0.014792489347999975,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.19749651999999993,
-      "pA": 0,
-      "needH": true,
-      "needA": false
-     },
-     {
-      "pH": 0.01909200999999999,
-      "pA": 0,
-      "needH": true,
-      "needA": false
-     },
-     {
-      "pH": 0.014792489347999998,
-      "pA": 0.014792489347999989,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.014792489348000004,
-      "pA": 0.014792489347999984,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.014792489347999985,
-      "pA": 0.014792489348000018,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.014792489347999982,
-      "pA": 0.014792489348000004,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.014792489347999989,
-      "pA": 0.014792489348000166,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0,
-      "pA": 0.05803251999999997,
-      "needH": false,
-      "needA": true
-     },
-     {
-      "pH": 0.014792489348000001,
-      "pA": 0.014792489347999956,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.014792489347999996,
+      "pH": 0.014792489347999987,
       "pA": 0.014792489347999992,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.014792489347999984,
-      "pA": 0.014792489347999994,
+      "pH": 0.014792489347999998,
+      "pA": 0.014792489347999748,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.019092009999999986,
+      "pA": 0,
+      "needH": true,
+      "needA": false
+     },
+     {
+      "pH": 0.01479248934799998,
+      "pA": 0.014792489348,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.014792489347999989,
+      "pA": 0.014792489347999944,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0,
+      "pA": 0.058032519999999956,
+      "needH": false,
+      "needA": true
+     },
+     {
+      "pH": 0.014792489348000001,
+      "pA": 0.014792489347999937,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.014792489347999998,
+      "pA": 0.014792489347999985,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.014792489347999989,
+      "pA": 0.014792489347999989,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.014792489348,
-      "pA": 0.014792489347999985,
+      "pA": 0.014792489347999978,
       "needH": false,
       "needA": false
      }
@@ -9708,6 +9708,6 @@
     ]
    }
   ],
-  "computedAt": "2026-11-16T11:00Z"
+  "computedAt": "2026-11-16T16:30Z"
  }
 }

@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-16T11:00Z",
+ "fetchedAt": "2026-11-16T16:30Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-15T16:01Z",
+  "scheduleCheckedAt": "2026-11-16T16:30Z",
   "fpiCheckedAt": "2026-11-16T11:00Z",
   "fpiRun": "2026-11-16T09:00Z",
-  "checkedAt": "2026-11-16T14:00Z",
+  "checkedAt": "2026-11-16T16:30Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-16T11:00Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-16T16:30Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-16T14:00Z",
   "wpRules": 2
@@ -6779,39 +6779,11 @@
    "homeFBS": true,
    "awayFBS": true,
    "timeValid": true,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
+   "tv": "SEC Network",
+   "spread": "FLA -13.5",
+   "overUnder": 47.5,
    "venue": "Ben Hill Griffin Stadium",
    "city": "Gainesville, FL"
-  },
-  {
-   "id": "401856752",
-   "week": 12,
-   "date": "2026-11-21T17:00Z",
-   "home": "201",
-   "away": "245",
-   "homeName": "OU",
-   "awayName": "TA&M",
-   "neutral": false,
-   "confFlag": true,
-   "completed": false,
-   "canceled": false,
-   "postponed": false,
-   "winner": null,
-   "homeScore": null,
-   "awayScore": null,
-   "pHome": 0.617,
-   "predAt": "2026-11-16T11:00Z",
-   "conf": true,
-   "homeFBS": true,
-   "awayFBS": true,
-   "timeValid": true,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
-   "venue": "Memorial Stadium (Norman, OK)",
-   "city": "Norman, OK"
   },
   {
    "id": "401856750",
@@ -6892,8 +6864,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": "TEX -21",
-   "overUnder": 48.5,
+   "spread": "TEX -20.5",
+   "overUnder": 46.5,
    "venue": "DKR-Texas Memorial Stadium",
    "city": "Austin, TX"
   },
@@ -6919,9 +6891,9 @@
    "homeFBS": true,
    "awayFBS": true,
    "timeValid": true,
-   "tv": null,
+   "tv": "ABC",
    "spread": "LSU -1.5",
-   "overUnder": 46.5,
+   "overUnder": 45.5,
    "venue": "Neyland Stadium",
    "city": "Knoxville, TN"
   },
@@ -6954,6 +6926,34 @@
    "city": "Auburn, AL"
   },
   {
+   "id": "401856752",
+   "week": 12,
+   "date": "2026-11-21T20:45Z",
+   "home": "201",
+   "away": "245",
+   "homeName": "OU",
+   "awayName": "TA&M",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.617,
+   "predAt": "2026-11-16T11:00Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN2",
+   "spread": "OU -7.5",
+   "overUnder": 39.5,
+   "venue": "Memorial Stadium (Norman, OK)",
+   "city": "Norman, OK"
+  },
+  {
    "id": "401856753",
    "week": 12,
    "date": "2026-11-22T00:30Z",
@@ -6976,8 +6976,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "UGA -16.5",
+   "overUnder": 51.5,
    "venue": "Williams-Brice Stadium",
    "city": "Columbia, SC"
   },
@@ -7357,12 +7357,12 @@
   }
  },
  "exact": {
-  "key": "3d674ad13d5ef105",
+  "key": "d28f7db2cd475372",
   "gameIds": [
    "401856748",
-   "401856752",
    "401856755",
    "401856754",
+   "401856752",
    "401856753",
    "401856751",
    "401856762",
@@ -7380,14 +7380,14 @@
   "teams": [
    {
     "id": "61",
-    "p": 0.9930517597981611,
-    "first": 0.9582903629381719,
+    "p": 0.9930517597981608,
+    "first": 0.9582903629381717,
     "pWinOut": 1,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": true,
     "best": {
-     "mask": 2407,
+     "mask": 2411,
      "prob": 0.03170295177821682
     },
     "need": {
@@ -7397,14 +7397,8 @@
     },
     "games": [
      {
-      "pH": 0.9930517597981613,
+      "pH": 0.9930517597981611,
       "pA": 0.9930517597981597,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.9983753116444142,
-      "pA": 0.9844756984688187,
       "needH": false,
       "needA": false
      },
@@ -7415,8 +7409,14 @@
       "needA": false
      },
      {
-      "pH": 0.9860868237848588,
+      "pH": 0.9860868237848587,
       "pA": 1,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.998375311644414,
+      "pA": 0.9844756984688183,
       "needH": false,
       "needA": false
      },
@@ -7427,43 +7427,43 @@
       "needA": false
      },
      {
-      "pH": 0.9983833316700709,
-      "pA": 0.9845314951621214,
+      "pH": 0.9983833316700707,
+      "pA": 0.984531495162121,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.995134826894531,
-      "pA": 0.9788481412309661,
+      "pH": 0.9951348268945306,
+      "pA": 0.978848141230967,
       "needH": false,
       "needA": false
      },
      {
       "pH": 1,
-      "pA": 0.9911045446142117,
+      "pA": 0.9911045446142114,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9921709969556739,
+      "pH": 0.9921709969556736,
       "pA": 1,
       "needH": false,
       "needA": false
      },
      {
       "pH": 1,
-      "pA": 0.9921337708571959,
+      "pA": 0.9921337708571957,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9992915226685759,
-      "pA": 0.9921871587036267,
+      "pH": 0.9992915226685757,
+      "pA": 0.9921871587036266,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.9930517597981577,
+      "pH": 0.9930517597981573,
       "pA": 0.9930517597981645,
       "needH": false,
       "needA": false
@@ -7472,9 +7472,9 @@
    },
    {
     "id": "333",
-    "p": 0.3382765357806051,
+    "p": 0.33827653578060496,
     "first": 0,
-    "pWinOut": 0.3680964693880889,
+    "pWinOut": 0.36809646938808893,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": false,
@@ -7483,80 +7483,80 @@
      "prob": 0.019790628063213
     },
     "need": {
-     "games": 392,
+     "games": 388,
      "homeWins": 384,
      "prob": 0.09725343924999998
     },
     "games": [
      {
-      "pH": 0.32702854724516534,
-      "pA": 0.40035311396902307,
+      "pH": 0.3270285472451653,
+      "pA": 0.40035311396902235,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.2890311497965566,
-      "pA": 0.4176091810865005,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.3279362579928606,
-      "pA": 0.5049958091528703,
+      "pH": 0.32793625799286047,
+      "pA": 0.5049958091528685,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.3993082652107964,
-      "pA": 0.2773911069403384,
+      "pA": 0.2773911069403381,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.2890311497965566,
+      "pA": 0.41760918108650014,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.3668737971446865,
-      "pA": 0.3339844798771979,
+      "pA": 0.3339844798771977,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.29669402085119273,
-      "pA": 0.404728614068684,
+      "pH": 0.2966940208511928,
+      "pA": 0.4047286140686835,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.32223297768393994,
+      "pH": 0.3222329776839397,
       "pA": 0.44767127398312057,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.5479295424945192,
-      "pA": 0.27952215968320937,
+      "pH": 0.547929542494519,
+      "pA": 0.27952215968320926,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.3680964693880896,
+      "pH": 0.36809646938808943,
       "pA": 0.10303039287711649,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.2599650769230938,
-      "pA": 0.3486229042269671,
+      "pH": 0.25996507692309373,
+      "pA": 0.348622904226967,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.2121572704485591,
-      "pA": 0.35575201635775416,
+      "pA": 0.355752016357754,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.33726864249609667,
-      "pA": 0.3393395142538704,
+      "pH": 0.3372686424960965,
+      "pA": 0.33933951425387016,
       "needH": false,
       "needA": false
      }
@@ -7649,91 +7649,91 @@
    },
    {
     "id": "251",
-    "p": 0.5104761521580826,
+    "p": 0.5104761521580825,
     "first": 0,
-    "pWinOut": 0.6903357824695138,
+    "pWinOut": 0.6903357824695137,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": false,
     "best": {
-     "mask": 2407,
+     "mask": 2411,
      "prob": 0.03170295177821682
     },
     "need": {
-     "games": 156,
-     "homeWins": 4,
+     "games": 150,
+     "homeWins": 2,
      "prob": 0.32013526653759194
     },
     "games": [
      {
-      "pH": 0.52638960294414,
-      "pA": 0.42265133184859033,
+      "pH": 0.5263896029441397,
+      "pA": 0.4226513318485907,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.5627442828706306,
-      "pA": 0.42627396769426507,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.5402279230752618,
+      "pH": 0.5402279230752617,
       "pA": 0.030779790931782198,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.30017153801490404,
-      "pA": 0.7202766401786648,
+      "pA": 0.7202766401786646,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.3643137070663738,
-      "pA": 0.5324131263782874,
+      "pH": 0.5627442828706306,
+      "pA": 0.4262739676942648,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.36431370706637367,
+      "pA": 0.5324131263782873,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.5638591752969656,
-      "pA": 0.4251659481239779,
+      "pA": 0.4251659481239776,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.5225277657628914,
+      "pH": 0.5225277657628913,
       "pA": 0.42830091975187645,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.004330084122644003,
-      "pA": 0.6523214655532401,
+      "pH": 0.004330084122644002,
+      "pA": 0.65232146555324,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.4802414191082992,
-      "pA": 0.7489946017730406,
+      "pA": 0.7489946017730396,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.729652094238341,
-      "pA": 0.4815190227108211,
+      "pA": 0.481519022710821,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.5385250855651279,
-      "pA": 0.5065896040587573,
+      "pA": 0.5065896040587572,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.5116543974715216,
-      "pA": 0.5092335112717291,
+      "pH": 0.5116543974715215,
+      "pA": 0.509233511271729,
       "needH": false,
       "needA": false
      }
@@ -7741,8 +7741,8 @@
    },
    {
     "id": "2633",
-    "p": 0.15738950148445124,
-    "first": 0.04170963706182989,
+    "p": 0.15738950148445122,
+    "first": 0.04170963706182988,
     "pWinOut": 0.35342008097499633,
     "clinched": false,
     "eliminated": false,
@@ -7752,80 +7752,80 @@
      "prob": 0.0088633217822374
     },
     "need": {
-     "games": 648,
-     "homeWins": 136,
+     "games": 644,
+     "homeWins": 132,
      "prob": 0.09656117237800001
     },
     "games": [
      {
       "pH": 0.15266882447384636,
-      "pA": 0.18344246861077518,
+      "pA": 0.18344246861077498,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.14854285248142893,
-      "pA": 0.1716411527504167,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.1392150035132708,
+      "pH": 0.13921500351327076,
       "pA": 0.45042216055403195,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.3142650765084592,
+      "pH": 0.31426507650845914,
       "pA": 0.0008899765803569889,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.3212538672527789,
-      "pA": 0.13279571225757747,
+      "pH": 0.14854285248142893,
+      "pA": 0.1716411527504166,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.3212538672527788,
+      "pA": 0.13279571225757744,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.14021704807681315,
-      "pA": 0.18483241156768895,
+      "pA": 0.1848324115676889,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.15928855087469573,
+      "pH": 0.1592885508746957,
       "pA": 0.14444062757333145,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.44774037338283684,
-      "pA": 0.0760198870195215,
+      "pA": 0.07601988701952148,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.15949111454793855,
-      "pA": 0.14081010953916248,
+      "pA": 0.14081010953916223,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.008940068725214379,
-      "pA": 0.17700237231316507,
+      "pH": 0.008940068725214377,
+      "pA": 0.17700237231316504,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.24917654226778002,
-      "pA": 0.14467120151481547,
+      "pA": 0.14467120151481544,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.15802520023422237,
-      "pA": 0.15671905938817526,
+      "pH": 0.1580252002342224,
+      "pA": 0.15671905938817518,
       "needH": false,
       "needA": false
      }
@@ -8180,12 +8180,12 @@
     "eliminated": false,
     "winOutGuaranteed": false,
     "best": {
-     "mask": 99,
+     "mask": 105,
      "prob": 0.0002363308081616877
     },
     "need": {
      "games": 2447,
-     "homeWins": 3,
+     "homeWins": 9,
      "prob": 0.0006531119453767545
     },
     "games": [
@@ -8196,21 +8196,21 @@
       "needA": false
      },
      {
-      "pH": 0.00130640320697046,
-      "pA": 0,
-      "needH": true,
-      "needA": false
-     },
-     {
       "pH": 0,
       "pA": 0.013802239361314618,
       "needH": false,
       "needA": true
      },
      {
-      "pH": 0.0001682964809810412,
+      "pH": 0.00016829648098104123,
       "pA": 0.0014422763006369194,
       "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.00130640320697046,
+      "pA": 0,
+      "needH": true,
       "needA": false
      },
      {
@@ -8774,6 +8774,6 @@
     ]
    }
   ],
-  "computedAt": "2026-11-16T11:00Z"
+  "computedAt": "2026-11-16T16:30Z"
  }
 }
