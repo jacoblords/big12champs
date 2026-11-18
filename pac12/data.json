@@ -49,17 +49,17 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-17T19:30Z",
+ "fetchedAt": "2026-11-18T08:00Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-17T19:30Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-18T07:30Z",
   "fpiRun": "2026-11-17T09:00Z",
-  "checkedAt": "2026-11-18T07:30Z",
+  "checkedAt": "2026-11-18T08:00Z",
   "nextResultCheck": "2026-11-22T02:00Z",
-  "updatedAt": "2026-11-17T19:30Z",
+  "updatedAt": "2026-11-18T08:00Z",
   "espnCalls": 5,
-  "cfpCheckedAt": "2026-11-18T02:00Z",
+  "cfpCheckedAt": "2026-11-18T08:00Z",
   "wpRules": 2
  },
  "calendar": [
@@ -4080,7 +4080,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-18T07:30Z",
+   "predAt": "2026-11-18T08:00Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4108,7 +4108,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-18T07:30Z",
+   "predAt": "2026-11-18T08:00Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4136,7 +4136,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-18T07:30Z",
+   "predAt": "2026-11-18T08:00Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4164,7 +4164,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-18T07:30Z",
+   "predAt": "2026-11-18T08:00Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -4210,6 +4210,37 @@
     "326": 0.7625,
     "328": 0
    }
+  }
+ },
+ "cfp": {
+  "date": "2026-11-17T08:00Z",
+  "week": 12,
+  "ranks": {
+   "61": 1,
+   "254": 2,
+   "333": 3,
+   "26": 4,
+   "251": 5,
+   "87": 6,
+   "2390": 7,
+   "84": 8,
+   "2633": 9,
+   "252": 10,
+   "154": 11,
+   "2641": 12,
+   "2483": 13,
+   "194": 14,
+   "2294": 15,
+   "96": 16,
+   "68": 17,
+   "30": 18,
+   "12": 19,
+   "248": 20,
+   "2579": 21,
+   "201": 22,
+   "97": 23,
+   "57": 24,
+   "145": 25
   }
  },
  "exact": {
