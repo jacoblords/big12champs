@@ -52,17 +52,20 @@ const espnSummary = ({ final = false, kick = "2026-11-14T03:15Z", home = "35", a
     competitors: [{ homeAway: "home", score: home }, { homeAway: "away", score: away }] }] },
 });
 const LIVE_IDS = "https://site.example/live-ids.json";
-function liveCache({ replies, now, allowed = () => ({ big12: ["401856860", "1", "2"] }) }) {
+const EXTRA_IDS = "https://other.example/fan-guide/live-ids.json";
+function liveCache({ replies, now, allowed = () => ({ big12: ["401856860", "1", "2"] }), extra = null }) {
   const calls = [], store = new Map();
   const fetchFn = async (url) => {
     calls.push(url);
     if (url.startsWith("https://api.github.com")) return new Response(null, { status: 204 });
     if (url === LIVE_IDS) { const r = allowed(); return r instanceof Response ? r : Response.json(r); }
+    if (url === EXTRA_IDS && extra) { const r = extra(); return r instanceof Response ? r : Response.json(r); }
     const r = replies(url);
     return r instanceof Response ? r : Response.json(r);
   };
   const state = { storage: { get: async (k) => store.get(k), put: async (k, v) => { store.set(k, v); } } };
-  return lib().then(({ LiveCache }) => ({ cache: new LiveCache(state, env, fetchFn, now), calls }));
+  const e = extra ? { ...env, EXTRA_LIVE_IDS: `${EXTRA_IDS}, not-a-url` } : env;
+  return lib().then(({ LiveCache }) => ({ cache: new LiveCache(state, e, fetchFn, now), calls }));
 }
 const ask = (cache, ids) => cache.fetch(new Request("https://live/?ids=" + ids)).then((r) => r.json());
 
@@ -158,6 +161,23 @@ test("live: a list that can't be read keeps the last good one, and none at all a
   const cold = await liveCache({ replies: () => espnSummary(), now: () => 0, allowed: () => new Response("", { status: 404 }) });
   assert.deepStrictEqual(await ask(cold.cache, "1"), { 1: null });
   assert.ok(!cold.calls.some((u) => u.includes("espn.com")));
+});
+
+test("live: another page's list (EXTRA_LIVE_IDS) allows its games too, without starting this workflow", async () => {
+  let t = Date.parse("2026-11-14T06:50Z"), up = true;
+  const { cache, calls } = await liveCache({ replies: () => espnSummary({ final: true }), now: () => t,
+    extra: () => (up ? { fbs: ["777", "401856860"] } : new Response("down", { status: 503 })) });
+  const r = await ask(cache, "777,401856860,999");
+  assert.notStrictEqual(r["777"], null, "a game only the other page lists is served");
+  assert.notStrictEqual(r["401856860"], null);
+  assert.strictEqual(r["999"], null, "a game nobody lists is not");
+  assert.ok(calls.some((u) => u.includes("event=777")));
+  assert.strictEqual(calls.filter((u) => u.startsWith("https://api.github.com")).length, 1, "only this site's own final dispatched");
+  assert.ok(!calls.includes("not-a-url"), "malformed list addresses are ignored");
+  up = false; t += 5 * 60e3 + 31e3;
+  assert.notStrictEqual((await ask(cache, "777"))["777"], null, "the other list's last good copy is kept");
+  const own = await liveCache({ replies: () => espnSummary(), now: () => 0, extra: () => new Response("", { status: 404 }) });
+  assert.notStrictEqual((await ask(own.cache, "1"))["1"], null, "this site's list works when the other is down");
 });
 
 test("allowedIds: the ids of every league in live-ids.json", async () => {

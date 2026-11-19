@@ -17,6 +17,9 @@ REF = "main"
 ORIGINS = "https://titlepaths.com,https://www.titlepaths.com,https://jacoblords.github.io"
 # the published site: /live only asks ESPN about the games in its live-ids.json
 SITE = "https://titlepaths.com/"
+# other pages sharing the live cache publish their own live-ids.json; their games are allowed too
+# (they don't start this workflow when they end). The Gameday Guide's lists every FBS game.
+EXTRA_LIVE_IDS = "https://jacoblords.github.io/fan-guide/live-ids.json"
 
 # UTC, like GitHub's. Every 15 minutes Thursday through Sunday (Thursday evening through late
 # Saturday night in US time) and every 30 minutes Monday to Wednesday. A run with nothing due

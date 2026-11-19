@@ -53,17 +53,17 @@ export class LiveCache {
     this.fetchFn = fetchFn;
     this.now = now;
     this.games = new Map(); // id -> { at, final, promise }
-    this.allowed = null; // { at, promise -> Set of ids }, from the site's live-ids.json
+    this.lists = new Map(); // live-ids.json address -> { at, promise -> Set of ids }
   }
 
-  // The games /live may ask ESPN about, reread every ALLOWED_TTL_MS. A failed read keeps the last
-  // good list (none yet: nothing is allowed), and is tried again on the next request.
-  allowedSet(now) {
-    const a = this.allowed;
+  // One site's games that /live may ask ESPN about, reread every ALLOWED_TTL_MS. A failed read
+  // keeps the last good list (none yet: nothing is allowed), and is tried again on the next request.
+  listSet(url, now) {
+    const a = this.lists.get(url);
     if (a && now - a.at < ALLOWED_TTL_MS) return a.promise;
     const last = a ? a.promise : Promise.resolve(new Set());
     const entry = { at: now, promise: null };
-    entry.promise = this.fetchFn(`${String(this.env.SITE || "").replace(/\/?$/, "/")}live-ids.json`, { headers: { "User-Agent": UA } })
+    entry.promise = this.fetchFn(url, { headers: { "User-Agent": UA } })
       .then((r) => (r.ok ? r.json() : null))
       .then(allowedIds)
       .catch(() => null)
@@ -72,8 +72,20 @@ export class LiveCache {
         entry.at = -Infinity; // asked again on the next request
         return last;
       });
-    this.allowed = entry;
+    this.lists.set(url, entry);
     return entry.promise;
+  }
+
+  // The games /live may ask about: this site's own live-ids.json, plus the lists of the other
+  // pages that share this cache (EXTRA_LIVE_IDS, comma-separated https addresses; the Gameday
+  // Guide's covers every FBS game). Only this site's own games start its workflow when they end.
+  async allowedSets(now) {
+    const own = `${String(this.env.SITE || "").replace(/\/?$/, "/")}live-ids.json`;
+    const extra = String(this.env.EXTRA_LIVE_IDS || "").split(",").map((u) => u.trim()).filter((u) => /^https:\/\/[^\s,]+$/.test(u) && u !== own);
+    const [mine, ...others] = await Promise.all([own, ...extra].map((u) => this.listSet(u, now)));
+    const all = new Set(mine);
+    for (const set of others) for (const id of set) all.add(id);
+    return { own: mine, all };
   }
 
   async fetch(request) {
@@ -81,24 +93,24 @@ export class LiveCache {
     if (!ids) return new Response("bad ids", { status: 400 });
     const now = this.now();
     for (const [id, c] of this.games) if (now - c.at > FORGET_MS) this.games.delete(id);
-    const allowed = await this.allowedSet(now);
+    const { own, all } = await this.allowedSets(now);
     const out = {};
-    await Promise.all(ids.map(async (id) => { out[id] = allowed.has(id) ? await this.game(id, now) : null; }));
+    await Promise.all(ids.map(async (id) => { out[id] = all.has(id) ? await this.game(id, now, own.has(id)) : null; }));
     return Response.json(out);
   }
 
   // the shared copy, asking ESPN again only when it is LIVE_TTL_MS old (requests that arrive
   // while ESPN is being asked wait for that same answer)
-  game(id, now) {
+  game(id, now, ours = true) {
     const c = this.games.get(id);
     if (c && (c.final || now - c.at < LIVE_TTL_MS)) return c.promise;
     const entry = { at: now, final: false, promise: null };
-    entry.promise = this.load(id, now).then((wp) => { entry.final = !!(wp && wp.final); return wp; });
+    entry.promise = this.load(id, now, ours).then((wp) => { entry.final = !!(wp && wp.final); return wp; });
     this.games.set(id, entry);
     return entry.promise;
   }
 
-  async load(id, now) {
+  async load(id, now, ours = true) {
     let d;
     try {
       const r = await this.fetchFn(`${ESPN}/summary?event=${id}`, { headers: { "User-Agent": UA } });
@@ -109,7 +121,7 @@ export class LiveCache {
     }
     const wp = slim(d);
     const kick = Date.parse((((d.header || {}).competitions || [{}])[0] || {}).date || "");
-    if (wp.final && now - kick < RECENT_MS) await this.dispatchOnce(id);
+    if (wp.final && ours && now - kick < RECENT_MS) await this.dispatchOnce(id); // only this site's games
     return wp;
   }
 
