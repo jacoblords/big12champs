@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-19T11:01Z",
+ "fetchedAt": "2026-11-19T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-18T16:30Z",
+  "scheduleCheckedAt": "2026-11-19T16:31Z",
   "fpiCheckedAt": "2026-11-19T11:01Z",
   "fpiRun": "2026-11-19T09:00Z",
-  "checkedAt": "2026-11-19T16:20Z",
+  "checkedAt": "2026-11-19T16:31Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-19T11:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-19T16:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-19T14:01Z",
   "wpRules": 2
@@ -6752,8 +6752,8 @@
    "awayFBS": false,
    "timeValid": true,
    "tv": "SECN+",
-   "spread": null,
-   "overUnder": null,
+   "spread": "MISS -49.5",
+   "overUnder": 60.5,
    "venue": "Vaught-Hemingway Stadium",
    "city": "Oxford, MS"
   },
@@ -6808,8 +6808,8 @@
    "awayFBS": false,
    "timeValid": true,
    "tv": "SECN+",
-   "spread": null,
-   "overUnder": null,
+   "spread": "MSST -35.5",
+   "overUnder": 59.5,
    "venue": "Davis Wade Stadium",
    "city": "Starkville, MS"
   },
@@ -6836,8 +6836,8 @@
    "awayFBS": false,
    "timeValid": true,
    "tv": "SECN+",
-   "spread": null,
-   "overUnder": null,
+   "spread": "ALA -49.5",
+   "overUnder": 58.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"
   },
@@ -6920,8 +6920,8 @@
    "awayFBS": false,
    "timeValid": true,
    "tv": "SEC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "AUB -48.5",
+   "overUnder": 59.5,
    "venue": "Jordan-Hare Stadium",
    "city": "Auburn, AL"
   },
@@ -6976,7 +6976,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "UGA -16.5",
+   "spread": "UGA -14.5",
    "overUnder": 51.5,
    "venue": "Williams-Brice Stadium",
    "city": "Columbia, SC"
@@ -7088,8 +7088,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "TEX -7.5",
+   "overUnder": 41.5,
    "venue": "Kyle Field",
    "city": "College Station, TX"
   },
@@ -7144,8 +7144,8 @@
    "awayFBS": true,
    "timeValid": false,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "ALA -15.5",
+   "overUnder": 50.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"
   },
@@ -7172,8 +7172,8 @@
    "awayFBS": true,
    "timeValid": false,
    "tv": null,
-   "spread": null,
-   "overUnder": null,
+   "spread": "UK -1.5",
+   "overUnder": 54.5,
    "venue": "Kroger Field",
    "city": "Lexington, KY"
   },
@@ -7284,8 +7284,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "SEC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "MIZ -1.5",
+   "overUnder": 42.5,
    "venue": "Memorial Stadium",
    "city": "Columbia, MO"
   }
