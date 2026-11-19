@@ -9,8 +9,9 @@ A Cloudflare Worker with two jobs:
   Object holding a shared copy per game, so ESPN gets at most one summary call per game every 30
   seconds however many people are watching (one Gamecast viewer asks far more often), and none
   once ESPN calls the game final. Seeing a game go final, it starts the workflow once, so the
-  result and odds land in a minute or two. Browsers may read it from titlepaths.com (`ORIGINS`)
-  and localhost.
+  result and odds land in a minute or two. Browsers may read it from titlepaths.com, the Gameday
+  Guide (jacoblords.github.io, which polls it for the same games' scores) and localhost
+  (`ORIGINS`).
 
   It only asks ESPN about games the site lists in `live-ids.json` (`SITE` in `wrangler.toml`): every
   league's games not yet final, written by `fetch_data.py` on each deploy and reread every 5
