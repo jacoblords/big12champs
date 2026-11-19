@@ -12,8 +12,9 @@ preview_urls = false
 REPO = "jacoblords/big12champs"
 WORKFLOW = "update.yml"
 REF = "main"
-# pages allowed to read /live from a browser (localhost is allowed too, for local builds)
-ORIGINS = "https://titlepaths.com,https://www.titlepaths.com"
+# pages allowed to read /live from a browser (localhost is allowed too, for local builds):
+# Title Paths, and the Gameday Guide (jacoblords/fan-guide on GitHub Pages)
+ORIGINS = "https://titlepaths.com,https://www.titlepaths.com,https://jacoblords.github.io"
 # the published site: /live only asks ESPN about the games in its live-ids.json
 SITE = "https://titlepaths.com/"
 
