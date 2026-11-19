@@ -13,13 +13,15 @@ REPO = "jacoblords/big12champs"
 WORKFLOW = "update.yml"
 REF = "main"
 # pages allowed to read /live from a browser (localhost is allowed too, for local builds):
-# Title Paths, and the Gameday Guide (jacoblords/fan-guide on GitHub Pages)
-ORIGINS = "https://titlepaths.com,https://www.titlepaths.com,https://jacoblords.github.io"
+# Title Paths, and its sibling Gameday Stakes (jacoblords/fan-guide on GitHub Pages; its old
+# github.io address is kept while links move over)
+ORIGINS = "https://titlepaths.com,https://www.titlepaths.com,https://gamedaystakes.com,https://www.gamedaystakes.com,https://jacoblords.github.io"
 # the published site: /live only asks ESPN about the games in its live-ids.json
 SITE = "https://titlepaths.com/"
 # other pages sharing the live cache publish their own live-ids.json; their games are allowed too
-# (they don't start this workflow when they end). The Gameday Guide's lists every FBS game.
-EXTRA_LIVE_IDS = "https://jacoblords.github.io/fan-guide/live-ids.json"
+# (they don't start this workflow when they end). Gameday Stakes' lists every FBS game; its old
+# address is listed too until the move to gamedaystakes.com is complete (the union is the same).
+EXTRA_LIVE_IDS = "https://gamedaystakes.com/live-ids.json,https://jacoblords.github.io/fan-guide/live-ids.json"
 
 # UTC, like GitHub's. Every 15 minutes Thursday through Sunday (Thursday evening through late
 # Saturday night in US time) and every 30 minutes Monday to Wednesday. A run with nothing due

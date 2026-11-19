@@ -9,9 +9,9 @@ A Cloudflare Worker with two jobs:
   Object holding a shared copy per game, so ESPN gets at most one summary call per game every 30
   seconds however many people are watching (one Gamecast viewer asks far more often), and none
   once ESPN calls the game final. Seeing a game go final, it starts the workflow once, so the
-  result and odds land in a minute or two. Browsers may read it from titlepaths.com, the Gameday
-  Guide (jacoblords.github.io) and localhost (`ORIGINS`). It asks ESPN only about games in
-  titlepaths.com's `live-ids.json` and in the lists named by `EXTRA_LIVE_IDS` (the Gameday Guide's,
+  result and odds land in a minute or two. Browsers may read it from titlepaths.com, its sibling Gameday
+  Stakes (gamedaystakes.com) and localhost (`ORIGINS`). It asks ESPN only about games in
+  titlepaths.com's `live-ids.json` and in the lists named by `EXTRA_LIVE_IDS` (Gameday Stakes',
   every FBS game this week and next); only Title Paths' own games start its workflow when they end.
 
   It only asks ESPN about games the site lists in `live-ids.json` (`SITE` in `wrangler.toml`): every
