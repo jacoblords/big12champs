@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-20T11:01Z",
+ "fetchedAt": "2026-11-20T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-19T16:31Z",
+  "scheduleCheckedAt": "2026-11-20T16:31Z",
   "fpiCheckedAt": "2026-11-20T11:01Z",
   "fpiRun": "2026-11-20T09:00Z",
-  "checkedAt": "2026-11-20T14:01Z",
+  "checkedAt": "2026-11-20T16:31Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-20T11:01Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-20T16:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-20T14:01Z",
   "wpRules": 2
@@ -6781,7 +6781,7 @@
    "timeValid": true,
    "tv": "SEC Network",
    "spread": "FLA -13.5",
-   "overUnder": 46.5,
+   "overUnder": 45.5,
    "venue": "Ben Hill Griffin Stadium",
    "city": "Gainesville, FL"
   },
@@ -6865,7 +6865,7 @@
    "timeValid": true,
    "tv": "ESPN/Disney+",
    "spread": "TEX -20.5",
-   "overUnder": 46.5,
+   "overUnder": 47.5,
    "venue": "DKR-Texas Memorial Stadium",
    "city": "Austin, TX"
   },
@@ -7004,7 +7004,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "SEC Network",
-   "spread": "MIZ -5.5",
+   "spread": "MIZ -4.5",
    "overUnder": 48.5,
    "venue": "Memorial Stadium",
    "city": "Columbia, MO"

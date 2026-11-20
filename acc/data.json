@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-20T11:01Z",
+ "fetchedAt": "2026-11-20T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-19T16:31Z",
+  "scheduleCheckedAt": "2026-11-20T16:31Z",
   "fpiCheckedAt": "2026-11-20T11:01Z",
   "fpiRun": "2026-11-20T09:00Z",
-  "checkedAt": "2026-11-20T14:01Z",
+  "checkedAt": "2026-11-20T16:31Z",
   "nextResultCheck": "2026-11-21T03:30Z",
-  "updatedAt": "2026-11-20T11:01Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-20T16:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-20T14:01Z",
   "wpRules": 2
@@ -7407,7 +7407,7 @@
    "timeValid": true,
    "tv": "ESPN",
    "spread": "DUKE -13.5",
-   "overUnder": 40.5,
+   "overUnder": 41.5,
    "venue": "Wallace Wade Stadium",
    "city": "Durham, NC"
   },
@@ -7463,7 +7463,7 @@
    "timeValid": true,
    "tv": "ACC Network",
    "spread": "SYR -2.5",
-   "overUnder": 50.5,
+   "overUnder": 51.5,
    "venue": "Alumni Stadium (Chestnut Hill, MA)",
    "city": "Chestnut Hill, MA"
   },
@@ -7491,7 +7491,7 @@
    "timeValid": true,
    "tv": "CW",
    "spread": "UVA -1.5",
-   "overUnder": 43.5,
+   "overUnder": 42.5,
    "venue": "Scott Stadium",
    "city": "Charlottesville, VA"
   },
@@ -7574,7 +7574,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "LOU -14",
+   "spread": "LOU -13.5",
    "overUnder": 50.5,
    "venue": "L&N Federal Credit Union Stadium",
    "city": "Louisville, KY"
