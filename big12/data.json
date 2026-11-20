@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-20T23:01Z",
+ "fetchedAt": "2026-11-20T23:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-20T16:31Z",
   "fpiCheckedAt": "2026-11-20T22:31Z",
   "fpiRun": "2026-11-20T09:00Z",
-  "checkedAt": "2026-11-20T23:01Z",
+  "checkedAt": "2026-11-20T23:16Z",
   "nextResultCheck": "2026-11-21T02:00Z",
-  "updatedAt": "2026-11-20T23:01Z",
+  "updatedAt": "2026-11-20T23:16Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-20T20:01Z",
@@ -6853,12 +6853,69 @@
    "venue": "Acrisure Bounce House",
    "city": "Orlando, FL",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      500
+     ],
+     [
+      8,
+      493
+     ],
+     [
+      27,
+      487
+     ],
+     [
+      63,
+      486
+     ],
+     [
+      86,
+      469
+     ],
+     [
+      119,
+      476
+     ],
+     [
+      160,
+      469
+     ],
+     [
+      189,
+      472
+     ],
+     [
+      220,
+      467
+     ],
+     [
+      267,
+      405
+     ],
+     [
+      278,
+      409
+     ],
+     [
+      318,
+      401
+     ],
+     [
+      351,
+      466
+     ],
+     [
+      389,
+      456
+     ]
+    ],
     "final": false,
-    "detail": "11/20 - 6:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "8:31 - 1st",
+    "homeScore": 0,
+    "awayScore": 3,
+    "state": "in"
    }
   },
   {
