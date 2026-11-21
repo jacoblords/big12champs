@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T18:59Z",
+ "fetchedAt": "2026-11-21T19:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T18:59Z",
+  "checkedAt": "2026-11-21T19:01Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T18:59Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-21T19:01Z",
+  "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -7133,10 +7133,22 @@
      [
       1888,
       999
+     ],
+     [
+      1929,
+      999
+     ],
+     [
+      1965,
+      999
+     ],
+     [
+      1973,
+      999
      ]
     ],
     "final": false,
-    "detail": "13:32 - 3rd",
+    "detail": "12:07 - 3rd",
     "homeScore": 49,
     "awayScore": 3,
     "state": "in"
@@ -7775,10 +7787,18 @@
      [
       1234,
       947
+     ],
+     [
+      1234,
+      940
+     ],
+     [
+      1240,
+      946
      ]
     ],
     "final": false,
-    "detail": "9:26 - 2nd",
+    "detail": "9:20 - 2nd",
     "homeScore": 14,
     "awayScore": 10,
     "state": "in"
@@ -7810,7 +7830,15 @@
    "spread": "ALA -48.5",
    "overUnder": 57.5,
    "venue": "Bryant-Denny Stadium",
-   "city": "Tuscaloosa, AL"
+   "city": "Tuscaloosa, AL",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/21 - 2:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856755",
