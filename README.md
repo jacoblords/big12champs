@@ -93,7 +93,7 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   just their games). Two sections:
   - *The race:* every team's title-game odds now, highest first, with the week's starting odds
     and the change. Picking a team reorders the games: its own first, then the games that move
-    its odds by a point or more (biggest swing first, its row highlighted, added when below a
+    its odds by a point or more or settle its fate (biggest swing first, its row highlighted, added when below a
     card's top five), then the rest dimmed in kickoff order. The cards slide to their new places
     (not with reduced motion). On phones, where the slate scrolls sideways, it jumps back to its
     first card with snapping paused and the cards fade in instead: sliding them moved snap areas
@@ -101,8 +101,11 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     already published when the fetcher first runs in a new week, kept until the next week.
   - *The games:* kickoff, TV, ESPN's line and venue, and ESPN's win odds, plus how each result
     would move every team's title-game odds (the same exact or simulated splits as the rooting
-    guide). The game moving the most is marked "Biggest stakes". A finished game keeps what its result did: a line
-    under its chart with each team it moved by a point or more ("BYU ▲11 · HOU ▼20"), measured when
+    guide), for each team a result moves by a point or more, or clinches or knocks out however
+    small the move (99.6% to 100% counts; on simulated odds, reaching within half a point of
+    either end does, since a sample can't prove a clinch). The game moving the most is marked "Biggest stakes". A finished game keeps what its result did: a line
+    under its chart with each team it moved by a point or more ("BYU ▲11 · HOU ▼20"), or clinched
+    or knocked out by less ("UTAH clinched"; exact odds only), measured when
     it went final as the odds given that result minus the odds just before, from the data published
     before it, so games ending together don't blur; a ticker when the line doesn't fit. It also keeps
     its last spread and over/under, which ESPN drops at kickoff. Games that finished before this

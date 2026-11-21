@@ -1066,6 +1066,38 @@ test("gameday: a finished game keeps what its result did to the race, biggest fi
   assert.doesNotMatch(els.gameday.innerHTML, /No other game moves its odds|no game moves its odds/);
 });
 
+test("gameday: a finished game that clinched or knocked a team out by under a point says so", async () => {
+  const wk = gameday();
+  const id = (ab) => wk.teams.find((t) => t.abbr === ab).id;
+  const [g] = wk.games.filter((x) => x.week === 12);
+  Object.assign(g, { completed: true, winner: g.home, homeScore: 6, awayScore: 3,
+    moved: { [id("BYU")]: [0.3, 0.45], [id("UTAH")]: [0.996, 1], [id("BAY")]: [0.004, 0], [id("TCU")]: [0.5, 0.503] } });
+  const { els, handlers } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const card = (gid) => els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${gid}"`));
+  const line = card(g.id).match(/<div class="gc-moved">.*?<\/div><\/div><\/div>/);
+  // a 0.3-point move that settles nothing still rounds away
+  assert.match(text(line[0]), /^ Title odds BYU &#9650;15 up 15 points UTAH clinched BAY out $/);
+  // following Utah, the game that clinched it counts as moving it
+  handlers.click({ target: { closest: (q) => (q === "[data-rt]" ? { dataset: { rt: String(wk.teams.findIndex((t) => t.abbr === "UTAH")) } } : null) } });
+  assert.doesNotMatch(card(g.id), /class="gc[^"]* dim"/);
+});
+
+test("gameday: a game that would clinch a team lists it on the card, however small the move", async () => {
+  const wk = gameday();
+  const k = wk.exact.gameIds.indexOf(wk.games.filter((x) => x.week === 12)[0].id);
+  assert.ok(k >= 0);
+  const team = (ab) => wk.exact.teams.find((t) => t.id === wk.teams.find((x) => x.abbr === ab).id);
+  // Baylor: 99.6% now, 100% if the home team wins; Kansas: 99.6% either way, nearly 100% on one side
+  Object.assign(team("BAY"), { p: 0.996 }); team("BAY").games[k] = { pA: 0.993, pH: 1 };
+  Object.assign(team("KU"), { p: 0.996 }); team("KU").games[k] = { pA: 0.995, pH: 0.9995 };
+  const { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  const card = els.gameday.innerHTML.split("<article").find((c) => c.includes(`data-gid="${wk.exact.gameIds[k]}"`));
+  assert.match(card, /BAY<\/span><span class="v[^"]*" role="cell">99\.3%<\/span><span class="v up[^"]*" role="cell">100%/);
+  assert.doesNotMatch(card, /KU<\/span><span class="v/, "under a point and settles nothing");
+});
+
 test("gameday: a game past its kickoff time that ESPN hasn't started shows its kickoff, not ESPN's schedule text", async () => {
   const at = async (wp) => {
     const wk = gameday();

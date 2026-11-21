@@ -363,9 +363,16 @@ BACKFILL = json.loads((HERE / "moves-backfill.json").read_text()) if (HERE / "mo
 MOVED_MIN = 0.005  # half a point: a smaller move isn't kept with the game
 
 
+def settled(before, after):
+    """Whether a result clinched a team's spot or knocked it out: exact odds that reach 0 or 1
+    from in between. Kept however small the move (99.6% to 100% is a clinch)."""
+    end = lambda p: p <= 0 or p >= 1
+    return end(after) and not end(before)
+
+
 def game_moves(prev, gid, home_won):
     """{team id: [odds before, odds given the result]} for the teams game gid moved by
-    MOVED_MIN or more, from the data published before it was final: the exact splits, else the
+    MOVED_MIN or more (or, with exact odds, clinched or knocked out), from the data published before it was final: the exact splits, else the
     precomputed simulation's (each result needs 500 runs, as on the page). None when that data
     had no view of the game."""
     out = {}
@@ -375,7 +382,7 @@ def game_moves(prev, gid, home_won):
         for t in e["teams"]:
             c = (t.get("games") or [None] * (k + 1))[k] or {}
             after = c.get("pH" if home_won else "pA")
-            if after is not None and abs(after - t["p"]) >= MOVED_MIN:
+            if after is not None and (abs(after - t["p"]) >= MOVED_MIN or settled(sig4(t["p"]), sig4(after))):
                 out[t["id"]] = [sig4(t["p"]), sig4(after)]
         return out
     s = prev.get("sim") or {}
