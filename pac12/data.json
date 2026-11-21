@@ -49,16 +49,16 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T23:01Z",
+ "fetchedAt": "2026-11-21T23:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T08:16Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-21T20:16Z",
   "fpiRun": "2026-11-21T09:00Z",
   "cfpCheckedAt": "2026-11-21T20:16Z",
-  "checkedAt": "2026-11-21T23:01Z",
+  "checkedAt": "2026-11-21T23:16Z",
   "nextResultCheck": "2026-11-22T02:00Z",
-  "updatedAt": "2026-11-21T23:01Z",
+  "updatedAt": "2026-11-21T23:16Z",
   "espnCalls": 5,
   "wpRules": 2
  },
@@ -1966,12 +1966,57 @@
    "homeFBS": true,
    "awayFBS": true,
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      810
+     ],
+     [
+      13,
+      810
+     ],
+     [
+      31,
+      803
+     ],
+     [
+      48,
+      783
+     ],
+     [
+      85,
+      773
+     ],
+     [
+      91,
+      774
+     ],
+     [
+      98,
+      762
+     ],
+     [
+      121,
+      750
+     ],
+     [
+      148,
+      732
+     ],
+     [
+      153,
+      736
+     ],
+     [
+      200,
+      682
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 6:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "11:17 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -2081,7 +2126,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-21T23:01Z",
+   "predAt": "2026-11-21T23:16Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -2109,7 +2154,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-21T23:01Z",
+   "predAt": "2026-11-21T23:16Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -2137,7 +2182,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-21T23:01Z",
+   "predAt": "2026-11-21T23:16Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -2165,7 +2210,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-21T23:01Z",
+   "predAt": "2026-11-21T23:16Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
