@@ -108,7 +108,8 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
     its last spread and over/under, which ESPN drops at kickoff. Games that finished before this
     existed were filled in from earlier deploys' Pages artifacts through
     [`moves-backfill.json`](moves-backfill.json), applied once by the fetcher. Once a game kicks off, its card
-    shows ESPN's clock, score and in-game win-probability chart. Links go to ESPN Gamecast,
+    shows ESPN's clock, score and in-game win-probability chart; hover or drag along the chart for
+    the game clock and both teams' odds at that moment. Links go to ESPN Gamecast,
     r/CFB and X; nothing is embedded. r/CFB's game threads are posted by u/CFB_Referee as
     "[Game Thread] BYU @ Utah (12:00 PM ET)", with full school names where ESPN's short names
     abbreviate, so the link searches that account's posts for "Game Thread" AND the title words

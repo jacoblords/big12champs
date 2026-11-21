@@ -1447,6 +1447,50 @@ test("gameday: a game under way shows ESPN's clock, the score and its win-probab
   assert.doesNotMatch(fin, /Title-game odds/);
 });
 
+test("gameday: hovering a win-probability chart shows the clock then and both teams' odds; leaving restores them", async () => {
+  const wk = gameday();
+  const [g0, g1] = wk.games.filter((g) => g.week === 12);
+  g0.wp = { pts: [[0, 600], [1200, 350], [2000, 820]], final: false, detail: "3rd 4:12", homeScore: 21, awayScore: 14 };
+  g1.wp = { pts: [[0, 300], [3600, 0], [3840, 0]], final: true, detail: "Final/OT", homeScore: 20, awayScore: 27 };
+  const { els, handlers } = renderGameday(wk, { Date: clockAt("2026-11-21T08:00Z") });
+  await settle();
+  const card = (g) => els.gameday.innerHTML.split("<article").find((c) => c.includes("gameId/" + g.id));
+  assert.match(card(g0), /<div class="wp-plot" data-gid="[^"]+"><svg[\s\S]*<\/svg><div class="wp-hl" hidden><span class="wp-t"><\/span><\/div><\/div>/);
+  assert.match(card(g0), /<b data-now="18%">18%<\/b>/);
+  // a stub chart: 600px wide, two odds labels
+  const mk = (now) => ({ dataset: { now }, textContent: now });
+  const chart = (now) => {
+    const t = { textContent: "" }, hl = { hidden: true, style: {}, querySelector: () => t };
+    const labs = now.map(mk), box = { querySelectorAll: () => labs };
+    return { t, hl, labs, plot: { dataset: {}, getBoundingClientRect: () => ({ left: 0, width: 600 }), querySelector: () => hl, closest: (q) => (q === ".wp" ? box : null) } };
+  };
+  const ev = (plot, x, rel) => ({ target: { closest: (q) => (q === ".wp-plot" ? plot : null) }, relatedTarget: rel, clientX: x });
+  const live = chart(["18%", "82%"]);
+  live.plot.dataset.gid = String(g0.id);
+  handlers.pointermove(ev(live.plot, 250, null)); // 1500s in: the play at 1200
+  assert.equal(live.hl.hidden, false);
+  assert.equal(live.hl.style.left, "33.33%");
+  assert.equal(live.t.textContent, "2nd 10:00");
+  assert.deepEqual(live.labs.map((b) => b.textContent), ["65%", "35%"]);
+  handlers.pointermove(ev(live.plot, 400, null)); // 2400s: past the last play
+  assert.equal(live.hl.hidden, true);
+  assert.deepEqual(live.labs.map((b) => b.textContent), ["18%", "82%"]);
+  handlers.pointerdown(ev(live.plot, 10, null));
+  assert.equal(live.t.textContent, "1st 15:00");
+  handlers.pointerout(ev(live.plot, 0, { closest: () => null }));
+  assert.equal(live.hl.hidden, true);
+  assert.deepEqual(live.labs.map((b) => b.textContent), ["18%", "82%"]);
+  // a final: 0% and 100% only at the end, the overtime marked; ESPN's 0 before it is still 99.9%
+  const fin = chart(["100%", "0%"]);
+  fin.plot.dataset.gid = String(g1.id);
+  handlers.pointermove(ev(fin.plot, 600, null));
+  assert.equal(fin.t.textContent, "Final");
+  assert.deepEqual(fin.labs.map((b) => b.textContent), ["100%", "0%"]);
+  handlers.pointermove(ev(fin.plot, 570, null));
+  assert.equal(fin.t.textContent, "OT");
+  assert.deepEqual(fin.labs.map((b) => b.textContent), ["99.9%", "0.1%"]);
+});
+
 test("gameday: a live game is never 0% or 100% — ESPN's 999-in-1000 is 99.9%, as on Gamecast; a final shows the result", async () => {
   const wk = gameday();
   const [g0, g1] = wk.games.filter((g) => g.week === 12);
