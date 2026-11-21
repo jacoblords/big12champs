@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T20:39Z",
+ "fetchedAt": "2026-11-21T20:46Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T20:39Z",
+  "checkedAt": "2026-11-21T20:46Z",
   "nextResultCheck": "2026-11-21T22:30Z",
-  "updatedAt": "2026-11-21T20:39Z",
+  "updatedAt": "2026-11-21T20:46Z",
   "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T20:01Z",
@@ -10022,10 +10022,46 @@
      [
       1318,
       417
+     ],
+     [
+      1358,
+      327
+     ],
+     [
+      1365,
+      325
+     ],
+     [
+      1399,
+      340
+     ],
+     [
+      1411,
+      378
+     ],
+     [
+      1446,
+      314
+     ],
+     [
+      1465,
+      296
+     ],
+     [
+      1501,
+      268
+     ],
+     [
+      1532,
+      276
+     ],
+     [
+      1575,
+      258
      ]
     ],
     "final": false,
-    "detail": "7:22 - 2nd",
+    "detail": "3:45 - 2nd",
     "homeScore": 10,
     "awayScore": 10,
     "state": "in"
@@ -10078,13 +10114,21 @@
      ],
      [
       94,
-      340
+      341
+     ],
+     [
+      100,
+      336
+     ],
+     [
+      110,
+      224
      ]
     ],
     "final": false,
-    "detail": "13:26 - 1st",
-    "homeScore": 6,
-    "awayScore": 0,
+    "detail": "13:10 - 1st",
+    "homeScore": 7,
+    "awayScore": 6,
     "state": "in"
    }
   },
@@ -10116,12 +10160,37 @@
    "venue": "Michigan Stadium",
    "city": "Ann Arbor, MI",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      8,
+      478
+     ],
+     [
+      14,
+      507
+     ],
+     [
+      57,
+      509
+     ],
+     [
+      95,
+      508
+     ],
+     [
+      131,
+      462
+     ],
+     [
+      138,
+      470
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 3:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "12:42 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -10172,10 +10241,30 @@
      [
       116,
       930
+     ],
+     [
+      116,
+      932
+     ],
+     [
+      116,
+      933
+     ],
+     [
+      116,
+      940
+     ],
+     [
+      211,
+      936
+     ],
+     [
+      211,
+      932
      ]
     ],
     "final": false,
-    "detail": "13:04 - 1st",
+    "detail": "11:29 - 1st",
     "homeScore": 0,
     "awayScore": 0,
     "state": "in"
