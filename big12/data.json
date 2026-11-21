@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T16:31Z",
+ "fetchedAt": "2026-11-21T17:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T16:31Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T16:31Z",
+  "checkedAt": "2026-11-21T17:01Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T16:31Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-21T17:01Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -7369,7 +7369,15 @@
    "spread": "BYU -4.5",
    "overUnder": 46.5,
    "venue": "David Booth Kansas Memorial Stadium",
-   "city": "Lawrence, KS"
+   "city": "Lawrence, KS",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/21 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856867",
@@ -7397,7 +7405,15 @@
    "spread": "CIN -3",
    "overUnder": 56.5,
    "venue": "Nippert Stadium",
-   "city": "Cincinnati, OH"
+   "city": "Cincinnati, OH",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/21 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856868",
