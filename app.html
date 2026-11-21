@@ -171,6 +171,11 @@ button { font: inherit; color: inherit; }
 .wp .m { stroke: var(--muted); vector-effect: non-scaling-stroke; }
 .wp .f { opacity: 0.3; }
 .wp .l { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.wp-plot { position: relative; cursor: crosshair; touch-action: pan-y; }
+.wp-hl { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px solid var(--ink); pointer-events: none; }
+.wp-hl[hidden] { display: none; }
+.wp-t { position: absolute; top: -2px; transform: translate(-50%, -100%); background: var(--ink); color: var(--surface); font-size: 0.68rem; font-weight: 600;
+  padding: 1px 6px; border-radius: 5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .wp-q { position: relative; height: 1.2em; font-size: 0.68rem; color: var(--muted); }
 .wp-q span { position: absolute; transform: translateX(-50%); }
 /* the team's title-game odds over the season (trend.json): a step for each change */
@@ -900,6 +905,8 @@ function stakesOf(k) {
 // ESPN's in-game win probability (g.wp, from fetch_data.py: [seconds from kickoff, home odds in
 // thousandths]) as a chart in the style of ESPN's: the away team's side on top, the home team's
 // below, shaded toward whoever leads in that team's color.
+// Each chart's points, by game id, for the hover readout.
+const wpPoints = new Map();
 function wpChart(g, a, h) {
   const pts = (g.wp && g.wp.pts) || [];
   if (pts.length < 2) return "";
@@ -913,19 +920,50 @@ function wpChart(g, a, h) {
   const labels = ["1st", "2nd", "3rd", "4th"].map((q, n) => `<span style="left:${((n * 900 + 450) / tMax * 100).toFixed(1)}%">${q}</span>`).join("")
     + (tMax > 3600 ? `<span style="left:${((3600 + tMax) / 2 / tMax * 100).toFixed(1)}%">OT</span>` : "");
   const now = pts[pts.length - 1][1] / 1000, final = !!(g.completed || g.wp.final);
-  const lab = (side, p) => `<div class="wp-lab"><span>${esc(side.abbr)}</span><b>${winPct(p, final)}</b></div>`;
+  const lab = (side, p) => `<div class="wp-lab"><span>${esc(side.abbr)}</span><b data-now="${winPct(p, final)}">${winPct(p, final)}</b></div>`;
+  wpPoints.set(String(g.id), { pts, tMax, final });
   return `<div class="wp" role="img" aria-label="ESPN win probability: ${esc(a.abbr)} ${winPct(1 - now, final)}, ${esc(h.abbr)} ${winPct(now, final)}">
     ${lab(a, 1 - now)}
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+    <div class="wp-plot" data-gid="${esc(g.id)}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
       <defs><clipPath id="${id}a"><rect x="0" y="0" width="${W}" height="${mid}"/></clipPath><clipPath id="${id}h"><rect x="0" y="${mid}" width="${W}" height="${mid}"/></clipPath></defs>
       ${quarters}<line x1="0" x2="${W}" y1="${mid}" y2="${mid}" class="m"/>
       <polygon points="${area}" fill="${color(a)}" clip-path="url(#${id}a)" class="f"/>
       <polygon points="${area}" fill="${color(h)}" clip-path="url(#${id}h)" class="f"/>
       <polyline points="${line}" class="l"/>
-    </svg>
+    </svg><div class="wp-hl" hidden><span class="wp-t"></span></div></div>
     <div class="wp-q" aria-hidden="true">${labels}</div>
     ${lab(h, now)}</div>`;
 }
+// Hover (or drag a finger) along a chart: a line at that moment, the game clock above it, and the
+// two teams' odds then in place of the current ones.
+function gameClock(t) {
+  if (t >= 3600) return "OT";
+  const q = Math.floor(t / 900), left = 900 - (t % 900);
+  return `${["1st", "2nd", "3rd", "4th"][q]} ${Math.floor(left / 60)}:${String(Math.round(left % 60)).padStart(2, "0")}`;
+}
+function readWp(plot, clientX) {
+  const data = wpPoints.get(plot.dataset.gid), box = plot.closest(".wp");
+  if (!data || !box) return;
+  const r = plot.getBoundingClientRect(), f = Math.min(Math.max((clientX - r.left) / r.width, 0), 1);
+  const t = f * data.tMax, pts = data.pts, last = pts.length - 1;
+  if (t > pts[last][0]) return leaveWp(plot); // past the last play: nothing yet
+  let lo = 0, hi = last; // the last play at or before t
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (pts[m][0] <= t) lo = m; else hi = m - 1; }
+  const p = pts[lo][1] / 1000, final = data.final && lo === last;
+  const hl = plot.querySelector(".wp-hl");
+  hl.hidden = false;
+  hl.style.left = `${((pts[lo][0] / data.tMax) * 100).toFixed(2)}%`;
+  hl.querySelector(".wp-t").textContent = lo === last && data.final ? "Final" : gameClock(pts[lo][0]);
+  const [top, bottom] = box.querySelectorAll(".wp-lab b");
+  top.textContent = winPct(1 - p, final); bottom.textContent = winPct(p, final);
+}
+function leaveWp(plot) {
+  const hl = plot.querySelector(".wp-hl"), box = plot.closest(".wp");
+  if (hl) hl.hidden = true;
+  if (box) for (const b of box.querySelectorAll(".wp-lab b")) b.textContent = b.dataset.now;
+}
+const wpPlot = (el) => (el && el.closest ? el.closest(".wp-plot") : null);
+on(document, "pointerout", (e) => { const p = wpPlot(e.target); if (p && wpPlot(e.relatedTarget) !== p) leaveWp(p); });
 // r/CFB's game threads are posted by u/CFB_Referee as "[Game Thread] BYU @ Utah (12:00 PM ET)"
 // with full school names, while ESPN's short names abbreviate ("Kansas St"). So the search asks for
 // that author's "Game Thread" titles with the title words the two names agree on (dropping
@@ -1399,8 +1437,10 @@ function readTrend(plot, clientX, clientY) {
     + `<span class="tr-all">${shown.map(chip).join("")}${rest ? `<span class="tr-t">${rest} more under 1%</span>` : ""}</span>`;
 }
 const trendPlot = (e) => (e.target && e.target.closest ? e.target.closest("[data-trend]") : null);
-on(document, "pointermove", (e) => { const p = trendPlot(e); if (p) readTrend(p, e.clientX, e.clientY); });
-on(document, "pointerdown", (e) => { const p = trendPlot(e); if (p) readTrend(p, e.clientX, e.clientY); });
+// the season's odds chart, or a game's win-probability chart
+const readPlot = (e) => { const p = trendPlot(e), w = p ? null : wpPlot(e.target); if (p) readTrend(p, e.clientX, e.clientY); else if (w) readWp(w, e.clientX); };
+on(document, "pointermove", readPlot);
+on(document, "pointerdown", readPlot);
 function renderFinal(i) {
   const t = T[i], seeds = finalSeeds(), seed = seeds.indexOf(i) + 1;
   $("team").innerHTML = `
