@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T21:46Z",
+ "fetchedAt": "2026-11-21T21:51Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T21:46Z",
+  "checkedAt": "2026-11-21T21:51Z",
   "nextResultCheck": "2026-11-21T22:30Z",
-  "updatedAt": "2026-11-21T21:46Z",
+  "updatedAt": "2026-11-21T21:51Z",
   "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T20:01Z",
@@ -10194,10 +10194,30 @@
      [
       2051,
       345
+     ],
+     [
+      2057,
+      342
+     ],
+     [
+      2065,
+      345
+     ],
+     [
+      2095,
+      364
+     ],
+     [
+      2102,
+      318
+     ],
+     [
+      2137,
+      275
      ]
     ],
     "final": false,
-    "detail": "10:43 - 3rd",
+    "detail": "8:53 - 3rd",
     "homeScore": 17,
     "awayScore": 17,
     "state": "in"
@@ -10475,10 +10495,30 @@
      [
       1292,
       296
+     ],
+     [
+      1305,
+      282
+     ],
+     [
+      1338,
+      270
+     ],
+     [
+      1351,
+      257
+     ],
+     [
+      1378,
+      315
+     ],
+     [
+      1418,
+      310
      ]
     ],
     "final": false,
-    "detail": "8:28 - 2nd",
+    "detail": "6:08 - 2nd",
     "homeScore": 14,
     "awayScore": 14,
     "state": "in"
@@ -10764,11 +10804,23 @@
      [
       1547,
       563
+     ],
+     [
+      1557,
+      538
+     ],
+     [
+      1593,
+      506
+     ],
+     [
+      1612,
+      554
      ]
     ],
     "final": false,
-    "detail": "4:13 - 2nd",
-    "homeScore": 0,
+    "detail": "3:08 - 2nd",
+    "homeScore": 3,
     "awayScore": 0,
     "state": "in"
    }
@@ -11015,12 +11067,28 @@
       974
      ],
      [
-      1486,
-      984
+      1480,
+      986
+     ],
+     [
+      1500,
+      983
+     ],
+     [
+      1500,
+      981
+     ],
+     [
+      1500,
+      980
+     ],
+     [
+      1500,
+      981
      ]
     ],
     "final": false,
-    "detail": "5:14 - 2nd",
+    "detail": "5:00 - 2nd",
     "homeScore": 16,
     "awayScore": 0,
     "state": "in"
