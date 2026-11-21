@@ -783,7 +783,7 @@ let weekView = null;
 function weekOdds() {
   if (weekView) return weekView;
   if (EX) {
-    return (weekView = { p: EX.teams.map((t) => t.p), split: (k, i) => {
+    return (weekView = { exact: true, p: EX.teams.map((t) => t.p), split: (k, i) => {
       const c = EX.teams[i].games && EX.teams[i].games[k];
       return c && c.pA != null && c.pH != null ? [c.pA, c.pH] : null;
     } });
@@ -886,8 +886,16 @@ function movedFor(g, i) {
   const v = g.moved && typeof g.moved === "object" ? g.moved[T[i].id] : null;
   return Array.isArray(v) && v.length === 2 && v.every(Number.isFinite) ? v : null;
 }
+// Whether one result settles a team's fate (clinches its spot or knocks it out) and the other
+// doesn't. Exact odds settle at 0 and 1; simulated ones only come near, so within half a point of
+// either end counts there, since a sample that never went the other way isn't a clinch.
+function settles(a, b, exact) {
+  const end = exact ? (p) => p <= 0 || p >= 1 : (p) => p <= 0.005 || p >= 0.995;
+  return end(a) !== end(b);
+}
 // How much a game moves the race: the title-game odds that change hands between its two results
-// (half the summed swings, since the two spots add to two). Teams moved less than a point aren't listed.
+// (half the summed swings, since the two spots add to two). A team is listed when the game moves
+// it by a point or more, or when one result settles its fate (99.6% to 100% is a clinch).
 function stakesOf(k) {
   const W = weekOdds();
   if (!W || k === undefined) return null;
@@ -898,7 +906,7 @@ function stakesOf(k) {
     if (!s) return;
     const sw = Math.abs(s[1] - s[0]);
     total += sw;
-    if (sw >= 0.01) rows.push({ i, pA: s[0], pH: s[1], sw });
+    if (sw >= 0.01 || settles(s[0], s[1], W.exact)) rows.push({ i, pA: s[0], pH: s[1], sw });
   });
   return { total: total / 2, rows: rows.sort((a, b) => b.sw - a.sw) };
 }
@@ -999,16 +1007,25 @@ live.applyLive = (byId) => {
   return n;
 };
 // What a finished game's result did to the race (DATA game .moved, recorded by fetch_data.py when
-// it went final): each team it moved by a point or more, biggest first, rounded as the race does.
+// it went final): each team it moved by a point or more, biggest first, rounded as the race does,
+// and any it clinched or knocked out by less.
 function movedLine(g) {
   const m = g.moved;
   if (!m || typeof m !== "object") return "";
   const rows = Object.entries(m)
-    .map(([id, v]) => ({ i: ctx.idx[id], d: Array.isArray(v) && v.length === 2 && v.every(Number.isFinite) ? Math.round((v[1] - v[0]) * 100) : 0 }))
-    .filter((r) => r.i !== undefined && r.d !== 0)
-    .sort((x, y) => Math.abs(y.d) - Math.abs(x.d) || y.d - x.d);
+    .map(([id, v]) => {
+      const ok = Array.isArray(v) && v.length === 2 && v.every(Number.isFinite);
+      const d = ok ? Math.round((v[1] - v[0]) * 100) : 0;
+      // a move under a point that clinched or knocked a team out says so instead of rounding away
+      const fate = ok && !d && settles(v[0], v[1], true) ? (v[1] >= 1 ? "clinched" : "out") : "";
+      return { i: ctx.idx[id], d, fate };
+    })
+    .filter((r) => r.i !== undefined && (r.d !== 0 || r.fate))
+    .sort((x, y) => Math.abs(y.d) - Math.abs(x.d) || y.d - x.d || (x.fate === "clinched" ? -1 : y.fate === "clinched" ? 1 : 0));
   if (!rows.length) return "";
-  const run = rows.map(({ i, d }) => `<span class="mv${i === focusTeam ? " me" : ""}"><b>${esc(T[i].abbr)}</b><span class="delta ${d > 0 ? "up" : "down"}"><span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh"> ${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"}</span></span></span>`).join("");
+  const run = rows.map(({ i, d, fate }) => `<span class="mv${i === focusTeam ? " me" : ""}"><b>${esc(T[i].abbr)}</b>${fate
+    ? `<span class="delta ${fate === "clinched" ? "up" : "down"}">${fate}</span>`
+    : `<span class="delta ${d > 0 ? "up" : "down"}"><span aria-hidden="true">${d > 0 ? "&#9650;" : "&#9660;"}${Math.abs(d)}</span><span class="vh"> ${d > 0 ? "up" : "down"} ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"}</span></span>`}</span>`).join("");
   return `<div class="gc-moved"><span class="lbl">Title odds</span><div class="mv-track"><div class="mv-belt"><span class="mv-run">${run}</span></div></div></div>`;
 }
 // a moved line too long for its card scrolls as a ticker: the run twice over, sliding by one copy
@@ -1052,7 +1069,7 @@ function gameCard(g, top, dim, swing) {
       <span class="h" role="columnheader">Title-game odds</span><span class="h" role="columnheader">If ${esc(a.abbr)}</span><span class="h" role="columnheader">If ${esc(h.abbr)}</span>
       ${shownRows(S.rows).map((r) => { const me = r.i === focusTeam ? " me" : ""; return `<span class="t${me}" role="cell">${logo(r.i)}${esc(T[r.i].abbr)}</span>${cell(r.pA, r.pA > r.pH, me)}${cell(r.pH, r.pH > r.pA, me)}`; }).join("")}
     </div>`;
-  } else if (S) stakes = `<p class="gc-quiet">Neither result moves anyone's title-game odds by a point.</p>`;
+  } else if (S) stakes = `<p class="gc-quiet">Neither result moves anyone's title-game odds by a point or settles anyone's spot.</p>`;
   const q = `${a.name} ${h.name}`;
   const threadOpen = g.timeValid !== false && !g.canceled && Date.now() >= new Date(g.date).getTime() - 2 * 3600e3;
   const links = `<div class="gc-links">
@@ -1070,7 +1087,7 @@ const shownRows = (rows) => {
   return me ? top.concat(me) : top;
 };
 // The slate for a picked team: its own game, then the games that move its odds by a point or
-// more (biggest swing first), then the rest, dimmed, in kickoff order. A finished game counts by
+// more or settle its fate (biggest swing first), then the rest, dimmed, in kickoff order. A finished game counts by
 // what its result did (its recorded .moved), or joins the rest when that wasn't recorded. With no
 // team picked: kickoff order, nothing dimmed.
 function slateFor(games, mode) {
@@ -1083,7 +1100,7 @@ function slateFor(games, mode) {
     const r = S && S.rows.find((x) => x.i === focusTeam);
     const m = done ? movedFor(g, focusTeam) : null;
     if (r) moving.push({ g, sw: r.sw });
-    else if (m && Math.round(Math.abs(m[1] - m[0]) * 100) >= 1) moving.push({ g, sw: Math.abs(m[1] - m[0]) });
+    else if (m && (Math.round(Math.abs(m[1] - m[0]) * 100) >= 1 || settles(m[0], m[1], true))) moving.push({ g, sw: Math.abs(m[1] - m[0]) });
     else rest.push(g);
   }
   moving.sort((a, b) => b.sw - a.sw);
@@ -1151,8 +1168,8 @@ function renderGameday() {
     if (total > topStake) { topStake = total; topId = g.id; }
   }
   const slate = slateFor(games, mode);
-  const gamesIntro = mode === "past" ? "What each result did to the title-game odds, for the teams it moved by a point or more."
-    : "Each team's title-game odds under either result, for the teams it moves by a point or more.";
+  const gamesIntro = mode === "past" ? "What each result did to the title-game odds, for the teams it moved by a point or more or clinched or knocked out."
+    : "Each team's title-game odds under either result, for the teams it moves by a point or more or would clinch or knock out.";
   el.innerHTML = `${weekStrip()}${raceSec}
     <section class="gd-sec" aria-labelledby="gd-games"><header><h2 id="gd-games">The games</h2><p>${gamesIntro}</p>${slate.note ? `<p class="gd-focus" role="status">${slate.note}</p>` : ""}</header>
       <div class="games">${slate.order.map(({ g, dim }) => gameCard(g, g.id === topId, dim, mode === "past" && g.completed)).join("")}</div></section>`;

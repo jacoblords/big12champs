@@ -192,6 +192,15 @@ class FetchTests(unittest.TestCase):
         self.assertIsNone(F.game_moves(prev, "g9", True))
         self.assertIsNone(F.game_moves({}, "g1", True))
 
+    def test_game_moves_keeps_an_exact_clinch_or_knockout_however_small(self):
+        prev = {"exact": {"gameIds": ["g1"], "teams": [
+            {"id": "a", "p": 0.996, "games": [{"pA": 0.99, "pH": 1}]},
+            {"id": "b", "p": 0.003, "games": [{"pA": 0.006, "pH": 0}]},
+            {"id": "c", "p": 0.5, "games": [{"pA": 0.497, "pH": 0.503}]},
+            {"id": "d", "p": 1, "games": [{"pA": 1, "pH": 1}]}]}}
+        self.assertEqual(F.game_moves(prev, "g1", True), {"a": [0.996, 1.0], "b": [0.003, 0.0]})
+        self.assertEqual(F.game_moves(prev, "g1", False), {"a": [0.996, 0.99]})
+
     def test_backfill_fills_a_finished_game_once_and_leaves_the_rest(self):
         now = first_kickoff() - dt.timedelta(minutes=5)  # nothing due: only the backfill changes
         prev = self.fresh_prev(now)
