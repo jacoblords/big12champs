@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-20T16:31Z",
+ "fetchedAt": "2026-11-21T01:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-20T16:31Z",
   "fpiCheckedAt": "2026-11-20T23:01Z",
   "fpiRun": "2026-11-20T09:00Z",
-  "checkedAt": "2026-11-21T00:46Z",
+  "checkedAt": "2026-11-21T01:01Z",
   "nextResultCheck": "2026-11-21T04:00Z",
-  "updatedAt": "2026-11-20T16:31Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-21T01:01Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-20T20:01Z",
   "wpRules": 2
@@ -7666,7 +7666,15 @@
    "spread": "ORE -17.5",
    "overUnder": 44.5,
    "venue": "Spartan Stadium",
-   "city": "East Lansing, MI"
+   "city": "East Lansing, MI",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/20 - 8:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401858531",
