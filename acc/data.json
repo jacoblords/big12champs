@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T00:31Z",
+ "fetchedAt": "2026-11-21T00:46Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-20T16:31Z",
   "fpiCheckedAt": "2026-11-20T23:01Z",
   "fpiRun": "2026-11-20T09:00Z",
-  "checkedAt": "2026-11-21T00:31Z",
+  "checkedAt": "2026-11-21T00:46Z",
   "nextResultCheck": "2026-11-21T03:30Z",
-  "updatedAt": "2026-11-21T00:31Z",
+  "updatedAt": "2026-11-21T00:46Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-20T20:01Z",
@@ -7411,12 +7411,53 @@
    "venue": "Wallace Wade Stadium",
    "city": "Durham, NC",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      801
+     ],
+     [
+      4,
+      797
+     ],
+     [
+      39,
+      785
+     ],
+     [
+      79,
+      769
+     ],
+     [
+      86,
+      764
+     ],
+     [
+      91,
+      769
+     ],
+     [
+      114,
+      779
+     ],
+     [
+      142,
+      792
+     ],
+     [
+      167,
+      751
+     ],
+     [
+      200,
+      782
+     ]
+    ],
     "final": false,
-    "detail": "11/20 - 7:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "11:40 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
