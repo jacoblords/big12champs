@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T17:01Z",
+ "fetchedAt": "2026-11-21T17:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T17:01Z",
+  "checkedAt": "2026-11-21T17:16Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T17:01Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-21T17:16Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -6757,12 +6757,65 @@
    "venue": "Vaught-Hemingway Stadium",
    "city": "Oxford, MS",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      997
+     ],
+     [
+      19,
+      998
+     ],
+     [
+      34,
+      998
+     ],
+     [
+      65,
+      998
+     ],
+     [
+      65,
+      998
+     ],
+     [
+      70,
+      998
+     ],
+     [
+      107,
+      998
+     ],
+     [
+      134,
+      998
+     ],
+     [
+      173,
+      998
+     ],
+     [
+      213,
+      998
+     ],
+     [
+      220,
+      998
+     ],
+     [
+      260,
+      998
+     ],
+     [
+      270,
+      998
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "10:14 - 1st",
+    "homeScore": 7,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -6793,12 +6846,77 @@
    "venue": "Ben Hill Griffin Stadium",
    "city": "Gainesville, FL",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      838
+     ],
+     [
+      10,
+      826
+     ],
+     [
+      43,
+      830
+     ],
+     [
+      83,
+      824
+     ],
+     [
+      127,
+      809
+     ],
+     [
+      166,
+      810
+     ],
+     [
+      189,
+      762
+     ],
+     [
+      237,
+      838
+     ],
+     [
+      276,
+      804
+     ],
+     [
+      276,
+      804
+     ],
+     [
+      283,
+      796
+     ],
+     [
+      315,
+      785
+     ],
+     [
+      327,
+      816
+     ],
+     [
+      359,
+      803
+     ],
+     [
+      399,
+      802
+     ],
+     [
+      433,
+      825
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "7:27 - 1st",
+    "homeScore": 0,
+    "awayScore": 3,
+    "state": "in"
    }
   },
   {

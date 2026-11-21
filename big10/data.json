@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T17:01Z",
+ "fetchedAt": "2026-11-21T17:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T17:01Z",
+  "checkedAt": "2026-11-21T17:16Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T17:01Z",
-  "espnCalls": 4,
+  "updatedAt": "2026-11-21T17:16Z",
+  "espnCalls": 3,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -8203,12 +8203,33 @@
    "venue": "Memorial Stadium (Lincoln, NE)",
    "city": "Lincoln, NE",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      295
+     ],
+     [
+      12,
+      297
+     ],
+     [
+      35,
+      256
+     ],
+     [
+      60,
+      259
+     ],
+     [
+      72,
+      247
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "13:48 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -8239,12 +8260,65 @@
    "venue": "Huntington Bank Stadium",
    "city": "Minneapolis, MN",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      207
+     ],
+     [
+      5,
+      212
+     ],
+     [
+      33,
+      200
+     ],
+     [
+      60,
+      210
+     ],
+     [
+      68,
+      189
+     ],
+     [
+      103,
+      198
+     ],
+     [
+      108,
+      205
+     ],
+     [
+      149,
+      227
+     ],
+     [
+      157,
+      230
+     ],
+     [
+      167,
+      217
+     ],
+     [
+      208,
+      224
+     ],
+     [
+      253,
+      196
+     ],
+     [
+      288,
+      201
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "10:12 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -8275,12 +8349,65 @@
    "venue": "Ross-Ade Stadium",
    "city": "West Lafayette, IN",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      337
+     ],
+     [
+      3,
+      351
+     ],
+     [
+      13,
+      337
+     ],
+     [
+      37,
+      328
+     ],
+     [
+      72,
+      325
+     ],
+     [
+      106,
+      330
+     ],
+     [
+      159,
+      366
+     ],
+     [
+      193,
+      318
+     ],
+     [
+      237,
+      332
+     ],
+     [
+      277,
+      319
+     ],
+     [
+      313,
+      295
+     ],
+     [
+      349,
+      302
+     ],
+     [
+      370,
+      318
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "8:39 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {

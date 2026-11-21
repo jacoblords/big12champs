@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T17:01Z",
+ "fetchedAt": "2026-11-21T17:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T16:31Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T17:01Z",
+  "checkedAt": "2026-11-21T17:16Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T17:01Z",
+  "updatedAt": "2026-11-21T17:16Z",
   "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
@@ -7371,12 +7371,61 @@
    "venue": "David Booth Kansas Memorial Stadium",
    "city": "Lawrence, KS",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      6,
+      303
+     ],
+     [
+      11,
+      300
+     ],
+     [
+      43,
+      320
+     ],
+     [
+      77,
+      322
+     ],
+     [
+      109,
+      325
+     ],
+     [
+      145,
+      290
+     ],
+     [
+      153,
+      290
+     ],
+     [
+      161,
+      309
+     ],
+     [
+      193,
+      290
+     ],
+     [
+      236,
+      279
+     ],
+     [
+      278,
+      309
+     ],
+     [
+      315,
+      314
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "9:45 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -7407,12 +7456,73 @@
    "venue": "Nippert Stadium",
    "city": "Cincinnati, OH",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      612
+     ],
+     [
+      9,
+      618
+     ],
+     [
+      37,
+      618
+     ],
+     [
+      68,
+      645
+     ],
+     [
+      108,
+      598
+     ],
+     [
+      138,
+      610
+     ],
+     [
+      170,
+      656
+     ],
+     [
+      177,
+      657
+     ],
+     [
+      201,
+      644
+     ],
+     [
+      226,
+      691
+     ],
+     [
+      257,
+      706
+     ],
+     [
+      305,
+      749
+     ],
+     [
+      325,
+      765
+     ],
+     [
+      325,
+      763
+     ],
+     [
+      336,
+      770
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "9:24 - 1st",
+    "homeScore": 7,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {

@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T17:01Z",
+ "fetchedAt": "2026-11-21T17:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T17:01Z",
+  "checkedAt": "2026-11-21T17:16Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T17:01Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-21T17:16Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -7929,12 +7929,53 @@
    "venue": "Bobby Dodd Stadium",
    "city": "Atlanta, GA",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      80
+     ],
+     [
+      8,
+      86
+     ],
+     [
+      47,
+      86
+     ],
+     [
+      55,
+      85
+     ],
+     [
+      82,
+      80
+     ],
+     [
+      90,
+      73
+     ],
+     [
+      96,
+      74
+     ],
+     [
+      103,
+      74
+     ],
+     [
+      118,
+      78
+     ],
+     [
+      137,
+      83
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "12:37 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -7965,12 +8006,53 @@
    "venue": "Alumni Stadium (Chestnut Hill, MA)",
    "city": "Chestnut Hill, MA",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      368
+     ],
+     [
+      0,
+      392
+     ],
+     [
+      0,
+      470
+     ],
+     [
+      0,
+      478
+     ],
+     [
+      0,
+      472
+     ],
+     [
+      0,
+      513
+     ],
+     [
+      137,
+      514
+     ],
+     [
+      137,
+      534
+     ],
+     [
+      137,
+      537
+     ],
+     [
+      137,
+      559
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "11:35 - 1st",
+    "homeScore": 7,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
