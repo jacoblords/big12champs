@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T17:16Z",
+ "fetchedAt": "2026-11-21T17:31Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T17:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T17:16Z",
+  "checkedAt": "2026-11-21T17:31Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T17:16Z",
-  "espnCalls": 2,
+  "updatedAt": "2026-11-21T17:31Z",
+  "espnCalls": 3,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -7969,12 +7969,68 @@
      [
       137,
       83
+     ],
+     [
+      143,
+      64
+     ],
+     [
+      154,
+      63
+     ],
+     [
+      183,
+      61
+     ],
+     [
+      216,
+      63
+     ],
+     [
+      243,
+      68
+     ],
+     [
+      255,
+      57
+     ],
+     [
+      288,
+      56
+     ],
+     [
+      321,
+      52
+     ],
+     [
+      366,
+      54
+     ],
+     [
+      401,
+      44
+     ],
+     [
+      409,
+      49
+     ],
+     [
+      417,
+      50
+     ],
+     [
+      453,
+      52
+     ],
+     [
+      490,
+      40
      ]
     ],
     "final": false,
-    "detail": "12:37 - 1st",
+    "detail": "6:50 - 1st",
     "homeScore": 0,
-    "awayScore": 0,
+    "awayScore": 7,
     "state": "in"
    }
   },
@@ -8045,11 +8101,71 @@
      ],
      [
       137,
+      488
+     ],
+     [
+      137,
+      501
+     ],
+     [
+      137,
+      522
+     ],
+     [
+      137,
+      455
+     ],
+     [
+      137,
+      454
+     ],
+     [
+      137,
+      490
+     ],
+     [
+      137,
+      508
+     ],
+     [
+      137,
+      533
+     ],
+     [
+      345,
+      547
+     ],
+     [
+      345,
+      527
+     ],
+     [
+      345,
+      530
+     ],
+     [
+      345,
       559
+     ],
+     [
+      345,
+      569
+     ],
+     [
+      345,
+      573
+     ],
+     [
+      345,
+      569
+     ],
+     [
+      345,
+      551
      ]
     ],
     "final": false,
-    "detail": "11:35 - 1st",
+    "detail": "4:48 - 1st",
     "homeScore": 7,
     "awayScore": 0,
     "state": "in"
@@ -8081,7 +8197,15 @@
    "spread": "UNC -1.5",
    "overUnder": 41.5,
    "venue": "Scott Stadium",
-   "city": "Charlottesville, VA"
+   "city": "Charlottesville, VA",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/21 - 12:30 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401858304",
