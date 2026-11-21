@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T11:01Z",
+ "fetchedAt": "2026-11-21T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-20T16:31Z",
+  "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T11:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T14:16Z",
+  "checkedAt": "2026-11-21T16:31Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T11:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-21T16:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -8198,7 +8198,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Fox",
-   "spread": "OSU -3.5",
+   "spread": "OSU -4",
    "overUnder": 41.5,
    "venue": "Memorial Stadium (Lincoln, NE)",
    "city": "Lincoln, NE"
@@ -8226,7 +8226,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "FS1",
-   "spread": "NU -2.5",
+   "spread": "NU -3",
    "overUnder": 41.5,
    "venue": "Huntington Bank Stadium",
    "city": "Minneapolis, MN"
@@ -8254,7 +8254,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "WIS -6",
+   "spread": "WIS -4.5",
    "overUnder": 46.5,
    "venue": "Ross-Ade Stadium",
    "city": "West Lafayette, IN"
@@ -8310,7 +8310,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Peacock",
-   "spread": "IU -7.5",
+   "spread": "IU -9.5",
    "overUnder": 43.5,
    "venue": "Husky Stadium",
    "city": "Seattle, WA"
@@ -8339,7 +8339,7 @@
    "timeValid": true,
    "tv": "CBS",
    "spread": "UCLA -3.5",
-   "overUnder": 37.5,
+   "overUnder": 36.5,
    "venue": "Michigan Stadium",
    "city": "Ann Arbor, MI"
   },
@@ -8367,7 +8367,7 @@
    "timeValid": true,
    "tv": "FS1",
    "spread": "PSU -26.5",
-   "overUnder": 49.5,
+   "overUnder": 48.5,
    "venue": "Beaver Stadium",
    "city": "University Park, PA"
   },
@@ -8395,7 +8395,7 @@
    "timeValid": true,
    "tv": "BTN",
    "spread": "USC -17.5",
-   "overUnder": 56.5,
+   "overUnder": 57.5,
    "venue": "Los Angeles Memorial Coliseum",
    "city": "Los Angeles, CA"
   },
@@ -8506,8 +8506,8 @@
    "awayFBS": true,
    "timeValid": false,
    "tv": null,
-   "spread": "ORE -12.5",
-   "overUnder": 48.5,
+   "spread": null,
+   "overUnder": null,
    "venue": "Autzen Stadium",
    "city": "Eugene, OR"
   },
@@ -8590,7 +8590,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CBS",
-   "spread": "UCLA -3",
+   "spread": "UCLA -2.5",
    "overUnder": 52.5,
    "venue": "Rose Bowl",
    "city": "Pasadena, CA"

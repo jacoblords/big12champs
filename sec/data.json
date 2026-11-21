@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T11:01Z",
+ "fetchedAt": "2026-11-21T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-20T16:31Z",
+  "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T11:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T14:16Z",
+  "checkedAt": "2026-11-21T16:31Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T11:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-21T16:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -6781,7 +6781,7 @@
    "timeValid": true,
    "tv": "SEC Network",
    "spread": "FLA -13.5",
-   "overUnder": 45.5,
+   "overUnder": 47.5,
    "venue": "Ben Hill Griffin Stadium",
    "city": "Gainesville, FL"
   },
@@ -6808,7 +6808,7 @@
    "awayFBS": false,
    "timeValid": true,
    "tv": "SECN+",
-   "spread": "MSST -35.5",
+   "spread": "MSST -29.5",
    "overUnder": 59.5,
    "venue": "Davis Wade Stadium",
    "city": "Starkville, MS"
@@ -6836,8 +6836,8 @@
    "awayFBS": false,
    "timeValid": true,
    "tv": "SECN+",
-   "spread": "ALA -49.5",
-   "overUnder": 58.5,
+   "spread": "ALA -48.5",
+   "overUnder": 57.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"
   },
@@ -6864,8 +6864,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN/Disney+",
-   "spread": "TEX -20.5",
-   "overUnder": 47.5,
+   "spread": "TEX -18.5",
+   "overUnder": 46.5,
    "venue": "DKR-Texas Memorial Stadium",
    "city": "Austin, TX"
   },
@@ -6948,8 +6948,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "OU -7.5",
-   "overUnder": 38.5,
+   "spread": "OU -7",
+   "overUnder": 36.5,
    "venue": "Memorial Stadium (Norman, OK)",
    "city": "Norman, OK"
   },
@@ -7005,7 +7005,7 @@
    "timeValid": true,
    "tv": "SEC Network",
    "spread": "MIZ -4.5",
-   "overUnder": 48.5,
+   "overUnder": 49.5,
    "venue": "Memorial Stadium",
    "city": "Columbia, MO"
   },

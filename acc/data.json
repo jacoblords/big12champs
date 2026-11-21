@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-21T11:01Z",
+ "fetchedAt": "2026-11-21T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-20T16:31Z",
+  "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T11:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-21T14:16Z",
+  "checkedAt": "2026-11-21T16:31Z",
   "nextResultCheck": "2026-11-21T20:00Z",
-  "updatedAt": "2026-11-21T11:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-21T16:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T14:01Z",
   "wpRules": 2
@@ -7924,7 +7924,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": "WAKE -21",
+   "spread": "WAKE -22.5",
    "overUnder": 55.5,
    "venue": "Bobby Dodd Stadium",
    "city": "Atlanta, GA"
@@ -7980,7 +7980,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CW",
-   "spread": "UVA -1.5",
+   "spread": "UNC -1.5",
    "overUnder": 41.5,
    "venue": "Scott Stadium",
    "city": "Charlottesville, VA"
@@ -8064,7 +8064,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "LOU -13.5",
+   "spread": "LOU -12.5",
    "overUnder": 50.5,
    "venue": "L&N Federal Credit Union Stadium",
    "city": "Louisville, KY"
@@ -8093,7 +8093,7 @@
    "timeValid": true,
    "tv": "NBC",
    "spread": "ND -20.5",
-   "overUnder": 56.5,
+   "overUnder": 55.5,
    "venue": "Notre Dame Stadium",
    "city": "Notre Dame, IN"
   },
@@ -8232,8 +8232,8 @@
    "awayFBS": true,
    "timeValid": false,
    "tv": null,
-   "spread": "WAKE -10.5",
-   "overUnder": 52.5,
+   "spread": null,
+   "overUnder": null,
    "venue": "Allegacy Federal Credit Union Stadium",
    "city": "Winston-Salem, NC"
   },
