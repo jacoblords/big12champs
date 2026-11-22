@@ -49,17 +49,17 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T01:46Z",
+ "fetchedAt": "2026-11-22T02:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T22:31Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T01:46Z",
+  "checkedAt": "2026-11-22T02:01Z",
   "nextResultCheck": "2026-11-22T03:00Z",
-  "updatedAt": "2026-11-22T01:46Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-22T02:01Z",
+  "espnCalls": 3,
   "scheduleFields": 2,
-  "cfpCheckedAt": "2026-11-21T20:01Z",
+  "cfpCheckedAt": "2026-11-22T02:01Z",
   "wpRules": 2
  },
  "calendar": [
@@ -9837,7 +9837,15 @@
    "spread": "UTAH -8.5",
    "overUnder": 46.5,
    "venue": "Amon G. Carter Stadium",
-   "city": "Fort Worth, TX"
+   "city": "Fort Worth, TX",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/21 - 9:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856870",
