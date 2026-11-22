@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T00:38Z",
+ "fetchedAt": "2026-11-22T00:41Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T23:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T00:38Z",
+  "checkedAt": "2026-11-22T00:41Z",
   "nextResultCheck": "2026-11-22T03:00Z",
-  "updatedAt": "2026-11-22T00:38Z",
+  "updatedAt": "2026-11-22T00:41Z",
   "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T20:01Z",
@@ -10142,10 +10142,18 @@
      [
       796,
       824
+     ],
+     [
+      796,
+      826
+     ],
+     [
+      808,
+      821
      ]
     ],
     "final": false,
-    "detail": "1:44 - 1st",
+    "detail": "1:04 - 1st",
     "homeScore": 3,
     "awayScore": 14,
     "state": "in"
@@ -10191,10 +10199,34 @@
      [
       38,
       764
+     ],
+     [
+      79,
+      748
+     ],
+     [
+      89,
+      747
+     ],
+     [
+      89,
+      758
+     ],
+     [
+      100,
+      757
+     ],
+     [
+      132,
+      768
+     ],
+     [
+      160,
+      775
      ]
     ],
     "final": false,
-    "detail": "13:41 - 1st",
+    "detail": "12:20 - 1st",
     "homeScore": 0,
     "awayScore": 0,
     "state": "in"
@@ -10236,10 +10268,26 @@
      [
       15,
       935
+     ],
+     [
+      23,
+      897
+     ],
+     [
+      68,
+      904
+     ],
+     [
+      107,
+      910
+     ],
+     [
+      110,
+      918
      ]
     ],
     "final": false,
-    "detail": "14:45 - 1st",
+    "detail": "13:10 - 1st",
     "homeScore": 0,
     "awayScore": 0,
     "state": "in"
@@ -10285,10 +10333,34 @@
      [
       48,
       529
+     ],
+     [
+      84,
+      507
+     ],
+     [
+      115,
+      488
+     ],
+     [
+      123,
+      497
+     ],
+     [
+      168,
+      496
+     ],
+     [
+      222,
+      466
+     ],
+     [
+      235,
+      452
      ]
     ],
     "final": false,
-    "detail": "13:36 - 1st",
+    "detail": "11:05 - 1st",
     "homeScore": 0,
     "awayScore": 0,
     "state": "in"
