@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T00:01Z",
+ "fetchedAt": "2026-11-22T00:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T23:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T00:01Z",
+  "checkedAt": "2026-11-22T00:16Z",
   "nextResultCheck": "2026-11-22T03:00Z",
-  "updatedAt": "2026-11-22T00:01Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-22T00:16Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T20:01Z",
   "wpRules": 2
@@ -10010,12 +10010,69 @@
    "venue": "Hard Rock Stadium",
    "city": "Miami Gardens, FL",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      960
+     ],
+     [
+      8,
+      960
+     ],
+     [
+      42,
+      957
+     ],
+     [
+      99,
+      956
+     ],
+     [
+      106,
+      953
+     ],
+     [
+      143,
+      952
+     ],
+     [
+      183,
+      953
+     ],
+     [
+      221,
+      947
+     ],
+     [
+      247,
+      945
+     ],
+     [
+      267,
+      945
+     ],
+     [
+      300,
+      941
+     ],
+     [
+      335,
+      943
+     ],
+     [
+      343,
+      938
+     ],
+     [
+      383,
+      925
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 7:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "8:06 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {

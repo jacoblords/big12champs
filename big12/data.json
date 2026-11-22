@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T00:01Z",
+ "fetchedAt": "2026-11-22T00:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T22:31Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T00:01Z",
+  "checkedAt": "2026-11-22T00:16Z",
   "nextResultCheck": "2026-11-22T03:00Z",
-  "updatedAt": "2026-11-22T00:01Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-22T00:16Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T20:01Z",
   "wpRules": 2
@@ -9478,12 +9478,45 @@
    "venue": "Bill Snyder Family Stadium",
    "city": "Manhattan, KS",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      254
+     ],
+     [
+      7,
+      273
+     ],
+     [
+      40,
+      273
+     ],
+     [
+      75,
+      244
+     ],
+     [
+      110,
+      250
+     ],
+     [
+      122,
+      255
+     ],
+     [
+      144,
+      263
+     ],
+     [
+      181,
+      282
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 7:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "11:22 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
