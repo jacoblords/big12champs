@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T02:01Z",
+ "fetchedAt": "2026-11-22T02:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T22:31Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T02:01Z",
+  "checkedAt": "2026-11-22T02:16Z",
   "nextResultCheck": "2026-11-22T03:00Z",
-  "updatedAt": "2026-11-22T02:01Z",
-  "espnCalls": 3,
+  "updatedAt": "2026-11-22T02:16Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-22T02:01Z",
   "wpRules": 2
@@ -9802,12 +9802,64 @@
      [
       1800,
       382
+     ],
+     [
+      1800,
+      301
+     ],
+     [
+      1808,
+      319
+     ],
+     [
+      1836,
+      336
+     ],
+     [
+      1843,
+      361
+     ],
+     [
+      1850,
+      349
+     ],
+     [
+      1859,
+      338
+     ],
+     [
+      1922,
+      295
+     ],
+     [
+      1930,
+      279
+     ],
+     [
+      1950,
+      228
+     ],
+     [
+      1963,
+      231
+     ],
+     [
+      1996,
+      237
+     ],
+     [
+      2035,
+      286
+     ],
+     [
+      2039,
+      266
      ]
     ],
     "final": false,
-    "detail": "Halftime",
+    "detail": "11:01 - 3rd",
     "homeScore": 14,
-    "awayScore": 14,
+    "awayScore": 17,
     "state": "in"
    }
   },
