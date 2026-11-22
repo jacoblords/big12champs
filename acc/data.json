@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T00:31Z",
+ "fetchedAt": "2026-11-22T00:38Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T23:01Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T00:31Z",
+  "checkedAt": "2026-11-22T00:38Z",
   "nextResultCheck": "2026-11-22T03:00Z",
-  "updatedAt": "2026-11-22T00:31Z",
+  "updatedAt": "2026-11-22T00:38Z",
   "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-21T20:01Z",
@@ -10106,11 +10106,47 @@
      [
       575,
       812
+     ],
+     [
+      586,
+      828
+     ],
+     [
+      601,
+      819
+     ],
+     [
+      613,
+      835
+     ],
+     [
+      649,
+      841
+     ],
+     [
+      685,
+      840
+     ],
+     [
+      723,
+      837
+     ],
+     [
+      759,
+      829
+     ],
+     [
+      792,
+      796
+     ],
+     [
+      796,
+      824
      ]
     ],
     "final": false,
-    "detail": "5:23 - 1st",
-    "homeScore": 0,
+    "detail": "1:44 - 1st",
+    "homeScore": 3,
     "awayScore": 14,
     "state": "in"
    }
@@ -10143,12 +10179,25 @@
    "venue": "L&N Federal Credit Union Stadium",
    "city": "Louisville, KY",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      782
+     ],
+     [
+      9,
+      767
+     ],
+     [
+      38,
+      764
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 7:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "13:41 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -10179,12 +10228,21 @@
    "venue": "Notre Dame Stadium",
    "city": "Notre Dame, IN",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      7,
+      931
+     ],
+     [
+      15,
+      935
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 7:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "14:45 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -10215,12 +10273,25 @@
    "venue": "California Memorial Stadium",
    "city": "Berkeley, CA",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      546
+     ],
+     [
+      15,
+      526
+     ],
+     [
+      48,
+      529
+     ]
+    ],
     "final": false,
-    "detail": "11/21 - 7:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "13:36 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
