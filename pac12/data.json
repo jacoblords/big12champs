@@ -3314,10 +3314,14 @@
      [
       1691,
       938
+     ],
+     [
+      1700,
+      928
      ]
     ],
     "final": false,
-    "detail": "1:40 - 2nd",
+    "detail": "1:25 - 2nd",
     "homeScore": 7,
     "awayScore": 0,
     "state": "in"
@@ -3438,7 +3442,7 @@
      ]
     ],
     "final": false,
-    "detail": "8:38 - 1st",
+    "detail": "8:32 - 1st",
     "homeScore": 0,
     "awayScore": 7,
     "state": "in"
