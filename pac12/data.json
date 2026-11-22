@@ -49,17 +49,17 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T03:31Z",
+ "fetchedAt": "2026-11-22T03:34Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T08:16Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-22T02:16Z",
   "fpiRun": "2026-11-21T09:00Z",
   "cfpCheckedAt": "2026-11-22T02:16Z",
-  "checkedAt": "2026-11-22T03:31Z",
+  "checkedAt": "2026-11-22T03:34Z",
   "nextResultCheck": "2026-11-22T03:30Z",
-  "updatedAt": "2026-11-22T03:31Z",
-  "espnCalls": 9,
+  "updatedAt": "2026-11-22T03:34Z",
+  "espnCalls": 8,
   "wpRules": 2
  },
  "calendar": [
@@ -2515,16 +2515,16 @@
       953
      ],
      [
-      77,
-      954
-     ],
-     [
       110,
       955
      ],
      [
       139,
       959
+     ],
+     [
+      166,
+      949
      ],
      [
       212,
@@ -2545,10 +2545,6 @@
      [
       280,
       914
-     ],
-     [
-      314,
-      909
      ],
      [
       356,
@@ -2619,10 +2615,6 @@
       912
      ],
      [
-      860,
-      898
-     ],
-     [
       866,
       891
      ],
@@ -2647,16 +2639,16 @@
       931
      ],
      [
+      998,
+      922
+     ],
+     [
       1027,
       930
      ],
      [
       1046,
       920
-     ],
-     [
-      1074,
-      941
      ],
      [
       1082,
@@ -2691,10 +2683,6 @@
       952
      ],
      [
-      1243,
-      948
-     ],
-     [
       1279,
       954
      ],
@@ -2704,6 +2692,10 @@
      ],
      [
       1327,
+      953
+     ],
+     [
+      1335,
       953
      ],
      [
@@ -2725,10 +2717,6 @@
      [
       1452,
       977
-     ],
-     [
-      1458,
-      975
      ],
      [
       1494,
@@ -2800,10 +2788,6 @@
      ],
      [
       1795,
-      972
-     ],
-     [
-      1795,
       966
      ],
      [
@@ -2828,11 +2812,11 @@
      ],
      [
       1857,
-      988
+      987
      ],
      [
       1857,
-      986
+      988
      ],
      [
       1857,
@@ -2871,15 +2855,15 @@
       991
      ],
      [
-      2172,
-      991
-     ],
-     [
       2202,
       996
      ],
      [
       2209,
+      997
+     ],
+     [
+      2219,
       997
      ],
      [
@@ -2901,10 +2885,6 @@
      [
       2409,
       999
-     ],
-     [
-      2451,
-      998
      ],
      [
       2496,
@@ -2973,10 +2953,30 @@
      [
       2842,
       999
+     ],
+     [
+      2917,
+      999
+     ],
+     [
+      2990,
+      999
+     ],
+     [
+      3018,
+      999
+     ],
+     [
+      3034,
+      998
+     ],
+     [
+      3059,
+      998
      ]
     ],
     "final": false,
-    "detail": "12:38 - 4th",
+    "detail": "9:01 - 4th",
     "homeScore": 49,
     "awayScore": 27,
     "state": "in"
@@ -3222,6 +3222,10 @@
      [
       1218,
       971
+     ],
+     [
+      1251,
+      957
      ]
     ],
     "final": false,
@@ -3249,7 +3253,7 @@
    "awayScore": null,
    "timeValid": true,
    "tv": "CBSSN",
-   "spread": "ORST -7",
+   "spread": "ORST -6.5",
    "overUnder": 51.5,
    "venue": "Reser Stadium",
    "city": "Corvallis, OR",
@@ -3290,7 +3294,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-22T03:31Z",
+   "predAt": "2026-11-22T03:34Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3318,7 +3322,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-22T03:31Z",
+   "predAt": "2026-11-22T03:34Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3346,7 +3350,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-22T03:31Z",
+   "predAt": "2026-11-22T03:34Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -3374,7 +3378,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-22T03:31Z",
+   "predAt": "2026-11-22T03:34Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
