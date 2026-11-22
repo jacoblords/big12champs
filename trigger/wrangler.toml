@@ -22,6 +22,10 @@ SITE = "https://titlepaths.com/"
 # (they don't start this workflow when they end). Gameday Stakes' lists every FBS game; its old
 # address is listed too until the move to gamedaystakes.com is complete (the union is the same).
 EXTRA_LIVE_IDS = "https://gamedaystakes.com/live-ids.json,https://jacoblords.github.io/fan-guide/live-ids.json"
+# Gameday Stakes' workflow, started on its own cadence by the crons below and a few minutes after
+# a game it lists goes final (worker.mjs). GITHUB_TOKEN needs Actions: write on this repo too.
+STAKES_REPO = "jacoblords/fan-guide"
+STAKES_WORKFLOW = "update.yml"
 
 # UTC, like GitHub's. Every 15 minutes Thursday through Sunday (Thursday evening through late
 # Saturday night in US time) and every 30 minutes Monday to Wednesday. A run with nothing due
