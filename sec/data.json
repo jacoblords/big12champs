@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T11:01Z",
+ "fetchedAt": "2026-11-22T16:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-21T16:31Z",
+  "scheduleCheckedAt": "2026-11-22T16:31Z",
   "fpiCheckedAt": "2026-11-22T11:01Z",
   "fpiRun": "2026-11-22T09:00Z",
-  "checkedAt": "2026-11-22T14:16Z",
+  "checkedAt": "2026-11-22T16:31Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-22T11:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-22T16:31Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-22T14:01Z",
   "wpRules": 2
@@ -12018,8 +12018,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "MISS -19.5",
+   "overUnder": 56.5,
    "venue": "Vaught-Hemingway Stadium",
    "city": "Oxford, MS"
   },
@@ -12046,8 +12046,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "FLA -5.5",
+   "overUnder": 53.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
   },
@@ -12074,71 +12074,15 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "TEX -7.5",
-   "overUnder": 41.5,
+   "spread": "TEX -10.5",
+   "overUnder": 38.5,
    "venue": "Kyle Field",
    "city": "College Station, TX"
   },
   {
-   "id": "401856760",
-   "week": 13,
-   "date": "2026-11-28T05:00Z",
-   "home": "61",
-   "away": "59",
-   "homeName": "UGA",
-   "awayName": "GT",
-   "neutral": false,
-   "confFlag": false,
-   "completed": false,
-   "canceled": false,
-   "postponed": false,
-   "winner": null,
-   "homeScore": null,
-   "awayScore": null,
-   "pHome": 0.9834,
-   "predAt": "2026-11-22T11:01Z",
-   "conf": false,
-   "homeFBS": true,
-   "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
-   "venue": "Sanford Stadium",
-   "city": "Athens, GA"
-  },
-  {
-   "id": "401856757",
-   "week": 13,
-   "date": "2026-11-28T05:00Z",
-   "home": "333",
-   "away": "2",
-   "homeName": "ALA",
-   "awayName": "AUB",
-   "neutral": false,
-   "confFlag": true,
-   "completed": false,
-   "canceled": false,
-   "postponed": false,
-   "winner": null,
-   "homeScore": null,
-   "awayScore": null,
-   "pHome": 0.8828,
-   "predAt": "2026-11-22T11:01Z",
-   "conf": true,
-   "homeFBS": true,
-   "awayFBS": true,
-   "timeValid": false,
-   "tv": "ABC",
-   "spread": "ALA -15.5",
-   "overUnder": 50.5,
-   "venue": "Bryant-Denny Stadium",
-   "city": "Tuscaloosa, AL"
-  },
-  {
    "id": "401856761",
    "week": 13,
-   "date": "2026-11-28T05:00Z",
+   "date": "2026-11-28T17:00Z",
    "home": "96",
    "away": "97",
    "homeName": "UK",
@@ -12156,45 +12100,17 @@
    "conf": false,
    "homeFBS": true,
    "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": "UK -1.5",
+   "timeValid": true,
+   "tv": "ESPN2",
+   "spread": "LOU -1.5",
    "overUnder": 54.5,
    "venue": "Kroger Field",
    "city": "Lexington, KY"
   },
   {
-   "id": "401856765",
-   "week": 13,
-   "date": "2026-11-28T05:00Z",
-   "home": "238",
-   "away": "2633",
-   "homeName": "VAN",
-   "awayName": "TENN",
-   "neutral": false,
-   "confFlag": true,
-   "completed": false,
-   "canceled": false,
-   "postponed": false,
-   "winner": null,
-   "homeScore": null,
-   "awayScore": null,
-   "pHome": 0.1227,
-   "predAt": "2026-11-22T11:01Z",
-   "conf": true,
-   "homeFBS": true,
-   "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
-   "venue": "FirstBank Stadium",
-   "city": "Nashville, TN"
-  },
-  {
    "id": "401856758",
    "week": 13,
-   "date": "2026-11-28T05:00Z",
+   "date": "2026-11-28T17:45Z",
    "home": "8",
    "away": "99",
    "homeName": "ARK",
@@ -12212,17 +12128,17 @@
    "conf": true,
    "homeFBS": true,
    "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
+   "timeValid": true,
+   "tv": "SEC Network",
+   "spread": "LSU -13.5",
+   "overUnder": 47.5,
    "venue": "Donald W. Reynolds Razorback Stadium",
    "city": "Fayetteville, AR"
   },
   {
    "id": "401856764",
    "week": 13,
-   "date": "2026-11-28T05:00Z",
+   "date": "2026-11-28T20:00Z",
    "home": "228",
    "away": "2579",
    "homeName": "CLEM",
@@ -12240,12 +12156,40 @@
    "conf": false,
    "homeFBS": true,
    "awayFBS": true,
-   "timeValid": false,
-   "tv": null,
-   "spread": null,
-   "overUnder": null,
+   "timeValid": true,
+   "tv": "ESPN2",
+   "spread": "SC -4",
+   "overUnder": 39.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
+  },
+  {
+   "id": "401856760",
+   "week": 13,
+   "date": "2026-11-28T20:30Z",
+   "home": "61",
+   "away": "59",
+   "homeName": "UGA",
+   "awayName": "GT",
+   "neutral": false,
+   "confFlag": false,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.9834,
+   "predAt": "2026-11-22T11:01Z",
+   "conf": false,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ABC",
+   "spread": null,
+   "overUnder": null,
+   "venue": "Sanford Stadium",
+   "city": "Athens, GA"
   },
   {
    "id": "401856763",
@@ -12271,9 +12215,65 @@
    "timeValid": true,
    "tv": "SEC Network",
    "spread": "MIZ -1.5",
-   "overUnder": 42.5,
+   "overUnder": 41.5,
    "venue": "Memorial Stadium",
    "city": "Columbia, MO"
+  },
+  {
+   "id": "401856765",
+   "week": 13,
+   "date": "2026-11-29T00:00Z",
+   "home": "238",
+   "away": "2633",
+   "homeName": "VAN",
+   "awayName": "TENN",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.1227,
+   "predAt": "2026-11-22T11:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ESPN",
+   "spread": "TENN -13.5",
+   "overUnder": 44.5,
+   "venue": "FirstBank Stadium",
+   "city": "Nashville, TN"
+  },
+  {
+   "id": "401856757",
+   "week": 13,
+   "date": "2026-11-29T00:30Z",
+   "home": "333",
+   "away": "2",
+   "homeName": "ALA",
+   "awayName": "AUB",
+   "neutral": false,
+   "confFlag": true,
+   "completed": false,
+   "canceled": false,
+   "postponed": false,
+   "winner": null,
+   "homeScore": null,
+   "awayScore": null,
+   "pHome": 0.8828,
+   "predAt": "2026-11-22T11:01Z",
+   "conf": true,
+   "homeFBS": true,
+   "awayFBS": true,
+   "timeValid": true,
+   "tv": "ABC",
+   "spread": "ALA -14",
+   "overUnder": 50.5,
+   "venue": "Bryant-Denny Stadium",
+   "city": "Tuscaloosa, AL"
   }
  ],
  "baseline": {
@@ -12374,14 +12374,14 @@
   }
  },
  "exact": {
-  "key": "92382a944f0ec32b",
+  "key": "c49a1f3bffed24d1",
   "gameIds": [
    "401856762",
    "401856756",
-   "401856757",
-   "401856765",
    "401856758",
-   "401856763"
+   "401856763",
+   "401856765",
+   "401856757"
   ],
   "games": 6,
   "budgetSec": 180,
@@ -12398,7 +12398,7 @@
     "eliminated": false,
     "winOutGuaranteed": true,
     "best": {
-     "mask": 37,
+     "mask": 41,
      "prob": 0.251952472635516
     },
     "need": {
@@ -12447,55 +12447,55 @@
    },
    {
     "id": "333",
-    "p": 0.08952950638536239,
+    "p": 0.08952950638536236,
     "first": 0,
-    "pWinOut": 0.10011487576007519,
+    "pWinOut": 0.10011487576007518,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": false,
     "best": {
-     "mask": 36,
-     "prob": 0.03573018623125267
+     "mask": 40,
+     "prob": 0.03573018623125266
     },
     "need": {
-     "games": 31,
-     "homeWins": 4,
+     "games": 55,
+     "homeWins": 32,
      "prob": 0.07096362707299438
     },
     "games": [
      {
       "pH": 0.018565879312368,
-      "pA": 0.5899316367438849,
+      "pA": 0.5899316367438847,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.11545944846000002,
-      "pA": 0.08456104274665681,
+      "pA": 0.08456104274665678,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.1001148757600752,
-      "pA": 0.009796024439999997,
+      "pH": 0.018565879312368,
+      "pA": 0.09928892228016958,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.08838141232099438,
+      "pA": 0.09069378707299434,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0.15131115984000001,
-      "pA": 0.08088866644590721,
+      "pA": 0.08088866644590717,
       "needH": false,
       "needA": false
      },
      {
-      "pH": 0.018565879312368003,
-      "pA": 0.09928892228016961,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.08838141232099439,
-      "pA": 0.09069378707299439,
+      "pH": 0.10011487576007518,
+      "pA": 0.009796024439999997,
       "needH": false,
       "needA": false
      }
@@ -12552,14 +12552,14 @@
    },
    {
     "id": "251",
-    "p": 0.7682363729270056,
+    "p": 0.7682363729270055,
     "first": 0,
-    "pWinOut": 0.9154389572533431,
+    "pWinOut": 0.9154389572533432,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": false,
     "best": {
-     "mask": 37,
+     "mask": 41,
      "prob": 0.251952472635516
     },
     "need": {
@@ -12569,28 +12569,16 @@
     },
     "games": [
      {
-      "pH": 0.8392,
+      "pH": 0.8391999999999998,
       "pA": 0.26783424256848376,
       "needH": false,
       "needA": false
      },
      {
       "pH": 0,
-      "pA": 0.9154389572533433,
+      "pA": 0.9154389572533431,
       "needH": false,
       "needA": true
-     },
-     {
-      "pH": 0.7588152842399247,
-      "pA": 0.8392000000000005,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.8392000000000001,
-      "pA": 0.7583113335540929,
-      "needH": false,
-      "needA": false
      },
      {
       "pH": 0.8392,
@@ -12599,8 +12587,20 @@
       "needA": false
      },
      {
-      "pH": 0.7682363729270056,
+      "pH": 0.7682363729270054,
       "pA": 0.7682363729270056,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.8391999999999998,
+      "pA": 0.7583113335540927,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.7588152842399247,
+      "pA": 0.8391999999999996,
       "needH": false,
       "needA": false
      }
@@ -12610,23 +12610,23 @@
     "id": "2633",
     "p": 0.142234120687632,
     "first": 0,
-    "pWinOut": 0.16080000000000003,
+    "pWinOut": 0.1608,
     "clinched": false,
     "eliminated": false,
     "winOutGuaranteed": false,
     "best": {
-     "mask": 39,
+     "mask": 43,
      "prob": 0.04827687988535626
     },
     "need": {
-     "games": 10,
+     "games": 18,
      "homeWins": 2,
      "prob": 0.14106984
     },
     "games": [
      {
-      "pH": 0.14223412068763203,
-      "pA": 0.14223412068763186,
+      "pH": 0.142234120687632,
+      "pA": 0.14223412068763197,
       "needH": false,
       "needA": false
      },
@@ -12634,18 +12634,6 @@
       "pH": 0.88454055154,
       "pA": 0,
       "needH": true,
-      "needA": false
-     },
-     {
-      "pH": 0.14106984,
-      "pA": 0.15100397555999995,
-      "needH": false,
-      "needA": false
-     },
-     {
-      "pH": 0.009488840159999996,
-      "pA": 0.1608,
-      "needH": false,
       "needA": false
      },
      {
@@ -12657,6 +12645,18 @@
      {
       "pH": 0.143382214752,
       "pA": 0.14106984,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.009488840159999996,
+      "pA": 0.1608,
+      "needH": false,
+      "needA": false
+     },
+     {
+      "pH": 0.14106984,
+      "pA": 0.15100397555999995,
       "needH": false,
       "needA": false
      }
@@ -13202,6 +13202,6 @@
     ]
    }
   ],
-  "computedAt": "2026-11-22T11:01Z"
+  "computedAt": "2026-11-22T16:31Z"
  }
 }
