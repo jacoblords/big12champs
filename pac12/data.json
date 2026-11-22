@@ -49,16 +49,16 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T01:16Z",
+ "fetchedAt": "2026-11-22T01:31Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T08:16Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-21T20:16Z",
   "fpiRun": "2026-11-21T09:00Z",
   "cfpCheckedAt": "2026-11-21T20:16Z",
-  "checkedAt": "2026-11-22T01:16Z",
+  "checkedAt": "2026-11-22T01:31Z",
   "nextResultCheck": "2026-11-22T02:00Z",
-  "updatedAt": "2026-11-22T01:16Z",
+  "updatedAt": "2026-11-22T01:31Z",
   "espnCalls": 6,
   "wpRules": 2
  },
@@ -2088,10 +2088,6 @@
       874
      ],
      [
-      660,
-      867
-     ],
-     [
       661,
       856
      ],
@@ -2332,10 +2328,6 @@
       939
      ],
      [
-      1909,
-      938
-     ],
-     [
       1945,
       933
      ],
@@ -2390,11 +2382,75 @@
      [
       2197,
       954
+     ],
+     [
+      2197,
+      958
+     ],
+     [
+      2197,
+      961
+     ],
+     [
+      2206,
+      964
+     ],
+     [
+      2248,
+      969
+     ],
+     [
+      2286,
+      969
+     ],
+     [
+      2296,
+      979
+     ],
+     [
+      2330,
+      977
+     ],
+     [
+      2373,
+      981
+     ],
+     [
+      2400,
+      970
+     ],
+     [
+      2436,
+      985
+     ],
+     [
+      2475,
+      989
+     ],
+     [
+      2475,
+      990
+     ],
+     [
+      2519,
+      990
+     ],
+     [
+      2548,
+      994
+     ],
+     [
+      2566,
+      994
+     ],
+     [
+      2566,
+      995
      ]
     ],
     "final": false,
-    "detail": "8:23 - 3rd",
-    "homeScore": 21,
+    "detail": "2:02 - 3rd",
+    "homeScore": 28,
     "awayScore": 7,
     "state": "in"
    }
@@ -2539,12 +2595,68 @@
      [
       678,
       937
+     ],
+     [
+      771,
+      934
+     ],
+     [
+      771,
+      933
+     ],
+     [
+      860,
+      906
+     ],
+     [
+      860,
+      914
+     ],
+     [
+      860,
+      912
+     ],
+     [
+      860,
+      898
+     ],
+     [
+      866,
+      891
+     ],
+     [
+      869,
+      907
+     ],
+     [
+      900,
+      906
+     ],
+     [
+      911,
+      911
+     ],
+     [
+      942,
+      915
+     ],
+     [
+      977,
+      931
+     ],
+     [
+      998,
+      922
+     ],
+     [
+      1027,
+      930
      ]
     ],
     "final": false,
-    "detail": "2:09 - 1st",
+    "detail": "12:34 - 2nd",
     "homeScore": 14,
-    "awayScore": 7,
+    "awayScore": 14,
     "state": "in"
    }
   },
@@ -2627,7 +2739,7 @@
    "venue": "Canvas Stadium",
    "city": "Fort Collins, CO",
    "pHome": null,
-   "predAt": "2026-11-22T01:16Z",
+   "predAt": "2026-11-22T01:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -2655,7 +2767,7 @@
    "venue": "Valley Children's Stadium",
    "city": "Fresno, CA",
    "pHome": null,
-   "predAt": "2026-11-22T01:16Z",
+   "predAt": "2026-11-22T01:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -2683,7 +2795,7 @@
    "venue": "Maverik Stadium",
    "city": "Logan, UT",
    "pHome": null,
-   "predAt": "2026-11-22T01:16Z",
+   "predAt": "2026-11-22T01:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
@@ -2711,7 +2823,7 @@
    "venue": "Martin Stadium",
    "city": "Pullman, WA",
    "pHome": null,
-   "predAt": "2026-11-22T01:16Z",
+   "predAt": "2026-11-22T01:31Z",
    "conf": false,
    "homeFBS": true,
    "awayFBS": false
