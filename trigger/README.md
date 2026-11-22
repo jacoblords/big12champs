@@ -38,7 +38,7 @@ data changed. A manual "Run workflow" click in GitHub still rebuilds and deploys
 ## Setup (once)
 
 1. **Token.** On GitHub, open Settings → Developer settings → Fine-grained personal access
-   tokens → Generate new token. Set *Repository access* to only `big12champs`, and under
+   tokens → Generate new token. Set *Repository access* to only `big12champs` and `fan-guide`, and under
    *Repository permissions* set **Actions** to *Read and write* (Metadata: read-only is added
    automatically). Nothing else. Pick an expiration and note it.
 2. **Deploy** from this directory:
