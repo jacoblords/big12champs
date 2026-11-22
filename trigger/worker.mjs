@@ -14,6 +14,13 @@
 //    game go final it starts the workflow once, so the result and the odds land in a minute or
 //    two instead of at the next 15-minute run. It only asks about the games the site lists in its
 //    live-ids.json (the leagues' games not yet final), so nobody can point it at other games.
+//
+// 3. Does the same for Gameday Stakes (STAKES_REPO, jacoblords/fan-guide), whose GitHub schedule
+//    is throttled just the same (on 2026-11-21 it ran at 3:54 and 7:53 PM Mountain and then not
+//    again, so it never heard Utah clinched). Its timer keeps the cadence its own schedule asks for
+//    (stakesDue): each of its runs makes ~124 ESPN calls whether or not anything changed. A final
+//    of any game it lists starts one run STAKES_DELAY_MS later, once Title Paths has redeployed the
+//    odds it reads, and finals close together share that run, at most one every STAKES_GAP_MS.
 
 import { ALLOWED_TTL_MS, LIVE_TTL_MS, allowedIds, parseIds, slim } from "./live.mjs";
 
@@ -22,10 +29,13 @@ const ESPN = "https://site.api.espn.com/apis/site/v2/sports/football/college-foo
 const UA = "titlepaths-live (cloudflare worker; one shared copy per game)";
 const RECENT_MS = 8 * 3600e3; // a final only starts the workflow for a game that kicked off lately
 const FORGET_MS = 12 * 3600e3;
+const STAKES_DELAY_MS = 3 * 60e3; // Title Paths' run takes about 1.5 minutes from dispatch to deploy
+const STAKES_GAP_MS = 10 * 60e3;
 
-async function dispatch(env, fetchFn = fetch) {
+// Title Paths' workflow by default; `to` names another ({ repo, workflow, inputs }).
+async function dispatch(env, fetchFn = fetch, to = { repo: env.REPO, workflow: env.WORKFLOW, inputs: { force: "false" } }) {
   if (!env.GITHUB_TOKEN) throw new Error("GITHUB_TOKEN secret is not set (wrangler secret put GITHUB_TOKEN)");
-  const url = `${API}/repos/${env.REPO}/actions/workflows/${env.WORKFLOW}/dispatches`;
+  const url = `${API}/repos/${to.repo}/actions/workflows/${to.workflow}/dispatches`;
   const res = await fetchFn(url, {
     method: "POST",
     headers: {
@@ -35,14 +45,25 @@ async function dispatch(env, fetchFn = fetch) {
       "User-Agent": "titlepaths-trigger (cloudflare cron)",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ ref: env.REF, inputs: { force: "false" } }),
+    // a workflow refuses inputs it doesn't declare (422), so Gameday Stakes' sends none
+    body: JSON.stringify(to.inputs ? { ref: env.REF, inputs: to.inputs } : { ref: env.REF }),
   });
   // 204 normally; 200 if GitHub ever answers with run details. A failure throws so the
   // Cloudflare dashboard marks the invocation failed and logs why (401 = expired token).
   if (!res.ok) {
     const detail = (await res.text()).slice(0, 300);
-    throw new Error(`GitHub answered ${res.status} to the dispatch: ${detail}`);
+    throw new Error(`GitHub answered ${res.status} to the dispatch of ${to.repo}: ${detail}`);
   }
+}
+
+// Gameday Stakes' workflow, or null when STAKES_REPO isn't set
+const stakes = (env) => (env.STAKES_REPO ? { repo: env.STAKES_REPO, workflow: env.STAKES_WORKFLOW || "update.yml" } : null);
+
+// Whether a timer tick (UTC) is one Gameday Stakes' own schedule would run on: every 30 minutes
+// Thursday to Sunday, every 3 hours Monday to Wednesday.
+function stakesDue(at) {
+  const d = new Date(at), day = d.getUTCDay(), m = d.getUTCMinutes();
+  return [0, 4, 5, 6].includes(day) ? m % 30 === 0 : m === 0 && d.getUTCHours() % 3 === 0;
 }
 
 // One instance (named "live") holds the shared copy of every game being followed.
@@ -78,7 +99,8 @@ export class LiveCache {
 
   // The games /live may ask about: this site's own live-ids.json, plus the lists of the other
   // pages that share this cache (EXTRA_LIVE_IDS, comma-separated https addresses; the Gameday
-  // Guide's covers every FBS game). Only this site's own games start its workflow when they end.
+  // Guide's covers every FBS game). Only this site's own games start its workflow when they end;
+  // a final of any of them starts Gameday Stakes' (stakesSoon).
   async allowedSets(now) {
     const own = `${String(this.env.SITE || "").replace(/\/?$/, "/")}live-ids.json`;
     const extra = String(this.env.EXTRA_LIVE_IDS || "").split(",").map((u) => u.trim()).filter((u) => /^https:\/\/[^\s,]+$/.test(u) && u !== own);
@@ -121,8 +143,32 @@ export class LiveCache {
     }
     const wp = slim(d);
     const kick = Date.parse((((d.header || {}).competitions || [{}])[0] || {}).date || "");
-    if (wp.final && ours && now - kick < RECENT_MS) await this.dispatchOnce(id); // only this site's games
+    if (wp.final && now - kick < RECENT_MS) {
+      if (ours) await this.dispatchOnce(id); // only this site's games
+      await this.stakesSoon(id, now); // Gameday Stakes lists every FBS game, this site's included
+    }
     return wp;
+  }
+
+  // One Gameday Stakes run for this final, STAKES_DELAY_MS from now and STAKES_GAP_MS after the
+  // last; a run already waiting takes this final too.
+  async stakesSoon(id, now) {
+    if (!stakes(this.env)) return;
+    const key = `stakes:${id}`;
+    if (await this.state.storage.get(key)) return;
+    await this.state.storage.put(key, now);
+    if (await this.state.storage.getAlarm()) return;
+    const last = (await this.state.storage.get("stakes:last")) || 0;
+    await this.state.storage.setAlarm(Math.max(now + STAKES_DELAY_MS, last + STAKES_GAP_MS));
+  }
+
+  async alarm() {
+    await this.state.storage.put("stakes:last", this.now());
+    try {
+      await dispatch(this.env, this.fetchFn, stakes(this.env));
+    } catch (e) {
+      console.error(`stakes: ${e.message}`); // its timer run picks the results up anyway
+    }
   }
 
   async dispatchOnce(id) {
@@ -155,9 +201,15 @@ async function handle(request, env) {
 }
 
 export default {
-  async scheduled(_controller, env) {
-    await dispatch(env);
+  // Both sites' runs are started even if one is refused; a refusal still fails the invocation, so
+  // the Cloudflare dashboard shows it.
+  async scheduled(controller, env, _ctx, fetchFn = fetch) {
+    const s = stakes(env);
+    const runs = [dispatch(env, fetchFn), ...(s && stakesDue(controller.scheduledTime) ? [dispatch(env, fetchFn, s)] : [])];
+    const failed = (await Promise.allSettled(runs)).filter((r) => r.status === "rejected");
+    if (failed.length) throw new Error(failed.map((r) => r.reason.message).join("; "));
   },
   fetch: handle,
   dispatch, // for tests/trigger.test.js
+  stakesDue,
 };

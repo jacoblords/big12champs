@@ -19,6 +19,14 @@ A Cloudflare Worker with two jobs:
   minutes. Any other id gets `null` with no ESPN call, nothing cached and no workflow started, so
   a stranger can't use the endpoint to hammer ESPN, fill its memory or queue workflow runs. If the
   list can't be read it keeps the last good one; with none yet, no game is live.
+- **Gameday Stakes:** starts Gameday Stakes' workflow too (`STAKES_REPO`, jacoblords/fan-guide),
+  whose GitHub schedule is throttled the same way: on 2026-11-21 it ran at 3:54 and 7:53 PM
+  Mountain and then not again, so it never heard Utah had clinched. The timer keeps that site's own
+  cadence (every 30 minutes Thursday to Sunday, every 3 hours otherwise), since each of its runs
+  makes ~124 ESPN calls whether or not anything changed. A final of any game it lists starts one
+  run 3 minutes later, after Title Paths has redeployed the odds it reads; finals close together
+  share that run, and runs are at least 10 minutes apart. Its own hourly-ish GitHub schedule stays
+  as the backup.
 
 GitHub's own `schedule:` trigger is best-effort, and in November 2026 it fired only every 4-8
 hours here. Cloudflare cron triggers fire on time and are free. The workflow keeps an hourly
@@ -30,7 +38,7 @@ data changed. A manual "Run workflow" click in GitHub still rebuilds and deploys
 ## Setup (once)
 
 1. **Token.** On GitHub, open Settings → Developer settings → Fine-grained personal access
-   tokens → Generate new token. Set *Repository access* to only `big12champs`, and under
+   tokens → Generate new token. Set *Repository access* to only `big12champs` and `fan-guide`, and under
    *Repository permissions* set **Actions** to *Read and write* (Metadata: read-only is added
    automatically). Nothing else. Pick an expiration and note it.
 2. **Deploy** from this directory:

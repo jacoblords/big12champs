@@ -53,7 +53,7 @@ const espnSummary = ({ final = false, kick = "2026-11-14T03:15Z", home = "35", a
 });
 const LIVE_IDS = "https://site.example/live-ids.json";
 const EXTRA_IDS = "https://other.example/fan-guide/live-ids.json";
-function liveCache({ replies, now, allowed = () => ({ big12: ["401856860", "1", "2"] }), extra = null }) {
+function liveCache({ replies, now, allowed = () => ({ big12: ["401856860", "1", "2"] }), extra = null, stakesEnv = {} }) {
   const calls = [], store = new Map();
   const fetchFn = async (url) => {
     calls.push(url);
@@ -63,9 +63,13 @@ function liveCache({ replies, now, allowed = () => ({ big12: ["401856860", "1", 
     const r = replies(url);
     return r instanceof Response ? r : Response.json(r);
   };
-  const state = { storage: { get: async (k) => store.get(k), put: async (k, v) => { store.set(k, v); } } };
-  const e = extra ? { ...env, EXTRA_LIVE_IDS: `${EXTRA_IDS}, not-a-url` } : env;
-  return lib().then(({ LiveCache }) => ({ cache: new LiveCache(state, e, fetchFn, now), calls }));
+  let alarm = null;
+  const state = { storage: { get: async (k) => store.get(k), put: async (k, v) => { store.set(k, v); },
+    getAlarm: async () => alarm, setAlarm: async (at) => { alarm = at; } } };
+  const e = { ...env, ...(extra ? { EXTRA_LIVE_IDS: `${EXTRA_IDS}, not-a-url` } : {}), ...stakesEnv };
+  // the alarm firing, as Cloudflare does at its time
+  const ring = async (c) => { alarm = null; await c.alarm(); };
+  return lib().then(({ LiveCache }) => { const cache = new LiveCache(state, e, fetchFn, now); return { cache, calls, alarm: () => alarm, ring: () => ring(cache) }; });
 }
 const ask = (cache, ids) => cache.fetch(new Request("https://live/?ids=" + ids)).then((r) => r.json());
 
@@ -201,4 +205,67 @@ test("live endpoint: CORS for titlepaths.com and localhost only, bad requests re
   assert.strictEqual(r.headers.get("Access-Control-Allow-Origin"), null);
   assert.strictEqual((await get("/live?ids=x")).status, 400);
   assert.strictEqual((await get("/")).status, 404);
+});
+
+// ---- Gameday Stakes (jacoblords/fan-guide): its GitHub schedule is throttled too ----
+const STAKES = { STAKES_REPO: "jacoblords/fan-guide", STAKES_WORKFLOW: "update.yml" };
+const STAKES_URL = "https://api.github.com/repos/jacoblords/fan-guide/actions/workflows/update.yml/dispatches";
+
+test("Gameday Stakes is dispatched with no inputs, since its workflow declares none", async () => {
+  const { dispatch } = await load();
+  const calls = [];
+  await dispatch(env, async (url, init) => (calls.push({ url, init }), new Response(null, { status: 204 })), { repo: "jacoblords/fan-guide", workflow: "update.yml" });
+  assert.strictEqual(calls[0].url, STAKES_URL);
+  assert.deepStrictEqual(JSON.parse(calls[0].init.body), { ref: "main" });
+});
+
+test("stakesDue: Gameday Stakes' own cadence, every 30 minutes Thu-Sun and every 3 hours Mon-Wed", async () => {
+  const { stakesDue } = await load();
+  for (const t of ["2026-11-21T02:00Z", "2026-11-21T02:30Z", "2026-11-22T23:30Z", "2026-11-19T00:00Z", "2026-11-24T03:00Z"]) assert.ok(stakesDue(Date.parse(t)), t);
+  for (const t of ["2026-11-21T02:15Z", "2026-11-21T02:45Z", "2026-11-24T03:30Z", "2026-11-24T04:00Z"]) assert.ok(!stakesDue(Date.parse(t)), t);
+});
+
+test("the timer starts Title Paths every tick and Gameday Stakes on its cadence; one refused still runs the other", async () => {
+  const w = await load();
+  const tick = async (at, refuse = "") => {
+    const calls = [];
+    const fetchFn = async (url) => (calls.push(url), new Response(refuse && url.includes(refuse) ? "no" : null, { status: refuse && url.includes(refuse) ? 403 : 204 }));
+    let err = null;
+    try { await w.scheduled({ scheduledTime: Date.parse(at) }, { ...env, ...STAKES }, {}, fetchFn); } catch (e) { err = e; }
+    return { calls, err };
+  };
+  assert.deepStrictEqual((await tick("2026-11-21T02:15Z")).calls.length, 1);
+  const both = await tick("2026-11-21T02:30Z");
+  assert.ok(both.calls.includes(STAKES_URL) && both.calls.length === 2);
+  const r = await tick("2026-11-21T02:30Z", "fan-guide");
+  assert.strictEqual(r.calls.length, 2, "Title Paths still started");
+  assert.match(r.err.message, /403.*fan-guide|fan-guide.*403/);
+  const none = [];
+  await w.scheduled({ scheduledTime: Date.parse("2026-11-21T02:30Z") }, env, {}, async (u) => (none.push(u), new Response(null, { status: 204 })));
+  assert.strictEqual(none.length, 1, "no STAKES_REPO, no Gameday Stakes run");
+});
+
+test("live: finals start one Gameday Stakes run a few minutes later, shared by finals close together", async () => {
+  let t = Date.parse("2026-11-22T05:55Z");
+  const { cache, calls, alarm, ring } = await liveCache({ replies: () => espnSummary({ final: true, kick: "2026-11-22T02:00Z" }), now: () => t,
+    stakesEnv: STAKES, extra: () => ({ fbs: ["777"] }) });
+  const stakesRuns = () => calls.filter((u) => u === STAKES_URL).length;
+  await ask(cache, "401856860");
+  assert.strictEqual(alarm(), t + 3 * 60e3, "after Title Paths has had time to redeploy");
+  assert.strictEqual(stakesRuns(), 0);
+  t += 60e3; await ask(cache, "777"); // another final, only Gameday Stakes lists
+  assert.strictEqual(alarm(), Date.parse("2026-11-22T05:58Z"), "joins the run already waiting");
+  t = alarm(); await ring();
+  assert.strictEqual(stakesRuns(), 1);
+  assert.strictEqual(calls.filter((u) => u.includes("big12champs")).length, 1, "only the Title Paths game started Title Paths");
+  await ask(cache, "401856860");
+  assert.strictEqual(alarm(), null, "a final already counted starts nothing more");
+  cache.games.clear(); t += 60e3; await ask(cache, "1");
+  assert.strictEqual(alarm(), Date.parse("2026-11-22T06:08Z"), "a new final waits out the 10-minute gap");
+});
+
+test("live: without STAKES_REPO a final starts no Gameday Stakes run", async () => {
+  const { cache, alarm } = await liveCache({ replies: () => espnSummary({ final: true }), now: () => Date.parse("2026-11-14T06:50Z") });
+  await ask(cache, "401856860");
+  assert.strictEqual(alarm(), null);
 });
