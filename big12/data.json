@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-22T04:06Z",
+ "fetchedAt": "2026-11-22T04:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-21T16:31Z",
   "fpiCheckedAt": "2026-11-21T22:31Z",
   "fpiRun": "2026-11-21T09:00Z",
-  "checkedAt": "2026-11-22T04:06Z",
+  "checkedAt": "2026-11-22T04:16Z",
   "nextResultCheck": "2026-11-22T05:00Z",
-  "updatedAt": "2026-11-22T04:06Z",
-  "espnCalls": 4,
+  "updatedAt": "2026-11-22T04:16Z",
+  "espnCalls": 3,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-22T02:01Z",
   "wpRules": 2
@@ -9960,11 +9960,11 @@
       320
      ]
     ],
-    "final": false,
-    "detail": "OT",
+    "final": true,
+    "detail": "Final/OT",
     "homeScore": 28,
     "awayScore": 35,
-    "state": "in"
+    "state": "post"
    },
    "moved": {}
   },
@@ -10549,10 +10549,38 @@
      [
       900,
       357
+     ],
+     [
+      910,
+      345
+     ],
+     [
+      914,
+      350
+     ],
+     [
+      939,
+      368
+     ],
+     [
+      951,
+      365
+     ],
+     [
+      982,
+      352
+     ],
+     [
+      986,
+      326
+     ],
+     [
+      998,
+      335
      ]
     ],
     "final": false,
-    "detail": "End of 1st",
+    "detail": "13:22 - 2nd",
     "homeScore": 7,
     "awayScore": 7,
     "state": "in"
