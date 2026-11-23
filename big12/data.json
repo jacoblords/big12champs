@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-23T11:00Z",
+ "fetchedAt": "2026-11-23T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-22T16:31Z",
-  "fpiCheckedAt": "2026-11-23T11:00Z",
+  "scheduleCheckedAt": "2026-11-23T17:00Z",
+  "fpiCheckedAt": "2026-11-23T17:00Z",
   "fpiRun": "2026-11-23T09:00Z",
-  "checkedAt": "2026-11-23T14:30Z",
+  "checkedAt": "2026-11-23T17:00Z",
   "nextResultCheck": "2026-11-27T04:00Z",
-  "updatedAt": "2026-11-23T11:00Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-23T17:00Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-23T14:30Z",
   "wpRules": 2
@@ -11032,7 +11032,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": "TTU -12.5",
+   "spread": "TTU -13.5",
    "overUnder": 47.5,
    "venue": "Galaxy Stadium",
    "city": "Lubbock, TX"
@@ -11060,7 +11060,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Fox",
-   "spread": "UTAH -20.5",
+   "spread": "UTAH -22.5",
    "overUnder": 68.5,
    "venue": "Rice-Eccles Stadium",
    "city": "Salt Lake City, UT"
@@ -11088,8 +11088,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "TNT",
-   "spread": null,
-   "overUnder": null,
+   "spread": "COLO -2.5",
+   "overUnder": 51.5,
    "venue": "Folsom Field",
    "city": "Boulder, CO"
   },
@@ -11116,8 +11116,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN+",
-   "spread": null,
-   "overUnder": null,
+   "spread": "ISU -3.5",
+   "overUnder": 54.5,
    "venue": "Jack Trice Stadium",
    "city": "Ames, IA"
   },
@@ -11144,8 +11144,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Fox",
-   "spread": null,
-   "overUnder": null,
+   "spread": "BYU -15.5",
+   "overUnder": 56.5,
    "venue": "LaVell Edwards Stadium",
    "city": "Provo, UT"
   },
@@ -11172,8 +11172,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": null,
-   "overUnder": null,
+   "spread": "OKST -7",
+   "overUnder": 66.5,
    "venue": "Boone Pickens Stadium",
    "city": "Stillwater, OK"
   },
@@ -11200,8 +11200,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Fox",
-   "spread": null,
-   "overUnder": null,
+   "spread": "ARIZ -8.5",
+   "overUnder": 54.5,
    "venue": "Casino Del Sol Stadium",
    "city": "Tucson, AZ"
   },
@@ -11228,8 +11228,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": null,
-   "overUnder": null,
+   "spread": "HOU -5.5",
+   "overUnder": 55.5,
    "venue": "TDECU Stadium",
    "city": "Houston, TX"
   }

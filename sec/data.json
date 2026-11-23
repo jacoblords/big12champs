@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-23T11:30Z",
+ "fetchedAt": "2026-11-23T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-22T16:31Z",
+  "scheduleCheckedAt": "2026-11-23T17:00Z",
   "fpiCheckedAt": "2026-11-23T11:30Z",
   "fpiRun": "2026-11-23T09:00Z",
-  "checkedAt": "2026-11-23T14:30Z",
+  "checkedAt": "2026-11-23T17:00Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-23T11:30Z",
+  "updatedAt": "2026-11-23T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-23T14:30Z",
@@ -12018,7 +12018,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "MISS -19.5",
+   "spread": "MISS -18.5",
    "overUnder": 56.5,
    "venue": "Vaught-Hemingway Stadium",
    "city": "Oxford, MS"
@@ -12046,8 +12046,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "FLA -5.5",
-   "overUnder": 53.5,
+   "spread": "FLA -6",
+   "overUnder": 52.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
   },
@@ -12074,8 +12074,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "TEX -10.5",
-   "overUnder": 38.5,
+   "spread": "TEX -11.5",
+   "overUnder": 40.5,
    "venue": "Kyle Field",
    "city": "College Station, TX"
   },
@@ -12102,7 +12102,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "LOU -1.5",
+   "spread": "LOU -3",
    "overUnder": 54.5,
    "venue": "Kroger Field",
    "city": "Lexington, KY"
@@ -12130,8 +12130,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "SEC Network",
-   "spread": "LSU -13.5",
-   "overUnder": 47.5,
+   "spread": "LSU -14.5",
+   "overUnder": 48.5,
    "venue": "Donald W. Reynolds Razorback Stadium",
    "city": "Fayetteville, AR"
   },
@@ -12158,8 +12158,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "SC -4",
-   "overUnder": 39.5,
+   "spread": "SC -5.5",
+   "overUnder": 40.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
   },
@@ -12186,8 +12186,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "UGA -35.5",
+   "overUnder": 55.5,
    "venue": "Sanford Stadium",
    "city": "Athens, GA"
   },
@@ -12243,7 +12243,7 @@
    "timeValid": true,
    "tv": "ESPN",
    "spread": "TENN -13.5",
-   "overUnder": 44.5,
+   "overUnder": 43.5,
    "venue": "FirstBank Stadium",
    "city": "Nashville, TN"
   },
@@ -12270,8 +12270,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "ALA -14",
-   "overUnder": 50.5,
+   "spread": "ALA -16.5",
+   "overUnder": 48.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"
   }

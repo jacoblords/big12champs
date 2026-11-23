@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-23T11:30Z",
+ "fetchedAt": "2026-11-23T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-22T16:31Z",
+  "scheduleCheckedAt": "2026-11-23T17:00Z",
   "fpiCheckedAt": "2026-11-23T11:30Z",
   "fpiRun": "2026-11-23T09:00Z",
-  "checkedAt": "2026-11-23T14:30Z",
+  "checkedAt": "2026-11-23T17:00Z",
   "nextResultCheck": "2026-11-27T23:30Z",
-  "updatedAt": "2026-11-23T11:30Z",
+  "updatedAt": "2026-11-23T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-23T14:30Z",
@@ -12076,8 +12076,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "FLA -5.5",
-   "overUnder": 53.5,
+   "spread": "FLA -6",
+   "overUnder": 52.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
   },
@@ -12104,7 +12104,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "LOU -1.5",
+   "spread": "LOU -3",
    "overUnder": 54.5,
    "venue": "Kroger Field",
    "city": "Lexington, KY"
@@ -12132,8 +12132,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": null,
-   "overUnder": null,
+   "spread": "MIA -25.5",
+   "overUnder": 53.5,
    "venue": "Hard Rock Stadium",
    "city": "Miami Gardens, FL"
   },
@@ -12188,7 +12188,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": null,
+   "spread": "UNC -5.5",
    "overUnder": 55.5,
    "venue": "Kenan Stadium",
    "city": "Chapel Hill, NC"
@@ -12216,8 +12216,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "SC -3.5",
-   "overUnder": 42.5,
+   "spread": "SC -5.5",
+   "overUnder": 40.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
   },
@@ -12245,7 +12245,7 @@
    "timeValid": true,
    "tv": "CW",
    "spread": "VT -3",
-   "overUnder": 53.5,
+   "overUnder": 51.5,
    "venue": "Lane Stadium",
    "city": "Blacksburg, VA"
   },
@@ -12272,8 +12272,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": null,
-   "overUnder": null,
+   "spread": "UGA -35.5",
+   "overUnder": 55.5,
    "venue": "Sanford Stadium",
    "city": "Athens, GA"
   },
@@ -12300,8 +12300,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": "WAKE -13.5",
-   "overUnder": 55.5,
+   "spread": "WAKE -14.5",
+   "overUnder": 56.5,
    "venue": "Allegacy Federal Credit Union Stadium",
    "city": "Winston-Salem, NC"
   },
@@ -12328,8 +12328,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "SMU -7.5",
+   "overUnder": 60.5,
    "venue": "Stanford Stadium",
    "city": "Stanford, CA"
   },
@@ -12356,8 +12356,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ACC Network",
-   "spread": null,
-   "overUnder": null,
+   "spread": "PITT -9.5",
+   "overUnder": 47.5,
    "venue": "California Memorial Stadium",
    "city": "Berkeley, CA"
   }

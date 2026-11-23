@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-23T11:30Z",
+ "fetchedAt": "2026-11-23T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-22T16:31Z",
+  "scheduleCheckedAt": "2026-11-23T17:00Z",
   "fpiCheckedAt": "2026-11-23T11:30Z",
   "fpiRun": "2026-11-23T09:00Z",
-  "checkedAt": "2026-11-23T14:30Z",
+  "checkedAt": "2026-11-23T17:00Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-23T11:30Z",
+  "updatedAt": "2026-11-23T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-23T14:30Z",
@@ -12414,8 +12414,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CBS",
-   "spread": "IOWA -6",
-   "overUnder": 38.5,
+   "spread": "IOWA -4.5",
+   "overUnder": 39.5,
    "venue": "Kinnick Stadium",
    "city": "Iowa City, IA"
   },
@@ -12442,8 +12442,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "WIS -6",
-   "overUnder": 38.5,
+   "spread": "WIS -7.5",
+   "overUnder": 37.5,
    "venue": "Camp Randall Stadium",
    "city": "Madison, WI"
   },
@@ -12470,7 +12470,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Fox",
-   "spread": "OSU -11.5",
+   "spread": "OSU -10",
    "overUnder": 38.5,
    "venue": "Ohio Stadium",
    "city": "Columbus, OH"
@@ -12498,8 +12498,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "BTN",
-   "spread": "NU -3.5",
-   "overUnder": 47.5,
+   "spread": "NU -3",
+   "overUnder": 49.5,
    "venue": "Ryan Field",
    "city": "Evanston, IL"
   },
@@ -12527,7 +12527,7 @@
    "timeValid": true,
    "tv": "CBS",
    "spread": "USC -7",
-   "overUnder": 47.5,
+   "overUnder": 46.5,
    "venue": "Rose Bowl",
    "city": "Pasadena, CA"
   },
@@ -12554,8 +12554,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "FS1",
-   "spread": "PSU -7.5",
-   "overUnder": 49.5,
+   "spread": "PSU -7",
+   "overUnder": 50.5,
    "venue": "SECU Stadium",
    "city": "College Park, MD"
   },
@@ -12583,7 +12583,7 @@
    "timeValid": true,
    "tv": "BTN",
    "spread": "MSU -3.5",
-   "overUnder": 48.5,
+   "overUnder": 47.5,
    "venue": "SHI Stadium",
    "city": "Piscataway, NJ"
   },
@@ -12638,7 +12638,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "ORE -12.5",
+   "spread": "ORE -13.5",
    "overUnder": 49.5,
    "venue": "Autzen Stadium",
    "city": "Eugene, OR"
