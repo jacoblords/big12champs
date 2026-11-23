@@ -53,13 +53,13 @@
  "meta": {
   "scheduleCheckedAt": "2026-11-23T08:30Z",
   "scheduleFields": 2,
-  "fpiCheckedAt": "2026-11-23T14:30Z",
+  "fpiCheckedAt": "2026-11-23T20:30Z",
   "fpiRun": "2026-11-23T09:00Z",
-  "cfpCheckedAt": "2026-11-23T14:30Z",
-  "checkedAt": "2026-11-23T17:30Z",
+  "cfpCheckedAt": "2026-11-23T20:30Z",
+  "checkedAt": "2026-11-23T20:30Z",
   "nextResultCheck": "2026-11-29T02:00Z",
   "updatedAt": "2026-11-23T14:30Z",
-  "espnCalls": 0,
+  "espnCalls": 2,
   "wpRules": 2
  },
  "calendar": [
