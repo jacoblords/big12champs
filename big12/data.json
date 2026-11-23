@@ -52,9 +52,9 @@
  "fetchedAt": "2026-11-23T17:00Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-23T17:00Z",
-  "fpiCheckedAt": "2026-11-23T17:00Z",
+  "fpiCheckedAt": "2026-11-23T23:00Z",
   "fpiRun": "2026-11-23T09:00Z",
-  "checkedAt": "2026-11-23T20:30Z",
+  "checkedAt": "2026-11-23T23:00Z",
   "nextResultCheck": "2026-11-27T04:00Z",
   "updatedAt": "2026-11-23T17:00Z",
   "espnCalls": 1,
