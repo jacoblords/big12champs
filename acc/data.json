@@ -52,12 +52,12 @@
  "fetchedAt": "2026-11-22T20:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-22T16:31Z",
-  "fpiCheckedAt": "2026-11-22T23:01Z",
+  "fpiCheckedAt": "2026-11-23T05:30Z",
   "fpiRun": "2026-11-22T09:00Z",
-  "checkedAt": "2026-11-23T05:00Z",
+  "checkedAt": "2026-11-23T05:30Z",
   "nextResultCheck": "2026-11-27T23:30Z",
   "updatedAt": "2026-11-22T20:01Z",
-  "espnCalls": 0,
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-23T02:30Z",
   "wpRules": 2
