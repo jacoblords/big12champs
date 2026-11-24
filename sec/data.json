@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-24T11:30Z",
+ "fetchedAt": "2026-11-24T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-23T17:00Z",
+  "scheduleCheckedAt": "2026-11-24T17:00Z",
   "fpiCheckedAt": "2026-11-24T11:30Z",
   "fpiRun": "2026-11-24T09:00Z",
-  "checkedAt": "2026-11-24T14:30Z",
+  "checkedAt": "2026-11-24T17:00Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-24T11:30Z",
+  "updatedAt": "2026-11-24T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-24T14:30Z",
@@ -12047,7 +12047,7 @@
    "timeValid": true,
    "tv": "ABC",
    "spread": "FLA -6",
-   "overUnder": 52.5,
+   "overUnder": 53.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
   },
@@ -12074,7 +12074,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "TEX -11.5",
+   "spread": "TEX -10.5",
    "overUnder": 40.5,
    "venue": "Kyle Field",
    "city": "College Station, TX"
@@ -12131,7 +12131,7 @@
    "timeValid": true,
    "tv": "SEC Network",
    "spread": "LSU -14.5",
-   "overUnder": 48.5,
+   "overUnder": 49.5,
    "venue": "Donald W. Reynolds Razorback Stadium",
    "city": "Fayetteville, AR"
   },
@@ -12159,7 +12159,7 @@
    "timeValid": true,
    "tv": "ESPN2",
    "spread": "SC -5.5",
-   "overUnder": 40.5,
+   "overUnder": 41.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
   },
@@ -12269,9 +12269,9 @@
    "homeFBS": true,
    "awayFBS": true,
    "timeValid": true,
-   "tv": "ABC",
+   "tv": "ABC/Disney+",
    "spread": "ALA -16.5",
-   "overUnder": 48.5,
+   "overUnder": 49.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"
   }
