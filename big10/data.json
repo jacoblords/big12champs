@@ -54,12 +54,12 @@
   "scheduleCheckedAt": "2026-11-24T17:00Z",
   "fpiCheckedAt": "2026-11-24T17:30Z",
   "fpiRun": "2026-11-24T09:00Z",
-  "checkedAt": "2026-11-24T17:30Z",
+  "checkedAt": "2026-11-24T20:30Z",
   "nextResultCheck": "2026-11-27T20:00Z",
   "updatedAt": "2026-11-24T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
-  "cfpCheckedAt": "2026-11-24T14:30Z",
+  "cfpCheckedAt": "2026-11-24T20:30Z",
   "wpRules": 2
  },
  "calendar": [
