@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-25T11:30Z",
+ "fetchedAt": "2026-11-25T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-24T17:00Z",
+  "scheduleCheckedAt": "2026-11-25T17:00Z",
   "fpiCheckedAt": "2026-11-25T11:30Z",
   "fpiRun": "2026-11-25T09:00Z",
-  "checkedAt": "2026-11-25T14:30Z",
+  "checkedAt": "2026-11-25T17:00Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-25T11:30Z",
+  "updatedAt": "2026-11-25T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-25T14:30Z",
@@ -12471,7 +12471,7 @@
    "timeValid": true,
    "tv": "Fox",
    "spread": "OSU -10.5",
-   "overUnder": 38.5,
+   "overUnder": 37.5,
    "venue": "Ohio Stadium",
    "city": "Columbus, OH"
   },
@@ -12499,7 +12499,7 @@
    "timeValid": true,
    "tv": "BTN",
    "spread": "NU -3",
-   "overUnder": 49.5,
+   "overUnder": 50.5,
    "venue": "Ryan Field",
    "city": "Evanston, IL"
   },
@@ -12555,7 +12555,7 @@
    "timeValid": true,
    "tv": "FS1",
    "spread": "PSU -7",
-   "overUnder": 50.5,
+   "overUnder": 48.5,
    "venue": "SECU Stadium",
    "city": "College Park, MD"
   },
@@ -12583,7 +12583,7 @@
    "timeValid": true,
    "tv": "BTN",
    "spread": "MSU -3.5",
-   "overUnder": 47.5,
+   "overUnder": 46.5,
    "venue": "SHI Stadium",
    "city": "Piscataway, NJ"
   },

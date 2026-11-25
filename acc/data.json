@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-25T11:30Z",
+ "fetchedAt": "2026-11-25T17:00Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-24T17:00Z",
+  "scheduleCheckedAt": "2026-11-25T17:00Z",
   "fpiCheckedAt": "2026-11-25T11:30Z",
   "fpiRun": "2026-11-25T09:00Z",
-  "checkedAt": "2026-11-25T14:30Z",
+  "checkedAt": "2026-11-25T17:00Z",
   "nextResultCheck": "2026-11-27T23:30Z",
-  "updatedAt": "2026-11-25T11:30Z",
+  "updatedAt": "2026-11-25T17:00Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-25T14:30Z",
@@ -12160,8 +12160,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "ND -24.5",
-   "overUnder": 52.5,
+   "spread": "ND -25.5",
+   "overUnder": 53.5,
    "venue": "JMA Wireless Dome",
    "city": "Syracuse, NY"
   },
@@ -12189,7 +12189,7 @@
    "timeValid": true,
    "tv": "ACC Network",
    "spread": "UNC -5.5",
-   "overUnder": 53.5,
+   "overUnder": 54.5,
    "venue": "Kenan Stadium",
    "city": "Chapel Hill, NC"
   },
@@ -12216,7 +12216,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "SC -5.5",
+   "spread": "SC -6",
    "overUnder": 41.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
@@ -12245,7 +12245,7 @@
    "timeValid": true,
    "tv": "CW",
    "spread": "VT -3",
-   "overUnder": 51.5,
+   "overUnder": 50.5,
    "venue": "Lane Stadium",
    "city": "Blacksburg, VA"
   },
@@ -12329,7 +12329,7 @@
    "timeValid": true,
    "tv": "ACC Network",
    "spread": "SMU -7.5",
-   "overUnder": 60.5,
+   "overUnder": 61.5,
    "venue": "Stanford Stadium",
    "city": "Stanford, CA"
   },
