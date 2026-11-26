@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-26T11:31Z",
+ "fetchedAt": "2026-11-26T17:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-25T17:00Z",
+  "scheduleCheckedAt": "2026-11-26T17:01Z",
   "fpiCheckedAt": "2026-11-26T11:31Z",
   "fpiRun": "2026-11-26T09:00Z",
-  "checkedAt": "2026-11-26T14:31Z",
+  "checkedAt": "2026-11-26T17:01Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-26T11:31Z",
+  "updatedAt": "2026-11-26T17:01Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-26T14:31Z",
@@ -12046,7 +12046,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "FLA -6",
+   "spread": "FLA -6.5",
    "overUnder": 53.5,
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL"
@@ -12242,7 +12242,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN",
-   "spread": "TENN -14",
+   "spread": "TENN -13.5",
    "overUnder": 42.5,
    "venue": "FirstBank Stadium",
    "city": "Nashville, TN"
@@ -12270,7 +12270,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC/Disney+",
-   "spread": "ALA -14.5",
+   "spread": "ALA -15.5",
    "overUnder": 49.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"

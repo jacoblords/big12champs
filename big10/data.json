@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-26T11:31Z",
+ "fetchedAt": "2026-11-26T17:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-25T17:00Z",
+  "scheduleCheckedAt": "2026-11-26T17:01Z",
   "fpiCheckedAt": "2026-11-26T11:31Z",
   "fpiRun": "2026-11-26T09:00Z",
-  "checkedAt": "2026-11-26T14:31Z",
+  "checkedAt": "2026-11-26T17:01Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-26T11:31Z",
+  "updatedAt": "2026-11-26T17:01Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-26T14:31Z",
@@ -12442,7 +12442,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "WIS -7.5",
+   "spread": "WIS -8.5",
    "overUnder": 37.5,
    "venue": "Camp Randall Stadium",
    "city": "Madison, WI"
@@ -12498,7 +12498,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "BTN",
-   "spread": "NU -3",
+   "spread": "NU -2.5",
    "overUnder": 50.5,
    "venue": "Ryan Field",
    "city": "Evanston, IL"
@@ -12526,7 +12526,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CBS",
-   "spread": "USC -7",
+   "spread": "USC -6.5",
    "overUnder": 45.5,
    "venue": "Rose Bowl",
    "city": "Pasadena, CA"
@@ -12582,7 +12582,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "BTN",
-   "spread": "MSU -3.5",
+   "spread": "MSU -3",
    "overUnder": 46.5,
    "venue": "SHI Stadium",
    "city": "Piscataway, NJ"
@@ -12610,7 +12610,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "FS1",
-   "spread": "IU -22.5",
+   "spread": "IU -23.5",
    "overUnder": 52.5,
    "venue": "Memorial Stadium (Bloomington, IN)",
    "city": "Bloomington, IN"
@@ -12638,8 +12638,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "ORE -14",
-   "overUnder": 50.5,
+   "spread": "ORE -13.5",
+   "overUnder": 51.5,
    "venue": "Autzen Stadium",
    "city": "Eugene, OR"
   }
