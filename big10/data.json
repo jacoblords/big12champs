@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T11:31Z",
+ "fetchedAt": "2026-11-27T17:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-26T17:01Z",
+  "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T11:31Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-27T14:31Z",
-  "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-27T11:31Z",
+  "checkedAt": "2026-11-27T17:01Z",
+  "nextResultCheck": "2026-11-27T20:08Z",
+  "updatedAt": "2026-11-27T17:01Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T14:31Z",
@@ -12394,7 +12394,7 @@
   {
    "id": "401858536",
    "week": 13,
-   "date": "2026-11-27T17:00Z",
+   "date": "2026-11-27T17:08Z",
    "home": "2294",
    "away": "158",
    "homeName": "IOWA",
@@ -12414,7 +12414,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CBS",
-   "spread": "IOWA -4.5",
+   "spread": "IOWA -3.5",
    "overUnder": 40.5,
    "venue": "Kinnick Stadium",
    "city": "Iowa City, IA"
@@ -12442,7 +12442,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "NBC",
-   "spread": "WIS -8.5",
+   "spread": "WIS -9.5",
    "overUnder": 37.5,
    "venue": "Camp Randall Stadium",
    "city": "Madison, WI"
@@ -12526,8 +12526,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CBS",
-   "spread": "USC -6.5",
-   "overUnder": 45.5,
+   "spread": "USC -4.5",
+   "overUnder": 46.5,
    "venue": "Rose Bowl",
    "city": "Pasadena, CA"
   },
@@ -12554,7 +12554,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "FS1",
-   "spread": "PSU -7",
+   "spread": "PSU -7.5",
    "overUnder": 48.5,
    "venue": "SECU Stadium",
    "city": "College Park, MD"
@@ -12582,7 +12582,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "BTN",
-   "spread": "MSU -3",
+   "spread": "MSU -2.5",
    "overUnder": 46.5,
    "venue": "SHI Stadium",
    "city": "Piscataway, NJ"
@@ -12639,7 +12639,7 @@
    "timeValid": true,
    "tv": "NBC",
    "spread": "ORE -13.5",
-   "overUnder": 51.5,
+   "overUnder": 50.5,
    "venue": "Autzen Stadium",
    "city": "Eugene, OR"
   }
