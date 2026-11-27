@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T02:46Z",
+ "fetchedAt": "2026-11-27T03:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-26T17:01Z",
   "fpiCheckedAt": "2026-11-26T23:01Z",
   "fpiRun": "2026-11-26T09:00Z",
-  "checkedAt": "2026-11-27T02:46Z",
+  "checkedAt": "2026-11-27T03:01Z",
   "nextResultCheck": "2026-11-27T04:00Z",
-  "updatedAt": "2026-11-27T02:46Z",
+  "updatedAt": "2026-11-27T03:01Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T02:31Z",
@@ -11417,10 +11417,30 @@
      [
       1773,
       973
+     ],
+     [
+      1792,
+      974
+     ],
+     [
+      1797,
+      973
+     ],
+     [
+      1797,
+      975
+     ],
+     [
+      1797,
+      975
+     ],
+     [
+      1800,
+      982
      ]
     ],
     "final": false,
-    "detail": "0:19 - 2nd",
+    "detail": "Halftime",
     "homeScore": 27,
     "awayScore": 10,
     "state": "in"
