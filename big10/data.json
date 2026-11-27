@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T17:01Z",
+ "fetchedAt": "2026-11-27T17:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T11:31Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-27T17:01Z",
+  "checkedAt": "2026-11-27T17:16Z",
   "nextResultCheck": "2026-11-27T20:08Z",
-  "updatedAt": "2026-11-27T17:01Z",
+  "updatedAt": "2026-11-27T17:16Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T14:31Z",
@@ -12417,7 +12417,44 @@
    "spread": "IOWA -3.5",
    "overUnder": 40.5,
    "venue": "Kinnick Stadium",
-   "city": "Iowa City, IA"
+   "city": "Iowa City, IA",
+   "wp": {
+    "pts": [
+     [
+      4,
+      593
+     ],
+     [
+      11,
+      583
+     ],
+     [
+      49,
+      605
+     ],
+     [
+      83,
+      591
+     ],
+     [
+      123,
+      582
+     ],
+     [
+      157,
+      560
+     ],
+     [
+      164,
+      567
+     ]
+    ],
+    "final": false,
+    "detail": "12:16 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
+   }
   },
   {
    "id": "401858544",
