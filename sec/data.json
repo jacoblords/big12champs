@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T20:31Z",
+ "fetchedAt": "2026-11-27T21:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T17:31Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-27T20:31Z",
+  "checkedAt": "2026-11-27T21:01Z",
   "nextResultCheck": "2026-11-27T23:30Z",
-  "updatedAt": "2026-11-27T20:31Z",
-  "espnCalls": 4,
+  "updatedAt": "2026-11-27T21:01Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T20:31Z",
   "wpRules": 2
@@ -12550,12 +12550,89 @@
    "venue": "Doak Campbell Stadium",
    "city": "Tallahassee, FL",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      368
+     ],
+     [
+      7,
+      355
+     ],
+     [
+      15,
+      360
+     ],
+     [
+      46,
+      325
+     ],
+     [
+      67,
+      312
+     ],
+     [
+      72,
+      316
+     ],
+     [
+      101,
+      330
+     ],
+     [
+      132,
+      360
+     ],
+     [
+      137,
+      354
+     ],
+     [
+      143,
+      351
+     ],
+     [
+      179,
+      384
+     ],
+     [
+      205,
+      385
+     ],
+     [
+      238,
+      384
+     ],
+     [
+      271,
+      347
+     ],
+     [
+      309,
+      353
+     ],
+     [
+      315,
+      355
+     ],
+     [
+      347,
+      365
+     ],
+     [
+      383,
+      342
+     ],
+     [
+      411,
+      251
+     ]
+    ],
     "final": false,
-    "detail": "11/27 - 3:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "8:08 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
