@@ -49,17 +49,17 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T17:01Z",
+ "fetchedAt": "2026-11-27T20:31Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T17:31Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-27T20:16Z",
+  "checkedAt": "2026-11-27T20:31Z",
   "nextResultCheck": "2026-11-27T23:30Z",
-  "updatedAt": "2026-11-27T17:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-27T20:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
-  "cfpCheckedAt": "2026-11-27T14:31Z",
+  "cfpCheckedAt": "2026-11-27T20:31Z",
   "wpRules": 2
  },
  "calendar": [
@@ -12079,7 +12079,15 @@
    "spread": "FLA -6.5",
    "overUnder": 54.5,
    "venue": "Doak Campbell Stadium",
-   "city": "Tallahassee, FL"
+   "city": "Tallahassee, FL",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/27 - 3:30 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856761",
