@@ -51,15 +51,15 @@
  "season": 2026,
  "fetchedAt": "2026-11-26T14:31Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-26T08:31Z",
+  "scheduleCheckedAt": "2026-11-27T08:31Z",
   "scheduleFields": 2,
-  "fpiCheckedAt": "2026-11-27T02:31Z",
+  "fpiCheckedAt": "2026-11-27T08:31Z",
   "fpiRun": "2026-11-26T09:00Z",
-  "cfpCheckedAt": "2026-11-27T02:31Z",
-  "checkedAt": "2026-11-27T05:31Z",
+  "cfpCheckedAt": "2026-11-27T08:31Z",
+  "checkedAt": "2026-11-27T08:31Z",
   "nextResultCheck": "2026-11-29T02:00Z",
   "updatedAt": "2026-11-26T14:31Z",
-  "espnCalls": 0,
+  "espnCalls": 3,
   "wpRules": 2
  },
  "calendar": [
