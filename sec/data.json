@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T17:46Z",
+ "fetchedAt": "2026-11-27T18:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T17:31Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-27T17:46Z",
+  "checkedAt": "2026-11-27T18:01Z",
   "nextResultCheck": "2026-11-27T20:00Z",
-  "updatedAt": "2026-11-27T17:46Z",
+  "updatedAt": "2026-11-27T18:01Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T14:31Z",
@@ -12187,12 +12187,56 @@
      [
       915,
       892
+     ],
+     [
+      953,
+      893
+     ],
+     [
+      959,
+      886
+     ],
+     [
+      970,
+      889
+     ],
+     [
+      999,
+      864
+     ],
+     [
+      1040,
+      870
+     ],
+     [
+      1051,
+      862
+     ],
+     [
+      1078,
+      858
+     ],
+     [
+      1119,
+      805
+     ],
+     [
+      1146,
+      818
+     ],
+     [
+      1180,
+      827
+     ],
+     [
+      1186,
+      766
      ]
     ],
     "final": false,
-    "detail": "14:45 - 2nd",
+    "detail": "10:14 - 2nd",
     "homeScore": 3,
-    "awayScore": 0,
+    "awayScore": 7,
     "state": "in"
    }
   },
