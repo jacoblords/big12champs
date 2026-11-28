@@ -128,6 +128,27 @@ bare domain pointing at GitHub Pages (185.199.108-111.153) and a `www` CNAME to
   ([`trigger/`](trigger/README.md)), which keeps one shared copy per game, so ESPN is asked once
   per game per 30 seconds however many people are watching. When the worker sees a game go final
   it starts the update workflow, so the result and the odds land a minute or two later.
+- **Title weekend:** every league's championship game on one page, `/title-weekend/`, built by
+  [`title_weekend.py`](title_weekend.py) from the five leagues' `data.json` after their steps (no
+  ESPN calls of its own) into the template [`title.html`](title.html). Each game is a poster in its
+  two teams' colors (the first team takes its alternate color when the two are too alike, and a very
+  light one is darkened so white type reads): the conference's logo and the game's own name
+  ("Edward Jones Big 12 Championship"), kickoff, TV, the line, ESPN's win odds, and once it kicks off
+  its live score and win-probability chart, refreshed from the live-scores worker as on the gameday
+  pages. Below it, a tale of the tape from each team's finished games (records, scoring, wins over
+  the CFP Top 25, FPI, CFP rank, the better of each pair marked), the last five results, their
+  regular-season meeting if they had one, common opponents, and ESPN's season leaders. The seeds
+  show once the exact odds settle them; a matchup still to be set lists the teams still in the
+  running, linked to their paths. As games go final the winner is crowned on its card and in a
+  champions row up top. Each gameday page's week strip ends in a Title games button to the league's
+  game there, in place of the title games' own week, once ESPN lists the game.
+
+  The fetcher keeps each league's title game in `data.title`, apart from `data.games`, so it never
+  counts in the standings or the odds. It is read from ESPN's FBS scoreboard (group 80), since a game
+  whose teams are TBD isn't listed under its conference, from the start of the last regular-season
+  week until it is final: once a day for the kickoff, TV and line; every run while its teams are TBD
+  after the league's last game; and every run from kickoff + 3h until final. Its prediction, live
+  chart and result follow the games' rules, and `live-ids.json` lists it while it can be under way.
 - **CFP rankings:** the committee's latest Top 25 (ESPN's `rankings`, the `cfp` entry, not the AP
   poll) goes in `data.cfp` by ESPN team id, and the page puts the rank before a ranked team's
   name: picker, team header, path, standings, rooting guide, and gameday's race and game cards
@@ -157,6 +178,7 @@ A game that isn't final yet is simply asked about again on the next run:
 | FPI | every 6 hours, until it has run once after the last regular-season game (then frozen: the tiebreak uses it as of that weekend) | 1 |
 | Predictions | when ESPN's FPI run changes, or a game has none yet | 1 per unplayed game |
 | Win probability, live score | this week's games from kickoff until ESPN calls them final, every run; a game ESPN calls final has its week's scoreboard read in the same run, so its result lands then instead of at kickoff + 3h; if the scoreboard hasn't caught up yet (it can lag the game summary by minutes), the result is taken from the summary's final score | 1 per game under way |
+| Title game | from the last regular-season week until final: daily, every run while TBD after the league's last game, and every run from kickoff + 3h; its prediction and live chart as for the games | 1 |
 | CFP rankings | every 6 hours, until the season is over and the selection-day ranking is in | 1 |
 | Teams, logos, calendar | once | ~34 |
 
@@ -235,6 +257,8 @@ python3 -m unittest discover -s tests       # fetcher caching rules against a fa
 - `tests/page.test.js`: renders every team from `app.html` against a stub DOM, including
   what-ifs, the simulation fallback and escaping of ESPN-supplied text.
 - `tests/test_fetch.py`: which ESPN calls happen when, using a fake ESPN.
+- `tests/title.test.js` and `tests/test_title_weekend.py`: the title weekend page's rendering
+  (order, posters, tale of the tape, a TBD matchup, live and final games, escaping) and its build.
 - `tests/test_archive.py`: history copies restore byte for byte, and the odds log.
 
 `.github/workflows/ci.yml` runs all of this on every pull request, then builds the site

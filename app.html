@@ -162,6 +162,8 @@ button { font: inherit; color: inherit; }
 .wk-strip a:hover { border-color: var(--muted); }
 .wk-strip a.now { box-shadow: inset 0 -2px 0 var(--accent); }
 .wk-strip a[aria-current] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+/* the title weekend page, where the title games' week would be */
+.wk-strip a.tw { padding-inline: 12px; font-family: var(--display); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; border-color: var(--ink); white-space: nowrap; }
 /* in-game win probability */
 .wp { display: grid; gap: 2px; border-top: 1px solid var(--line); padding-top: 8px; }
 .wp-lab { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -1114,6 +1116,15 @@ function slateFor(games, mode) {
   return { order: [...own.map((g) => ({ g, dim: false })), ...moving.map(({ g }) => ({ g, dim: false })), ...rest.map((g) => ({ g, dim: true }))], note };
 }
 // the week strip: every week with league games, the shown one marked, this week flagged
+// After the last week, in place of the title games' own week (which has no league games of its
+// own), a button to the title weekend page; once ESPN lists the league's title game.
+function titleChip() {
+  const g = DATA.title;
+  if (!g || typeof g !== "object") return "";
+  const up = "../".repeat((LG.path.match(/\//g) || []).length + 1);
+  const now = WEEK && WEEK.week === g.week;
+  return `<a href="${up}title-weekend/#${esc(LEAGUE_ID)}" class="tw${now ? " now" : ""}" title="Every conference title game on one page">Title games${now ? `<span class="vh"> (this week)</span>` : ""}</a>`;
+}
 function weekStrip() {
   if (WEEKS.length < 2) return "";
   const day = (iso) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -1122,7 +1133,7 @@ function weekStrip() {
     const dates = `${day(c.start)} to ${day(new Date(new Date(c.end).getTime() - 1).toISOString())}`;
     return `<a href="#week=${c.week}" data-wk="${c.week}"${cur ? ' aria-current="true"' : ""}${now ? ' class="now"' : ""} title="Week ${c.week}: ${dates}"><span class="vh">Week </span>${c.week}${now ? `<span class="vh"> (this week)</span>` : ""}</a>`;
   }).join("");
-  return `<nav class="gd-weeks" aria-label="Weeks"><span class="lbl" aria-hidden="true">Week</span><div class="wk-strip">${chips}</div></nav>`;
+  return `<nav class="gd-weeks" aria-label="Weeks"><span class="lbl" aria-hidden="true">Week</span><div class="wk-strip">${chips}${titleChip()}</div></nav>`;
 }
 function renderGameday() {
   const games = viewWeek == null ? [] : gamesOf(viewWeek), mode = viewMode(), W = weekOdds();

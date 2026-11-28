@@ -45,6 +45,9 @@ jobs:
             --prev tests/fixtures/big10-season-2026-11-10.json --data-out "$RUNNER_TEMP/data-big10.json" --site site --artifact ''
           python fetch_data.py --league pac12 --offline --force-build --prev tests/fixtures/pac12-season-2026-11-13.json \
             --data-out "$RUNNER_TEMP/data-pac12.json" --site site --artifact ''
+          # the title weekend page, from the five leagues' data (these snapshots predate the title
+          # games, so it builds with none listed)
+          python title_weekend.py site
 
       - name: Built pages parse and carry exact odds
         run: |
@@ -86,4 +89,12 @@ jobs:
               if (Math.abs(total - 2) > 1e-9) throw new Error(dir + ": title-game odds sum to " + total);
               console.log("ok:", dir, d.exact.finishes, "finishes");
             }
+            // the title weekend page: one script, its own data with every league
+            const tw = fs.readFileSync("site/title-weekend/index.html", "utf8");
+            const twScripts = [...tw.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+            if (twScripts.length !== 1) throw new Error("title-weekend: expected 1 script, found " + twScripts.length);
+            new vm.Script(twScripts[0]);
+            const twd = JSON.parse(fs.readFileSync("site/title-weekend/page-data.json", "utf8"));
+            if (twd.leagues.map((l) => l.id).join() !== "big12,sec,acc,big10,pac12") throw new Error("title-weekend: leagues " + twd.leagues.map((l) => l.id));
+            console.log("ok: site/title-weekend");
           '

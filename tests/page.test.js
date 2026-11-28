@@ -1673,3 +1673,19 @@ test("team page: no chart without a usable trend.json; the gameday page doesn't 
   await settle(); await settle();
   assert.ok(!asked.includes("trend.json"));
 });
+
+test("gameday: the week strip ends in a Title games button once ESPN lists the title game", async () => {
+  const wk = gameday();
+  let { els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) });
+  await settle();
+  assert.doesNotMatch(els.gameday.innerHTML, /Title games/, "no title game yet, no button");
+  wk.title = { id: "401869533", week: 14, date: "2026-12-05T01:00Z", home: wk.teams[0].id, away: wk.teams[1].id, tbd: false };
+  ({ els } = renderGameday(wk, { Date: clockAt(FRIDAY_WK12) }));
+  await settle();
+  const strip = els.gameday.innerHTML.match(/<div class="wk-strip">([\s\S]*?)<\/div><\/nav>/)[1];
+  assert.match(strip, /<a href="\.\.\/title-weekend\/#big12" class="tw"[^>]*>Title games<\/a>$/, "last in the strip, to this league's game");
+  // in title week it's this week's
+  ({ els } = renderGameday(wk, { Date: clockAt("2026-12-02T18:00Z") }));
+  await settle();
+  assert.match(els.gameday.innerHTML, /class="tw now"[^>]*>Title games<span class="vh"> \(this week\)<\/span>/);
+});
