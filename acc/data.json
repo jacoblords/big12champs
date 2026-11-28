@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T18:31Z",
+ "fetchedAt": "2026-11-28T18:46Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T18:31Z",
+  "checkedAt": "2026-11-28T18:46Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T18:31Z",
+  "updatedAt": "2026-11-28T18:46Z",
   "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
@@ -12673,10 +12673,6 @@
       574
      ],
      [
-      451,
-      538
-     ],
-     [
       461,
       612
      ],
@@ -13292,10 +13288,50 @@
      [
       1709,
       999
+     ],
+     [
+      1714,
+      999
+     ],
+     [
+      1714,
+      999
+     ],
+     [
+      1720,
+      999
+     ],
+     [
+      1731,
+      999
+     ],
+     [
+      1750,
+      999
+     ],
+     [
+      1758,
+      999
+     ],
+     [
+      1765,
+      999
+     ],
+     [
+      1771,
+      999
+     ],
+     [
+      1774,
+      999
+     ],
+     [
+      1800,
+      999
      ]
     ],
     "final": false,
-    "detail": "1:31 - 2nd",
+    "detail": "Halftime",
     "homeScore": 28,
     "awayScore": 3,
     "state": "in"
@@ -13637,12 +13673,40 @@
      [
       1755,
       9
+     ],
+     [
+      1766,
+      5
+     ],
+     [
+      1766,
+      5
+     ],
+     [
+      1772,
+      5
+     ],
+     [
+      1779,
+      2
+     ],
+     [
+      1779,
+      2
+     ],
+     [
+      1779,
+      2
+     ],
+     [
+      1800,
+      1
      ]
     ],
     "final": false,
-    "detail": "0:34 - 2nd",
+    "detail": "Halftime",
     "homeScore": 10,
-    "awayScore": 28,
+    "awayScore": 35,
     "state": "in"
    }
   },
@@ -14037,7 +14101,7 @@
      ]
     ],
     "final": false,
-    "detail": "End of 2nd",
+    "detail": "Halftime",
     "homeScore": 14,
     "awayScore": 6,
     "state": "in"
