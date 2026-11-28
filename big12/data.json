@@ -49,17 +49,17 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T02:01Z",
+ "fetchedAt": "2026-11-28T02:31Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T23:01Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-28T02:16Z",
+  "checkedAt": "2026-11-28T02:31Z",
   "nextResultCheck": "2026-11-28T05:00Z",
-  "updatedAt": "2026-11-28T02:01Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-28T02:31Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
-  "cfpCheckedAt": "2026-11-27T20:31Z",
+  "cfpCheckedAt": "2026-11-28T02:31Z",
   "wpRules": 2
  },
  "calendar": [
@@ -11564,12 +11564,77 @@
    "venue": "Rice-Eccles Stadium",
    "city": "Salt Lake City, UT",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      932
+     ],
+     [
+      3,
+      936
+     ],
+     [
+      12,
+      939
+     ],
+     [
+      32,
+      945
+     ],
+     [
+      68,
+      948
+     ],
+     [
+      75,
+      944
+     ],
+     [
+      108,
+      943
+     ],
+     [
+      139,
+      955
+     ],
+     [
+      162,
+      955
+     ],
+     [
+      197,
+      952
+     ],
+     [
+      231,
+      962
+     ],
+     [
+      240,
+      964
+     ],
+     [
+      262,
+      958
+     ],
+     [
+      286,
+      960
+     ],
+     [
+      311,
+      962
+     ],
+     [
+      323,
+      965
+     ]
+    ],
     "final": false,
-    "detail": "11/27 - 9:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "9:08 - 1st",
+    "homeScore": 7,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
