@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-27T17:01Z",
+ "fetchedAt": "2026-11-28T02:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T23:01Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-28T01:46Z",
+  "checkedAt": "2026-11-28T02:01Z",
   "nextResultCheck": "2026-11-28T05:00Z",
-  "updatedAt": "2026-11-27T17:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-28T02:01Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T20:31Z",
   "wpRules": 2
@@ -11562,7 +11562,15 @@
    "spread": "UTAH -25.5",
    "overUnder": 65.5,
    "venue": "Rice-Eccles Stadium",
-   "city": "Salt Lake City, UT"
+   "city": "Salt Lake City, UT",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/27 - 9:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856875",
