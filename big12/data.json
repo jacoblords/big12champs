@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T19:01Z",
+ "fetchedAt": "2026-11-28T19:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:01Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T19:01Z",
+  "checkedAt": "2026-11-28T19:16Z",
   "nextResultCheck": "2026-11-28T22:00Z",
-  "updatedAt": "2026-11-28T19:01Z",
+  "updatedAt": "2026-11-28T19:16Z",
   "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
@@ -12083,12 +12083,77 @@
    "venue": "Folsom Field",
    "city": "Boulder, CO",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      4,
+      487
+     ],
+     [
+      4,
+      499
+     ],
+     [
+      12,
+      499
+     ],
+     [
+      44,
+      486
+     ],
+     [
+      81,
+      463
+     ],
+     [
+      119,
+      452
+     ],
+     [
+      154,
+      461
+     ],
+     [
+      190,
+      501
+     ],
+     [
+      232,
+      494
+     ],
+     [
+      242,
+      508
+     ],
+     [
+      269,
+      502
+     ],
+     [
+      299,
+      503
+     ],
+     [
+      334,
+      529
+     ],
+     [
+      366,
+      536
+     ],
+     [
+      381,
+      574
+     ],
+     [
+      388,
+      561
+     ]
+    ],
     "final": false,
-    "detail": "11/28 - 2:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "8:32 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -12119,12 +12184,73 @@
    "venue": "Jack Trice Stadium",
    "city": "Ames, IA",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      5,
+      574
+     ],
+     [
+      13,
+      578
+     ],
+     [
+      32,
+      574
+     ],
+     [
+      68,
+      608
+     ],
+     [
+      110,
+      591
+     ],
+     [
+      118,
+      648
+     ],
+     [
+      134,
+      651
+     ],
+     [
+      182,
+      651
+     ],
+     [
+      213,
+      650
+     ],
+     [
+      222,
+      663
+     ],
+     [
+      262,
+      631
+     ],
+     [
+      307,
+      598
+     ],
+     [
+      346,
+      579
+     ],
+     [
+      350,
+      547
+     ],
+     [
+      350,
+      546
+     ]
+    ],
     "final": false,
-    "detail": "11/28 - 2:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "9:10 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
