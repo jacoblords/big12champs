@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T11:31Z",
+ "fetchedAt": "2026-11-28T17:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-27T17:01Z",
+  "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T11:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T14:31Z",
+  "checkedAt": "2026-11-28T17:01Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T11:31Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-28T17:01Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
   "wpRules": 2
@@ -13596,7 +13596,15 @@
    "spread": "LOU -3",
    "overUnder": 53.5,
    "venue": "Kroger Field",
-   "city": "Lexington, KY"
+   "city": "Lexington, KY",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856758",
@@ -13622,7 +13630,7 @@
    "timeValid": true,
    "tv": "SEC Network",
    "spread": "LSU -14.5",
-   "overUnder": 49.5,
+   "overUnder": 50.5,
    "venue": "Donald W. Reynolds Razorback Stadium",
    "city": "Fayetteville, AR"
   },
@@ -13649,7 +13657,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "SC -6.5",
+   "spread": "SC -7",
    "overUnder": 42.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
@@ -13677,7 +13685,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "UGA -35.5",
+   "spread": "UGA -36.5",
    "overUnder": 55.5,
    "venue": "Sanford Stadium",
    "city": "Athens, GA"
@@ -13734,7 +13742,7 @@
    "timeValid": true,
    "tv": "ESPN",
    "spread": "TENN -13.5",
-   "overUnder": 43.5,
+   "overUnder": 42.5,
    "venue": "FirstBank Stadium",
    "city": "Nashville, TN"
   },
@@ -13761,8 +13769,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC/Disney+",
-   "spread": "ALA -14.5",
-   "overUnder": 50.5,
+   "spread": "ALA -14",
+   "overUnder": 51.5,
    "venue": "Bryant-Denny Stadium",
    "city": "Tuscaloosa, AL"
   }

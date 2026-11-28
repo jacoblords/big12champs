@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T11:31Z",
+ "fetchedAt": "2026-11-28T17:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-27T17:01Z",
+  "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T11:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T14:31Z",
+  "checkedAt": "2026-11-28T17:01Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T11:31Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-28T17:01Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
   "wpRules": 2
@@ -13480,10 +13480,18 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "Fox",
-   "spread": "OSU -10.5",
+   "spread": "OSU -10",
    "overUnder": 37.5,
    "venue": "Ohio Stadium",
-   "city": "Columbus, OH"
+   "city": "Columbus, OH",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401858537",
@@ -13508,8 +13516,8 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "BTN",
-   "spread": "NU -3.5",
-   "overUnder": 48.5,
+   "spread": "NU -5.5",
+   "overUnder": 47.5,
    "venue": "Ryan Field",
    "city": "Evanston, IL"
   },
@@ -13537,7 +13545,7 @@
    "timeValid": true,
    "tv": "CBS",
    "spread": "USC -4.5",
-   "overUnder": 46.5,
+   "overUnder": 45.5,
    "venue": "Rose Bowl",
    "city": "Pasadena, CA"
   },
@@ -13565,7 +13573,7 @@
    "timeValid": true,
    "tv": "FS1",
    "spread": "PSU -7.5",
-   "overUnder": 48.5,
+   "overUnder": 47.5,
    "venue": "SECU Stadium",
    "city": "College Park, MD"
   },

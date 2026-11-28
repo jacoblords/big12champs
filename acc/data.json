@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T11:31Z",
+ "fetchedAt": "2026-11-28T17:01Z",
  "meta": {
-  "scheduleCheckedAt": "2026-11-27T17:01Z",
+  "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T11:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T14:31Z",
+  "checkedAt": "2026-11-28T17:01Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T11:31Z",
-  "espnCalls": 1,
+  "updatedAt": "2026-11-28T17:01Z",
+  "espnCalls": 5,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
   "wpRules": 2
@@ -12596,7 +12596,15 @@
    "spread": "LOU -3",
    "overUnder": 53.5,
    "venue": "Kroger Field",
-   "city": "Lexington, KY"
+   "city": "Lexington, KY",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401858311",
@@ -12622,9 +12630,17 @@
    "timeValid": true,
    "tv": "ESPN",
    "spread": "MIA -24.5",
-   "overUnder": 53.5,
+   "overUnder": 54.5,
    "venue": "Hard Rock Stadium",
-   "city": "Miami Gardens, FL"
+   "city": "Miami Gardens, FL",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401858314",
@@ -12649,10 +12665,18 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "ND -25.5",
+   "spread": "ND -24.5",
    "overUnder": 53.5,
    "venue": "JMA Wireless Dome",
-   "city": "Syracuse, NY"
+   "city": "Syracuse, NY",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401858313",
@@ -12678,9 +12702,17 @@
    "timeValid": true,
    "tv": "ACC Network",
    "spread": "UNC -5.5",
-   "overUnder": 53.5,
+   "overUnder": 52.5,
    "venue": "Kenan Stadium",
-   "city": "Chapel Hill, NC"
+   "city": "Chapel Hill, NC",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856764",
@@ -12705,7 +12737,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ESPN2",
-   "spread": "SC -6.5",
+   "spread": "SC -7",
    "overUnder": 42.5,
    "venue": "Memorial Stadium (Clemson, SC)",
    "city": "Clemson, SC"
@@ -12733,7 +12765,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "CW",
-   "spread": "VT -3",
+   "spread": "VT -2.5",
    "overUnder": 50.5,
    "venue": "Lane Stadium",
    "city": "Blacksburg, VA"
@@ -12761,7 +12793,7 @@
    "awayFBS": true,
    "timeValid": true,
    "tv": "ABC",
-   "spread": "UGA -35.5",
+   "spread": "UGA -36.5",
    "overUnder": 55.5,
    "venue": "Sanford Stadium",
    "city": "Athens, GA"
@@ -12818,7 +12850,7 @@
    "timeValid": true,
    "tv": "ACC Network",
    "spread": "SMU -7.5",
-   "overUnder": 60.5,
+   "overUnder": 59.5,
    "venue": "Stanford Stadium",
    "city": "Stanford, CA"
   },
