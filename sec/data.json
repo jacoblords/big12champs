@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T00:31Z",
+ "fetchedAt": "2026-11-28T00:46Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-27T17:01Z",
   "fpiCheckedAt": "2026-11-27T23:31Z",
   "fpiRun": "2026-11-27T09:00Z",
-  "checkedAt": "2026-11-28T00:31Z",
+  "checkedAt": "2026-11-28T00:46Z",
   "nextResultCheck": "2026-11-28T03:30Z",
-  "updatedAt": "2026-11-28T00:31Z",
+  "updatedAt": "2026-11-28T00:46Z",
   "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-27T20:31Z",
@@ -13067,12 +13067,21 @@
    "venue": "Kyle Field",
    "city": "College Station, TX",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      170
+     ],
+     [
+      9,
+      172
+     ]
+    ],
     "final": false,
-    "detail": "11/27 - 7:30 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "14:51 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
