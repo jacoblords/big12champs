@@ -1473,6 +1473,7 @@ test("gameday: a game under way shows ESPN's clock, the score and its win-probab
   assert.match(live, /role="img" aria-label="ESPN win probability: ISU 18%, UCF 82%"/);
   assert.match(live, /<polyline points="0\.0,48\.0 100\.0,28\.0 166\.7,65\.6"/, "home odds downward, a 60-minute axis");
   assert.match(live, /Title-game odds/, "stakes stay up while it's being played");
+  assert.doesNotMatch(live, /Has the ball/, "no possession reported: no ball");
   assert.match(fin, /Final/);
   assert.match(fin, /class="gc-team won">.*Utah.*27/);
   assert.match(fin, />OT</, "overtime gets its own stretch of the axis");
@@ -1688,4 +1689,18 @@ test("gameday: the week strip ends in a Title games button once ESPN lists the t
   ({ els } = renderGameday(wk, { Date: clockAt("2026-12-02T18:00Z") }));
   await settle();
   assert.match(els.gameday.innerHTML, /class="tw now"[^>]*>Title games<span class="vh"> \(this week\)<\/span>/);
+});
+
+test("gameday: a football marks the team with the ball in a game under way, and nowhere once it's over", async () => {
+  const wk = gameday();
+  const [g0, g1] = wk.games.filter((g) => g.week === 12);
+  g0.wp = { pts: [[0, 600], [1200, 350]], final: false, detail: "3rd 4:12", homeScore: 21, awayScore: 14, state: "in", possession: g0.away };
+  g1.wp = { pts: [[0, 300], [3600, 0]], final: true, detail: "Final", homeScore: 20, awayScore: 27, state: "post", possession: g1.home };
+  const { els } = renderGameday(wk, { Date: clockAt("2026-11-21T08:00Z") });
+  await settle();
+  const card = (g) => els.gameday.innerHTML.split("<article").find((c) => c.includes("gameId/" + g.id));
+  const rows = card(g0).split('<div class="gc-team');
+  assert.match(rows[1], /Has the ball/, "the away team, listed first");
+  assert.doesNotMatch(rows[2], /Has the ball/);
+  assert.doesNotMatch(card(g1), /Has the ball/);
 });

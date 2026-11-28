@@ -135,6 +135,14 @@ test("a game under way: live status, its score, the win-probability chart, and t
   assert.match(card, new RegExp(`aria-label="ESPN win probability: ${T[4].abbr} 80%, ${T[5].abbr} 20%"`));
   assert.match(els.sched.innerHTML, /class="w live"/);
   assert.deepEqual([...vm.runInContext("view.liveIds()", sandbox)], ["t-sec"]);
+  assert.doesNotMatch(card, /Has the ball/);
+  g.wp.possession = g.home;
+  const again = render(d, { now: "2026-12-05T18:30Z" });
+  await settle();
+  const sides = again.els.games.innerHTML.split("<article").find((c) => c.includes('id="sec"')).split('<div class="side ');
+  assert.match(sides[1], /Has the ball/, "the home team, the #1 seed, shown first");
+  assert.doesNotMatch(sides[2], /Has the ball/);
+  assert.match(again.els.sched.innerHTML, /Has the ball/);
 });
 
 test("ESPN-supplied text is escaped", async () => {

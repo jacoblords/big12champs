@@ -49,7 +49,7 @@ const espnSummary = ({ final = false, kick = "2026-11-14T03:15Z", home = "35", a
   drives: { previous: [{ plays: Array.from({ length: n }, (_, k) => ({ id: "p" + k, period: { number: 1 + Math.floor((4 * k) / n) }, clock: { displayValue: "7:30" } })) }] },
   winprobability: Array.from({ length: n }, (_, k) => ({ playId: "p" + k, homeWinPercentage: 0.5 + k / (2 * n) })),
   header: { competitions: [{ date: kick, status: { type: { completed: final, state: final ? "post" : "in", shortDetail: final ? "Final" : "10:00 - 4th" } },
-    competitors: [{ homeAway: "home", score: home }, { homeAway: "away", score: away }] }] },
+    competitors: [{ homeAway: "home", id: "254", score: home, possession: !final }, { homeAway: "away", id: "2641", score: away, possession: false }] }] },
 });
 const LIVE_IDS = "https://site.example/live-ids.json";
 const EXTRA_IDS = "https://other.example/fan-guide/live-ids.json";
@@ -76,10 +76,11 @@ const ask = (cache, ids) => cache.fetch(new Request("https://live/?ids=" + ids))
 test("slim: ESPN's summary cut to a game card's chart, score and clock, as fetch_data.py stores it", async () => {
   const { slim, WP_POINTS } = await lib();
   assert.deepStrictEqual(slim(espnSummary()), {
-    pts: [[450, 500], [1350, 667], [2250, 833]], final: false, detail: "10:00 - 4th", homeScore: 35, awayScore: 26, state: "in",
+    pts: [[450, 500], [1350, 667], [2250, 833]], final: false, detail: "10:00 - 4th", homeScore: 35, awayScore: 26, state: "in", possession: "254",
   });
+  assert.strictEqual(slim(espnSummary({ final: true })).possession, null, "nobody has the ball once it's over");
   assert.strictEqual(slim(espnSummary({ n: 500 })).pts.length, WP_POINTS);
-  assert.deepStrictEqual(slim({}), { pts: [], final: false, detail: null, homeScore: null, awayScore: null, state: null });
+  assert.deepStrictEqual(slim({}), { pts: [], final: false, detail: null, homeScore: null, awayScore: null, state: null, possession: null });
 });
 
 test("slim: plays ESPN files out of place are dropped, the same ones fetch_data.py drops", async () => {
