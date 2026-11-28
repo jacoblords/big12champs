@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T17:01Z",
+ "fetchedAt": "2026-11-28T17:16Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T11:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T17:01Z",
+  "checkedAt": "2026-11-28T17:16Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T17:01Z",
-  "espnCalls": 2,
+  "updatedAt": "2026-11-28T17:16Z",
+  "espnCalls": 1,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
   "wpRules": 2
@@ -13598,12 +13598,69 @@
    "venue": "Kroger Field",
    "city": "Lexington, KY",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      7,
+      346
+     ],
+     [
+      15,
+      337
+     ],
+     [
+      50,
+      327
+     ],
+     [
+      82,
+      323
+     ],
+     [
+      113,
+      347
+     ],
+     [
+      153,
+      372
+     ],
+     [
+      155,
+      395
+     ],
+     [
+      162,
+      399
+     ],
+     [
+      195,
+      424
+     ],
+     [
+      214,
+      415
+     ],
+     [
+      261,
+      478
+     ],
+     [
+      280,
+      465
+     ],
+     [
+      319,
+      465
+     ],
+     [
+      358,
+      533
+     ]
+    ],
     "final": false,
-    "detail": "11/28 - 12:00 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "9:02 - 1st",
+    "homeScore": 6,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
