@@ -49,15 +49,15 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T17:49Z",
+ "fetchedAt": "2026-11-28T19:01Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:01Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T18:46Z",
+  "checkedAt": "2026-11-28T19:01Z",
   "nextResultCheck": "2026-11-28T22:00Z",
-  "updatedAt": "2026-11-28T17:49Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-28T19:01Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
   "wpRules": 2,
@@ -12081,7 +12081,15 @@
    "spread": "COLO -2.5",
    "overUnder": 45.5,
    "venue": "Folsom Field",
-   "city": "Boulder, CO"
+   "city": "Boulder, CO",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 2:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856878",
@@ -12109,7 +12117,15 @@
    "spread": "ISU -5.5",
    "overUnder": 51.5,
    "venue": "Jack Trice Stadium",
-   "city": "Ames, IA"
+   "city": "Ames, IA",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 2:00 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856876",
