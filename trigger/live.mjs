@@ -58,8 +58,11 @@ export function slim(d) {
   const stype = (comp.status || {}).type || {};
   const score = Object.fromEntries((comp.competitors || []).map((c) => [c.homeAway, c.score]));
   const num = (v) => (v == null || v === "" || !Number.isFinite(parseFloat(v)) ? null : Math.trunc(parseFloat(v)));
+  // the team with the ball, while the game is on (ESPN marks neither between a score and the kickoff)
+  const ball = stype.state === "in" ? (comp.competitors || []).find((c) => c.possession === true) : null;
   return { pts, final: !!stype.completed, detail: stype.shortDetail || null, homeScore: num(score.home), awayScore: num(score.away),
-    state: stype.state || null }; // ESPN's "pre", "in" or "post": a game can sit at "pre" past its kickoff time
+    state: stype.state || null, // ESPN's "pre", "in" or "post": a game can sit at "pre" past its kickoff time
+    possession: ball && /^\d{1,12}$/.test(String(ball.id)) ? String(ball.id) : null };
 }
 
 export const parseIds = (s) => {

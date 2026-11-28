@@ -357,10 +357,14 @@ def fetch_winprob(gid):
     stype = (comp.get("status") or {}).get("type") or {}
     score = {c.get("homeAway"): c.get("score") for c in comp.get("competitors") or []}
     num = lambda v: int(float(v)) if v not in (None, "") else None
+    # the team with the ball while the game is on, as the live-scores worker reports it (live.mjs)
+    ball = next((str(c.get("id")) for c in comp.get("competitors") or [] if c.get("possession") is True), None) \
+        if stype.get("state") == "in" else None
     return gid, {"pts": pts, "final": bool(stype.get("completed")), "detail": stype.get("shortDetail"),
                  "homeScore": num(score.get("home")), "awayScore": num(score.get("away")),
                  # ESPN's "pre", "in" or "post": a game can sit at "pre" past its kickoff time
-                 "state": stype.get("state") or None}
+                 "state": stype.get("state") or None,
+                 "possession": ball if ball and re.fullmatch(r"\d{1,12}", ball) else None}
 
 
 def live_url():

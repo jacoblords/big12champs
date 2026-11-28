@@ -209,6 +209,10 @@ a { color: var(--accent); }
 .wp-q { position: relative; height: 1.2em; font-size: 0.68rem; color: var(--muted); }
 .wp-q span { position: absolute; transform: translateX(-50%); }
 footer { padding-block: 30px 40px; font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+/* the team with the ball, in a game under way */
+.ball { display: inline-block; width: 1.15em; height: 0.75em; margin-left: 0.4em; vertical-align: -0.05em; flex: none; }
+.side .nm .ball { width: 0.62em; height: 0.4em; vertical-align: 0.15em; margin-left: 0.25em; }
+.slot .m .ball { margin-left: 0.25em; }
 </style>
 
 <div class="wrap" id="page" aria-busy="true">
@@ -229,6 +233,10 @@ footer { padding-block: 30px 40px; font-size: 0.85rem; color: var(--muted); disp
 // the live-scores worker (trigger/worker.mjs), from the LIVE_URL build setting; "" means none
 const LIVE_URL = /*__LIVE__*/"";
 const $ = (id) => document.getElementById(id);
+// The team with the ball in a game under way: a small football by its name (ESPN's summary, via
+// the live-scores worker). Outlined in white so it reads on a team color too.
+const BALL = `<svg class="ball" viewBox="0 0 22 14" role="img" aria-label="Has the ball"><title>Has the ball</title><ellipse cx="11" cy="7" rx="10" ry="6" fill="#8a4b22" stroke="#fff" stroke-width="1.2"/><path d="M7 7h8M9 5.4v3.2M11 5.4v3.2M13 5.4v3.2" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg>`;
+const isPossession = (v) => v == null || (typeof v === "string" && /^\d{1,12}$/.test(v));
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const safeColor = (c) => (/^#[0-9a-fA-F]{6}$/.test(c || "") ? c : /^#[0-9a-fA-F]{3}$/.test(c || "") ? "#" + c.slice(1).replace(/./g, "$&$&") : "#666666");
 // logos: files the build wrote under logos/, or inlined; nothing else is rendered
@@ -323,7 +331,7 @@ function app(DATA) {
       const g = l.title, S = sides(l), [as, hs] = score(g), w = winnerOf(g);
       const sc = (s) => (s.home ? hs : as);
       const status = done(g) ? `Final` : liveNow(g) ? `<span class="dot" aria-hidden="true"></span>${esc((wp(g) || {}).detail || "Live")}` : `${time(g)}${g.tv ? " · " + esc(g.tv) : ""}`;
-      const tm = (s) => `<span class="${w && w !== s.id ? "lost" : ""}">${s.t ? img(s.t.logo) : ""}${esc(s.abbr)}${(done(g) || liveNow(g)) && sc(s) != null ? ` ${sc(s)}` : ""}</span>`;
+      const tm = (s) => `<span class="${w && w !== s.id ? "lost" : ""}">${s.t ? img(s.t.logo) : ""}${esc(s.abbr)}${liveNow(g) && (wp(g) || {}).possession === s.id ? BALL : ""}${(done(g) || liveNow(g)) && sc(s) != null ? ` ${sc(s)}` : ""}</span>`;
       return `<a class="slot" href="#${esc(l.id)}">${themed(l)}<span class="m">${tm(S[0])}<span class="v">vs</span>${tm(S[1])}</span><span class="w${liveNow(g) ? " live" : ""}">${status}</span></a>`;
     }).join("")}</div></div>`).join("");
 
@@ -344,7 +352,7 @@ function app(DATA) {
       : `${new Date(g.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", ...(g.timeValid === false ? { timeZone: "UTC" } : {}) })} · ${time(g)}${g.tv ? " · " + esc(g.tv) : ""}`;
     const rec = (s) => s.season ? `${s.season.w}-${s.season.l} · ${s.season.cw}-${s.season.cl} ${esc(l.name)}` : "";
     const side = (s, cls) => `<div class="side ${cls}${final && w && w !== s.id ? " lost" : ""}"><span class="disk">${s.t ? img(s.t.logo) : ""}</span>
-      <span class="nm">${rk(l, s.id)}${esc(s.name)}</span><span class="sub">${s.seed ? `<span class="seed">#${s.seed}</span>` : ""}${rec(s)}</span></div>`;
+      <span class="nm">${rk(l, s.id)}${esc(s.name)}${live && (wp(g) || {}).possession === s.id ? BALL : ""}</span><span class="sub">${s.seed ? `<span class="seed">#${s.seed}</span>` : ""}${rec(s)}</span></div>`;
     const mid = (final || live) && as != null && hs != null
       ? `<span class="sc"><span class="${final && w !== A.id ? "lo" : ""}">${sc(A)}</span>&ndash;<span class="${final && w !== B.id ? "lo" : ""}">${sc(B)}</span></span>`
       : `<span class="vs">VS</span>`;
@@ -519,7 +527,7 @@ const isWp = (w) => !!w && typeof w === "object" && Array.isArray(w.pts) && w.pt
   && w.pts.every((p) => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite))
   && ["homeScore", "awayScore"].every((k) => w[k] === null || Number.isInteger(w[k]))
   && (w.detail === null || typeof w.detail === "string") && typeof w.final === "boolean"
-  && (w.state == null || ["pre", "in", "post"].includes(w.state));
+  && (w.state == null || ["pre", "in", "post"].includes(w.state)) && isPossession(w.possession);
 function applyLive(d, byId) {
   for (const l of d.leagues) {
     const g = l.title, w = g && byId[g.id];
