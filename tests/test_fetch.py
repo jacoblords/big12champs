@@ -56,6 +56,7 @@ class FakeESPN:
         self.final = final
         self.summary_final = final if summary_final is None else summary_final
         self.rank_calls = 0
+        self.title = None  # the league's title game on the FBS scoreboard (title_event)
         # ESPN's rankings: the AP poll, then the CFP committee's, ranking the fixture's first two teams
         t = FIXTURE["teams"]
         self.rankings = {"rankings": [
@@ -68,6 +69,8 @@ class FakeESPN:
             self.summaries.append(url.split("event=")[1])
             return summary(self.summary_final)
         self.urls.append(url)
+        if "/scoreboard" in url and "groups=80" in url:  # the FBS scoreboard: title games
+            return {"events": [self.title] if self.title else []}
         if "/scoreboard" in url:
             week = int(url.split("week=")[1].split("&")[0])
             return scoreboard([g for g in FIXTURE["games"] if g["week"] == week], final=self.final)
@@ -85,6 +88,28 @@ class FakeESPN:
 
 
 PNG = "data:image/png;base64,iVBORw0KGgo="
+TITLE_KICK = "2026-12-05T01:00Z"
+
+
+def title_event(home="0", away="1", final=False, headline="Edward Jones Big 12 Championship"):
+    """The title game as ESPN's FBS scoreboard lists it: the fixture's teams by index, or "TBD"
+    (ESPN's ids -1 and -2), with each team's season leaders."""
+    t = FIXTURE["teams"]
+    def side(where, k):
+        if k == "TBD":
+            return {"homeAway": where, "team": {"id": "-1" if where == "home" else "-2", "abbreviation": "TBD"}, "score": "0"}
+        tm = t[int(k)]
+        return {"homeAway": where, "team": {"id": tm["id"], "abbreviation": tm["abbr"]}, "winner": final and where == "home",
+                "score": ("27" if where == "home" else "20") if final else "0",
+                "leaders": [{"name": "passingLeader", "leaders": [{"displayValue": "2928 YDS, 29 TD",
+                             "athlete": {"displayName": f"{tm['abbr']} Passer", "position": {"abbreviation": "QB"}}}]},
+                            {"name": "passingYards", "leaders": [{"displayValue": "ignored"}]}]}
+    status = {"name": "STATUS_FINAL", "completed": True} if final else {"name": "STATUS_SCHEDULED", "completed": False}
+    return {"id": "401869533", "date": TITLE_KICK, "competitions": [{
+        "status": {"type": status}, "neutralSite": True, "conferenceCompetition": False, "notes": [{"type": "event", "headline": headline}],
+        "type": {"id": "41", "abbreviation": "Conference Championship"}, "timeValid": True, "broadcasts": [{"names": ["ABC"]}],
+        "odds": [{"details": "UTAH -2.5", "overUnder": 59.5}], "venue": {"fullName": "AT&T Stadium", "address": {"city": "Arlington", "state": "TX"}},
+        "competitors": [side("home", home), side("away", away)]}]}
 
 
 def first_kickoff():
@@ -287,6 +312,8 @@ class FetchTests(unittest.TestCase):
         prev["meta"].update(scheduleCheckedAt=F.iso(now - dt.timedelta(hours=1)),
                             fpiCheckedAt=F.iso(now - dt.timedelta(hours=7)), fpiRun=F.iso(fpi_run(last)),
                             cfpCheckedAt=F.iso(now - dt.timedelta(hours=1)))
+        # its title game already played: nothing more to read about it
+        prev["title"] = {**F.read_event(title_event(final=True), 14), "tbd": False, "name": "Big 12 Championship", "leaders": {}}
         return prev, now
 
     def test_fpi_frozen_once_it_has_run_after_the_last_game(self):
@@ -334,6 +361,90 @@ class FetchTests(unittest.TestCase):
             F.write_live_ids(root, "acc", {"games": games})
             self.assertEqual(json.loads((root / "live-ids.json").read_text()), {"acc": ["1"]})
 
+
+    def title_calls(self, fake):
+        return [u for u in fake.urls if "groups=80" in u]
+
+    def test_title_game_is_read_from_the_last_regular_season_week_on_then_daily(self):
+        """Kept apart from the games, so it never counts in the standings or the odds."""
+        fake = FakeESPN()
+        fake.title = title_event()
+        early = F.parse("2026-11-18T18:00Z")  # week 12: not yet
+        self.run_fetch(self.fresh_prev(early), early, fake)
+        self.assertEqual(self.title_calls(fake), [])
+        now = F.parse("2026-11-24T18:00Z")  # week 13, the last with league games
+        fake = FakeESPN()
+        fake.title = title_event()
+        written, _ = self.run_fetch(self.fresh_prev(now), now, fake)
+        self.assertEqual(len(self.title_calls(fake)), 1)
+        self.assertIn("week=14", self.title_calls(fake)[0])
+        t = written["title"]
+        teams = FIXTURE["teams"]
+        self.assertEqual((t["home"], t["away"], t["tbd"], t["name"]), (teams[0]["id"], teams[1]["id"], False, "Edward Jones Big 12 Championship"))
+        self.assertEqual((t["tv"], t["spread"], t["venue"], t["city"]), ("ABC", "UTAH -2.5", "AT&T Stadium", "Arlington, TX"))
+        self.assertEqual(t["leaders"][teams[0]["id"]], [{"cat": "Passing", "name": f"{teams[0]['abbr']} Passer", "pos": "QB", "line": "2928 YDS, 29 TD"}])
+        self.assertEqual(t["pHome"], 0.61, "ESPN's prediction once both teams are known")
+        self.assertNotIn(t["id"], [g["id"] for g in written["games"]])
+        self.assertIn(t["id"], self.live_ids["big12"], "the live worker may ask about it")
+        # an hour later: not again; a day later: again (kickoff, TV and line move)
+        fake = FakeESPN()
+        fake.title = title_event()
+        later, _ = self.run_fetch(written, now + dt.timedelta(hours=1), fake)
+        self.assertEqual(self.title_calls(fake), [])
+        fake = FakeESPN()
+        fake.title = title_event()
+        self.run_fetch(written, now + dt.timedelta(hours=25), fake)
+        self.assertEqual(len(self.title_calls(fake)), 1)
+
+    def test_a_tbd_title_game_is_read_every_run_once_the_leagues_games_are_in(self):
+        now = F.parse("2026-11-29T18:00Z")
+        prev = self.fresh_prev(now)
+        for g in prev["games"]:
+            if not g["completed"]:
+                g.update(completed=True, winner=g["home"], homeScore=30, awayScore=20, pHome=None)
+        prev["meta"]["fpiRun"] = "2026-11-29T12:00Z"
+        prev["meta"]["cfpCheckedAt"] = F.iso(now)
+        fake = FakeESPN(fpi_run="2026-11-29T12:00Z")
+        fake.title = title_event("TBD", "TBD", headline="Big 12 Championship")
+        written, _ = self.run_fetch(prev, now, fake)
+        self.assertTrue(written["title"]["tbd"])
+        self.assertNotIn(written["title"]["id"], self.live_ids["big12"], "nothing live to ask about yet")
+        self.assertFalse(any("/predictor" in u for u in fake.urls))
+        fake = FakeESPN(fpi_run="2026-11-29T12:00Z")
+        fake.title = title_event()
+        written, _ = self.run_fetch(written, now + dt.timedelta(minutes=15), fake)
+        self.assertEqual(len(self.title_calls(fake)), 1, "15 minutes on, read again: the matchup is set")
+        self.assertFalse(written["title"]["tbd"])
+
+    def test_title_game_live_then_final_then_left_alone(self):
+        kick = F.parse(TITLE_KICK)
+        prev = self.fresh_prev(kick)
+        for g in prev["games"]:
+            if not g["completed"]:
+                g.update(completed=True, winner=g["home"], homeScore=30, awayScore=20, pHome=None)
+        fake = FakeESPN()
+        fake.title = title_event()
+        written, _ = self.run_fetch(prev, kick - dt.timedelta(hours=2), fake)
+        self.assertEqual(fake.summaries, [])
+        # under way: its chart each run, and the result from the summary once that says final
+        fake = FakeESPN(summary_final=False)
+        fake.title = title_event()
+        written, _ = self.run_fetch(written, kick + dt.timedelta(hours=1), fake)
+        self.assertEqual(fake.summaries, ["401869533"])
+        self.assertEqual(written["title"]["wp"]["detail"], "3rd 7:30")
+        self.assertEqual(written["title"]["spread"], "UTAH -2.5")
+        fake = FakeESPN(summary_final=True)
+        fake.title = title_event()
+        fake.title["competitions"][0]["odds"] = []  # ESPN drops the line at kickoff
+        written, _ = self.run_fetch(written, kick + dt.timedelta(hours=3, minutes=30), fake)
+        t = written["title"]
+        self.assertEqual((t["completed"], t["winner"], t["homeScore"], t["awayScore"]), (True, FIXTURE["teams"][0]["id"], 24, 10))
+        self.assertEqual(t["spread"], "UTAH -2.5", "keeps its last line")
+        self.assertNotIn(t["id"], self.live_ids["big12"])
+        fake = FakeESPN()
+        fake.title = title_event(final=True)
+        self.run_fetch(written, kick + dt.timedelta(days=1), fake)
+        self.assertEqual((self.title_calls(fake), fake.summaries), ([], []))
 
     def test_dark_logos_backfilled_once_for_older_data(self):
         now = first_kickoff() - dt.timedelta(hours=1)

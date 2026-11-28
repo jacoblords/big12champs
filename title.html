@@ -1,0 +1,575 @@
+<meta charset="utf-8">
+<title>Title Weekend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Title weekend: every league's championship game on one page. The league pages' sheet (tokens,
+   type, header), with each game as a poster in its two teams' colors. */
+:root {
+  --bg: #f3f4f7; --surface: #ffffff; --sunk: #e9ebf0; --ink: #141820; --muted: #5d6576; --line: #d9dde5;
+  --accent: #1c48c9; --accent-soft: #e3e9fb; --win: #11795a; --win-soft: #dcf1e9; --loss: #b8322a; --gold: #b07d12; --gold-soft: #f8eed6;
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
+    --accent: #85a6ff; --accent-soft: #1d2846; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --gold: #e8bb55; --gold-soft: #33290f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1016; --surface: #151a22; --sunk: #1c222c; --ink: #e7eaf0; --muted: #97a0b1; --line: #29303c;
+  --accent: #85a6ff; --accent-soft: #1d2846; --win: #44c99a; --win-soft: #13302a; --loss: #ff8173; --gold: #e8bb55; --gold-soft: #33290f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+.logo-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-light { display: none; }
+  :root:not([data-theme="light"]) .logo-dark { display: inline; }
+}
+:root[data-theme="dark"] .logo-light { display: none; }
+:root[data-theme="dark"] .logo-dark { display: inline; }
+html { scrollbar-gutter: stable; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap[aria-busy="true"] { visibility: hidden; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.85rem; color: var(--muted); }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rk { font-family: var(--display); font-weight: 600; font-size: 0.78em; opacity: 0.8; margin-right: 0.3em; font-variant-numeric: tabular-nums; }
+
+/* header: the league pages' quiet strip, each league's link going to its gameday page */
+.top { padding-block: 28px 18px; display: grid; gap: 8px; }
+.top h1 { font-size: clamp(2.6rem, 7vw, 4.2rem); text-transform: uppercase; font-weight: 800; }
+.top p { margin: 0; max-width: 70ch; color: var(--muted); }
+.topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 18px; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+.leagues { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.leagues a { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.leagues a:hover { color: var(--ink); }
+.leagues a img { height: 18px; width: auto; max-width: 30px; object-fit: contain; }
+@media (max-width: 440px) { .leagues { column-gap: 12px; } .leagues a { gap: 5px; letter-spacing: 0.04em; } }
+@media (max-width: 359px) { .leagues { column-gap: 10px; } .leagues a { gap: 4px; font-size: 0.85rem; } .leagues a img { height: 16px; max-width: 26px; } }
+/* the five conference logos lead the headline */
+.titlerow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.marks { display: flex; align-items: center; gap: 12px; padding-right: 18px; border-right: 3px solid var(--ink); align-self: stretch; }
+.marks img { height: clamp(26px, 5vw, 40px); width: auto; max-width: 64px; object-fit: contain; }
+@media (max-width: 560px) { .marks { border-right: 0; padding-right: 0; order: 2; } }
+
+/* the weekend at a glance: every kickoff, by day */
+.sched { display: grid; gap: 10px; padding-bottom: 22px; }
+.day { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 8px 12px; align-items: start; }
+.day h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding-top: 10px; }
+.day .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+@media (max-width: 560px) { .day { grid-template-columns: minmax(0, 1fr); } .day h2 { padding-top: 0; } }
+.slot { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 8px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: var(--ink); text-decoration: none; transition: border-color .15s; }
+.slot:hover { border-color: var(--muted); }
+.slot > img { width: 26px; height: 26px; object-fit: contain; }
+.slot .m { display: flex; align-items: center; gap: 6px; font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; min-width: 0; white-space: nowrap; overflow: hidden; }
+.slot .m img { width: 18px; height: 18px; object-fit: contain; }
+.slot .m .v { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
+.slot .m .lost { opacity: 0.5; }
+.slot .w { font-size: 0.8rem; color: var(--muted); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.slot .w.live { color: var(--loss); font-weight: 600; }
+.dot { display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%; background: var(--loss); vertical-align: 1px; animation: pulse 1s ease-in-out infinite alternate; }
+@keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
+
+/* champions, as each game goes final */
+.champs { display: grid; gap: 10px; padding: 16px 18px; margin-bottom: 22px; border-radius: 14px; background: var(--gold-soft); border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent); }
+.champs h2 { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); }
+.champs .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.champ { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 10px; align-items: center; padding: 6px 10px; border-radius: 10px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.champ img.t { grid-row: span 2; width: 40px; height: 40px; object-fit: contain; }
+.champ b { font-family: var(--display); font-size: 1.15rem; letter-spacing: 0.03em; line-height: 1; }
+.champ span { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.champ.tbd { background: transparent; border: 1px dashed color-mix(in srgb, var(--gold) 45%, transparent); }
+.champ.tbd .t { opacity: 0.35; filter: grayscale(1); }
+
+/* a title game: a poster in the two teams' colors, then the details on the page's own surface */
+.games { display: grid; gap: 28px; padding-bottom: 10px; }
+.tg { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; scroll-margin-top: 16px; }
+.band { position: relative; display: grid; gap: 14px; padding: 16px 20px 20px; color: #fff;
+  background: linear-gradient(100deg, var(--ca) 0 calc(50% - 1px), rgb(255 255 255 / 0.85) calc(50% - 1px) calc(50% + 1px), var(--cb) calc(50% + 1px) 100%); }
+/* a soft shade over both halves so white type and the league mark read on any team color */
+.band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 0.28), rgb(0 0 0 / 0.05) 45%, rgb(0 0 0 / 0.3)); pointer-events: none; }
+.band > * { position: relative; }
+.band.tbd { --ca: #39414f; --cb: #39414f; background: linear-gradient(100deg, #2b3240, #4a5365); }
+.bhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 14px; }
+.lgm { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.lgm .chip { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 4px 9px; background: #fff; border-radius: 8px; flex: none; }
+.lgm .chip img { height: 24px; width: auto; max-width: 56px; object-fit: contain; }
+.lgm h2 { font-size: clamp(1.15rem, 3vw, 1.45rem); text-transform: uppercase; letter-spacing: 0.05em; text-shadow: 0 1px 2px rgb(0 0 0 / 0.35); }
+.bwhen { font-size: 0.85rem; font-weight: 600; text-shadow: 0 1px 2px rgb(0 0 0 / 0.4); font-variant-numeric: tabular-nums; text-align: right; }
+.bwhen .live { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 999px; background: rgb(0 0 0 / 0.45); }
+.bwhen .live .dot { background: #ff6b5e; }
+.match { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: center; }
+.side { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; align-items: center; align-content: center; min-width: 0; }
+.side .disk { grid-column: 1; grid-row: 1 / span 2; }
+.side .nm, .side .sub { grid-column: 2; align-self: end; }
+.side .sub { align-self: start; }
+.side.b { grid-template-columns: minmax(0, 1fr) auto; text-align: right; }
+.side.b .disk { grid-column: 2; }
+.side.b .nm, .side.b .sub { grid-column: 1; }
+.disk { width: clamp(64px, 13vw, 96px); height: clamp(64px, 13vw, 96px); border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 4px 14px rgb(0 0 0 / 0.3); }
+.disk img { width: 70%; height: 70%; object-fit: contain; }
+.side .nm { font-family: var(--display); font-weight: 800; font-size: clamp(1.4rem, 4.4vw, 2.3rem); line-height: 0.95; text-transform: uppercase; text-shadow: 0 1px 3px rgb(0 0 0 / 0.4); overflow-wrap: anywhere; }
+.side .sub { font-size: 0.82rem; font-weight: 500; opacity: 0.92; text-shadow: 0 1px 2px rgb(0 0 0 / 0.4); font-variant-numeric: tabular-nums; }
+.seed { display: inline-block; font-family: var(--display); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; padding: 0 7px; border-radius: 4px; background: rgb(0 0 0 / 0.4); margin-right: 6px; vertical-align: 2px; }
+.mid { display: grid; justify-items: center; gap: 2px; min-width: 3.5em; text-shadow: 0 1px 3px rgb(0 0 0 / 0.45); }
+.mid .vs { font-family: var(--display); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.1em; opacity: 0.9; }
+.mid .sc { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 7vw, 3.4rem); line-height: 0.9; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mid .sc .lo { opacity: 0.6; }
+.side.lost { opacity: 0.6; }
+.crown { justify-self: center; display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px; background: #fff; color: #141820; font-family: var(--display); font-weight: 700; font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 3px 10px rgb(0 0 0 / 0.25); }
+.crown svg { width: 18px; height: 18px; fill: #c99413; }
+@media (max-width: 600px) {
+  .band { padding: 14px 14px 16px; }
+  .match { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; }
+  .side, .side.b { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .side .disk, .side.b .disk, .side .nm, .side.b .nm, .side .sub, .side.b .sub { grid-column: 1; grid-row: auto; align-self: center; }
+  .side .sub { font-size: 0.75rem; }
+}
+/* what the band doesn't hold */
+.body { display: grid; gap: 18px; padding: 16px 20px 18px; }
+@media (max-width: 600px) { .body { padding: 14px; } }
+.facts { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.85rem; color: var(--muted); }
+.facts b { color: var(--ink); font-weight: 600; }
+/* ESPN's odds of winning, as one bar split in the two colors */
+.odds { display: grid; gap: 4px; }
+.odds .lab { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.odds .lab b { color: var(--ink); font-weight: 600; }
+.odds .bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--sunk); }
+.odds .bar i { display: block; height: 100%; }
+.cols { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px 24px; align-items: start; }
+@media (max-width: 760px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.blk { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.blk h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+/* tale of the tape: the two teams' numbers either side of what they measure, the better one marked */
+.tape { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); font-variant-numeric: tabular-nums; font-size: 0.92rem; }
+.tape > span { padding: 5px 4px; border-bottom: 1px solid var(--line); }
+.tape .k { text-align: center; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; padding-inline: 10px; align-self: stretch; display: grid; align-items: center; }
+.tape .a { text-align: left; }
+.tape .b { text-align: right; }
+.tape .hd { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; border-bottom: 2px solid var(--line); display: flex; align-items: center; gap: 6px; }
+.tape .hd.b { justify-content: flex-end; }
+.tape .hd img { width: 20px; height: 20px; object-fit: contain; }
+.tape .up { font-weight: 700; }
+.tape .up::after { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 6px; border-radius: 50%; background: var(--team); vertical-align: 2px; }
+.tape .b.up::after { display: none; }
+.tape .b.up::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 6px; border-radius: 50%; background: var(--team); vertical-align: 2px; }
+/* last five, oldest first */
+.form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.form .f { display: flex; gap: 3px; flex-wrap: wrap; }
+.form .f.b { justify-content: flex-end; }
+.r { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 5px; font-family: var(--display); font-weight: 700; font-size: 0.85rem; cursor: default; }
+.r.W { background: var(--win-soft); color: var(--win); }
+.r.L { background: color-mix(in srgb, var(--loss) 14%, var(--surface)); color: var(--loss); }
+.meet { margin: 0; font-size: 0.9rem; }
+.meet b { font-weight: 600; }
+.common { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.common > span { padding: 3px 4px; border-bottom: 1px dotted var(--line); }
+.common .o { text-align: center; font-family: var(--display); font-weight: 600; letter-spacing: 0.04em; color: var(--muted); padding-inline: 10px; }
+.common .b { text-align: right; }
+.common .W { color: var(--win); font-weight: 600; }
+.common .L { color: var(--loss); }
+.note { margin: 0; font-size: 0.82rem; color: var(--muted); }
+/* players to watch: ESPN's season leaders, each team's three */
+.lead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.lead ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.lead li { display: grid; gap: 0; font-size: 0.85rem; padding-left: 9px; border-left: 3px solid var(--team); }
+.lead li b { font-weight: 600; }
+.lead li span { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lead .c { font-family: var(--display); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+@media (max-width: 480px) { .lead { grid-template-columns: minmax(0, 1fr); } }
+.links { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 12px; }
+/* the matchup still to be set: who's still in it */
+.run { display: flex; flex-wrap: wrap; gap: 8px; }
+.run a { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; background: var(--sunk); border-radius: 999px; color: var(--ink); text-decoration: none; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.run a img { width: 22px; height: 22px; object-fit: contain; }
+.run a b { font-family: var(--display); font-weight: 700; letter-spacing: 0.04em; font-size: 1rem; }
+.band .tbdq { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 5vw, 2.4rem); text-transform: uppercase; text-align: center; padding-block: 10px 4px; opacity: 0.9; }
+/* in-game win probability, as on the gameday pages */
+.wp { display: grid; gap: 2px; }
+.wp-lab { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.wp-lab b { color: var(--ink); font-weight: 600; }
+.wp svg { display: block; width: 100%; height: 90px; border-block: 1px dotted var(--line); }
+.wp .q { stroke: var(--line); stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; }
+.wp .m { stroke: var(--muted); vector-effect: non-scaling-stroke; }
+.wp .f { opacity: 0.3; }
+.wp .l { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.wp-plot { position: relative; cursor: crosshair; touch-action: pan-y; }
+.wp-hl { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px solid var(--ink); pointer-events: none; }
+.wp-t { position: absolute; top: -2px; transform: translate(-50%, -100%); background: var(--ink); color: var(--surface); font-size: 0.68rem; font-weight: 600; padding: 1px 6px; border-radius: 5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.wp-q { position: relative; height: 1.2em; font-size: 0.68rem; color: var(--muted); }
+.wp-q span { position: absolute; transform: translateX(-50%); }
+footer { padding-block: 30px 40px; font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+</style>
+
+<div class="wrap" id="page" aria-busy="true">
+  <header class="top">
+    <div class="topbar"><nav class="leagues" id="leagues" aria-label="League gameday pages"></nav></div>
+    <span class="eyebrow" id="season"></span>
+    <div class="titlerow"><div class="marks" id="marks" aria-hidden="true"></div><h1>Title Weekend</h1></div>
+    <p id="lede"></p>
+  </header>
+  <section class="champs" id="champs" aria-labelledby="champs-h" hidden></section>
+  <nav class="sched" id="sched" aria-label="The weekend's kickoffs"></nav>
+  <main class="games" id="games"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+"use strict";
+// the live-scores worker (trigger/worker.mjs), from the LIVE_URL build setting; "" means none
+const LIVE_URL = /*__LIVE__*/"";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const safeColor = (c) => (/^#[0-9a-fA-F]{6}$/.test(c || "") ? c : /^#[0-9a-fA-F]{3}$/.test(c || "") ? "#" + c.slice(1).replace(/./g, "$&$&") : "#666666");
+// logos: files the build wrote under logos/, or inlined; nothing else is rendered
+const isPng = (u) => /^(data:image\/png;base64,[A-Za-z0-9+/=]+|(\.\.\/)*logos\/[0-9a-f]{16}\.png)$/.test(u || "");
+const img = (u, cls) => (isPng(u) ? `<img${cls ? ` class="${cls}"` : ""} src="${u}" alt="">` : "");
+const themed = (x) => (!isPng(x.logo) ? "" : !isPng(x.logoDark) ? img(x.logo) : img(x.logo, "logo-light") + img(x.logoDark, "logo-dark"));
+function pct(p) {
+  if (p == null) return "–";
+  if (p <= 0) return "0%";
+  if (p >= 1) return "100%";
+  if (p < 0.001) return "&lt;0.1%";
+  if (p > 0.999) return ">99.9%";
+  return (p * 100).toFixed(p < 0.1 || p > 0.9 ? 1 : 0) + "%";
+}
+// as ESPN's Gamecast: never 0% or 100% until the game is over
+function winPct(p, final) {
+  if (final) return pct(p);
+  p = Math.min(Math.max(p, 0.001), 0.999);
+  return (p * 100).toFixed(p < 0.01 || p > 0.99 ? 1 : 0) + "%";
+}
+// Team colors: two that are too alike (Texas Tech's red and Utah's) read as one band, so the
+// first team takes its alternate color then, unless that's white or close to the other too.
+const rgb = (c) => [1, 3, 5].map((k) => parseInt(safeColor(c).slice(k, k + 2), 16));
+const dist = (x, y) => { const a = rgb(x), b = rgb(y); return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); };
+const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+function bandColors(a, b) {
+  let ca = safeColor(a.color), cb = safeColor(b.color);
+  if (dist(ca, cb) < 90) {
+    const alt = (t) => safeColor(t.alt);
+    if (lum(alt(a)) < 0.7 && dist(alt(a), cb) >= 90) ca = alt(a);
+    else if (lum(alt(b)) < 0.7 && dist(alt(b), ca) >= 90) cb = alt(b);
+  }
+  // a very light color (Wake Forest's gold) is darkened so white type reads on it
+  const deepen = (c) => (lum(c) > 0.45 ? `color-mix(in srgb, ${c} 62%, #000)` : c);
+  return [deepen(ca), deepen(cb)];
+}
+
+function app(DATA) {
+  const L = DATA.leagues.filter((l) => l.title);
+  const teamOf = (l, id) => l.teams.find((t) => t.id === id) || null;
+  const rk = (l, id) => { const r = (l.cfp || {})[id]; return Number.isInteger(r) && r > 0 ? `<span class="rk" title="CFP ranking"><span class="vh">CFP No. </span>${r}</span>` : ""; };
+  // ESPN parks a kickoff it hasn't set at midnight Eastern
+  const kick = (g) => new Date(g.date).getTime() + (g.timeValid === false ? 24 * 3600e3 - 1 : 0);
+  L.sort((x, y) => kick(x.title) - kick(y.title));
+  const dayOf = (g) => new Date(g.timeValid === false ? new Date(g.date).getTime() - 5 * 3600e3 : g.date)
+    .toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", ...(g.timeValid === false ? { timeZone: "UTC" } : {}) });
+  const time = (g) => (g.timeValid === false ? "Time TBD" : new Date(g.date).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  const wp = (g) => (g.wp && typeof g.wp === "object" ? g.wp : null);
+  const done = (g) => !!(g.completed && !g.canceled) || !!(wp(g) && wp(g).final);
+  const pregame = (g) => { const w = wp(g); if (!w || w.final) return false; if (w.state) return w.state === "pre"; return !(w.pts && w.pts.length) && w.homeScore == null && w.awayScore == null; };
+  const underWay = (g) => { const t = new Date(g.date).getTime(), now = Date.now(); return !g.tbd && !g.completed && !g.canceled && !g.postponed && g.timeValid !== false && !(wp(g) && wp(g).final) && now >= t && now < t + 5 * 3600e3; };
+  const liveNow = (g) => underWay(g) && !pregame(g);
+  const score = (g) => (g.completed ? [g.awayScore, g.homeScore] : wp(g) ? [wp(g).awayScore, wp(g).homeScore] : [null, null]);
+  const winnerOf = (g) => { if (g.completed) return g.winner; const [a, h] = score(g); return done(g) && a != null && h != null && a !== h ? (h > a ? g.home : g.away) : null; };
+  // the two sides as shown: #1 seed first once seeds are settled, else ESPN's away team first
+  function sides(l) {
+    const g = l.title, s = l.seeds || {};
+    const order = s[g.home] === 1 ? [g.home, g.away] : [g.away, g.home];
+    return order.map((id) => ({ id, home: id === g.home, t: teamOf(l, id), seed: s[id] || null, season: (l.seasons || {})[id] || null,
+      name: (teamOf(l, id) || {}).short || (id === g.home ? g.homeName : g.awayName) || "TBD",
+      abbr: (teamOf(l, id) || {}).abbr || (id === g.home ? g.homeName : g.awayName) || "TBD" }));
+  }
+  const up = "../";
+  const gamedayHref = (l) => up + l.path + "gameday/";
+
+  // ---- header
+  $("leagues").innerHTML = DATA.leagues.map((l) => `<a href="${gamedayHref(l)}" title="${esc(l.name)} Gameday">${themed(l)}<span>${esc(l.name)}</span></a>`).join("");
+  $("season").textContent = `${DATA.season} season · Conference championships`;
+  $("marks").innerHTML = L.map((l) => themed(l)).join("");
+  const days = [...new Set(L.map((l) => dayOf(l.title)))];
+  const left = L.filter((l) => !done(l.title)).length;
+  $("lede").innerHTML = !L.length ? "The title games aren't on ESPN's schedule yet."
+    : `${L.length === 5 ? "Five" : L.length} conference championships${days.length ? `, ${days.map((d) => esc(d.split(",")[0])).join(" and ")}` : ""}. `
+      + (left === 0 ? "Every champion is crowned." : left < L.length ? `${L.length - left} champion${L.length - left === 1 ? "" : "s"} crowned, ${left} to go.`
+        : "Kickoff, TV and the line, a tale of the tape for every matchup, and live scores and win probability once they kick off.");
+
+  // ---- champions
+  const crowned = L.filter((l) => winnerOf(l.title));
+  const ch = $("champs");
+  ch.hidden = !crowned.length;
+  if (crowned.length) {
+    ch.innerHTML = `<h2 id="champs-h">${DATA.season} champions</h2><div class="row">${L.map((l) => {
+      const w = winnerOf(l.title), t = w ? teamOf(l, w) : null;
+      return t ? `<a class="champ" href="#${esc(l.id)}">${img(t.logo, "t")}<b>${esc(t.short)}</b><span>${esc(l.name)}</span></a>`
+        : `<a class="champ tbd" href="#${esc(l.id)}">${img(l.logo, "t")}<b>To be decided</b><span>${esc(l.name)}</span></a>`;
+    }).join("")}</div>`;
+  }
+
+  // ---- the weekend at a glance
+  $("sched").innerHTML = days.map((d) => `<div class="day"><h2>${esc(d.replace(/,.*$/, ""))}<br><span class="num" style="font-weight:500">${esc(d.split(", ")[1] || "")}</span></h2><div class="slots">${
+    L.filter((l) => dayOf(l.title) === d).map((l) => {
+      const g = l.title, S = sides(l), [as, hs] = score(g), w = winnerOf(g);
+      const sc = (s) => (s.home ? hs : as);
+      const status = done(g) ? `Final` : liveNow(g) ? `<span class="dot" aria-hidden="true"></span>${esc((wp(g) || {}).detail || "Live")}` : `${time(g)}${g.tv ? " · " + esc(g.tv) : ""}`;
+      const tm = (s) => `<span class="${w && w !== s.id ? "lost" : ""}">${s.t ? img(s.t.logo) : ""}${esc(s.abbr)}${(done(g) || liveNow(g)) && sc(s) != null ? ` ${sc(s)}` : ""}</span>`;
+      return `<a class="slot" href="#${esc(l.id)}">${themed(l)}<span class="m">${tm(S[0])}<span class="v">vs</span>${tm(S[1])}</span><span class="w${liveNow(g) ? " live" : ""}">${status}</span></a>`;
+    }).join("")}</div></div>`).join("");
+
+  // ---- the games
+  $("games").innerHTML = L.map(card).join("");
+
+  function card(l) {
+    const g = l.title;
+    const sponsor = l.sponsor && isPng(l.sponsor.logo) ? `<img src="${l.sponsor.logo}" alt="${esc(l.sponsor.name)}">` : "";
+    const mark = `<span class="chip">${sponsor}${img(l.logo) || ""}</span>`;
+    const where = [g.venue, g.city].filter(Boolean).map(esc).join(", ");
+    if (g.tbd) return tbdCard(l, mark, where);
+    const S = sides(l), [A, B] = S;
+    const [ca, cb] = bandColors(A.t || {}, B.t || {});
+    const [as, hs] = score(g), sc = (s) => (s.home ? hs : as);
+    const w = winnerOf(g), final = done(g), live = liveNow(g);
+    const status = final ? "Final" : live ? `<span class="live"><span class="dot" aria-hidden="true"></span>${esc((wp(g) || {}).detail || "Under way")}</span>`
+      : `${new Date(g.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", ...(g.timeValid === false ? { timeZone: "UTC" } : {}) })} · ${time(g)}${g.tv ? " · " + esc(g.tv) : ""}`;
+    const rec = (s) => s.season ? `${s.season.w}-${s.season.l} · ${s.season.cw}-${s.season.cl} ${esc(l.name)}` : "";
+    const side = (s, cls) => `<div class="side ${cls}${final && w && w !== s.id ? " lost" : ""}"><span class="disk">${s.t ? img(s.t.logo) : ""}</span>
+      <span class="nm">${rk(l, s.id)}${esc(s.name)}</span><span class="sub">${s.seed ? `<span class="seed">#${s.seed}</span>` : ""}${rec(s)}</span></div>`;
+    const mid = (final || live) && as != null && hs != null
+      ? `<span class="sc"><span class="${final && w !== A.id ? "lo" : ""}">${sc(A)}</span>&ndash;<span class="${final && w !== B.id ? "lo" : ""}">${sc(B)}</span></span>`
+      : `<span class="vs">VS</span>`;
+    const champ = final && w ? (() => { const t = teamOf(l, w); return t ? `<div class="crown"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>${esc(t.short)}, ${esc(l.name)} champions</div>` : ""; })() : "";
+    const band = `<div class="band" style="--ca:${ca};--cb:${cb}">
+      <div class="bhead"><div class="lgm">${mark}<h2 id="${esc(l.id)}-h">${esc(g.name || l.name + " Championship")}</h2></div><div class="bwhen">${status}</div></div>
+      <div class="match">${side(A, "a")}<div class="mid">${mid}</div>${side(B, "b")}</div>${champ}</div>`;
+    // the line, the place, and ESPN's odds of winning before kickoff
+    const facts = [g.spread ? `<span>Line <b>${esc(g.spread)}</b></span>` : "", g.overUnder != null ? `<span>O/U <b>${esc(g.overUnder)}</b></span>` : "",
+      where ? `<span>${where}</span>` : "", final || live || !g.tv ? "" : `<span>${esc(g.tv)}</span>`].filter(Boolean).join("");
+    const pB = typeof g.pHome === "number" && !final && !live ? (B.home ? g.pHome : 1 - g.pHome) : null;
+    const odds = pB == null ? "" : `<div class="odds" aria-label="ESPN's odds of winning: ${esc(A.abbr)} ${winPct(1 - pB)}, ${esc(B.abbr)} ${winPct(pB)}">
+      <div class="lab"><span>${esc(A.abbr)} <b>${winPct(1 - pB)}</b></span><span>ESPN's win odds</span><span><b>${winPct(pB)}</b> ${esc(B.abbr)}</span></div>
+      <div class="bar" aria-hidden="true"><i style="width:${((1 - pB) * 100).toFixed(1)}%;background:${ca}"></i><i style="width:${(pB * 100).toFixed(1)}%;background:${cb}"></i></div></div>`;
+    const links = (() => {
+      const words = (s) => (s.t ? s.t.short.split(/\s+/).filter((x) => x && !/^(st\.?|state)$/i.test(x) && /^[\p{L}\p{N}&'.-]+$/u.test(x)) : []);
+      const q = ['author:CFB_Referee', 'title:"Game Thread"', ...[...words(A), ...words(B)].map((x) => "title:" + x)].join(" AND ");
+      const thread = g.timeValid !== false && Date.now() >= new Date(g.date).getTime() - 2 * 3600e3;
+      return `<div class="links"><a href="https://www.espn.com/college-football/game/_/gameId/${encodeURIComponent(g.id)}" target="_blank" rel="noopener">ESPN Gamecast</a>
+        ${thread ? `<a href="https://www.reddit.com/r/CFB/search/?q=${encodeURIComponent(q)}&amp;restrict_sr=1&amp;sort=new" target="_blank" rel="noopener">r/CFB game thread</a>` : ""}
+        <a href="https://x.com/search?q=${encodeURIComponent(`${A.name} ${B.name}`)}&amp;f=live" target="_blank" rel="noopener">Live posts on X</a>
+        <a href="${up + l.path}">${esc(l.name)} standings</a></div>`;
+    })();
+    return `<article class="tg" id="${esc(l.id)}" aria-labelledby="${esc(l.id)}-h">${band}<div class="body">
+      ${facts ? `<div class="facts">${facts}</div>` : ""}${odds}${wpChart(g, A, B, ca, cb)}
+      <div class="cols"><div class="blk"><h3>Tale of the tape</h3>${tape(l, A, B, ca, cb)}</div>
+        <div class="blk">${formBlock(A, B)}${meeting(l, A, B)}${common(A, B)}</div></div>
+      ${leaders(g, A, B, ca, cb)}${links}</div></article>`;
+  }
+  function tbdCard(l, mark, where) {
+    const g = l.title;
+    const run = (l.contenders || []).map((c) => { const t = teamOf(l, c.id); return t ? `<a href="${up + l.path}#${esc(t.abbr.toLowerCase())}">${img(t.logo)}<b>${rk(l, t.id)}${esc(t.abbr)}</b>${pct(c.p)}</a>` : ""; }).join("");
+    const when = `${new Date(g.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${time(g)}${g.tv ? " · " + esc(g.tv) : ""}`;
+    return `<article class="tg" id="${esc(l.id)}" aria-labelledby="${esc(l.id)}-h"><div class="band tbd">
+      <div class="bhead"><div class="lgm">${mark}<h2 id="${esc(l.id)}-h">${esc(g.name || l.name + " Championship")}</h2></div><div class="bwhen">${when}</div></div>
+      <div class="tbdq">Matchup to be set</div></div><div class="body">
+      ${where ? `<div class="facts"><span>${where}</span></div>` : ""}
+      ${run ? `<div class="blk"><h3>Still in the running</h3><div class="run">${run}</div><p class="note">Odds of reaching the title game. Each links to that team's path on the ${esc(l.name)} page.</p></div>` : ""}
+      <div class="links"><a href="${up + l.path}">${esc(l.name)} title paths</a><a href="${gamedayHref(l)}">${esc(l.name)} gameday</a></div></div></article>`;
+  }
+  // the two teams' seasons side by side; the better number of each pair marked in its team's color
+  function tape(l, A, B, ca, cb) {
+    const a = A.season, b = B.season;
+    if (!a || !b) return `<p class="note">No season numbers for these teams.</p>`;
+    const fpi = (s) => (s.t && typeof s.t.fpi === "number" ? s.t.fpi : null);
+    const cfp = (s) => { const r = (l.cfp || {})[s.id]; return Number.isInteger(r) && r > 0 ? r : null; };
+    const wp = (s) => (s.w + s.l ? s.w / (s.w + s.l) : null), cwp = (s) => (s.cw + s.cl ? s.cw / (s.cw + s.cl) : null);
+    const margin = (s) => (s.ppg != null && s.papg != null ? s.ppg - s.papg : null);
+    const sign = (v) => (v > 0 ? "+" : v < 0 ? "&minus;" : "") + Math.abs(v).toFixed(1);
+    const rows = [
+      ["Record", `${a.w}-${a.l}`, `${b.w}-${b.l}`, wp(a), wp(b), 1],
+      [`${esc(l.name)}`, `${a.cw}-${a.cl}`, `${b.cw}-${b.cl}`, cwp(a), cwp(b), 1],
+      ["Points a game", a.ppg ?? "–", b.ppg ?? "–", a.ppg, b.ppg, 1],
+      ["Allowed a game", a.papg ?? "–", b.papg ?? "–", a.papg, b.papg, -1],
+      ["Scoring margin", margin(a) == null ? "–" : sign(margin(a)), margin(b) == null ? "–" : sign(margin(b)), margin(a), margin(b), 1],
+      ["Wins over CFP Top 25", a.top25, b.top25, a.top25, b.top25, 1],
+      ["ESPN FPI", fpi(A) == null ? "–" : fpi(A).toFixed(1), fpi(B) == null ? "–" : fpi(B).toFixed(1), fpi(A), fpi(B), 1],
+      ["CFP ranking", cfp(A) ?? "–", cfp(B) ?? "–", cfp(A) ?? 99, cfp(B) ?? 99, -1],
+    ];
+    const head = `<span class="a hd">${A.t ? img(A.t.logo) : ""}${esc(A.abbr)}</span><span class="k"></span><span class="b hd">${esc(B.abbr)}${B.t ? img(B.t.logo) : ""}</span>`;
+    return `<div class="tape" role="table" aria-label="Tale of the tape">${head}${rows.map(([k, x, y, vx, vy, dir]) => {
+      const better = vx == null || vy == null || vx === vy ? 0 : (vx - vy) * dir > 0 ? -1 : 1;
+      return `<span class="a${better < 0 ? " up" : ""}" role="cell" style="--team:${ca}">${x}</span><span class="k" role="rowheader">${k}</span><span class="b${better > 0 ? " up" : ""}" role="cell" style="--team:${cb}">${y}</span>`;
+    }).join("")}</div>`;
+  }
+  function resultTitle(r) { return `${r.win ? "W" : "L"} ${r.us ?? ""}-${r.them ?? ""} ${r.home || r.neutral ? "vs" : "at"} ${r.oppName || ""}, week ${r.week}`; }
+  function formBlock(A, B) {
+    if (!A.season || !B.season) return "";
+    const five = (s, cls) => `<div class="f ${cls}" aria-label="${esc(s.abbr)}'s last five: ${s.season.results.slice(-5).map((r) => esc(resultTitle(r))).join("; ")}">${
+      s.season.results.slice(-5).map((r) => `<span class="r ${r.win ? "W" : "L"}" title="${esc(resultTitle(r))}" aria-hidden="true">${r.win ? "W" : "L"}</span>`).join("")}</div>`;
+    return `<h3>Last five</h3><div class="form">${five(A, "a")}${five(B, "b")}</div>`;
+  }
+  // their regular-season meeting, if they had one: title games are often rematches
+  function meeting(l, A, B) {
+    if (!A.season) return "";
+    const m = A.season.results.filter((r) => r.opp === B.id);
+    const body = !m.length ? `They didn't meet in the regular season.`
+      : m.map((r) => { const wn = r.win ? A : B, ln = r.win ? B : A, hi = Math.max(r.us, r.them), lo = Math.min(r.us, r.them);
+        const at = r.neutral ? "" : ` in ${esc((r.home ? A : B).name)}'s house`;
+        return `Week ${r.week}: <b>${esc(wn.name)} ${hi}, ${esc(ln.name)} ${lo}</b>${at}. A rematch.`; }).join(" ");
+    return `<h3>Head to head</h3><p class="meet">${body}</p>`;
+  }
+  // opponents both played, and how each did against them
+  function common(A, B) {
+    if (!A.season || !B.season) return "";
+    const by = (s) => { const m = new Map(); for (const r of s.season.results) if (r.opp !== A.id && r.opp !== B.id) (m.get(r.opp) || m.set(r.opp, []).get(r.opp)).push(r); return m; };
+    const ma = by(A), mb = by(B), both = [...ma.keys()].filter((k) => mb.has(k));
+    if (!both.length) return "";
+    const cell = (rs, cls) => `<span class="${cls}">${rs.map((r) => `<span class="${r.win ? "W" : "L"}">${r.win ? "W" : "L"} ${r.us}-${r.them}</span>`).join(", ")}</span>`;
+    const wins = (m) => both.reduce((n, k) => n + m.get(k).filter((r) => r.win).length, 0), games = (m) => both.reduce((n, k) => n + m.get(k).length, 0);
+    return `<h3>Common opponents</h3><div class="common">${both.map((k) => `${cell(ma.get(k), "a")}<span class="o">${esc(ma.get(k)[0].oppName || "")}</span>${cell(mb.get(k), "b")}`).join("")}</div>
+      <p class="note">${esc(A.abbr)} ${wins(ma)}-${games(ma) - wins(ma)}, ${esc(B.abbr)} ${wins(mb)}-${games(mb) - wins(mb)} against them.</p>`;
+  }
+  function leaders(g, A, B, ca, cb) {
+    const L = g.leaders || {};
+    const list = (s, c) => (L[s.id] || []).map((x) => `<li style="--team:${c}"><span class="c">${esc(x.cat)}</span><b>${esc(x.name || "")}${x.pos ? ` <span>${esc(x.pos)}</span>` : ""}</b><span>${esc(x.line || "")}</span></li>`).join("");
+    const a = list(A, ca), b = list(B, cb);
+    return a || b ? `<div class="blk"><h3>Players to watch</h3><div class="lead"><ul aria-label="${esc(A.abbr)}">${a}</ul><ul aria-label="${esc(B.abbr)}">${b}</ul></div><p class="note">ESPN's season leaders.</p></div>` : "";
+  }
+  // ESPN's in-game win probability: the first team's side on top, shaded toward whoever leads
+  function wpChart(g, A, B, ca, cb) {
+    const w = wp(g), pts = (w && w.pts) || [];
+    if (pts.length < 2 || (!liveNow(g) && !done(g))) return "";
+    const W = 300, H = 80, mid = H / 2, tMax = Math.max(3600, pts[pts.length - 1][0]);
+    // stored as the home team's odds; the chart's top is A
+    const v = (x) => (A.home ? 1000 - x : x);
+    const X = (t) => ((t / tMax) * W).toFixed(1), Y = (x) => ((Math.min(Math.max(v(x), 0), 1000) / 1000) * H).toFixed(1);
+    const line = pts.map(([t, x]) => `${X(t)},${Y(x)}`).join(" ");
+    const area = `0,${mid} ${line} ${X(pts[pts.length - 1][0])},${mid}`;
+    const id = "wp" + String(g.id).replace(/[^0-9A-Za-z]/g, "");
+    const quarters = [900, 1800, 2700].map((t) => `<line x1="${X(t)}" x2="${X(t)}" y1="0" y2="${H}" class="q"/>`).join("");
+    const labels = ["1st", "2nd", "3rd", "4th"].map((q, n) => `<span style="left:${((n * 900 + 450) / tMax * 100).toFixed(1)}%">${q}</span>`).join("")
+      + (tMax > 3600 ? `<span style="left:${((3600 + tMax) / 2 / tMax * 100).toFixed(1)}%">OT</span>` : "");
+    const pB = v(pts[pts.length - 1][1]) / 1000, final = done(g);
+    wpData.set(String(g.id), { pts, tMax, final, flip: A.home });
+    const lab = (s, p) => `<div class="wp-lab"><span>${esc(s.abbr)}</span><b data-now="${winPct(p, final)}">${winPct(p, final)}</b></div>`;
+    // the line is B's odds from the top, so A's area sits above the middle
+    return `<div class="wp" role="img" aria-label="ESPN win probability: ${esc(A.abbr)} ${winPct(1 - pB, final)}, ${esc(B.abbr)} ${winPct(pB, final)}">
+      ${lab(A, 1 - pB)}<div class="wp-plot" data-gid="${esc(g.id)}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><clipPath id="${id}a"><rect x="0" y="0" width="${W}" height="${mid}"/></clipPath><clipPath id="${id}h"><rect x="0" y="${mid}" width="${W}" height="${mid}"/></clipPath></defs>
+      ${quarters}<line x1="0" x2="${W}" y1="${mid}" y2="${mid}" class="m"/>
+      <polygon points="${area}" fill="${ca}" clip-path="url(#${id}a)" class="f"/><polygon points="${area}" fill="${cb}" clip-path="url(#${id}h)" class="f"/>
+      <polyline points="${line}" class="l"/></svg><div class="wp-hl" hidden><span class="wp-t"></span></div></div>
+      <div class="wp-q" aria-hidden="true">${labels}</div>${lab(B, pB)}</div>`;
+  }
+
+  $("foot").innerHTML = `<span>Schedules, lines, win odds, season leaders and live win probability from ESPN; CFP rankings from the committee's latest Top 25. Updated ${esc(new Date(DATA.fetchedAt).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }))}.</span>
+    <span>Every league's race, paths and tiebreakers: <a href="${up}">Big 12</a>, ${DATA.leagues.filter((l) => l.path).map((l) => `<a href="${up + l.path}">${esc(l.name)}</a>`).join(", ")}.</span>`;
+  return { liveIds: () => L.map((l) => l.title).filter(underWay).map((g) => g.id) };
+}
+
+// hover (or drag a finger) along a chart: the clock at that moment and both teams' odds then
+const wpData = new Map();
+function gameClock(t) {
+  if (t >= 3600) return "OT";
+  const q = Math.floor(t / 900), left = 900 - (t % 900);
+  return `${["1st", "2nd", "3rd", "4th"][q]} ${Math.floor(left / 60)}:${String(Math.round(left % 60)).padStart(2, "0")}`;
+}
+function readWp(plot, clientX) {
+  const d = wpData.get(plot.dataset.gid), box = plot.closest(".wp");
+  if (!d || !box) return;
+  const r = plot.getBoundingClientRect(), f = Math.min(Math.max((clientX - r.left) / r.width, 0), 1);
+  const t = f * d.tMax, pts = d.pts, last = pts.length - 1;
+  if (t > pts[last][0]) return leaveWp(plot);
+  let lo = 0, hi = last;
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (pts[m][0] <= t) lo = m; else hi = m - 1; }
+  const pB = (d.flip ? 1000 - pts[lo][1] : pts[lo][1]) / 1000, final = d.final && lo === last;
+  const hl = plot.querySelector(".wp-hl");
+  hl.hidden = false;
+  hl.style.left = `${((pts[lo][0] / d.tMax) * 100).toFixed(2)}%`;
+  hl.querySelector(".wp-t").textContent = final ? "Final" : gameClock(pts[lo][0]);
+  const [top, bottom] = box.querySelectorAll(".wp-lab b");
+  top.textContent = winPct(1 - pB, final); bottom.textContent = winPct(pB, final);
+}
+function leaveWp(plot) {
+  const hl = plot.querySelector(".wp-hl"), box = plot.closest(".wp");
+  if (hl) hl.hidden = true;
+  if (box) for (const b of box.querySelectorAll(".wp-lab b")) b.textContent = b.dataset.now;
+}
+const wpPlot = (el) => (el && el.closest ? el.closest(".wp-plot") : null);
+document.addEventListener("pointermove", (e) => { const p = wpPlot(e.target); if (p) readWp(p, e.clientX); });
+document.addEventListener("pointerdown", (e) => { const p = wpPlot(e.target); if (p) readWp(p, e.clientX); });
+document.addEventListener("pointerout", (e) => { const p = wpPlot(e.target); if (p && wpPlot(e.relatedTarget) !== p) leaveWp(p); });
+
+// Load, show, then follow along while the page is on screen: page-data.json every minute (a new
+// build: results, lines, a matchup set), and the live worker every 30 seconds while a title game is
+// under way (scores, clocks, win-probability charts), as the gameday pages do.
+const getData = () => fetch("page-data.json", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const stamp = (d) => d.fetchedAt + "|" + d.leagues.map((l) => (l.title ? l.title.id + ":" + ((l.title.wp || {}).pts || []).length : "")).join(",");
+let DATA = null, view = null, shown = null, lastLive = {};
+const isWp = (w) => !!w && typeof w === "object" && Array.isArray(w.pts) && w.pts.length <= 500
+  && w.pts.every((p) => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite))
+  && ["homeScore", "awayScore"].every((k) => w[k] === null || Number.isInteger(w[k]))
+  && (w.detail === null || typeof w.detail === "string") && typeof w.final === "boolean"
+  && (w.state == null || ["pre", "in", "post"].includes(w.state));
+function applyLive(d, byId) {
+  for (const l of d.leagues) {
+    const g = l.title, w = g && byId[g.id];
+    if (!isWp(w) || g.completed || (g.wp && (g.wp.final || g.wp.pts.length > w.pts.length))) continue;
+    g.wp = w;
+  }
+}
+function draw(d) {
+  applyLive(d, lastLive);
+  DATA = d; view = app(d);
+}
+function every(ms, job, now) {
+  let timer = null, busy = false, last = 0;
+  const schedule = () => { clearTimeout(timer); timer = document.hidden ? null : setTimeout(run, ms); };
+  function run() {
+    timer = null;
+    if (document.hidden || busy) return;
+    busy = true; last = Date.now();
+    Promise.resolve().then(job).catch(() => {}).finally(() => { busy = false; schedule(); });
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { clearTimeout(timer); timer = null; } else if (!busy) (Date.now() - last >= ms ? run() : schedule());
+  });
+  if (now) run(); else { last = Date.now(); schedule(); }
+}
+// shown once whole (fonts in, capped), then at the game the link names (the gameday pages' Title
+// games button links to its league's): the cards didn't exist when the browser looked for it
+function reveal() {
+  const show = () => {
+    $("page").removeAttribute("aria-busy");
+    const to = /^#[a-z0-9]+$/.test(location.hash) ? document.getElementById(location.hash.slice(1)) : null;
+    if (to) to.scrollIntoView({ behavior: "instant" });
+  };
+  Promise.race([document.fonts ? document.fonts.ready : null, new Promise((r) => setTimeout(r, 500))].filter(Boolean)).then(show, show);
+}
+getData()
+  .then((d) => {
+    shown = stamp(d); draw(d);
+  })
+  .catch((e) => { $("lede").textContent = `Couldn't load the title games (${e.message}). Reload the page to try again.`; })
+  .finally(() => {
+    reveal();
+    if (!shown) return;
+    every(60e3, () => getData().then((d) => { if (stamp(d) !== shown) { shown = stamp(d); draw(d); } }));
+    if (LIVE_URL) every(30e3, () => {
+      const ids = view ? view.liveIds() : [];
+      if (!ids.length) return;
+      return fetch(`${LIVE_URL}live?ids=${ids.join(",")}`, { cache: "no-store" })
+        .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then((m) => { lastLive = m; draw(DATA); });
+    }, true);
+  });
+</script>

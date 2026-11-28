@@ -187,45 +187,106 @@ def fetch_teams(league, season):
     return pmap(one, entries)
 
 
+def is_title(c, league):
+    """Whether a scoreboard competition is the league's championship game."""
+    notes = " ".join(n.get("headline", "") for n in c.get("notes") or [])
+    return (c.get("type") or {}).get("type") == "conference-championship" or f"{league['name']} Championship" in notes
+
+
 def fetch_week(league, season, week):
     """Every game involving one of the league's teams that week, in one call."""
     d = get(f"{SITE}/scoreboard?groups={league['group']}&seasontype=2&week={week}&dates={season}&limit=200")
-    out = []
+    # the title game is kept apart (fetch_title): excluded from records and the 12-game win count
+    return [read_event(e, week) for e in d.get("events", []) if not is_title(e["competitions"][0], league)]
+
+
+# ESPN's season leaders on a title game's scoreboard entry, per team: shown as players to watch
+LEADERS = {"passingLeader": "Passing", "rushingLeader": "Rushing", "receivingLeader": "Receiving"}
+
+
+def fetch_title(league, season, week):
+    """The league's championship game, or None if ESPN doesn't list it yet. Read from the week's
+    FBS scoreboard (group 80): while its teams are TBD ESPN doesn't list it under the conference."""
+    d = get(f"{SITE}/scoreboard?groups=80&seasontype=2&week={week}&dates={season}&limit=300")
     for e in d.get("events", []):
         c = e["competitions"][0]
-        notes = " ".join(n.get("headline", "") for n in c.get("notes") or [])
-        if (c.get("type") or {}).get("type") == "conference-championship" or f"{league['name']} Championship" in notes:
-            continue  # title game: excluded from records and the 12-game win count
-        comp = {x["homeAway"]: x for x in c["competitors"]}
-        h, a = comp["home"], comp["away"]
-        stype = c["status"]["type"]
-        done = bool(stype.get("completed"))
-        canceled = stype.get("name") in ("STATUS_CANCELED", "STATUS_FORFEIT") and not done
-        winner = None
-        if done:
-            winner = h["team"]["id"] if h.get("winner") else a["team"]["id"] if a.get("winner") else None
-        sc = lambda x: int(float(x["score"])) if done and x.get("score") not in (None, "") else None
-        odds = (c.get("odds") or [{}])[0] or {}
-        venue = c.get("venue") or {}
-        addr = venue.get("address") or {}
-        tv = c.get("broadcast") or ", ".join(dict.fromkeys(n for b in c.get("broadcasts") or [] for n in b.get("names") or []))
-        out.append({
-            "id": e["id"], "week": week, "date": e["date"],
-            "home": h["team"]["id"], "away": a["team"]["id"],
-            "homeName": h["team"].get("abbreviation"), "awayName": a["team"].get("abbreviation"),
-            "neutral": bool(c.get("neutralSite")),
-            # ESPN's own flag: two league teams can meet in a non-conference game
-            # (e.g. Arizona at Kansas State in 2024, scheduled before Arizona joined).
-            "confFlag": c.get("conferenceCompetition"),
-            "completed": done or canceled, "canceled": canceled, "postponed": stype.get("name") == "STATUS_POSTPONED",
-            "winner": winner, "homeScore": sc(h), "awayScore": sc(a),
-            # for the page's game cards: ESPN's text, escaped by the page. timeValid false: the
-            # kickoff time isn't set yet (ESPN parks those at midnight Eastern).
-            "timeValid": c.get("timeValid", True) is not False,
-            "tv": tv or None, "spread": odds.get("details") or None, "overUnder": odds.get("overUnder"),
-            "venue": venue.get("fullName"), "city": ", ".join(x for x in (addr.get("city"), addr.get("state")) if x) or None,
-        })
-    return out
+        if not is_title(c, league):
+            continue
+        g = read_event(e, week)
+        g["name"] = next((n["headline"] for n in c.get("notes") or [] if n.get("headline")), f"{league['name']} Championship")
+        # ESPN's placeholders for a team not yet known are ids -1 and -2, "TBD"
+        g["tbd"] = not all(re.fullmatch(r"\d{1,12}", str(g[k])) for k in ("home", "away"))
+        leaders = {}
+        for x in c["competitors"]:
+            rows = []
+            for cat in x.get("leaders") or []:
+                if cat.get("name") not in LEADERS or not cat.get("leaders"):
+                    continue
+                top = cat["leaders"][0]
+                ath = top.get("athlete") or {}
+                rows.append({"cat": LEADERS[cat["name"]], "name": ath.get("displayName") or ath.get("fullName"),
+                             "pos": (ath.get("position") or {}).get("abbreviation"), "line": top.get("displayValue")})
+            if rows:
+                leaders[x["team"]["id"]] = rows
+        g["leaders"] = leaders
+        return g
+    return None
+
+
+def title_week(calendar, games):
+    """The calendar week after the last week with league games: when title games are played."""
+    last = max((g["week"] for g in games.values()), default=None)
+    return next((c["week"] for c in calendar or [] if last is not None and c["week"] == last + 1), None)
+
+
+def title_due(title, meta, calendar, games, week, now):
+    """Whether this run reads the title game's scoreboard: from the start of the last regular-season
+    week, until it is final. Every run while its teams are TBD once the league's games are all in
+    (ESPN fills them in soon after), and once it's past kickoff + 3h or ESPN's summary calls it
+    final; otherwise once a day, for the kickoff, TV and line."""
+    last = next((c for c in calendar or [] if c["week"] == week - 1), None)
+    if not last or now < parse(last["start"]) or (title and title.get("completed")):
+        return False
+    if (not title or title.get("tbd")) and games and all(g["completed"] for g in games.values()):
+        return True
+    at = parse(meta.get("titleCheckedAt"))
+    if not at or now - at >= SCHEDULE_TTL:
+        return True
+    return bool(title) and (parse(title["date"]) + RESULT_DELAY <= now or bool((title.get("wp") or {}).get("final")))
+
+
+def read_event(e, week):
+    """One scoreboard event as the data keeps a game."""
+    c = e["competitions"][0]
+    comp = {x["homeAway"]: x for x in c["competitors"]}
+    h, a = comp["home"], comp["away"]
+    stype = c["status"]["type"]
+    done = bool(stype.get("completed"))
+    canceled = stype.get("name") in ("STATUS_CANCELED", "STATUS_FORFEIT") and not done
+    winner = None
+    if done:
+        winner = h["team"]["id"] if h.get("winner") else a["team"]["id"] if a.get("winner") else None
+    sc = lambda x: int(float(x["score"])) if done and x.get("score") not in (None, "") else None
+    odds = (c.get("odds") or [{}])[0] or {}
+    venue = c.get("venue") or {}
+    addr = venue.get("address") or {}
+    tv = c.get("broadcast") or ", ".join(dict.fromkeys(n for b in c.get("broadcasts") or [] for n in b.get("names") or []))
+    return {
+        "id": e["id"], "week": week, "date": e["date"],
+        "home": h["team"]["id"], "away": a["team"]["id"],
+        "homeName": h["team"].get("abbreviation"), "awayName": a["team"].get("abbreviation"),
+        "neutral": bool(c.get("neutralSite")),
+        # ESPN's own flag: two league teams can meet in a non-conference game
+        # (e.g. Arizona at Kansas State in 2024, scheduled before Arizona joined).
+        "confFlag": c.get("conferenceCompetition"),
+        "completed": done or canceled, "canceled": canceled, "postponed": stype.get("name") == "STATUS_POSTPONED",
+        "winner": winner, "homeScore": sc(h), "awayScore": sc(a),
+        # for the page's game cards: ESPN's text, escaped by the page. timeValid false: the
+        # kickoff time isn't set yet (ESPN parks those at midnight Eastern).
+        "timeValid": c.get("timeValid", True) is not False,
+        "tv": tv or None, "spread": odds.get("details") or None, "overUnder": odds.get("overUnder"),
+        "venue": venue.get("fullName"), "city": ", ".join(x for x in (addr.get("city"), addr.get("state")) if x) or None,
+    }
 
 
 WP_POINTS = 120  # win-probability points kept per game: plenty for a 300px chart, small in the data
@@ -316,7 +377,7 @@ def live_url():
 
 
 def write_live_ids(root, league_id, data):
-    """<site>/live-ids.json: every league's games that can still be under way, by league. The
+    """<site>/live-ids.json: every league's games that can still be under way (its title game too), by league. The
     live-scores worker (trigger/worker.mjs) asks ESPN only about these, so a stranger can't make it
     fetch, cache or start the workflow for any other game. Each league's step adds its own entry
     to the one file the run's earlier steps wrote."""
@@ -327,7 +388,8 @@ def write_live_ids(root, league_id, data):
             ids = {}
     except (OSError, ValueError):
         ids = {}
-    ids[league_id] = sorted(str(g["id"]) for g in data.get("games", [])
+    games = list(data.get("games", [])) + ([data["title"]] if data.get("title") and not data["title"].get("tbd") else [])
+    ids[league_id] = sorted(str(g["id"]) for g in games
                             if not g.get("completed") and not g.get("canceled") and re.fullmatch(r"\d{1,12}", str(g["id"])))
     path.write_text(json.dumps(ids, separators=(",", ":"), sort_keys=True))
 
@@ -696,6 +758,47 @@ def main():
         if filled:
             changed.append(f"game {g.get('awayName')}@{g.get('homeName')}: {', '.join(filled)} from moves-backfill.json")
 
+    # The title game, kept apart from the games (they count in the standings; it doesn't), for the
+    # title weekend page. Its line is kept past kickoff, and its result taken from ESPN's summary
+    # when that calls it final first, as for the games above.
+    title = prev.get("title") if prev else None
+    tw = title_week(calendar, games)
+    if not args.offline and tw and title_due(title, meta, calendar, games, tw, now):
+        meta["titleCheckedAt"] = iso(now)
+        ng = fetch_title(league, args.season, tw)
+        if ng:
+            old = title or {}
+            if old.get("id") == ng["id"]:
+                for k in ("pHome", "predAt", "wp"):
+                    if k in old:
+                        ng.setdefault(k, old[k])
+                if ng["completed"] or parse(ng["date"]) <= now:
+                    for k in ("spread", "overUnder"):
+                        if ng.get(k) is None:
+                            ng[k] = old.get(k)
+            keys = ("id", "date", "home", "away", "completed", "winner", "homeScore", "awayScore", "timeValid", "tv",
+                    "spread", "overUnder", "venue", "leaders", "name")
+            if any(old.get(k) != ng.get(k) for k in keys):
+                changed.append(f"title game {ng['awayName']}@{ng['homeName']}")
+            title = ng
+    if title and not args.offline and not title["tbd"] and not title["completed"]:
+        if fpi_stale or title.get("pHome") is None:
+            _, p = fetch_prediction(title["id"])
+            if p is not None and p != title.get("pHome"):
+                title["pHome"] = p
+                changed.append("title game prediction")
+            title["predAt"] = iso(now)
+        if title.get("timeValid") is not False and parse(title["date"]) <= now and not (title.get("wp") or {}).get("final"):
+            _, wp = fetch_winprob(title["id"])
+            if wp is not None and wp != title.get("wp"):
+                title["wp"] = wp
+                changed.append("title game win probability")
+        wp = title.get("wp") or {}
+        hs, as_ = wp.get("homeScore"), wp.get("awayScore")
+        if wp.get("final") and hs is not None and as_ is not None and hs != as_:
+            title.update(completed=True, winner=title["home"] if hs > as_ else title["away"], homeScore=hs, awayScore=as_, pHome=None)
+            changed.append("title game final from its summary")
+
     team_ids = {t["id"] for t in teams}
     for t in teams:
         t["fpi"] = fpi.get(t["id"])
@@ -722,13 +825,15 @@ def main():
         data["weekStarts"] = dict(sorted(starts.items(), key=lambda kv: int(kv[0])))
     if cfp:
         data["cfp"] = cfp
+    if title:
+        data["title"] = title
     if prev and prev.get("exact"):
         data["exact"] = prev["exact"]  # exact.js reuses it when its inputs haven't changed
     print(f"{calls} ESPN calls; {len(changed)} changes" + (f": {', '.join(changed[:8])}{' …' if len(changed) > 8 else ''}" if changed else ""))
 
     # A check that found nothing new still has to be saved, or the next run repeats it.
     checks_moved = not args.offline and (
-        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt", "cfpCheckedAt", "wpRules")))
+        prev is None or any(meta.get(k) != prev["meta"].get(k) for k in ("scheduleCheckedAt", "fpiCheckedAt", "cfpCheckedAt", "wpRules", "titleCheckedAt")))
     build = bool(changed) or checks_moved or args.force_build
     if build:
         out = Path(args.data_out)

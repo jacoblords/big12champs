@@ -85,6 +85,9 @@ jobs:
         run: python fetch_data.py --league big10 --prev "${PREV_ROOT:-$PUBLISHED}/big10/data.json" --site site --artifact '' $FORCE --github-output
       - id: pac12
         run: python fetch_data.py --league pac12 --prev "${PREV_ROOT:-$PUBLISHED}/pac12/data.json" --site site --artifact '' $FORCE --github-output
+      # Every league's title game on one page (title-weekend/), from the data the steps above wrote.
+      # No ESPN calls: rebuilt every run, deployed whenever any league's data changed.
+      - run: python title_weekend.py site
       # Each league's trend.json, the team page's season odds chart: data-history's odds.jsonl
       # plus the odds this deploy is about to publish (archive records them only after it).
       # No branch yet (a new fork) charts only those; any other failure to read it fails the run.
