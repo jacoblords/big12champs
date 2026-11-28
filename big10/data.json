@@ -49,18 +49,19 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T17:46Z",
+ "fetchedAt": "2026-11-28T17:49Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T17:46Z",
+  "checkedAt": "2026-11-28T17:49Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T17:46Z",
-  "espnCalls": 2,
+  "updatedAt": "2026-11-28T17:49Z",
+  "espnCalls": 3,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
-  "wpRules": 2
+  "wpRules": 2,
+  "titleCheckedAt": "2026-11-28T17:49Z"
  },
  "calendar": [
   {
@@ -13605,6 +13606,14 @@
      [
       900,
       951
+     ],
+     [
+      900,
+      954
+     ],
+     [
+      900,
+      962
      ]
     ],
     "final": false,
@@ -13706,10 +13715,14 @@
      [
       398,
       683
+     ],
+     [
+      416,
+      642
      ]
     ],
     "final": false,
-    "detail": "8:13 - 1st",
+    "detail": "8:03 - 1st",
     "homeScore": 0,
     "awayScore": 0,
     "state": "in"
@@ -13981,6 +13994,32 @@
    "2633": 5,
    "2641": 11
   }
+ },
+ "title": {
+  "id": "401869534",
+  "week": 14,
+  "date": "2026-12-06T01:00Z",
+  "home": "-1",
+  "away": "-2",
+  "homeName": "TBD",
+  "awayName": "TBD",
+  "neutral": true,
+  "confFlag": false,
+  "completed": false,
+  "canceled": false,
+  "postponed": false,
+  "winner": null,
+  "homeScore": null,
+  "awayScore": null,
+  "timeValid": true,
+  "tv": "Fox",
+  "spread": null,
+  "overUnder": null,
+  "venue": "Lucas Oil Stadium",
+  "city": "Indianapolis, IN",
+  "name": "Big Ten Championship",
+  "tbd": true,
+  "leaders": {}
  },
  "exact": {
   "key": "9c85ce1be385647c",

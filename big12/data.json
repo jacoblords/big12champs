@@ -49,18 +49,19 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T17:01Z",
+ "fetchedAt": "2026-11-28T17:49Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:01Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T17:46Z",
+  "checkedAt": "2026-11-28T17:49Z",
   "nextResultCheck": "2026-11-28T22:00Z",
-  "updatedAt": "2026-11-28T17:01Z",
-  "espnCalls": 0,
+  "updatedAt": "2026-11-28T17:49Z",
+  "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
-  "wpRules": 2
+  "wpRules": 2,
+  "titleCheckedAt": "2026-11-28T17:49Z"
  },
  "calendar": [
   {
@@ -12340,6 +12341,75 @@
    "2633": 5,
    "2641": 11
   }
+ },
+ "title": {
+  "id": "401869533",
+  "week": 14,
+  "date": "2026-12-05T01:00Z",
+  "home": "254",
+  "away": "2641",
+  "homeName": "UTAH",
+  "awayName": "TTU",
+  "neutral": true,
+  "confFlag": false,
+  "completed": false,
+  "canceled": false,
+  "postponed": false,
+  "winner": null,
+  "homeScore": null,
+  "awayScore": null,
+  "timeValid": true,
+  "tv": "ABC",
+  "spread": "UTAH -2.5",
+  "overUnder": 59.5,
+  "venue": "AT&T Stadium",
+  "city": "Arlington, TX",
+  "name": "Edward Jones Big 12 Championship",
+  "tbd": false,
+  "leaders": {
+   "254": [
+    {
+     "cat": "Passing",
+     "name": "Devon Dampier",
+     "pos": "QB",
+     "line": "220/327, 2928 YDS, 29 TD, 8 INT"
+    },
+    {
+     "cat": "Rushing",
+     "name": "Wayshawn Parker",
+     "pos": "RB",
+     "line": "130 CAR, 766 YDS, 9 TD"
+    },
+    {
+     "cat": "Receiving",
+     "name": "Braden Pegan",
+     "pos": "WR",
+     "line": "54 REC, 852 YDS, 11 TD"
+    }
+   ],
+   "2641": [
+    {
+     "cat": "Passing",
+     "name": "Will Hammond",
+     "pos": "QB",
+     "line": "141/207, 1570 YDS, 6 TD, 6 INT"
+    },
+    {
+     "cat": "Rushing",
+     "name": "J'Koby Williams",
+     "pos": "RB",
+     "line": "164 CAR, 1207 YDS, 9 TD"
+    },
+    {
+     "cat": "Receiving",
+     "name": "Kenny Johnson",
+     "pos": "WR",
+     "line": "48 REC, 803 YDS, 6 TD"
+    }
+   ]
+  },
+  "pHome": 0.5271,
+  "predAt": "2026-11-28T17:49Z"
  },
  "exact": {
   "key": "0d68222ee637dc5d",

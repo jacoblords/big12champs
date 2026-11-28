@@ -49,18 +49,19 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T14:31Z",
+ "fetchedAt": "2026-11-28T17:49Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T08:31Z",
   "scheduleFields": 2,
   "fpiCheckedAt": "2026-11-28T14:31Z",
   "fpiRun": "2026-11-28T09:00Z",
   "cfpCheckedAt": "2026-11-28T14:31Z",
-  "checkedAt": "2026-11-28T17:46Z",
+  "checkedAt": "2026-11-28T17:49Z",
   "nextResultCheck": "2026-11-29T02:00Z",
-  "updatedAt": "2026-11-28T14:31Z",
-  "espnCalls": 0,
-  "wpRules": 2
+  "updatedAt": "2026-11-28T17:49Z",
+  "espnCalls": 2,
+  "wpRules": 2,
+  "titleCheckedAt": "2026-11-28T17:49Z"
  },
  "calendar": [
   {
@@ -4213,6 +4214,75 @@
    "2633": 5,
    "2641": 11
   }
+ },
+ "title": {
+  "id": "401869542",
+  "week": 14,
+  "date": "2026-12-05T01:00Z",
+  "home": "68",
+  "away": "21",
+  "homeName": "BOIS",
+  "awayName": "SDSU",
+  "neutral": false,
+  "confFlag": false,
+  "completed": false,
+  "canceled": false,
+  "postponed": false,
+  "winner": null,
+  "homeScore": null,
+  "awayScore": null,
+  "timeValid": true,
+  "tv": "CBS",
+  "spread": "BOIS -15.5",
+  "overUnder": 58.5,
+  "venue": "Albertsons Stadium",
+  "city": "Boise, ID",
+  "name": "Pac-12 Championship",
+  "tbd": false,
+  "leaders": {
+   "68": [
+    {
+     "cat": "Passing",
+     "name": "Maddux Madsen",
+     "pos": "QB",
+     "line": "194/289, 2363 YDS, 20 TD, 3 INT"
+    },
+    {
+     "cat": "Rushing",
+     "name": "Dylan Riley",
+     "pos": "RB",
+     "line": "213 CAR, 1360 YDS, 11 TD"
+    },
+    {
+     "cat": "Receiving",
+     "name": "Rasean Jones",
+     "pos": "WR",
+     "line": "60 REC, 940 YDS, 8 TD"
+    }
+   ],
+   "21": [
+    {
+     "cat": "Passing",
+     "name": "Stone Saunders",
+     "pos": "QB",
+     "line": "78/140, 959 YDS, 3 TD, 5 INT"
+    },
+    {
+     "cat": "Rushing",
+     "name": "Javion Kinnard",
+     "pos": "RB",
+     "line": "140 CAR, 812 YDS, 5 TD"
+    },
+    {
+     "cat": "Receiving",
+     "name": "Jaylon Hawkins",
+     "pos": "WR",
+     "line": "31 REC, 509 YDS, 4 TD"
+    }
+   ]
+  },
+  "pHome": 0.9084,
+  "predAt": "2026-11-28T17:49Z"
  },
  "exact": {
   "key": "c302bda828b0a05b",

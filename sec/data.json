@@ -49,18 +49,19 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T17:46Z",
+ "fetchedAt": "2026-11-28T17:49Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T17:46Z",
+  "checkedAt": "2026-11-28T17:49Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T17:46Z",
-  "espnCalls": 2,
+  "updatedAt": "2026-11-28T17:49Z",
+  "espnCalls": 4,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
-  "wpRules": 2
+  "wpRules": 2,
+  "titleCheckedAt": "2026-11-28T17:49Z"
  },
  "calendar": [
   {
@@ -13762,12 +13763,24 @@
      [
       1023,
       692
+     ],
+     [
+      1073,
+      713
+     ],
+     [
+      1108,
+      747
+     ],
+     [
+      1113,
+      723
      ]
     ],
     "final": false,
-    "detail": "12:07 - 2nd",
+    "detail": "11:27 - 2nd",
     "homeScore": 14,
-    "awayScore": 0,
+    "awayScore": 3,
     "state": "in"
    }
   },
@@ -13799,12 +13812,17 @@
    "venue": "Donald W. Reynolds Razorback Stadium",
    "city": "Fayetteville, AR",
    "wp": {
-    "pts": [],
+    "pts": [
+     [
+      0,
+      128
+     ]
+    ],
     "final": false,
-    "detail": "11/28 - 12:45 PM EST",
-    "homeScore": null,
-    "awayScore": null,
-    "state": "pre"
+    "detail": "14:49 - 1st",
+    "homeScore": 0,
+    "awayScore": 0,
+    "state": "in"
    }
   },
   {
@@ -14065,6 +14083,75 @@
    "2633": 5,
    "2641": 11
   }
+ },
+ "title": {
+  "id": "401869545",
+  "week": 14,
+  "date": "2026-12-05T21:00Z",
+  "home": "61",
+  "away": "251",
+  "homeName": "UGA",
+  "awayName": "TEX",
+  "neutral": true,
+  "confFlag": false,
+  "completed": false,
+  "canceled": false,
+  "postponed": false,
+  "winner": null,
+  "homeScore": null,
+  "awayScore": null,
+  "timeValid": true,
+  "tv": "ABC",
+  "spread": null,
+  "overUnder": null,
+  "venue": "Mercedes-Benz Stadium",
+  "city": "Atlanta, GA",
+  "name": "SEC Championship",
+  "tbd": false,
+  "leaders": {
+   "61": [
+    {
+     "cat": "Passing",
+     "name": "Gunner Stockton",
+     "pos": "QB",
+     "line": "176/243, 2390 YDS, 22 TD, 4 INT"
+    },
+    {
+     "cat": "Rushing",
+     "name": "Dwight Phillips Jr.",
+     "pos": "RB",
+     "line": "79 CAR, 579 YDS, 2 TD"
+    },
+    {
+     "cat": "Receiving",
+     "name": "Talyn Taylor",
+     "pos": "WR",
+     "line": "30 REC, 537 YDS, 6 TD"
+    }
+   ],
+   "251": [
+    {
+     "cat": "Passing",
+     "name": "Arch Manning",
+     "pos": "QB",
+     "line": "226/348, 2628 YDS, 22 TD, 11 INT"
+    },
+    {
+     "cat": "Rushing",
+     "name": "Raleek Brown",
+     "pos": "RB",
+     "line": "138 CAR, 608 YDS, 6 TD"
+    },
+    {
+     "cat": "Receiving",
+     "name": "Ryan Wingo",
+     "pos": "WR",
+     "line": "59 REC, 696 YDS, 4 TD"
+    }
+   ]
+  },
+  "pHome": 0.6373,
+  "predAt": "2026-11-28T17:49Z"
  },
  "exact": {
   "key": "5e7660acd075f4f4",
