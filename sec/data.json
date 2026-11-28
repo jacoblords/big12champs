@@ -49,14 +49,14 @@
   }
  ],
  "season": 2026,
- "fetchedAt": "2026-11-28T17:31Z",
+ "fetchedAt": "2026-11-28T17:46Z",
  "meta": {
   "scheduleCheckedAt": "2026-11-28T17:01Z",
   "fpiCheckedAt": "2026-11-28T17:31Z",
   "fpiRun": "2026-11-28T09:00Z",
-  "checkedAt": "2026-11-28T17:31Z",
+  "checkedAt": "2026-11-28T17:46Z",
   "nextResultCheck": "2026-11-28T20:00Z",
-  "updatedAt": "2026-11-28T17:31Z",
+  "updatedAt": "2026-11-28T17:46Z",
   "espnCalls": 2,
   "scheduleFields": 2,
   "cfpCheckedAt": "2026-11-28T14:31Z",
@@ -13710,10 +13710,62 @@
      [
       696,
       727
+     ],
+     [
+      696,
+      729
+     ],
+     [
+      703,
+      724
+     ],
+     [
+      737,
+      717
+     ],
+     [
+      783,
+      713
+     ],
+     [
+      820,
+      709
+     ],
+     [
+      859,
+      717
+     ],
+     [
+      883,
+      712
+     ],
+     [
+      900,
+      713
+     ],
+     [
+      907,
+      697
+     ],
+     [
+      943,
+      709
+     ],
+     [
+      980,
+      730
+     ],
+     [
+      996,
+      687
+     ],
+     [
+      1023,
+      692
      ]
     ],
     "final": false,
-    "detail": "3:24 - 1st",
+    "detail": "12:07 - 2nd",
     "homeScore": 14,
     "awayScore": 0,
     "state": "in"
@@ -13745,7 +13797,15 @@
    "spread": "LSU -14.5",
    "overUnder": 50.5,
    "venue": "Donald W. Reynolds Razorback Stadium",
-   "city": "Fayetteville, AR"
+   "city": "Fayetteville, AR",
+   "wp": {
+    "pts": [],
+    "final": false,
+    "detail": "11/28 - 12:45 PM EST",
+    "homeScore": null,
+    "awayScore": null,
+    "state": "pre"
+   }
   },
   {
    "id": "401856764",
